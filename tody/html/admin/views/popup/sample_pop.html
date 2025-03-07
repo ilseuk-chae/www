@@ -1,0 +1,108 @@
+<script>
+    //    const modalUrl = $(".modal-fixed-pop-wrapper").prop("url");
+    //    const type = getParameter("type", modalUrl);
+    //    const idx = getParameter("idx", modalUrl);
+    //    console.log(type);
+    //    return;
+    //    // AJAX 요청으로 product.json 파일 로드
+    //    $.getJSON("/kr/product/product.json", function (data) {
+    //        // 로드된 데이터에 접근하여 처리
+    //        const chargerInfo = data[type][idx];
+    //        console.log(chargerInfo);
+    //
+    //        if (type == "slow") {
+    //            $(".popup-product-tit").find(".charge_type").text("완속충전기");
+    //        } else if (type == "super") {
+    //            $(".popup-product-tit").find(".charge_type").text("급속충전기");
+    //        }
+    //
+    //        // chargerInfo의 각 key와 동일한 id를 가진 요소들의 text를 해당 key의 value로 설정
+    //        Object.keys(chargerInfo).forEach(function (key) {
+    //            $(".model_" + key).text(chargerInfo[key]);
+    //
+    //            if (key == "imageUrl") {
+    //                $(".model_image").css("background", `url(${chargerInfo[key]}) center/cover no-repeat`);
+    //                $(".model_image").css("background-size", "contain");
+    //            }
+    //
+    //            if (key == "use") {
+    //                if (chargerInfo[key] == "D") {
+    //                    $(".etc_h").css("display", "block");
+    //                    $(".etc_h span").text("개발 중인 모델입니다.");
+    //                    $(".popup-product-info").find("dt").empty();
+    //                    $(".popup-product-info").find("dd").empty();
+    //                } else if (chargerInfo[key] == "N") {
+    //                    $(".etc_h").css("display", "block");
+    //                    $(".etc_h span").text("더 이상 사용하지 않는 모델입니다.");
+    //                    $(".popup-product-info").find("dt").empty();
+    //                    $(".popup-product-info").find("dd").empty();
+    //                }
+    //            }
+    //        });
+    //
+    //        $(".popup-product-info dd").each(function () {
+    //            if (!$(this).text().trim()) {
+    //                console.log($(this));
+    //                $(this).closest("dl").remove();
+    //            }
+    //        });
+    //    });
+
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        const modalUrl = $modalWrap.attr("data-url");
+        const userNo = getUrlParameter("userNo", modalUrl);
+
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text("회원정보 수정");
+
+        // 상태 리스트
+        status_list();
+
+        // 유저 정보
+        user_info(userNo);
+
+        $(".save-button").on("click", function () {
+            user_info_update(userNo);
+        });
+    });
+</script>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div>
+        <div class="mb-3">
+            <label for="user_id" class="col-form-label">아이디</label>
+            <input type="text" class="form-control" id="user_id" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label for="user_name" class="col-form-label">이름</label>
+            <input type="text" class="form-control" id="user_name" placeholder="이름을 입력하세요." />
+        </div>
+
+        <div class="mb-3">
+            <label for="user_email" class="col-form-label">이메일</label>
+            <input type="text" class="form-control" id="user_email" placeholder="이메일을 입력하세요." />
+        </div>
+
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="relationship_fg" class="col-form-label">부동산 관계여부</label>
+            <div class="form-check form-switch form-switch-md mb-0" dir="ltr">
+                <input class="form-check-input" type="checkbox" role="switch" id="relationship_fg" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="user_status" class="col-form-label">상태</label>
+            <select class="form-select" id="user_status"></select>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" data-bs-dismiss="modal">닫기</button>
+    <button type="button" class="save-button btn btn-primary">저장하기</button>
+</div>

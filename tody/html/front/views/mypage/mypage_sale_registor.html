@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="" />
+        <title>원스톱 부동산 종합 플랫폼 서비스 토디</title>
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+        <!-- Bootstrap Css-->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- Custom Css-->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단 -->
+            <header class="header"></header>
+            <!-- PC - 상단 끝 -->
+
+            <!-- MOBILE - 상단/메뉴/하단영역 -->
+            <div class="mobile">
+                <!-- MOBILE - 상단영역 -->
+                <div class="mobile-header">
+                    <dl>
+                        <dt>
+                            <a href="/index.html"><img src="/front/assets/image/logo.svg" height="20" alt="" title="" /></a>
+                        </dt>
+                        <dd>
+                            <a href="javascript:void(0);" id="mobileSearchOpen"><i class="fa-light fa-magnifying-glass"></i></a>
+                            <a href="javascript:void(0);" id="mobileMenuInfo"><i class="fa-light fa-bars"></i></a>
+
+                            <!-- 검색영역 -->
+                            <div class="mh-search">
+                                <button id="mobileSearchClose"><i class="fa-regular fa-xmark"></i></button>
+                                <input type="text" id="search_input_mobile" name="" placeholder="검색하세요" autocomplete="off" />
+                                <button type="button" id="search_btn_mobile"><i class="fa-regular fa-magnifying-glass"></i></button>
+
+                                <div id="search_result_box_mobile" class="mhs-box">
+                                    <ul id="placesListMobile"></ul>
+                                    <!-- <div id="pagination" class="mcsb-pagination"></div> -->
+                                </div>
+                            </div>
+                            <!-- 검색영역 끝 -->
+                        </dd>
+                    </dl>
+                </div>
+                <!-- MOBILE - 상단영역 끝 -->
+
+                <!-- MOBILE - 하단영역 -->
+                <div class="mobile-footer">
+                    <ul>
+                        <li onclick="location.href='/front/views/realPrice/realPrice.html';">
+                            <p><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /></p>
+                            <div>실거래가</div>
+                        </li>
+                        <li onclick="location.href='/front/views/sell/sell.html';">
+                            <p><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /></p>
+                            <div>매물정보</div>
+                        </li>
+                        <li onclick="location.href='/front/views/find/find_list.html';">
+                            <p><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /></p>
+                            <div>삽니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/put/put_list.html';">
+                            <p><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /></p>
+                            <div>팝니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/finance/finance.html';">
+                            <p><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /></p>
+                            <div>금융지원</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- MOBILE - 하단영역 끝 -->
+
+                <!-- MOBILE - 메뉴 및 정보 -->
+                <div class="mobile-menu-info">
+                    <div class="mmi-info">
+                        <dl>
+                            <dt><span class="user-name-type">반갑습니다.</span></dt>
+                            <dd>
+                                <a href="javascript:void(0);"><i class="fa-light fa-xmark"></i></a>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="mmi-tab-btn">
+                        <a href="/front/views/member/join_step01.html" class="active">회원가입</a>
+                        <a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
+                    </div>
+                    <div class="mmi-menu">
+                        <a href="/front/views/realPrice/realPrice.html">
+                            <span><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /> 실거래가</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/sell/sell.html">
+                            <span><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /> 매물정보</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/find/find_list.html">
+                            <span><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /> 삽니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/put/put_list.html">
+                            <span><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /> 팝니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/finance/finance.html">
+                            <span><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /> 금융지원</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                    </div>
+                    <div class="mmi-support">
+                        <a href="/front/views/support/notice_list.html">고객센터</a>
+                    </div>
+                    <div class="mmi-site">
+                        <select name="" id="selectSiteMobile" class="form-select select-box middle">
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-footer">
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 이용약관</a>
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 개인정보취급방침</a>
+                    </div>
+                </div>
+                <div class="mobile-menu-info-bg">&nbsp;</div>
+                <!-- MOBILE - 메뉴 및 정보 끝 -->
+            </div>
+            <!-- MOBILE - 상단/메뉴/하단영역 끝 -->
+
+            <!-- 본문내용 -->
+            <div class="contents">
+                <!-- 서브메뉴 -->
+                <div class="sub-menu">
+                    <div>
+                        <a href="mypage.html">내 정보</a>
+                        <a href="mypage_sale.html" class="active">내 매물</a>
+                        <a href="mypage_find">삽니다 관리</a>
+                        <a href="mypage_put.html">팝니다 관리</a>
+                        <a href="mypage_history.html">최근 이력</a>
+                        <a href="noti_set.html">알림 설정</a>
+                    </div>
+                </div>
+                <!-- 서브메뉴 끝 -->
+
+                <!-- 타이틀 영역 -->
+                <div class="title-area">
+                    <h2>매물 등록하기</h2>
+                </div>
+                <!-- 타이틀 영역 끝 -->
+
+                <!-- 알림설정 -->
+                <div class="mypage-general-member">
+                    <!-- 등록 -->
+                    <form class="sale-regist fw-size1 needs-validation" novalidate>
+                        <div>
+                            <div class="label-wrap">
+                                <h2 class="label-text">소재지</h2>
+                            </div>
+                            <div class="search-address-group mt-3">
+                                <!-- <span class="input-group">
+                                    <input type="text" id="postal_code" name="postal_code" class="form-control input-box" onclick="openJusoPopup()" placeholder="우편번호" value="" maxlength="15" readonly />
+                                    <button type="button" class="input-group-text w-md waves-effect waves-light" onclick="openDaumPostcode()">주소검색</button>
+                                </span> -->
+                                <!-- <input type="text" id="address_primary" class="form-control input-box" name="address_primary" onclick="openDaumPostcode()" placeholder="기본주소를 입력하세요" value="" minlength="0" maxlength="200" readonly required /> -->
+
+                                <div class="input-group">
+                                    <input type="text" id="search_address_input" class="form-control input-box" name="search_input" placeholder="검색할 주소를 입력하세요" value="" minlength="0" maxlength="200" />
+                                    <!-- <button type="button" id="search_address_button" class="input-group-text w-md waves-effect waves-light">주소검색</button> -->
+                                </div>
+                                <div id="mainSearchKeyword" class="address-result">
+                                    <ul id="placesList"></ul>
+                                    <!-- <div id="pagination" class="mcsb-pagination"></div> -->
+                                </div>
+                            </div>
+                            <input type="text" id="address_primary" class="form-control input-box mt-3" name="address_primary" placeholder="기본주소를 입력하세요" value="" minlength="0" maxlength="200" required readonly />
+                            <input type="text" id="address_detail" class="form-control input-box w100p" name="address_detail" placeholder="상세주소를 입력하세요" value="" maxlength="200" />
+
+                            <input type="hidden" id="address_road" name="address_road" />
+                            <input type="hidden" id="address_jibun" name="address_jibun" />
+                            <input type="hidden" id="sigungu_code" name="sigungu_code" />
+                            <input type="hidden" id="dong_code" name="dong_code" />
+                            <input type="hidden" id="latitude" name="latitude" />
+                            <input type="hidden" id="longitude" name="longitude" />
+                            <input type="hidden" id="pnu" name="pnu" />
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">거래종류</h2>
+                            <p>
+                                <select name="" id="sale_type" class="form-select select-box" required>
+                                    <option value="">거래종류를 선택하세요</option>
+                                    <!-- <option value="">매매</option>
+                                    <option value="">교환</option>
+                                    <option value="">임대</option> -->
+                                </select>
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">매물종류</h2>
+                            <p>
+                                <select name="" id="estate_type" class="form-select select-box" required>
+                                    <option value="">매물종류를 선택하세요</option>
+                                    <!-- <option value="001">상가</option>
+                                    <option value="002">사무실</option>
+                                    <option value="003">공장/창고</option>
+                                    <option value="004">지식산업센터</option>
+                                    <option value="005">건물</option>
+                                    <option value="006">토지</option> -->
+                                </select>
+                            </p>
+                        </div>
+
+                        <div class="building-select">
+                            <h2 class="label-text">건축물대장</h2>
+                            <p>
+                                <select id="building_type" class="form-select select-box">
+                                    <option value="">건물을 선택하세요</option>
+                                </select>
+                            </p>
+                        </div>
+
+                        <!-- <div class="sale-price">
+                            <h2 class="label-text">가격(단위: 만 원)</h2>
+                            <p>
+                                <input type="text" placeholder="금액을 입력하세요" id="sale_price" class="form-control input-box w100p" value="" maxlength="15" required />
+                            </p>
+                        </div> -->
+
+                        <div class="rent-price">
+                            <h2 class="label-text">가격</h2>
+                            <div class="d-flex gap-2">
+                                <p class="input-group">
+                                    <input type="text" placeholder="금액" id="sale_price" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" required />
+                                    <span class="input-group-text text-muted">만</span>
+                                </p>
+                                <p class="input-group rent-group">
+                                    <input type="text" placeholder="월세" id="rent_price" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" />
+                                    <span class="input-group-text text-muted">만</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="land-group">
+                            <h2 class="label-text">지목</h2>
+                            <p>
+                                <input type="text" placeholder="지목을 입력하세요" id="lndcgrCodeNm" class="form-control input-box w100p" title="지목명" value="" maxlength="15" />
+                                <input type="hidden" id="lndcgrCode" title="지목코드" name="lndcgrCode" />
+                            </p>
+                        </div>
+
+                        <div class="land-group">
+                            <h2 class="label-text">용도지역</h2>
+                            <p>
+                                <input type="text" placeholder="용도지역을 입력하세요" id="prposAreaNm" class="form-control input-box w100p" title="용도지역명" value="" maxlength="15" />
+                                <input type="hidden" id="prposArea" title="용도지역코드" name="prposArea" />
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">토지면적</h2>
+                            <p>
+                                <span class="input-group">
+                                    <input type="tel" placeholder="㎡" id="platArea" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                    <span class="input-group-text text-muted">㎡</span>
+                                    <input type="tel" placeholder="평" id="platArea_py" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" readonly />
+                                    <span class="input-group-text text-muted">평</span>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">연면적</h2>
+                            <p>
+                                <span class="input-group">
+                                    <input type="tel" placeholder="㎡" id="totArea" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                    <span class="input-group-text text-muted">㎡</span>
+                                    <input type="tel" placeholder="평" id="totArea_py" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" readonly />
+                                    <span class="input-group-text text-muted">평</span>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">건축면적</h2>
+                            <p>
+                                <span class="input-group">
+                                    <input type="tel" placeholder="㎡" id="archArea" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                    <span class="input-group-text text-muted">㎡</span>
+                                    <input type="tel" placeholder="평" id="archArea_py" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" readonly />
+                                    <span class="input-group-text text-muted">평</span>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">용적률</h2>
+                            <p class="input-group">
+                                <input type="text" placeholder="용적률을 입력하세요" id="vlRat" class="form-control input-box" value="" minlength="0" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">%</span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">건폐율</h2>
+                            <p class="input-group">
+                                <input type="text" placeholder="건폐율을 입력하세요" id="bcRat" class="form-control input-box" value="" minlength="0" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">%</span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">지상층수</h2>
+                            <p class="input-group">
+                                <input type="tel" placeholder="층수를 입력하세요" id="grndFlrCnt" class="form-control input-box" value="" minlength="0" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">층</span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">지하층수</h2>
+                            <p class="input-group">
+                                <input type="tel" placeholder="층수를 입력하세요" id="ugrndFlrCnt" class="form-control input-box" value="" minlength="-100" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">층</span>
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">구조</h2>
+                            <p>
+                                <input type="text" title="구조코드명" placeholder="구조를 입력하세요" id="strctCdNm" class="form-control input-box w100p" value="" maxlength="200" />
+                                <input type="hidden" title="구조코드" id="strctCd" />
+                                <input type="hidden" title="기타구조" id="etcStrct" />
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">사용승인일</h2>
+                            <p>
+                                <input type="text" placeholder="사용승인일을 입력하세요" id="useAprDay" class="form-control flatpickr-input classic-colorpicker input-box w100p" data-provider="flatpickr" />
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">주용도</h2>
+                            <p>
+                                <input type="text" title="주용도코드명" placeholder="주용도를 입력하세요" id="mainPurpsCdNm" class="form-control input-box w100p" value="" maxlength="200" />
+                                <input type="hidden" title="주용도코드" id="mainPurpsCd" />
+                            </p>
+                        </div>
+
+                        <div class="building-group">
+                            <h2 class="label-text">주차수</h2>
+                            <p>
+                                <input type="tel" placeholder="주차수를 입력하세요" id="totPkngCnt" class="form-control input-box w100p" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">실제 사용용도</h2>
+                            <p>
+                                <input type="text" placeholder="실제 사용용도를 입력하세요" id="realPurpsNm" class="form-control input-box w100p" value="" maxlength="200" />
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">월 관리비</h2>
+                            <p class="input-group">
+                                <input type="tel" placeholder="월 관리비를 입력하세요" id="maintenance_price" class="form-control input-box" value="" minlength="0" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" />
+                                <span class="input-group-text text-muted">만</span>
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">융자금</h2>
+                            <p class="input-group">
+                                <input type="tel" placeholder="융자금을 입력하세요" id="loan_price" class="form-control input-box" value="" minlength="0" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" />
+                                <span class="input-group-text text-muted">만</span>
+                            </p>
+                        </div>
+
+                        <div class="factory-group">
+                            <h2 class="label-text">도로여건</h2>
+                            <p class="input-group">
+                                <input type="text" placeholder="도로여건을 입력하세요" id="road_conditions" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">m 도로 접속</span>
+                            </p>
+                        </div>
+
+                        <div class="factory-group">
+                            <h2 class="label-text">전기</h2>
+                            <p class="input-group">
+                                <input type="tel" placeholder="사용전력을 입력하세요" id="power" class="form-control input-box" value="" minlength="0" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">Kw 이하</span>
+                            </p>
+                        </div>
+
+                        <div class="factory-group">
+                            <h2 class="label-text">용수</h2>
+                            <p class="input-group">
+                                <select name="" id="water" class="form-select select-box">
+                                    <option value="">용수를 선택하세요</option>
+                                    <option value="waterworks">상수도</option>
+                                    <option value="underground">지하수</option>
+                                </select>
+                            </p>
+                        </div>
+
+                        <div class="factory-group">
+                            <h2 class="label-text">건물층고</h2>
+                            <p class="input-group">
+                                <input type="tel" placeholder="건물층고을 입력하세요" id="floor_height" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="1000000" />
+                                <span class="input-group-text text-muted">m 이하</span>
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">관련지번</h2>
+                            <p>
+                                <input type="text" placeholder="관련지번을 입력하세요" id="related_jibun" class="form-control input-box" value="" maxlength="200" />
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">참고사항</h2>
+                            <p>
+                                <input type="text" placeholder="건물 및 토지의 일부분일 경우 입력하세요" id="notes" class="form-control input-box" value="" minlength="0" maxlength="500" />
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">특장점</h2>
+                            <p>
+                                <input type="text" placeholder="특장점을 입력하세요" id="feature" class="form-control input-box" value="" maxlength="200" />
+                            </p>
+                        </div>
+
+                        <div>
+                            <h2 class="label-text">매물설명</h2>
+                            <p>
+                                <textarea placeholder="매물설명을 500자 이내로 입력하세요" id="description" class="form-control input-box" rows="5" value="" minlength="0" maxlength="1000" required></textarea>
+                            </p>
+                        </div>
+
+                        <div>
+                            <div class="fw-file">
+                                <div class="plus-desc-box d-flex gap-3">
+                                    <div class="plus-btn mb-3">
+                                        <label type="button" for="file_input" class="d-flex justify-content-center align-items-center"><i class="fa-light fa-plus"></i></label>
+                                        <input class="form-control d-none" value="" id="file_input" type="file" accept="image/png, image/gif, image/jpeg, video/mpeg, video/mp4, video/mov, video/x-wav, video/avi, video/quicktime" multiple />
+                                    </div>
+                                    <div class="file-desc col d-flex flex-column">
+                                        <span> ※ 최소 1장 이상의 이미지는 필수입니다. </span>
+                                        <span> ※ 이미지: jpg, jpeg, png 파일을 허용합니다. </span>
+                                        <span> ※ 동영상: mpeg, mp4, mov, wav, avi 파일을 허용합니다. </span>
+                                        <span> ※ 파일 총 최대 용량 : 100MB </span>
+                                    </div>
+                                </div>
+                                <div class="swiper-wrapper"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn-line-red-b w100p">등록하기</button>
+                        </div>
+                    </form>
+                    <!-- 등록 끝 -->
+                </div>
+                <!-- 알림설정 끝 -->
+
+                <!-- 모달 - 대표이미지 -->
+                <div class="modal-area" id="modalConfirm">
+                    <dl class="ma-header">
+                        <dt>대표이미지 설정</dt>
+                        <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                    </dl>
+                    <div class="ma-completion">
+                        <p id="lottieConfirm"></p>
+                        <div>
+                            <h2><span>대표 이미지</span>로 설정하시겠습니까?</h2>
+                        </div>
+                    </div>
+                    <div class="ma-btn">
+                        <a href="javascript:void(0);" id="representative_btn" class="btn-default-m bg-red2 w100" data-izimodal-close="">확인</a>
+                        <a href="javascript:void(0);" class="btn-default-m bg-gray w100" data-izimodal-close="">취소</a>
+                    </div>
+                </div>
+                <!-- 모달 - 대표이미지 끝 -->
+
+                <!-- 모달 - 등록실패 -->
+                <div class="modal-area" id="modalFail">
+                    <dl class="ma-header">
+                        <dt>등록실패</dt>
+                        <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                    </dl>
+                    <div class="ma-completion">
+                        <p id="lottieFail"></p>
+                        <div>
+                            <h2>등록 중 <span>문제가</span> 발생했습니다.</h2>
+                            <!-- <h3><strong>1,345</strong>명에게 알림이 발송 되었습니다.</h3> -->
+                        </div>
+                    </div>
+                    <!-- <div class="ma-btn">
+                        <a href="javascript:void(0);" class="btn-default-m bg-gray w100" data-izimodal-close=""><i class="fa-light fa-xmark"></i> 닫기</a>
+                    </div> -->
+                </div>
+
+                <!-- 모달 - 저장하기 -->
+                <div class="modal-area" id="modalCompletion">
+                    <dl class="ma-header">
+                        <dt>등록하기</dt>
+                        <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                    </dl>
+                    <div class="ma-completion">
+                        <p id="lottieCompletion"></p>
+                        <div>
+                            <h2><span>등록</span>되었습니다.</h2>
+                        </div>
+                    </div>
+                    <div class="ma-btn">
+                        <a href="javascript:void(0);" id="" class="btn-default-m bg-red2 w100" data-izimodal-close="">확인</a>
+                    </div>
+                </div>
+                <!-- 모달 - 저장하기 끝 -->
+            </div>
+            <!-- 본문내용 끝 -->
+
+            <!-- 하단영역 -->
+            <footer class="footer"></footer>
+            <!-- 하단영역 끝 -->
+        </div>
+
+        <!--preloader-->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/libs/flatpickr/l10n/ko.js"></script>
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+        <script src="/front/assets/js/iziModal.js"></script>
+        <script src="/front/assets/js/swiper.js"></script>
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <script src="/front/assets/js/nouislider.js"></script>
+        <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+        <!-- Daum 주소 Api -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+        <!-- 카카오맵 Api -->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services"></script>
+
+        <!-- custom -->
+        <script src="/front/assets/js/common.js"></script>
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/validation.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/js/sale/sale_register.js"></script>
+        <script>
+            // // 모달 - 대표이미지 //
+            // $("#modalThumbnail").iziModal({ width: "470px" });
+            // $("#modalThumbnail").iziModal("setTop", 70);
+            // $("#modalThumbnail").iziModal("setBottom", 70);
+            // // 모달 - 등록완료 //
+            // $("#modalCompletion").iziModal({ width: "470px" });
+            // $("#modalCompletion").iziModal("setTop", 70);
+            // $("#modalCompletion").iziModal("setBottom", 70);
+            // var anmation = bodymovin.loadAnimation({
+            //     container: document.getElementById("lottie"),
+            //     renderer: "svg",
+            //     loop: true,
+            //     autoplay: true,
+            //     path: "/front/assets/lottie/save.json",
+            // });
+        </script>
+
+        <script>
+            // $(document).ready(function () {
+            //     $("#estate_type").on("change", function (event) {
+            //         if ($(this).val() == "003") {
+            //             $("#factory_input").removeClass("d-none");
+            //         } else {
+            //             $("#factory_input").addClass("d-none");
+            //         }
+            //     });
+            // });
+        </script>
+    </body>
+</html>

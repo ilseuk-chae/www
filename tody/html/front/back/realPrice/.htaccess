@@ -1,0 +1,6 @@
+<Files "download_realPrice_apartment_renewal.php">
+    php_value max_execution_time 0
+</Files>
+<Files "download_realPrice_multiFamily.php">
+    php_value max_execution_time 0
+</Files>

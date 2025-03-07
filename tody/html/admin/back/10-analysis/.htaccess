@@ -1,0 +1,12 @@
+<Files "facility_condition_polygons.php">
+    php_value max_input_vars 10000
+</Files>
+<Files "facility_condition_polygons_mainPrpos.php">
+    php_value max_input_vars 10000
+</Files>
+<Files "facility_condition_polygons_agricultural.php">
+    php_value max_input_vars 10000
+</Files>
+<Files "facility_condition_polygons_road.php">
+    php_value max_input_vars 10000
+</Files>

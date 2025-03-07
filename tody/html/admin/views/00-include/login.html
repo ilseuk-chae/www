@@ -1,0 +1,51 @@
+<script>
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        const modalUrl = $modalWrap.attr("data-url");
+
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text("영업점 수정");
+
+        const b_no = getUrlParameter("no", modalUrl);
+        const b_name = getUrlParameter("name", modalUrl);
+        $("#name").val(b_name);
+
+        // [Event] 저장하기 버튼 클릭
+        $(".save-button").on("click", function () {
+            update_finance_branch(b_no);
+        });
+    });
+</script>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="join-member-type">
+        <ul class="justify-content-center">
+            <li>
+                <h3>로그인</h3>
+                <div class="row gap-3">
+                    <input type="text" placeholder="아이디" class="form-control input-box w100p" maxlength="20" required />
+                    <input type="password" placeholder="비밀번호" class="form-control input-box w100p" maxlength="20" required />
+                    <a href="#" class="login-btn login-default btn-line-red w100p">로그인</a>
+                    <button class="login-btn btn-default btn-kakao btn p-0 d-flex align-items-center justify-content-center" type="submit">카카오톡으로 로그인</button>
+                    <button class="login-btn btn-default btn-naver btn p-0 d-flex align-items-center justify-content-center" type="submit">네이버로 로그인</button>
+                    <div class="d-flex justify-content-between m-0 p-0">
+                        <a href="/front/views/member/join_step01.html">회원가입</a>
+                        <span>
+                            <a href="find_id.html">아이디 찾기</a>
+                            /
+                            <a href="find_pw_step01.html">비밀번호 재설정</a>
+                        </span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light waves-effect waves-light" data-bs-dismiss="modal">닫기</button>
+    <button type="button" class="save-button btn btn-primary waves-effect waves-light">저장하기</button>
+</div>

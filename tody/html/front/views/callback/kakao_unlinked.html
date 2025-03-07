@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>KakaoLogin</title>
+
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- (1) LoginWithNaverId Javscript SDK -->
+        <script src="/front/assets/js/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+    </head>
+
+    <body>
+        <p>처리 중입니다. 잠시만 기다려 주세요...</p>
+
+        <script>
+            const REST_API_KEY = "358571ae546aaa68be0d290878b351c1";
+            const REDIRECT_PATH = "/front/views/callback/kakao_unlinked.html";
+            const REDIRECT_URI = window.location.origin + (location.port ? ":" + location.port : "") + REDIRECT_PATH;
+
+            // Kakao SDK 초기화
+            Kakao.init(REST_API_KEY);
+            // console.log(Kakao.isInitialized());
+            // URL에서 인가 코드와 state 가져오기
+            const authCode = getUrlParameter("code");
+            const state = getUrlParameter("state");
+            // console.log(authCode);
+            // console.log(state);
+            // console.log(sessionStorage.getItem("kakao_state"));
+
+            // 상태 토큰 검증
+            if (authCode && state === sessionStorage.getItem("kakao_state")) {
+                getToken(authCode);
+            } else {
+                console.error("Authorization code not found.");
+                handleError();
+            }
+
+            /**
+             * Kakao로부터 액세스 토큰 가져오기
+             * @param {string} authCode - 인가 코드
+             */
+            function getToken(authCode) {
+                $.ajax({
+                    type: "POST",
+                    url: "https://kauth.kakao.com/oauth/token",
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+                    },
+                    data: {
+                        grant_type: "authorization_code",
+                        client_id: REST_API_KEY,
+                        redirect_uri: REDIRECT_URI,
+                        code: authCode,
+                    },
+                    success: function (response) {
+                        const accessToken = response.access_token;
+                        Kakao.Auth.setAccessToken(accessToken);
+
+                        // 연동 해제
+                        kakaoUnlink(accessToken);
+                    },
+                    error: function (err) {
+                        if (err.responseJSON.error) {
+                            console.log("error: ", err.responseJSON.error);
+                            console.log("error code: ", err.responseJSON.error_code);
+                            alert("카카오 로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
+                        }
+
+                        handleError();
+                    },
+                });
+            }
+
+            /**
+             * Kakao 연동 해제 함수
+             */
+            function kakaoUnlink(accessToken) {
+                $.ajax({
+                    type: "POST",
+                    url: "https://kapi.kakao.com/v1/user/unlink",
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    success: function (response) {
+                        handleSuccess();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                });
+            }
+
+            /**
+             * 로그인을 위해 임의의 문자열 생성
+             * @param {*} length
+             * @returns
+             */
+            function generateNonce(length) {
+                const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                let nonce = "";
+                for (let i = 0; i < length; i++) {
+                    nonce += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                return nonce;
+            }
+
+            /**
+             * 국제 전화번호 형식을 로컬 전화번호 형식으로 변환하는 함수
+             * @param {string} phoneNumber - 전화번호 형식의 문자열 (예: "+82 10-2682-3295" 또는 "010-2682-3295")
+             * @returns {string} - 숫자만 포함된 전화번호 형식의 문자열 (예: "01026823295")
+             */
+            function convertPhoneNumber(phoneNumber) {
+                // 공백과 하이픈을 제거하고, 숫자만 남깁니다.
+                let cleaned = phoneNumber.replace(/[^0-9]/g, "");
+
+                // 국제 번호 코드 '+82' 제거
+                if (phoneNumber.startsWith("+82")) {
+                    cleaned = "0" + cleaned.substring(2);
+                }
+
+                // 남은 문자열 반환
+                return cleaned;
+            }
+
+            /**
+             * 로그인 성공 시 처리
+             */
+            function handleSuccess() {
+                if (window.opener) {
+                    // 부모 창 새로고침
+                    // window.opener.location.reload();
+
+                    // 부모 창으로 사용자 정보 전송
+                    window.opener.postMessage("unlinked", window.location.origin);
+                    window.close();
+                } else {
+                    window.location.replace(window.location.origin);
+                }
+            }
+
+            /**
+             * 로그인 오류 발생 시 처리
+             */
+            function handleError() {
+                return;
+                if (window.opener) {
+                    window.opener.location.reload();
+                    window.close();
+                } else {
+                    window.location.replace(window.location.origin);
+                }
+            }
+
+            /**
+             * 로그인 오류 처리 함수
+             * @param {string} message - 오류 메시지
+             * @param {number} statusCode - 오류 상태 코드
+             */
+            function loginHandleError(message, statusCode, data) {
+                switch (statusCode) {
+                    case 403:
+                        alert(message + " 유저입니다.", "", "w");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        </script>
+    </body>
+</html>

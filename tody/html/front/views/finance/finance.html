@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="" />
+        <title>원스톱 부동산 종합 플랫폼 서비스 토디</title>
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+
+        <!-- Bootstrap Css-->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- Swiper Css -->
+        <!-- <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" /> -->
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- Custom Css-->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단 -->
+            <header class="header"></header>
+            <!-- PC - 상단 끝 -->
+
+            <!-- MOBILE - 상단/메뉴/하단영역 -->
+            <div class="mobile">
+                <!-- MOBILE - 상단영역 -->
+                <div class="mobile-header">
+                    <dl>
+                        <dt>
+                            <a href="/index.html"><img src="/front/assets/image/logo.svg" height="20" alt="" title="" /></a>
+                        </dt>
+                        <dd>
+                            <a href="javascript:void(0);" id="mobileSearchOpen"><i class="fa-light fa-magnifying-glass"></i></a>
+                            <a href="javascript:void(0);" id="mobileMenuInfo"><i class="fa-light fa-bars"></i></a>
+
+                            <!-- 검색영역 -->
+                            <div class="mh-search">
+                                <button id="mobileSearchClose"><i class="fa-regular fa-xmark"></i></button>
+                                <input type="text" id="search_input_mobile" name="" placeholder="검색하세요" autocomplete="off" />
+                                <button type="button" id="search_btn_mobile"><i class="fa-regular fa-magnifying-glass"></i></button>
+
+                                <div id="search_result_box_mobile" class="mhs-box">
+                                    <ul id="placesListMobile"></ul>
+                                    <!-- <div id="pagination" class="mcsb-pagination"></div> -->
+                                </div>
+                            </div>
+                            <!-- 검색영역 끝 -->
+                        </dd>
+                    </dl>
+                </div>
+                <!-- MOBILE - 상단영역 끝 -->
+
+                <!-- MOBILE - 하단영역 -->
+                <div class="mobile-footer">
+                    <ul>
+                        <li onclick="location.href='/front/views/realPrice/realPrice.html';">
+                            <p><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /></p>
+                            <div>실거래가</div>
+                        </li>
+                        <li onclick="location.href='/front/views/sell/sell.html';">
+                            <p><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /></p>
+                            <div>매물정보</div>
+                        </li>
+                        <li onclick="location.href='/front/views/find/find_list.html';">
+                            <p><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /></p>
+                            <div>삽니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/put/put_list.html';">
+                            <p><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /></p>
+                            <div>팝니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/finance/finance.html';">
+                            <p><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /></p>
+                            <div>금융지원</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- MOBILE - 하단영역 끝 -->
+
+                <!-- MOBILE - 메뉴 및 정보 -->
+                <div class="mobile-menu-info">
+                    <div class="mmi-info">
+                        <dl>
+                            <dt><span class="user-name-type">반갑습니다.</span></dt>
+                            <dd>
+                                <a href="javascript:void(0);"><i class="fa-light fa-xmark"></i></a>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="mmi-tab-btn">
+                        <a href="/front/views/member/join_step01.html" class="active">회원가입</a>
+                        <a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
+                    </div>
+                    <div class="mmi-menu">
+                        <a href="/front/views/realPrice/realPrice.html">
+                            <span><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /> 실거래가</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/sell/sell.html">
+                            <span><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /> 매물정보</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/find/find_list.html">
+                            <span><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /> 삽니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/put/put_list.html">
+                            <span><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /> 팝니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/finance/finance.html">
+                            <span><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /> 금융지원</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                    </div>
+                    <div class="mmi-support">
+                        <a href="/front/views/support/notice_list.html">고객센터</a>
+                    </div>
+                    <div class="mmi-site">
+                        <select name="" id="selectSiteMobile" class="form-select select-box middle">
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-footer">
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 이용약관</a>
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 개인정보취급방침</a>
+                    </div>
+                </div>
+                <div class="mobile-menu-info-bg">&nbsp;</div>
+                <!-- MOBILE - 메뉴 및 정보 끝 -->
+            </div>
+            <!-- MOBILE - 상단/메뉴/하단영역 끝 -->
+
+            <!-- 본문내용 -->
+            <div class="contents">
+                <!-- 금융지원 -->
+                <div class="finance-area">
+                    <div class="fa-guide">
+                        <h2>금융지원 소개</h2>
+                        <h3>
+                            저희 토디에서는 고객님의 재정적 필요를 지원하기 위해 다양한 금융지원 프로그램을 제공하고 있습니다.<br />
+                            아래의 금융지원 신청서를 작성하시면 다양한 금융상품을 확인하실 수 있습니다.
+                        </h3>
+                        <div>
+                            <a target="_blank" href="javascript:void(0);" id="finance_signUp_request"><i class="fa-light fa-pen-to-square"></i> 가입신청하기</a>
+                            <button type="button" data-izimodal-open="#modalUserGuide" data-izimodal-transitionin="fadeInDown">이용절차보기</button>
+                        </div>
+                    </div>
+                    <div class="fa-content">
+                        <dl>
+                            <dt>
+                                <h2>금융 지원 신청</h2>
+                                <div>
+                                    <div>
+                                        <h2>이름</h2>
+                                        <p>
+                                            <input type="text" id="name" name="" title="" value="" placeholder="이름을 입력하세요" class="input-box w100p" minlength="0" maxlength="50" disabled />
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h2>연락처</h2>
+                                        <p>
+                                            <input type="tel" id="mobile_num" name="" title="" value="" placeholder="연락처를 입력하세요" class="input-box w100p" minlength="0" maxlength="11" />
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h2>담보물주소지</h2>
+                                        <div>
+                                            <input type="text" id="address_primary" name="address_primary" title="" value="" placeholder="기본주소를 입력하세요" class="input-box w75p" onclick="openDaumPostcode()" minlength="0" maxlength="200" readonly />
+                                            <input type="hidden" id="address_jibun" name="address_jibun" minlength="0" maxlength="200" disabled />
+                                            <input type="hidden" id="address_road" name="address_road" minlength="0" maxlength="200" disabled />
+                                            <input type="hidden" id="bcode" name="bcode" disabled />
+                                            <input type="hidden" id="buildingCode" name="buildingCode" disabled />
+                                            <button type="button" class="btn-default bg-gray w25p" onclick="openDaumPostcode()">주소찾기</button>
+                                        </div>
+                                        <p>
+                                            <input type="text" id="address_detail" name="address_detail" title="" value="" placeholder="상세주소를 입력하세요" class="input-box w100p" minlength="0" maxlength="200" />
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h2>대출희망금액(단위: 만 원)</h2>
+                                        <p>
+                                            <input type="tel" id="loan_amount" name="" title="" value="" placeholder="금액을 입력하세요 (단위: 만 원)" class="input-box w100p" oninput="allowOnlyNumbers(this, 7)" minlength="0" maxlength="100000000" />
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h2>기타메모</h2>
+                                        <p>
+                                            <textarea id="additional_memo" name="" cols="" rows="" class="w100p h80"></textarea>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="check-box-red">
+                                            <input type="checkbox" name="opt" id="term_fg" />
+                                            <label for="term_fg">[필수] 개인정보 수집 및 활용 동의</label>
+                                        </p>
+                                    </div>
+                                    <ul>
+                                        <li>선택하신 10개 지점에 실시간으로 금융 지원 신청이 접수됩니다.</li>
+                                        <li>신청하신 후, 은행 담당자의 연락을 받고, 상담하신 후, 금융지원 절차를 진행하시기 바랍니다.</li>
+                                        <li>토디는 금융지원에 대한 정보를 제공하며, 일체 책임은 없습니다.</li>
+                                    </ul>
+                                    <p><button type="button" id="loan_request_btn" class="btn btn-line-red-b w100p">금융지원 신청하기</button></p>
+                                </div>
+                            </dt>
+                            <dd>
+                                <h2>금융 상품 목록</h2>
+                                <ul class="mcf-list">
+                                    <!-- <li>
+                                        <dl>
+                                            <dt>
+                                                <img src="/front/assets/image/bank_logo01.png" height="25" alt="" title="" />
+                                                <span>호매실점</span>
+                                            </dt>
+                                            <dd>
+                                                <p class="check-box-red">
+                                                    <input type="checkbox" name="opt" id="chk2-1" checked />
+                                                    <label for="chk2-1">선택</label>
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <div>
+                                            <div>
+                                                최대 대출금액 ~ 70%,까지<br />
+                                                최저 대출이율 ~ 2.87% 까지
+                                            </div>
+                                            <p>2024.02.03 신청접수됨</p>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <dl>
+                                            <dt>
+                                                <img src="/front/assets/image/bank_logo04.png" height="25" alt="" title="" />
+                                                <span>아주대점</span>
+                                            </dt>
+                                            <dd>
+                                                <p class="check-box-red">
+                                                    <input type="checkbox" name="opt" id="chk2-2" checked />
+                                                    <label for="chk2-2">선택</label>
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <div>
+                                            <div>
+                                                최대 대출금액 ~ 70%,까지<br />
+                                                최저 대출이율 ~ 2.87% 까지
+                                            </div>
+                                            <p>2024.02.03 신청접수됨</p>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <dl>
+                                            <dt>
+                                                <img src="/front/assets/image/bank_logo13.png" height="25" alt="" title="" />
+                                                <span>아주대점</span>
+                                            </dt>
+                                            <dd>
+                                                <p class="check-box-red">
+                                                    <input type="checkbox" name="opt" id="chk2-3" />
+                                                    <label for="chk2-3">선택</label>
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <div>
+                                            <div>
+                                                최대 대출금액 ~ 70%,까지<br />
+                                                최저 대출이율 ~ 2.87% 까지
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <dl>
+                                            <dt>
+                                                <img src="/front/assets/image/bank_logo14.png" height="25" alt="" title="" />
+                                                <span>아주대점</span>
+                                            </dt>
+                                            <dd>
+                                                <p class="check-box-red">
+                                                    <input type="checkbox" name="opt" id="chk2-4" />
+                                                    <label for="chk2-4">선택</label>
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <div>
+                                            <div>
+                                                최대 대출금액 ~ 70%,까지<br />
+                                                최저 대출이율 ~ 2.87% 까지
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <dl>
+                                            <dt>
+                                                <img src="/front/assets/image/bank_logo05.png" height="25" alt="" title="" />
+                                                <span>아주대점</span>
+                                            </dt>
+                                            <dd>
+                                                <p class="check-box-red">
+                                                    <input type="checkbox" name="opt" id="chk2-5" />
+                                                    <label for="chk2-5">선택</label>
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <div>
+                                            <div>
+                                                최대 대출금액 ~ 70%,까지<br />
+                                                최저 대출이율 ~ 2.87% 까지
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <dl>
+                                            <dt>
+                                                <img src="/front/assets/image/bank_logo07.png" height="25" alt="" title="" />
+                                                <span>아주대점</span>
+                                            </dt>
+                                            <dd>
+                                                <p class="check-box-red">
+                                                    <input type="checkbox" name="opt" id="chk2-6" />
+                                                    <label for="chk2-6">선택</label>
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <div>
+                                            <div>
+                                                최대 대출금액 ~ 70%,까지<br />
+                                                최저 대출이율 ~ 2.87% 까지
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                    </li> -->
+                                </ul>
+
+                                <div class="mcf-more text-center">
+                                    <button type="button" id="more_finance_btn" class="btn-line-gray-b w100p">더보기</button>
+                                    <!-- <button id="more_finance_btn"><i class="fa-sharp fa-light fa-circle-plus"></i> 더보기</button> -->
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <!-- 금융지원 끝 -->
+
+                <!-- 모달 - 이용절차안내 -->
+                <div class="modal-area" id="modalUserGuide">
+                    <dl class="ma-header">
+                        <dt>이용절차안내</dt>
+                        <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                    </dl>
+                    <div class="terms-area ta-modal">
+                        <p>준비중입니다.</p>
+                    </div>
+                    <!-- <div class="ma-btn">
+						<a href="#" class="btn-default bg-gray w100" data-izimodal-close=""><i class="fa-light fa-xmark"></i> 닫기</a>
+					</div> -->
+                </div>
+                <!-- 모달 - 이용절차안내 끝 -->
+            </div>
+            <!-- 본문내용 끝 -->
+
+            <!-- 하단영역 -->
+            <footer class="footer"></footer>
+            <!-- 하단영역 끝 -->
+        </div>
+
+        <!-- javascript -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+        <script src="/front/assets/js/iziModal.js"></script>
+        <script src="/front/assets/js/swiper.js"></script>
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <script src="/front/assets/js/nouislider.js"></script>
+        <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+        <!-- 다음 주소 api -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+        <!-- custom -->
+        <script src="/front/assets/js/common.js"></script>
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/validation.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/js/00-include/layer_popup.js"></script>
+        <script src="/front/js/finance/finance.js"></script>
+
+        <script>
+            // 모달 - 이용절차안내 //
+            $("#modalUserGuide").iziModal({ width: "750px" });
+            $("#modalUserGuide").iziModal("setTop", 70);
+            $("#modalUserGuide").iziModal("setBottom", 70);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<script>
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text("가입 신청 링크 변경");
+
+        signup_url_info();
+
+        // [Event] 저장하기 버튼 클릭
+        $(".save-button").on("click", function () {
+            signup_url_change();
+        });
+    });
+</script>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div>
+        <div class="input-box mb-3">
+            <label for="regist_link" class="col-form-label"> 기존</label>
+            <input type="text" class="form-control" id="regist_link" disabled />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="change_link" class="col-form-label"> 변경</label>
+            <input type="text" class="form-control" id="change_link" placeholder="변경할 가입주소를 입력하세요. 예) https://example.com" minlength="7" maxlength="100" />
+            <div class="error" style="color: red"></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light waves-effect waves-light" data-bs-dismiss="modal">닫기</button>
+    <button type="button" class="save-button btn btn-primary waves-effect waves-light">저장하기</button>
+</div>

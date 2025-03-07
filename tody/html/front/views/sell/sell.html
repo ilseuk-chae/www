@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ko" data-preloader="disable">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="" />
+        <title>원스톱 부동산 종합 플랫폼 서비스 토디</title>
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Bootstrap Css-->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Swiper Css -->
+        <!-- <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" /> -->
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- Custom Css-->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+        <style>
+            .text-clamp {
+                display: -webkit-box;
+                -webkit-line-clamp: 2; /* 두 줄로 제한 */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단 -->
+            <header class="header"></header>
+            <!-- PC - 상단 끝 -->
+
+            <!-- MOBILE - 상단/메뉴/하단영역 -->
+            <div class="mobile">
+                <!-- MOBILE - 상단영역 -->
+                <div class="mobile-header">
+                    <dl>
+                        <dt>
+                            <a href="/index.html"><img src="/front/assets/image/logo.svg" height="20" alt="" title="" /></a>
+                        </dt>
+                        <dd>
+                            <a href="javascript:void(0);" id="mobileSearchOpen"><i class="fa-light fa-magnifying-glass"></i></a>
+                            <a href="javascript:void(0);" id="mobileMenuInfo"><i class="fa-light fa-bars"></i></a>
+
+                            <!-- 검색영역 -->
+                            <div class="mh-search">
+                                <button id="mobileSearchClose"><i class="fa-regular fa-xmark"></i></button>
+                                <input type="text" id="search_input_mobile" name="" placeholder="검색하세요" autocomplete="off" />
+                                <button type="button" id="search_btn_mobile"><i class="fa-regular fa-magnifying-glass"></i></button>
+
+                                <div id="search_result_box_mobile" class="mhs-box">
+                                    <ul id="placesListMobile"></ul>
+                                    <!-- <div id="pagination" class="mcsb-pagination"></div> -->
+                                </div>
+                            </div>
+                            <!-- 검색영역 끝 -->
+                        </dd>
+                    </dl>
+                </div>
+                <!-- MOBILE - 상단영역 끝 -->
+
+                <!-- MOBILE - 하단영역 -->
+                <div class="mobile-footer">
+                    <ul>
+                        <li onclick="location.href='/front/views/realPrice/realPrice.html';">
+                            <p><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /></p>
+                            <div>실거래가</div>
+                        </li>
+                        <li onclick="location.href='/front/views/sell/sell.html';">
+                            <p><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /></p>
+                            <div>매물정보</div>
+                        </li>
+                        <li onclick="location.href='/front/views/find/find_list.html';">
+                            <p><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /></p>
+                            <div>삽니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/put/put_list.html';">
+                            <p><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /></p>
+                            <div>팝니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/finance/finance.html';">
+                            <p><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /></p>
+                            <div>금융지원</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- MOBILE - 하단영역 끝 -->
+
+                <!-- MOBILE - 메뉴 및 정보 -->
+                <div class="mobile-menu-info">
+                    <div class="mmi-info">
+                        <dl>
+                            <dt><span class="user-name-type">반갑습니다.</span></dt>
+                            <dd>
+                                <a href="javascript:void(0);"><i class="fa-light fa-xmark"></i></a>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="mmi-tab-btn">
+                        <a href="/front/views/member/join_step01.html" class="active">회원가입</a>
+                        <a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
+                    </div>
+                    <div class="mmi-menu">
+                        <a href="/front/views/realPrice/realPrice.html">
+                            <span><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /> 실거래가</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/sell/sell.html">
+                            <span><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /> 매물정보</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/find/find_list.html">
+                            <span><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /> 삽니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/put/put_list.html">
+                            <span><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /> 팝니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/finance/finance.html">
+                            <span><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /> 금융지원</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                    </div>
+                    <div class="mmi-support">
+                        <a href="/front/views/support/notice_list.html">고객센터</a>
+                    </div>
+                    <div class="mmi-site">
+                        <select name="" id="selectSiteMobile" class="form-select select-box middle">
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-footer">
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 이용약관</a>
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 개인정보취급방침</a>
+                    </div>
+                </div>
+                <div class="mobile-menu-info-bg">&nbsp;</div>
+                <!-- MOBILE - 메뉴 및 정보 끝 -->
+            </div>
+            <!-- MOBILE - 상단/메뉴/하단영역 끝 -->
+
+            <!-- 지도 영역 -->
+            <div class="map-area active">
+                <div>
+                    <!-- 우측 상단 - 지도 선택 -->
+                    <div class="map-select-group">
+                        <button type="button" class="active" onclick="changeBaseMapType('roadmap', map)">일반</button>
+                        <button type="button" onclick="changeBaseMapType('skyview', map)">위성</button>
+                        <button type="button" class="" onclick="changeBaseMapType('hybrid', map)">일반+위성</button>
+                        <button type="button" onclick="setOverlayMapTypeId('use_district', map)">지적편집도</button>
+                        <button type="button" id="roadviewControl" onclick="setRoadviewRoad()">로드뷰</button>
+                    </div>
+
+                    <!-- 로드뷰 -->
+                    <div id="rvWrapper">
+                        <div id="road_bg" class="road-bg"></div>
+                        <div id="road_close" title="로드뷰닫기" onclick="closeRoadview()"><span class="img"></span></div>
+                    </div>
+
+                    <!-- 전체지도 -->
+                    <div id="map_bg" class="map-bg">
+                        <!-- 사용자그리기 툴박스 -->
+                        <div id="draw_toolbox">
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'MARKER')"><span style="background-position: 0px -180px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'ARROW')"><span style="background-position: 0px -150px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'POLYLINE')"><span style="background-position: 0px 0px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'RECTANGLE')"><span style="background-position: 0px -60px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'CIRCLE')"><span style="background-position: 0px -29px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'ELLIPSE')"><span style="background-position: 0px -119px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'POLYGON')"><span style="background-position: 0px -90px"></span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'TEXT')"><span style="background-position: -90px -40px">텍스트 입력</span></a>
+                        </div>
+                    </div>
+                    <!-- 전체지도 끝 -->
+
+                    <!-- 지도 위 정보 -->
+                    <!-- <div class="map-mark1" style="top: 300px; left: 50%">
+                        <h2>2,150만</h2>
+                        <h3>50평</h3>
+                        <p><img src="/front/assets/image/icn_arr_mark.svg" width="15" alt="" title="" /></p>
+                    </div>
+
+                    <div class="map-mark2" style="top: 400px; left: 50%">5</div> -->
+                    <!-- 지도 위 정보 끝 -->
+
+                    <!-- 우측 옵션 -->
+                    <div class="map-option">
+                        <button type="button" id="mobile_filter_btn" class="bg-main py-2" data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown">
+                            <i class="fa-light fa-sliders color-white"></i>
+                            <span class="color-white">필터</span>
+                        </button>
+
+                        <button id="mapOptionToolOpen">
+                            <i class="fa-sharp fa-light fa-pencil"></i>
+                            <span>도구<br />사용</span>
+                        </button>
+                        <div class="mo-tool">
+                            <dl>
+                                <dt>도구사용</dt>
+                                <dd>
+                                    <button><i class="fa-light fa-xmark"></i></button>
+                                </dd>
+                            </dl>
+                            <div>
+                                <button type="button" id="mapOptionToolOptionOpen"><i class="fa-light fa-ruler"></i> 거리/면적</button>
+                                <button type="button" id="draw_tool_btn"><i class="fa-light fa-pen-nib"></i> 사용자그리기</button>
+                                <button type="button" id="print_map_btn"><i class="fa-light fa-print"></i> 지도출력</button>
+                                <button type="button" id="save_img_btn"><i class="fa-light fa-floppy-disk"></i> 이미지저장</button>
+                            </div>
+                        </div>
+                        <div class="mo-tool-option">
+                            <div>
+                                <button type="button" onclick="cancelDrawingMode(this, 'line');"><i class="fa-sharp fa-light fa-ruler-combined"></i></button>
+                                <button type="button" onclick="cancelDrawingMode(this, 'polygon')"><i class="fa-sharp fa-light fa-draw-square"></i></button>
+                                <button type="button" onclick="cancelDrawingMode(this, 'circle')"><i class="fa-sharp fa-light fa-crosshairs"></i></button>
+                                <button type="button" onclick="resetDrawing()"><i class="fa-regular fa-light fa-trash-can"></i></button>
+                                <button type="button" id="mapOptionToolOptionClose"><i class="fa-light fa-xmark"></i></button>
+                            </div>
+                            <p class="pt-2 color-main font12">
+                                마우스 우클릭 시,<br />
+                                종료됩니다.
+                            </p>
+                        </div>
+
+                        <!-- <button id="mapOptionLandOpen">
+                            <i class="fa-light fa-layer-plus"></i>
+                            <span>합필<br />분석</span>
+                        </button>
+                        <div class="mo-land">
+                            <button id="mapOptionLandClose"><i class="fa-light fa-xmark"></i></button>
+                            <p class="check-box-red-color">
+                                <input type="checkbox" name="opt" id="chkLand1" checked />
+                                <label for="chkLand1">&nbsp;</label>
+                            </p>
+                            <p class="check-box-orange-color">
+                                <input type="checkbox" name="opt" id="chkLand2" />
+                                <label for="chkLand2">&nbsp;</label>
+                            </p>
+                            <p class="check-box-blue-color">
+                                <input type="checkbox" name="opt" id="chkLand3" />
+                                <label for="chkLand3">&nbsp;</label>
+                            </p>
+                        </div> -->
+
+                        <button type="button" id="mapOptionMemoOpen">
+                            <i class="mdi mdi-notebook-edit-outline"></i>
+                            <span>메모<br />관리</span>
+                        </button>
+                    </div>
+                    <!-- 우측 옵션 끝 -->
+
+                    <!-- 이력관리 -->
+                    <div class="map-history active">
+                        <div class="mh-button">
+                            <button id="mapHistoryOpen"><i class="fa-regular fa-clock-rotate-left"></i></button>
+                        </div>
+                        <div class="mh-list">
+                            <dl>
+                                <dt class="d-flex align-items-center gap-2">이력관리 <button id="remove_history_marker" class="btn-line-red-s">마커 지우기</button></dt>
+                                <dd>
+                                    <button><i class="fa-light fa-xmark"></i></button>
+                                </dd>
+                            </dl>
+                            <div>
+                                <h2 class="d-flex justify-content-between">
+                                    <span>
+                                        최근 방문한 곳 <button class="history-marker btn-default-s bg-dark"><i class="fa-light fa-map-location-dot"></i></button>
+                                    </span>
+                                    <button class="mhl-more-btn btn-line-gray-s">더보기</button>
+                                </h2>
+                                <div class="mhl-search">
+                                    <!-- <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl> -->
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="d-flex justify-content-between">
+                                    <span>
+                                        즐겨찾기한 곳 <button class="history-marker btn-default-s bg-dark"><i class="fa-light fa-map-location-dot"></i></button>
+                                    </span>
+                                    <button class="mhl-more-btn btn-line-gray-s">더보기</button>
+                                </h2>
+                                <div class="mhl-favorite">
+                                    <!-- <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl> -->
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="d-flex justify-content-between">
+                                    <span>
+                                        인쇄한 곳 <button class="history-marker btn-default-s bg-dark"><i class="fa-light fa-map-location-dot"></i></button>
+                                    </span>
+                                    <button class="mhl-more-btn btn-line-gray-s">더보기</button>
+                                </h2>
+                                <div class="mhl-print">
+                                    <!-- <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>수원시 권선구 호매실로 165번길 70</dt>
+                                        <dd><button class="btn-line-red-s">삭제</button></dd>
+                                    </dl> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 이력관리 끝 -->
+
+                    <!-- 매물정보 -->
+                    <div class="map-content active">
+                        <div class="mc-mo-open-close" id="mapContentMoOpenClose"><i class="fa-regular fa-chevron-up"></i></div>
+                        <div class="mc-open-close" id="mapContentOpenClose"><i class="fa-solid fa-chevron-left"></i></div>
+
+                        <div class="mc-search">
+                            <input type="text" id="search_input" name="" title="" value="" placeholder="" autocomplete="off" />
+                            <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown"><i class="fa-light fa-sliders"></i> 필터</button>
+
+                            <div id="search_result_box" class="mcs-box">
+                                <ul id="placesList"></ul>
+                                <div id="pagination" class="mcsb-pagination"></div>
+                            </div>
+                        </div>
+
+                        <div class="mc-sell">
+                            <!-- floating button -->
+
+                            <button type="button" id="list_top_btn" class="position-absolute overflow-hidden p-0" style="bottom: 1%; left: 50%; transform: translateX(-50%); filter: invert(100%); border-radius: 50%; width: 40px; height: 40px" onClick="detailUpBtn()">
+                                <img src="/front/assets/image/btn_top.png" alt="" title="" class="h-100" />
+                            </button>
+
+                            <!-- <ul id="list_top_btn" class="mfb-component--br mfb-zoomin position-absolute" data-mfb-toggle="hover">
+                                <li class="mfb-component__wrap">
+                                    <a href="javascript:void(0);" class="mfb-component__button--main d-flex overflow-hidden">
+                                        <img src="/front/assets/image/btn_top.png" alt="" title="" class="h-100" />
+                                        <i class="mfb-component__main-icon--resting ion-plus-round"></i>
+                                        <i class="mfb-component__main-icon--active ion-close-round"></i>
+                                        <span class="text-center">
+                                            <img src="/images/icon/floating_charge_icon_2.png" alt="" width="100%" />
+                                            <p class="main-sub-txt" style="color: #000; font-weight: 500">위로</p>
+                                        </span>
+                                    </a>
+                                    <ul class="mfb-component__list">
+                                        <li>
+                                            <a href="https://github.com/nobitagit/material-floating-button/" data-mfb-label="View on Github" class="mfb-component__button--child">
+                                                <i class="mfb-component__child-icon ion-social-github"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://github.com/nobitagit" data-mfb-label="Follow me on Github" class="mfb-component__button--child">
+                                                <i class="mfb-component__child-icon ion-social-octocat"></i>
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="http://twitter.com/share?text=Check this material floating button component!&url=http://nobitagit.github.io/material-floating-button/&hashtags=material,design,button,css" data-mfb-label="Share on Twitter" class="mfb-component__button--child">
+                                                <i class="mfb-component__child-icon ion-social-twitter"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul> -->
+                            <div class="mcs-list">
+                                <!-- <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-green1">매매</span> 건물</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/564x/69/c2/ea/69c2ea1a85e2e7e79f7dd97dc685fa92.jpg" width="100%" alt="" title="" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-violet1">임대</span> 토지</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/736x/e2/cb/02/e2cb02d6ff4a25c8bc3da31973a899eb.jpg" width="100%" alt="" title="" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-indigo1">전세</span> 아파트</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/564x/0b/6e/18/0b6e1886a8983252cbfbe34950a315cb.jpg" width="100%" alt="" title="" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-green1">매매</span> 건물</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/564x/ab/a8/ca/aba8ca2f542392c29c9380a241646783.jpg" width="100%" alt="" title="" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-green1">매매</span> 건물</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/564x/69/c2/ea/69c2ea1a85e2e7e79f7dd97dc685fa92.jpg" width="100%" alt="" title="" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-green1">매매</span> 건물</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/564x/69/c2/ea/69c2ea1a85e2e7e79f7dd97dc685fa92.jpg" width="100%" alt="" title="" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt>
+                                        <h2><span class="label-default bg-green1">매매</span> 건물</h2>
+                                        <ul>
+                                            <li>21억</li>
+                                            <li>1,000m</li>
+                                        </ul>
+                                        <div>신축매매/계획관리/제조업소/2차선접/상가활용가능/매물특…</div>
+                                        <dl>
+                                            <dt>동탄제일공인중개사무소</dt>
+                                            <dd>등록일. 2024-01-01</dd>
+                                        </dl>
+                                    </dt>
+                                    <dd><img src="https://i.pinimg.com/564x/69/c2/ea/69c2ea1a85e2e7e79f7dd97dc685fa92.jpg" width="100%" alt="" title="" /></dd>
+                                </dl> -->
+                            </div>
+                            <!-- <p><button id="more_btn" class="btn-line-red w100p" >더보기</button></p> -->
+                        </div>
+                    </div>
+                    <!-- 매물정보 끝 -->
+
+                    <!-- 매물상세 -->
+                    <div id="map_sell_view" class="map-sell-view">
+                        <div class="msv-close">
+                            <button><i class="fa-light fa-xmark"></i></button>
+                        </div>
+
+                        <ul class="msv-img">
+                            <div class="swiper sale-thumbnail-slider p-0 rounded">
+                                <div class="swiper-wrapper"></div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                            </div>
+                            <!-- end swiper thumbnail slide -->
+                            <div class="swiper sale-nav-slider">
+                                <div class="swiper-wrapper"></div>
+                            </div>
+                            <!-- end swiper nav slide -->
+                            <!-- <li><img src="https://i.pinimg.com/564x/ab/a8/ca/aba8ca2f542392c29c9380a241646783.jpg" width="100%" alt="" title="" /></li>
+                            <li><img src="https://i.pinimg.com/564x/cf/ee/a2/cfeea223b7fd63a6726cfe7d1021f95e.jpg" width="100%" alt="" title="" /></li> -->
+                        </ul>
+                        <dl class="msv-info">
+                            <dt><span class="label-default bg-green1">매매</span> 건물</dt>
+                            <dd>매물번호. <span class="estate-no">12345</span></dd>
+                        </dl>
+                        <dl class="msv-price-option">
+                            <dt>매매 1억 5,000만</dt>
+                            <dd>
+                                <button id="mapShareOpen"><i class="fa-sharp fa-light fa-share-nodes"></i></button>
+                                <div id="mapShare">
+                                    <button id="kakaotalk_sharing_btn"><img src="/front/assets/image/icn_sns_kakao.svg" alt="" title="" /></button>
+                                    <button id="copy_url_btn"><i class="fa-light fa-copy"></i></button>
+                                    <span id="mapShareClose"><i class="fa-light fa-xmark"></i></span>
+                                </div>
+
+                                <button id="favorite_btn"><i class="fa-sharp fa-light fa-thumbtack"></i></button>
+                                <button id="print_confirm_btn"><i class="fa-light fa-print"></i></button>
+                            </dd>
+                        </dl>
+                        <div id="msv_content" class="msv-content">
+                            <dl id="#first-dl">
+                                <dt>소재지</dt>
+                                <dd>경기도 화성시 동탄 123</dd>
+                            </dl>
+                            <dl>
+                                <dt>규모</dt>
+                                <dd>지하 1층 / 지상 3층</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                            <dl>
+                                <dt>소재지</dt>
+                                <dd>경기도</dd>
+                            </dl>
+                        </div>
+                        <button type="button" id="detail_top_btn" class="position-absolute overflow-hidden p-0" style="bottom: 1%; left: 50%; transform: translateX(-50%); filter: invert(100%); border-radius: 50%; width: 40px; height: 40px" onClick="detailUpBtn()">
+                            <img src="/front/assets/image/btn_top.png" alt="" title="" class="h-100" />
+                        </button>
+                    </div>
+                    <!-- 매물상세 끝 -->
+
+                    <!-- 모달 - 필터 -->
+                    <div class="modal-area" id="modalSellFilter">
+                        <dl class="ma-header">
+                            <dt>필터</dt>
+                            <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                        </dl>
+                        <div class="ma-input">
+                            <div>
+                                <h2>매물종류를 선택하세요.</h2>
+                                <p>
+                                    <select id="estate_type_filter" name="" class="form-select select-box middle w100p">
+                                        <option value="">매물유형 선택</option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div>
+                                <h2>거래방식을 선택하세요.</h2>
+                                <p>
+                                    <select id="sale_type_filter" name="" class="form-select select-box middle w100p">
+                                        <option value="">거래방식 선택</option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div>
+                                <h2>가격대를 선택하세요.</h2>
+                                <div>
+                                    <div id="price_slider" data-rangeslider data-slider-style="border" data-slider-color="info"></div>
+                                    <p>
+                                        <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_start" />
+                                        <!-- <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" />  -->
+                                        <span>만</span>
+                                        <span>~</span>
+                                        <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_end" />
+                                        <!-- <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" />  -->
+                                        <span>만</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ma-btn">
+                            <button type="button" id="filter_reset_btn" class="btn-default-m bg-gray w100" data-izimodal-close="">초기화</button>
+                            <button type="button" id="filter_apply_btn" class="btn-default-m bg-main w100" data-izimodal-close="">적용</button>
+                        </div>
+                    </div>
+                    <!-- 모달 - 필터 끝 -->
+                </div>
+            </div>
+            <!-- 지도 영역 끝 -->
+        </div>
+
+        <!--preloader-->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- iziModal -->
+        <div class="modal-area" id="modalAlert">
+            <dl class="ma-header">
+                <dt>알림</dt>
+                <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+            </dl>
+            <div class="ma-completion">
+                <!-- <p id="lottieConfirm"></p> -->
+                <div id="alert_message" class="border-0">
+                    <h2></h2>
+                    <!-- <h3><strong>1,345</strong>명에게 알림이 발송 되었습니다.</h3> -->
+                </div>
+            </div>
+            <div class="ma-btn">
+                <button type="button" class="btn-default-m bg-main w100 fw-bold" data-izimodal-close="">확인</button>
+            </div>
+        </div>
+
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+
+        <script src="/front/assets/js/iziModal.js"></script>
+        <!-- <script src="/front/assets/js/swiper.js"></script> -->
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <!-- <script src="/front/assets/js/nouislider.js"></script> -->
+        <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/wnumb/wNumb.min.js"></script>
+        <script src="/assets/libs/nouislider/nouislider.min.js"></script>
+        <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
+        <script src="/front/assets/js/mfb.js"></script>
+
+        <!-- 카카오맵 -->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"></script>
+
+        <!-- 카카오공유 -->
+        <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+
+        <!-- custom -->
+        <script src="/front/assets/js/common.js"></script>
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/js/00-include/layer_popup.js"></script>
+        <script src="/front/js/00-include/validation.js"></script>
+        <script src="/front/js/realPrice/lineDrawer.js"></script>
+        <script src="/front/js/realPrice/circleDrawer.js"></script>
+        <script src="/front/js/realPrice/polygonDrawer.js"></script>
+        <script src="/front/js/realPrice/textDrawer.js"></script>
+        <script src="/front/js/realPrice/roadView.js"></script>
+        <script src="/front/js/memo/memo.js"></script>
+        <script src="/front/js/sell/map.js"></script>
+        <script src="/front/js/sell/sell.js"></script>
+
+        <script>
+            // range - 가격대 //
+            // var slider = document.getElementById("priceSlider");
+            // noUiSlider.create(slider, {
+            //     start: [20, 80],
+            //     connect: true,
+            //     range: {
+            //         min: 0,
+            //         max: 100,
+            //     },
+            //     tooltips: {
+            //         // tooltips are output only, so only a "to" is needed
+            //         to: function (numericValue) {
+            //             return numericValue.toFixed(1);
+            //         },
+            //     },
+            // });
+
+            function detailUpBtn() {
+                $("#msv-content").animate({ scrollTop: 0 }, "slow");
+            }
+
+            // $('a[href="#msv-content"]').click(function (event) {
+            //     event.preventDefault();
+            //     $("html, body").animate(
+            //         {
+            //             scrollTop: $("#msv-content").offset().top,
+            //         },
+            //         800
+            //     ); // Adjust the speed as necessary
+            // });
+        </script>
+    </body>
+</html>

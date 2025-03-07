@@ -1,0 +1,40 @@
+<script>
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text("금융사 등록");
+
+        // [Event] 저장하기 버튼 클릭
+        $(".save-button").on("click", function () {
+            add_finance_company();
+        });
+    });
+</script>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div>
+        <div class="input-box mb-3">
+            <label for="name" class="col-form-label"><span class="text-danger">*</span> 은행명</label>
+            <input type="text" class="form-control" id="name" placeholder="은행명을 입력하세요." minlength="1" maxlength="30" />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="" class="col-form-label">금융사 이미지</label>
+            <div class="input-group">
+                <label for="file_input" id="file_name" class="input-label form-control text-muted mb-0">파일을 선택하세요.</label>
+                <label for="file_input" type="button" class="input-group-text mb-0 waves-effect waves-light">파일선택</label>
+                <input type="file" class="form-control d-none" id="file_input" placeholder="이미지" accept="image/png, image/jpeg, image/jpg" />
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light waves-effect waves-light" data-bs-dismiss="modal">닫기</button>
+    <button type="button" class="save-button btn btn-primary waves-effect waves-light">등록하기</button>
+</div>

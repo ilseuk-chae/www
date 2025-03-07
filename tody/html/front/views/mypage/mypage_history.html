@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="" />
+        <title>원스톱 부동산 종합 플랫폼 서비스 토디</title>
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+
+        <!-- Datatables Css-->
+        <link href="/assets/libs/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/colReorder.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+        <!-- Bootstrap Css-->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- Custom Css-->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단 -->
+            <header class="header"></header>
+            <!-- PC - 상단 끝 -->
+
+            <!-- MOBILE - 상단/메뉴/하단영역 -->
+            <div class="mobile">
+                <!-- MOBILE - 상단영역 -->
+                <div class="mobile-header">
+                    <dl>
+                        <dt>
+                            <a href="/index.html"><img src="/front/assets/image/logo.svg" height="20" alt="" title="" /></a>
+                        </dt>
+                        <dd>
+                            <a href="javascript:void(0);" id="mobileSearchOpen"><i class="fa-light fa-magnifying-glass"></i></a>
+                            <a href="javascript:void(0);" id="mobileMenuInfo"><i class="fa-light fa-bars"></i></a>
+
+                            <!-- 검색영역 -->
+                            <div class="mh-search">
+                                <button id="mobileSearchClose"><i class="fa-regular fa-xmark"></i></button>
+                                <input type="text" id="search_input_mobile" name="" placeholder="검색하세요" autocomplete="off" />
+                                <button type="button" id="search_btn_mobile"><i class="fa-regular fa-magnifying-glass"></i></button>
+
+                                <div id="search_result_box_mobile" class="mhs-box">
+                                    <ul id="placesListMobile"></ul>
+                                    <!-- <div id="pagination" class="mcsb-pagination"></div> -->
+                                </div>
+                            </div>
+                            <!-- 검색영역 끝 -->
+                        </dd>
+                    </dl>
+                </div>
+                <!-- MOBILE - 상단영역 끝 -->
+
+                <!-- MOBILE - 하단영역 -->
+                <div class="mobile-footer">
+                    <ul>
+                        <li onclick="location.href='/front/views/realPrice/realPrice.html';">
+                            <p><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /></p>
+                            <div>실거래가</div>
+                        </li>
+                        <li onclick="location.href='/front/views/sell/sell.html';">
+                            <p><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /></p>
+                            <div>매물정보</div>
+                        </li>
+                        <li onclick="location.href='/front/views/find/find_list.html';">
+                            <p><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /></p>
+                            <div>삽니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/put/put_list.html';">
+                            <p><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /></p>
+                            <div>팝니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/finance/finance.html';">
+                            <p><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /></p>
+                            <div>금융지원</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- MOBILE - 하단영역 끝 -->
+
+                <!-- MOBILE - 메뉴 및 정보 -->
+                <div class="mobile-menu-info">
+                    <div class="mmi-info">
+                        <dl>
+                            <dt><span class="user-name-type">반갑습니다.</span></dt>
+                            <dd>
+                                <a href="javascript:void(0);"><i class="fa-light fa-xmark"></i></a>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="mmi-tab-btn">
+                        <a href="/front/views/member/join_step01.html" class="active">회원가입</a>
+                        <a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
+                    </div>
+                    <div class="mmi-menu">
+                        <a href="/front/views/realPrice/realPrice.html">
+                            <span><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /> 실거래가</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/sell/sell.html">
+                            <span><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /> 매물정보</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/find/find_list.html">
+                            <span><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /> 삽니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/put/put_list.html">
+                            <span><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /> 팝니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/finance/finance.html">
+                            <span><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /> 금융지원</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                    </div>
+                    <div class="mmi-support">
+                        <a href="/front/views/support/notice_list.html">고객센터</a>
+                    </div>
+                    <div class="mmi-site">
+                        <select name="" id="selectSiteMobile" class="form-select select-box middle">
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-footer">
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 이용약관</a>
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 개인정보취급방침</a>
+                    </div>
+                </div>
+                <div class="mobile-menu-info-bg">&nbsp;</div>
+                <!-- MOBILE - 메뉴 및 정보 끝 -->
+            </div>
+            <!-- MOBILE - 상단/메뉴/하단영역 끝 -->
+
+            <!-- 본문내용 -->
+            <div class="contents sale-contents">
+                <!-- 서브메뉴 -->
+                <div class="sub-menu">
+                    <div>
+                        <a href="mypage.html">내 정보</a>
+                        <a href="mypage_sale.html">내 매물</a>
+                        <a href="mypage_find.html">삽니다 관리</a>
+                        <a href="mypage_put.html">팝니다 관리</a>
+                        <a href="mypage_history.html" class="active">최근 이력</a>
+                        <a href="mypage_noti.html">알림 설정</a>
+                    </div>
+                </div>
+                <!-- 서브메뉴 끝 -->
+
+                <!-- 타이틀 영역 -->
+                <div class="title-area">
+                    <h2>이력 관리</h2>
+                </div>
+                <!-- 타이틀 영역 끝 -->
+
+                <!-- 리스트 -->
+                <div class="board-list history-list d-grid gap-5 pb-5">
+                    <div id="recent_search_table" class="table-responsive">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <h1 class="font18 color-dark align-content-center">최근 검색 주소</h1>
+                                <a href="mypage_history_popup.html??title=최근 검색 실거래가&table=search&type=real" id="recent_search_more_btn" class="modal-open-btn btn btn-sm btn-outline-danger">더보기</a>
+                            </div>
+
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#recent_search_real" role="tab" aria-selected="true"> 실거래가 </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#recent_search_sale" role="tab" aria-selected="false"> 매물정보 </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="recent_search_real" class="tab-pane active" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">검색날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col" class="text-end"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="recent_search_sale" class="tab-pane" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">검색날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.12</td>
+                                            <td><font>주소 : </font> <a href="#">매물정보 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.12</td>
+                                            <td><font>주소 : </font> <a href="#">매물정보 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.12</td>
+                                            <td><font>주소 : </font> <a href="#">매물정보 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.12</td>
+                                            <td><font>주소 : </font> <a href="#">매물정보 주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="favorite_table_1" class="table-responsive">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <h1 class="font18 color-dark align-content-center">찜(1)</h1>
+                                <a href="mypage_history_popup.html?title=찜(실거래가)&table=favorite&type=real" id="favorite_btn_1" class="modal-open-btn btn btn-sm btn-outline-danger">더보기</a>
+                            </div>
+
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#recent_favorite_real" role="tab" aria-selected="true"> 실거래가 </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#recent_favorite_sale" role="tab" aria-selected="false"> 매물정보 </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="recent_favorite_real" class="tab-pane active" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">검색날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="recent_favorite_sale" class="tab-pane" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">검색날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="favorite_table_2" class="table-responsive">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <h1 class="font18 color-dark align-content-center">찜(2)</h1>
+                                <a href="mypage_history_popup.html?title=찜(삽니다)&table=favorite&type=find" id="favorite_btn_2" class="modal-open-btn btn btn-sm btn-outline-danger">더보기</a>
+                            </div>
+
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#recent_favorite_find" role="tab" aria-selected="true"> 삽니다 </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#recent_favorite_put" role="tab" aria-selected="false"> 팝니다 </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="recent_favorite_find" class="tab-pane active" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">찜 날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font></td>
+                                            <td><font>주소 : </font> <a href="#"></a></td>
+                                            <td><font>삭제 : </font></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font></td>
+                                            <td><font>주소 : </font> <a href="#"></a></td>
+                                            <td><font>삭제 : </font></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font></td>
+                                            <td><font>주소 : </font> <a href="#"></a></td>
+                                            <td><font>삭제 : </font></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font></td>
+                                            <td><font>주소 : </font> <a href="#"></a></td>
+                                            <td><font>삭제 : </font></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="recent_favorite_put" class="tab-pane" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">검색날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="table-responsive">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <h1 class="font18 color-dark align-content-center">최근 본 매물</h1>
+                                <a href="mypage_history_popup.html?title=최근 본 팝니다" class="modal-open-btn btn btn-sm btn-outline-danger">더보기</a>
+                            </div>
+
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#recent_viewed_sell" role="tab" aria-selected="true"> 팝니다 </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="recent_view_sell" class="tab-pane active" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">방문 날짜</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">가격</th>
+                                            <th scope="col">삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><font>방문날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>방문날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>방문날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>방문날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div id="recent_view_table_2" class="table-responsive">
+                        <div class="d-flex justify-content-between flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <h1 class="font18 color-dark align-content-center">최근 본 삽니다</h1>
+                                <a href="mypage_history_popup.html?title=최근 본 삽니다&table=view&type=find" id="recent_view_btn_2" class="modal-open-btn btn btn-sm btn-outline-danger">더보기</a>
+                            </div>
+
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#recent_view_find" role="tab" aria-selected="true"> 삽니다 </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#recent_view_put" role="tab" aria-selected="true"> 팝니다 </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="recent_view_find" class="tab-pane active" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">조회일</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">가격대</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격대 : </font> 1,000만 ~ 5,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격대 : </font> 1,000만 ~ 5,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격대 : </font> 1,000만 ~ 5,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격대 : </font> 1,000만 ~ 5,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="recent_view_put" class="tab-pane" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">조회일</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">가격</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>조회날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>가격 : </font> 1,000만</td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="recent_print_table" class="table-responsive">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <h1 class="font18 color-dark align-content-center">최근 인쇄 이력</h1>
+                                <a href="mypage_history_popup.html?title=최근 인쇄 실거래가&table=print&type=real" id="recent_print_btn" class="modal-open-btn btn btn-sm btn-outline-danger">더보기</a>
+                            </div>
+
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#recent_print_real" role="tab" aria-selected="true"> 실거래가 </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#recent_print_sale" role="tab" aria-selected="false"> 매물정보 </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="recent_print_real" class="tab-pane active" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">인쇄일</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div id="recent_print_sale" class="tab-pane" role="tabpanel">
+                                <table class="history-table table table-nowrap align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">인쇄일</th>
+                                            <th scope="col">소재지</th>
+                                            <th scope="col">삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td><font>검색날짜 : </font> 2024.01.11</td>
+                                            <td><font>주소 : </font> <a href="#">주소</a></td>
+                                            <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 리스트 끝 -->
+            </div>
+            <!-- 본문내용 끝 -->
+
+            <!-- 하단영역 -->
+            <footer class="footer"></footer>
+            <!-- 하단영역 끝 -->
+        </div>
+
+        <!--datatable js-->
+        <!-- <script src="/assets/libs/datatables/js/jszip.min.js"></script>
+        <script src="/assets/libs/datatables/js/pdfmake.min.js"></script>
+        <script src="/assets/libs/datatables/js/vfs_fonts.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.colVis.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.html5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.print.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.colReorder.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/libs/datatables/js/responsive.bootstrap5.js"></script> -->
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+        <script src="/front/assets/js/iziModal.js"></script>
+        <script src="/front/assets/js/swiper.js"></script>
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <script src="/front/assets/js/nouislider.js"></script>
+        <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+        <!-- custom -->
+        <script src="/front/assets/js/common.js"></script>
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/layer_popup.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/js/mypage/mypage_history.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                // DataTables 초기화
+                // initializeDataTable("");
+            });
+
+            // =============================================================================
+            // table 관련 함수
+            // =============================================================================
+            /**
+             * DataTables 초기화
+             */
+            function initializeDataTable() {
+                let table = new DataTable("#ajax-datatables", {
+                    language: {
+                        url: "/assets/libs/datatables/lang/ko.json",
+                    },
+                    drawCallback: function () {},
+                    initComplete: function () {},
+                    scrollX: true, // 가로 스크롤 활성화
+                    processing: true, // 처리 중 메시지 활성화
+                    responsive: true, // 반응형 테이블 설정
+                    // serverSide: true, // 서버 사이드 처리를 활성화
+                    // colReorder: true,    // 컬럼 이동 활성화
+                    destroy: true, // 테이블 파괴 가능
+                    // lengthChange: false,
+                    ajax: function (data, callback, settings) {
+                        loadTableData(table, callback);
+                    },
+                    columns: [
+                        // { data: "no", title: "no" }, // 첫 번째 열로 순서를 추가
+                        { data: "date", title: "날짜" }, // 첫 번째 열로 순서를 추가
+                        { data: "address_total", title: "소재지" },
+                        { data: "management", title: "삭제", orderable: false, searchable: false },
+                    ],
+                    // rowReorder: {
+                    //     selector: "td:nth-child(1)", // 첫 번째 열을 기준으로 row 재정렬
+                    // },
+                    order: [], // 기본 정렬 비활성화
+                    columnDefs: [
+                        // { className: "text-start", targets: [0] }, // 첫 번째 열에 좌측 정렬 클래스 추가
+                        { className: "text-start align-content-center", targets: [0, 1, 2] }, // 모든 열에 좌측 정렬 클래스 추가
+                        { width: 100, targets: [2] },
+                        { className: "text-center align-content-center", targets: [92] }, // 10 번째 열에 우측 정렬 클래스 추가
+                        // { className: "text-end align-content-center", targets: [14] }, // 10 번째 열에 우측 정렬 클래스 추가
+                        { responsivePriority: 1, targets: 1 }, // 첫 번째 열 우선순위 설정
+                        { responsivePriority: 2, targets: -1 }, // 마지막 열 우선순위 설정
+                        {
+                            targets: [2],
+                            visible: true, // 기본적으로 모든 열을 보이게 설정
+                            responsivePriority: 10001, // 특정 열의 우선순위를 가장 낮게 설정하여 작은 화면에서 숨김 처리
+                        },
+                    ],
+                });
+            }
+
+            /**
+             * 테이블 데이터 불러오는 함수
+             * @param {*} table
+             * @param {*} callback
+             */
+            function loadTableData(table, callback) {
+                let filterValue = $(".change-public-select").val() || "";
+                callApi("POST", "put_list.php", {}, "loading")
+                    .then((result) => {
+                        if (!result) {
+                            console.log("통신 실패!!!");
+                            if (callback) callback({ data: [] });
+                            return;
+                        }
+
+                        const responseData = result;
+                        console.log(responseData);
+
+                        if (!responseData) {
+                            if (callback) callback({ data: [] });
+                            return;
+                        }
+
+                        // 데이터를 올바르게 변환하여 DataTables에 전달합니다.
+                        const formattedData = responseData.map((item, index) => {
+                            // 순서(DESC)
+                            // const reversedOrder = responseData.length - index;
+
+                            // const descBtn = `<a class="link-dark link-body-emphasis link-offset-2 text-decoration-underline link-underline-opacity-25 link-underline-opacity-75-hover" href="mypage_sale_detail.html?no=${item.estate_no}">${item.address_total}</a>`;
+
+                            // 공개 상태
+                            let public_name;
+                            switch (item.public_fg) {
+                                case "Y":
+                                    public_name = "공개";
+                                    break;
+                                case "N":
+                                    public_name = "비공개";
+                                    break;
+                                case "C":
+                                    public_name = "거래완료";
+                                    break;
+                                default:
+                                    public_name = "공개";
+                                    break;
+                            }
+
+                            // 이미지 처리
+                            let image = "";
+                            // if (item.imageArray.length > 0) {
+                            // image = `<img src="/admin/back/04-estate/estate_images.php?token=${encodeURIComponent(item.imageArray[0].imageToken)}" alt="" width="100">`;
+                            // }
+
+                            // 기타메모 5자 이내만 보여지도록
+                            // const shortNote = item.additional_note.length > 5 ? item.additional_note.substring(0, 5) + "..." : item.additional_note;
+
+                            return {
+                                // no: reversedOrder,
+                                wanted_no: item.wanted_no,
+                                image: `<img class="rounded-1" src="https://i.pinimg.com/564x/ad/e4/a0/ade4a0375d4c2aabcc8442992da59c19.jpg" width="100" alt="" title="">`,
+                                sido: item.sido,
+                                sgg: item.sgg,
+                                estate_type: item.estate_type,
+                                sale_type: item.sale_type,
+                                // sale_price: comma(item.sale_price) + "만" + (item.rent_price ? " / 월" + comma(item.rent_price) + "만" : ""),
+                                sale_price: formatPrice(item.sale_price) + (item.rent_price ? " / 월" + formatPrice(item.rent_price) : ""),
+                                area: comma(item.area) + "㎡",
+                                phone: item.phone,
+                                // noti_count: comma(item.noti_count),
+                                // view_count: comma(item.view_count),
+                                reg_date: item.reg_date,
+                                public_fg: `
+                                <div class="dropdown d-inline-block">
+                                    <button class="public-change-btn btn btn-soft-primary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-public_fg="${item.public_fg}">
+                                        ${public_name}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <button class="dropdown-item change-public-btn" data-public_fg="Y" data-wanted_no="${item.wanted_no}">
+                                                공개
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item change-public-btn" data-public_fg="N" data-wanted_no="${item.wanted_no}">
+                                                비공개
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item change-public-btn" data-public_fg="C" data-wanted_no="${item.wanted_no}">
+                                                거래완료
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>`,
+                                management: `
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-soft-primary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ri-more-fill align-middle"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a href="/admin/views/re_manage/re_detail.html?no=${item.wanted_no}" class="dropdown-item">
+                                                <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                                상세
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <button data-no="${item.wanted_no}" class="delete-btn dropdown-item">
+                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                                삭제
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>`,
+                            };
+                        });
+
+                        if (callback) {
+                            callback({ data: formattedData });
+                        } else {
+                            table.clear().rows.add(formattedData).draw();
+                        }
+
+                        // 툴팁 초기화
+                        $('[data-bs-toggle="tooltip"]').tooltip();
+                    })
+                    .catch((error) => {
+                        console.error("AJAX 요청 중 오류 발생:", error);
+                        if (callback) callback({ data: [] });
+                    });
+            }
+        </script>
+    </body>
+</html>

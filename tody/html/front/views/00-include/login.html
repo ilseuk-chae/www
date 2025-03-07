@@ -1,0 +1,76 @@
+<script>
+    $(async function () {
+        // JavaScript 파일 로드 함수
+        function loadScript(src, className, integrity = null, crossorigin = null) {
+            if (!document.querySelector(`.${className}`)) {
+                let scriptElement = document.createElement("script");
+                scriptElement.src = src;
+                scriptElement.type = "text/javascript";
+                scriptElement.charset = "utf-8";
+                scriptElement.className = className;
+                if (integrity) {
+                    scriptElement.integrity = integrity;
+                }
+                if (crossorigin) {
+                    scriptElement.crossOrigin = crossorigin;
+                }
+                document.body.appendChild(scriptElement);
+            }
+        }
+
+        // 카카오 로그인 스크립트 로드
+        loadScript("/front/assets/js/kakao.min.js", "kakao-login-script", "sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4", "anonymous");
+
+        // 네이버 로그인 스크립트 로드
+        loadScript("https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js", "naver-login-script");
+        loadScript("/front/assets/js/naveridlogin_js_sdk_2.0.2", "naver-login-sdk-script");
+
+        // 로그인 스크립트 로드
+        setTimeout(() => {
+            loadScript("/front/js/00-include/login.js", "login-script");
+        }, 500);
+
+        // 모달 설정
+        const $modalWrap = $(".modal-pop-wrapper");
+        $modalWrap.find(".modal-dialog").addClass("modal-dialog-scrollable");
+
+        // [EVENT] 모달 닫기 버튼 클릭 시, login.js 스크립트 제거
+        // $("#login_modal_close_btn").on("click", function () {
+        //      $(".login-script").remove();
+        //      $(".naver-login-script").remove();
+        // });
+    });
+</script>
+
+<div class="modal-header">
+    <button type="button" id="login_modal_close_btn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body p-0">
+    <div class="join-member-type w-100 p-0">
+        <ul class="justify-content-center">
+            <li class="w-100 border-0 pt-0">
+                <h3 class="mt-0">로그인</h3>
+                <div class="row gap-3">
+                    <input type="text" placeholder="아이디" id="login_id" class="form-control input-box w100p" maxlength="20" required />
+                    <input type="password" placeholder="비밀번호" id="login_pw" class="form-control input-box w100p" maxlength="20" required />
+
+                    <a href="#" id="login_btn" class="login-btn login-default btn-line-red w100p">로그인</a>
+
+                    <button id="kakao_login_btn" class="login-btn btn-default btn-kakao btn p-0 d-flex align-items-center justify-content-center" type="submit">카카오톡으로 로그인</button>
+
+                    <div id="naverIdLogin" class="mt-0 px-0">
+                        <button id="naverIdLogin_loginButton" class="login-btn btn-default btn-naver btn p-0 d-flex align-items-center justify-content-center w-100" type="button">네이버로 로그인</button>
+                    </div>
+                    <div class="d-flex justify-content-between m-0 p-0">
+                        <a href="/front/views/member/join_step01.html">회원가입</a>
+                        <span>
+                            <a href="/front/views/member/find_id.html">아이디 찾기</a>
+                            /
+                            <a href="/front/views/member/find_pw_step01.html">비밀번호 재설정</a>
+                        </span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

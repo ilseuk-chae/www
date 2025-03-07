@@ -1,0 +1,40 @@
+<script>
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        const modalUrl = $modalWrap.attr("data-url");
+        const a_no = getUrlParameter("no", modalUrl);
+
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text("권한 변경");
+
+        $modalWrap.find(".modal-dialog").addClass("modal-sm");
+
+        permission_list();
+
+        $("#per_change_button").on("click", function () {
+            const per_no = $("#per_select").val();
+            permissionChange(a_no, per_no);
+        });
+
+        permissionBind(a_no);
+    });
+</script>
+
+<div class="modal-header d-flex flex-column">
+    <h5 class="modal-title mx-2" id="myModalLabel"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="input-box mb-3">
+        <label for="permission_title" class="col-form-label">변경 전</label>
+        <input type="text" class="form-control" id="permission_title" placeholder="권한 없음" disabled />
+    </div>
+    <div class="input-box">
+        <label class="col-form-label">변경 후</label>
+        <select class="form-select" id="per_select"></select>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" data-bs-dismiss="modal">닫기</button>
+    <button type="button" id="per_change_button" class="save-button btn btn-info">저장하기</button>
+</div>

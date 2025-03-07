@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="kr" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tody 관리자 페이지 | 매물 상세</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content="Tody" name="description" />
+        <meta content="Tody" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+        <!--datatable css-->
+        <!-- <link rel="stylesheet" href="/assets/css/plugins/datatables/dataTables.bootstrap5.min.css" />
+        <link rel="stylesheet" href="/assets/css/plugins/datatables/responsive.bootstrap.min.css" />
+        <link rel="stylesheet" href="/assets/css/plugins/datatables/buttons.dataTables.min.css" /> -->
+
+        <link href="/assets/libs/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/colReorder.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+
+        <!--Swiper slider css-->
+        <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- Layout config Js -->
+        <script src="/assets/js/layout.js"></script>
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Css -->
+        <link href="/assets/css/fonts.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Waves Css-->
+        <link href="/assets/libs/node-waves/waves.min.css" rel="stylesheet" type="text/css" />
+        <!-- choices Css -->
+        <link href="/assets/libs/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- custom Css-->
+        <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <!-- common Css-->
+        <link href="/assets/css/common.css" rel="stylesheet" type="text/css" />
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+            <!-- header -->
+            <header id="page-topbar"></header>
+            <!-- /.header -->
+
+            <!-- removeNotificationModal -->
+            <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mt-2 text-center">
+                                <lord-icon src="/assets/json/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width: 100px; height: 100px"></lord-icon>
+                                <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                    <h4>Are you sure ?</h4>
+                                    <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn w-sm btn-danger" id="delete-notification">Yes, Delete It!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+            <!-- ========== App Menu ========== -->
+            <div class="app-menu navbar-menu"></div>
+            <!-- Left Sidebar End -->
+
+            <!-- Vertical Overlay-->
+            <div class="vertical-overlay"></div>
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <!-- content -->
+                <div class="page-content">
+                    <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                    <h4 class="mb-sm-0">매물 상세</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">매물</a></li>
+                                            <li class="breadcrumb-item active">매물 관리</li>
+                                            <li class="breadcrumb-item active">매물 상세</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row gx-lg-5">
+                                            <div class="col-xl-4 col-md-8 mx-auto">
+                                                <!-- 이미지 썸네일 -->
+                                                <div class="sale-img-slider sticky-side-div">
+                                                    <div class="swiper sale-thumbnail-slider p-0 rounded bg-light">
+                                                        <div class="swiper-wrapper"></div>
+                                                        <div class="swiper-button-next"></div>
+                                                        <div class="swiper-button-prev"></div>
+                                                    </div>
+                                                    <!-- end swiper thumbnail slide -->
+                                                    <div class="swiper sale-nav-slider py-2">
+                                                        <div class="swiper-wrapper"></div>
+                                                    </div>
+                                                    <!-- end swiper nav slide -->
+
+                                                    <!-- 카카오 맵 -->
+                                                    <div class="">
+                                                        <!-- <h5 class="fs-15">위치</h5> -->
+                                                        <div id="kakaoMap" class="ratio ratio-1x1"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end col -->
+
+                                            <div class="col-xl-8">
+                                                <div class="mt-xl-0 mt-5">
+                                                    <div class="d-flex">
+                                                        <div class="flex-grow-1">
+                                                            <h4>매물번호 : <span id="estate_no"></span></h4>
+                                                            <div class="hstack gap-3 flex-wrap">
+                                                                <div class="text-muted">중개사무소 : <a href="#" id="agency_name" class="text-body fw-medium">??</a></div>
+                                                                <div class="vr"></div>
+                                                                <div class="text-muted">등록일자 : <span id="reg_date" class="text-body fw-medium">26 Mar, 2021</span></div>
+                                                                <div class="vr"></div>
+                                                                <div class="text-muted">조회수: <span id="view_count" class="text-body fw-medium"></span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-shrink-0">
+                                                            <div>
+                                                                <a href="/admin/views/re_manage/re_listings.html" class="btn btn-light btn-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="목록">
+                                                                    <i class="ri-arrow-go-back-line"></i>
+                                                                </a>
+                                                                <button id="restore_btn" class="btn btn-soft-danger btn-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="복구">
+                                                                    <i class="ri-repeat-line align-bottom"></i>
+                                                                </button>
+
+                                                                <button id="public_fg" class="public-change-btn btn btn-soft-primary dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-public_fg=""></button>
+
+                                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                                    <li>
+                                                                        <button class="dropdown-item change-public-btn" data-public_fg="Y">공개</button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button class="dropdown-item change-public-btn" data-public_fg="N">비공개</button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button class="dropdown-item change-public-btn" data-public_fg="C">거래완료</button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-4">
+                                                        <div class="col-lg-3 col-sm-6">
+                                                            <div class="p-2 border border-dashed rounded">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="avatar-sm me-2">
+                                                                        <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                                            <i class="ri-community-fill"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <p class="text-muted mb-1">매물 구분 :</p>
+                                                                        <h5 class="mb-0"><span id="estate_type"></span></h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-3 col-sm-6">
+                                                            <div class="p-2 border border-dashed rounded">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="avatar-sm me-2">
+                                                                        <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                                            <i class="ri-exchange-dollar-fill"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <p class="text-muted mb-1">매매 타입 :</p>
+                                                                        <h5 class="mb-0"><span id="sale_type"></span></h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-3 col-sm-6">
+                                                            <div class="p-2 border border-dashed rounded">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="avatar-sm me-2">
+                                                                        <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                                            <i class="ri-money-dollar-circle-fill"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <p class="text-muted mb-1"><span id="sale_type"></span>금액 :</p>
+                                                                        <h5 class="mb-0"><span id="sale_price"></span>만 원</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end col -->
+                                                        <div class="col-lg-3 col-sm-6">
+                                                            <div class="p-2 border border-dashed rounded">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="avatar-sm me-2">
+                                                                        <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                                            <i class="ri-money-dollar-circle-fill"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <p class="text-muted mb-1">월세 :</p>
+                                                                        <h5 class="mb-0"><span id="rent_price"></span>만 원</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">소재지 :</h5>
+                                                                <p id="address_total"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">관련지번 :</h5>
+                                                                <p id="related_jibun"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">기타메모 :</h5>
+                                                                <p id="additional_note"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">토지면적 :</h5>
+                                                                <p><span id="platArea"></span>㎡</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">연면적 :</h5>
+                                                                <p><span id="totArea"></span>㎡</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">건축면적 :</h5>
+                                                                <p><span id="archArea"></span>㎡</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">지목 :</h5>
+                                                                <p id="lndcgrCodeNm"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">용도지역 :</h5>
+                                                                <p id="prposAreaNm"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">용적률 :</h5>
+                                                                <p><span id="vlRat"></span>％</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">건폐율 :</h5>
+                                                                <p><span id="bcRat"></span>％</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">지상층수 :</h5>
+                                                                <p><span id="grndFlrCnt"></span>층</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">지하층수 :</h5>
+                                                                <p><span id="ugrndFlrCnt"></span>층</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">구조 :</h5>
+                                                                <p id="strctCdNm"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">사용승인일 :</h5>
+                                                                <p id="useAprDay"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">주차수 :</h5>
+                                                                <p><span id="car_parking"></span>대</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">주용도 :</h5>
+                                                                <p id="mainPurpsCdNm"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">실제 사용용도 :</h5>
+                                                                <p id="realPurpsNm"></p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">월 관리비 :</h5>
+                                                                <p><span id="maintenance_price"></span>만 원</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-sm-6">
+                                                            <div class="mt-4">
+                                                                <h5 class="fs-14">융자금 :</h5>
+                                                                <p><span id="loan_price">0</span>만 원</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- end row -->
+
+                                                    <div class="mt-4">
+                                                        <h5 class="fs-14">특장점 :</h5>
+                                                        <p id="feature"></p>
+                                                    </div>
+
+                                                    <div class="mt-4">
+                                                        <h5 class="fs-14">매물설명 :</h5>
+                                                        <p id="description"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- end card body -->
+                                            </div>
+                                            <!-- end col -->
+                                        </div>
+                                    </div>
+                                    <!-- end card-body -->
+                                </div>
+                                <!-- end card -->
+                            </div>
+                            <!-- end col -->
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+
+                <!-- footer -->
+                <footer class="footer"></footer>
+                <!-- /.footer -->
+            </div>
+            <!-- end main content-->
+        </div>
+        <!-- END layout-wrapper -->
+
+        <!--start back-to-top-->
+        <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+            <i class="ri-arrow-up-line"></i>
+        </button>
+        <!--end back-to-top-->
+
+        <!--preloader-->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="customizer-setting d-none d-md-block">
+            <div class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
+                <i class="mdi mdi-spin mdi-cog-outline fs-22"></i>
+            </div>
+        </div>
+
+        <!-- Theme Settings -->
+        <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas"></div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/libs/jquery/js/jquery-3.7.1.min.js"></script>
+        <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="/assets/libs/node-waves/waves.min.js"></script>
+        <script src="/assets/libs/feather-icons/feather.min.js"></script>
+        <script src="/assets/js/plugins/lord-icon-2.1.0.js"></script>
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+        <script src="/assets/libs/prismjs/prism.js"></script>
+        <!--Swiper slider js-->
+        <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
+        <!--datatable js-->
+        <script src="/assets/libs/datatables/js/jszip.min.js"></script>
+        <script src="/assets/libs/datatables/js/pdfmake.min.js"></script>
+        <script src="/assets/libs/datatables/js/vfs_fonts.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.colVis.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.html5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.print.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.colReorder.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/libs/datatables/js/responsive.bootstrap5.js"></script>
+        <!-- jquery-validation.js -->
+        <script src="/assets/libs/jquery-validation/js/jquery.validate.min.js"></script>
+        <script src="/admin/js/00-include/validation.js"></script>
+        <!-- daum 주소 api -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <!-- kakao map api -->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71"></script>
+        <!-- custom -->
+        <script src="/admin/js/00-include/layout.js"></script>
+        <script src="/admin/js/00-include/sha256.js"></script>
+        <script src="/admin/js/00-include/functions.js"></script>
+        <script src="/admin/js/00-include/common.js"></script>
+        <script src="/admin/js/00-include/layer_popup.js"></script>
+        <script src="/admin/js/04-estate/re_detail_deleted.js"></script>
+        <!-- App js -->
+        <script>
+            window.addEventListener("load", function () {
+                var script = document.createElement("script");
+                script.src = "/assets/js/app.js?v=" + new Date().getTime();
+                document.body.appendChild(script);
+            });
+        </script>
+        <!-- <script src="/assets/js/app.js"></script> -->
+    </body>
+</html>

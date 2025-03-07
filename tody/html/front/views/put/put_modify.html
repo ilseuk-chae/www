@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="" />
+        <title>원스톱 부동산 종합 플랫폼 서비스 토디</title>
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- Custom Css -->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단 -->
+            <header class="header"></header>
+            <!-- PC - 상단 끝 -->
+
+            <!-- MOBILE - 상단/메뉴/하단영역 -->
+            <div class="mobile">
+                <!-- MOBILE - 상단영역 -->
+                <div class="mobile-header">
+                    <dl>
+                        <dt>
+                            <a href="/index.html"><img src="/front/assets/image/logo.svg" height="20" alt="" title="" /></a>
+                        </dt>
+                        <dd>
+                            <a href="javascript:void(0);" id="mobileSearchOpen"><i class="fa-light fa-magnifying-glass"></i></a>
+                            <a href="javascript:void(0);" id="mobileMenuInfo"><i class="fa-light fa-bars"></i></a>
+
+                            <!-- 검색영역 -->
+                            <div class="mh-search">
+                                <button id="mobileSearchClose"><i class="fa-regular fa-xmark"></i></button>
+                                <input type="text" id="search_input_mobile" name="" placeholder="검색하세요" autocomplete="off" />
+                                <button type="button" id="search_btn_mobile"><i class="fa-regular fa-magnifying-glass"></i></button>
+
+                                <div id="search_result_box_mobile" class="mhs-box">
+                                    <ul id="placesListMobile"></ul>
+                                    <!-- <div id="pagination" class="mcsb-pagination"></div> -->
+                                </div>
+                            </div>
+                            <!-- 검색영역 끝 -->
+                        </dd>
+                    </dl>
+                </div>
+                <!-- MOBILE - 상단영역 끝 -->
+
+                <!-- MOBILE - 하단영역 -->
+                <div class="mobile-footer">
+                    <ul>
+                        <li onclick="location.href='/front/views/realPrice/realPrice.html';">
+                            <p><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /></p>
+                            <div>실거래가</div>
+                        </li>
+                        <li onclick="location.href='/front/views/sell/sell.html';">
+                            <p><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /></p>
+                            <div>매물정보</div>
+                        </li>
+                        <li onclick="location.href='/front/views/find/find_list.html';">
+                            <p><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /></p>
+                            <div>삽니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/put/put_list.html';">
+                            <p><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /></p>
+                            <div>팝니다</div>
+                        </li>
+                        <li onclick="location.href='/front/views/finance/finance.html';">
+                            <p><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /></p>
+                            <div>금융지원</div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- MOBILE - 하단영역 끝 -->
+
+                <!-- MOBILE - 메뉴 및 정보 -->
+                <div class="mobile-menu-info">
+                    <div class="mmi-info">
+                        <dl>
+                            <dt><span class="user-name-type">반갑습니다.</span></dt>
+                            <dd>
+                                <a href="javascript:void(0);"><i class="fa-light fa-xmark"></i></a>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="mmi-tab-btn">
+                        <a href="/front/views/member/join_step01.html" class="active">회원가입</a>
+                        <a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
+                    </div>
+                    <div class="mmi-menu">
+                        <a href="/front/views/realPrice/realPrice.html">
+                            <span><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /> 실거래가</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/sell/sell.html">
+                            <span><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /> 매물정보</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/find/find_list.html">
+                            <span><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /> 삽니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/put/put_list.html">
+                            <span><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /> 팝니다</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                        <a href="/front/views/finance/finance.html">
+                            <span><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /> 금융지원</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>
+                    </div>
+                    <div class="mmi-support">
+                        <a href="/front/views/support/notice_list.html">고객센터</a>
+                    </div>
+                    <div class="mmi-site">
+                        <select name="" id="selectSiteMobile" class="form-select select-box middle">
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-footer">
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 이용약관</a>
+                        <a href="javascript:void(0);"><i class="fa-light fa-angle-right"></i> 개인정보취급방침</a>
+                    </div>
+                </div>
+                <div class="mobile-menu-info-bg">&nbsp;</div>
+                <!-- MOBILE - 메뉴 및 정보 끝 -->
+            </div>
+            <!-- MOBILE - 상단/메뉴/하단영역 끝 -->
+
+            <!-- 본문내용 -->
+            <div class="contents">
+                <!-- 타이틀 영역 -->
+                <div class="title-area">
+                    <h2>팝니다 수정</h2>
+                </div>
+                <!-- 타이틀 영역 끝 -->
+
+                <!-- 수정 -->
+                <form class="find-write fw-size1 needs-validation" novalidate>
+                    <div>
+                        <h2>기본주소를 입력하세요.</h2>
+                        <div>
+                            <input type="text" id="address_primary" name="address_primary" title="" value="" placeholder="" class="input-box w100p" onclick="openDaumPostcode()" readonly disabled required />
+                            <input type="hidden" id="address_road" name="address_road" />
+                            <input type="hidden" id="address_jibun" name="address_jibun" />
+                            <input type="hidden" id="sigungu_code" name="sigungu_code" />
+                            <input type="hidden" id="dong_code" name="dong_code" />
+                            <input type="hidden" id="latitude" name="latitude" />
+                            <input type="hidden" id="longitude" name="longitude" />
+                        </div>
+                    </div>
+                    <div>
+                        <h2>상세주소를 입력하세요.</h2>
+                        <div>
+                            <input type="text" id="address_detail" name="address_detail" title="" value="" placeholder="" class="input-box w100p" disabled />
+                        </div>
+                    </div>
+                    <div id="kakao_map" class="map-bg position-relative w-100" style="height: 200px"></div>
+                    <div>
+                        <h2>매물종류를 선택하세요.</h2>
+                        <div>
+                            <select id="estate_type" name="estate_type" class="form-select select-box w100p" disabled required>
+                                <option value="">매물종류 선택</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>거래방식을 선택하세요.</h2>
+                        <div class="fw-flex">
+                            <select id="sale_type" name="sale_type" class="form-select select-box w100p" disabled required>
+                                <option value="">거래방식 선택</option>
+                            </select>
+                            <div class="check-box-red">
+                                <input type="checkbox" name="opt" id="exchange_fg" disabled />
+                                <label for="exchange_fg">교환가능</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>가격을 입력하세요.</h2>
+                        <div class="fw-flex">
+                            <input type="number" id="sale_price" class="input-box w100p" name="" title="" value="" oninput="allowOnlyNumbers(this, 11)" maxlength="100000000" placeholder="" disabled required />
+                            <span>만원</span>
+                        </div>
+                    </div>
+                    <div id="rent_price_div" style="display: none">
+                        <h2>월세를 입력하세요.</h2>
+                        <div class="fw-flex">
+                            <input type="number" id="rent_price" class="input-box w100p" name="" title="" value="" oninput="allowOnlyNumbers(this, 11)" maxlength="100000000" placeholder="" disabled />
+                            <span>만원</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>면적을 입력하세요.</h2>
+                        <div class="fw-flex">
+                            <input type="number" id="area" class="input-box w100p" name="" title="" value="" oninput="allowOnlyNumbers(this, 10)" maxlength="1000000" placeholder="" disabled required />
+                            <span>㎡</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>연락처를 입력하세요.</h2>
+                        <div>
+                            <p>
+                                <input type="tel" id="phone" class="input-box w100p" name="" title="" value="" oninput="allowOnlyNumbers(this, 11)" placeholder="" disabled required />
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>자세한 설명을 적어주세요.</h2>
+                        <div>
+                            <textarea id="description" class="w100p" name="" cols="" rows="5" disabled></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="fw-file">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide" style="display: none">
+                                    <label type="button" for="file_input" class="d-flex justify-content-center align-items-center"><i class="fa-light fa-plus"></i></label>
+                                    <input class="form-control d-none" value="" id="file_input" type="file" accept="image/png, image/gif, image/jpeg" multiple />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <dl>
+                            <dt class="gap-2">
+                                <button type="button" id="modify_btn" class="btn-line-red">수정하기</button>
+                                <button type="button" id="save_btn" class="btn-line-red" style="display: none">저장하기</button>
+                                <button type="button" id="delete_btn" class="btn-line-red">삭제하기</button>
+                            </dt>
+                            <dd>
+                                <a href="/front/views/mypage/mypage_put.html" class="btn-default bg-gray">목록으로</a>
+                            </dd>
+                        </dl>
+                    </div>
+                </form>
+                <!-- 수정 끝 -->
+            </div>
+            <!-- 본문내용 끝 -->
+
+            <!-- 모달 - 저장확인 -->
+            <div class="modal-area" id="modalConfirm">
+                <dl class="ma-header">
+                    <dt>저장확인</dt>
+                    <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                </dl>
+                <div class="ma-completion">
+                    <p id="lottieConfirm"></p>
+                    <div>
+                        <h2><span>저장</span> 하시겠습니까?</h2>
+                        <!-- <h3><strong>1,345</strong>명에게 알림이 발송 되었습니다.</h3> -->
+                    </div>
+                </div>
+                <div class="ma-btn">
+                    <button type="button" id="save_confirm_btn" class="btn-default-m bg-aqua1 w100">확인</button>
+                    <a href="#" class="btn-default-m bg-gray w100" data-izimodal-close="">닫기</a>
+                </div>
+            </div>
+
+            <!-- 모달 - 수정실패 -->
+            <div class="modal-area" id="modalFail">
+                <dl class="ma-header">
+                    <dt>저장실패</dt>
+                    <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                </dl>
+                <div class="ma-completion">
+                    <p id="lottieFail"></p>
+                    <div>
+                        <h2>저장 중 <span>문제가</span> 발생했습니다.</h2>
+                        <!-- <h3><strong>1,345</strong>명에게 알림이 발송 되었습니다.</h3> -->
+                    </div>
+                </div>
+                <!-- <div class="ma-btn">
+                <a href="#" class="btn-default-m bg-gray w100" data-izimodal-close=""><i class="fa-light fa-xmark"></i> 닫기</a>
+            </div> -->
+            </div>
+
+            <!-- 모달 - 저장완료 -->
+            <div class="modal-area" id="modalCompletion">
+                <dl class="ma-header">
+                    <dt>저장완료</dt>
+                    <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                </dl>
+                <div class="ma-completion">
+                    <p id="lottieCompletion"></p>
+                    <div>
+                        <h2><span>저장</span> 되었습니다.</h2>
+                    </div>
+                </div>
+                <!-- <div class="ma-btn">
+                <a href="#" class="btn-default-m bg-gray w100" data-izimodal-close=""><i class="fa-light fa-xmark"></i> 닫기</a>
+            </div> -->
+            </div>
+            <!-- 모달 - 저장완료 끝 -->
+
+            <!-- 모달 - 로딩 -->
+            <div class="modal-area" id="modalLoading">
+                <dl class="ma-header">
+                    <dt>저장중</dt>
+                    <!-- <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd> -->
+                </dl>
+                <div class="ma-completion">
+                    <p id="lottieLoading"></p>
+                    <div>
+                        <h2><span>저장중</span> 입니다.</h2>
+                    </div>
+                </div>
+                <!-- <div class="ma-btn">
+                <a href="#" class="btn-default-m bg-gray w100" data-izimodal-close=""><i class="fa-light fa-xmark"></i> 닫기</a>
+            </div> -->
+            </div>
+            <!-- 모달 - 로딩 끝 -->
+
+            <!-- 하단영역 -->
+            <footer class="footer"></footer>
+            <!-- 하단영역 끝 -->
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+
+        <script src="/front/assets/js/iziModal.js"></script>
+        <script src="/front/assets/js/swiper.js"></script>
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <script src="/front/assets/js/nouislider.js"></script>
+        <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+        <!-- Daum 주소 Api -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+        <!-- 카카오맵 Api -->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services"></script>
+
+        <!-- custom -->
+        <script src="/front/assets/js/common.js"></script>
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/validation.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/js/00-include/layer_popup.js"></script>
+        <script src="/front/js/put/put_modify.js"></script>
+    </body>
+</html>
