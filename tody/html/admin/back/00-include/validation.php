@@ -284,6 +284,7 @@ function fileUploadErrorLog($file)
  */
 function file_upload_error_check($files)
 {
+    // print_r($files);exit;
     // $_FILES 배열 순회
     foreach ($files as $file) {
         // 여러 파일이 배열 형태로 업로드된 경우 처리
@@ -291,13 +292,14 @@ function file_upload_error_check($files)
             $fileCount = count($file['error']);
             for ($i = 0; $i < $fileCount; $i++) {
                 if ($file['error'][$i] != UPLOAD_ERR_OK) {
-                    $message = "파일 업로드 중 문제가 발생하였습니다.";
+                    $message = "파일 업로드 중 문제가 발생하였습니다.1";
                     return $message;
                 }
             }
         } else {
             if ($file['error'] != UPLOAD_ERR_OK) {
-                $message = "파일 업로드 중 문제가 발생하였습니다.";
+                $message = "파일 업로드 중 문제가 발생하였습니다.2";
+                // return "파일 업로드 중 문제가 발생하였습니다. 에러 코드: " . $file['error'];
                 return $message;
             }
         }

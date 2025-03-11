@@ -3,8 +3,8 @@ header("Access-Control-Allow-Headers: X-Requested-With, X-Prototype-Version");
 header("Content-Type: application/json; charset=utf-8");
 // header("Content-Type:text/html;charset=utf-8");
 
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
+// error_reporting(E_ALL);
+// ini_set("display_errors", 1);
 
 include_once '../00-include/common.php';
 include_once '../00-include/authChk.php';

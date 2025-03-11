@@ -1450,6 +1450,46 @@ function allowOnlyNumbers(inputElement, maxLength, commaBool = false) {
         inputElement.value = value;
     }
 }
+
+/**
+ * 숫자 및 소수점 입력 허용 (oninput용)
+ * ex) oninput="allowOnlyNumericAndDecimal(this, 10, true)"
+ * @param {HTMLElement} inputElement - 입력 필드
+ * @param {number} maxLength - 최대 자릿수 (소수점 포함)
+ * @param {boolean} commaBool - 천단위 콤마 여부
+ */
+function allowOnlyNumericAndDecimal(inputElement, maxLength, commaBool = false) {
+    // 입력된 값을 숫자와 소수점만 남기고 다른 문자는 제거
+    let value = inputElement.value.replace(/[^0-9.]/g, "");
+
+    // 소수점이 여러 번 입력되는 경우 첫 번째 소수점만 유지
+    const parts = value.split(".");
+    if (parts.length > 2) {
+        value = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    // 최대 자릿수 조건이 있는 경우
+    if (maxLength) {
+        // 최대 자릿수를 초과하면 잘라냄
+        if (value.length > maxLength) {
+            value = value.slice(0, maxLength);
+        }
+    }
+
+    // 최대값(max) 속성 검사 및 제한
+    const maxValue = inputElement.getAttribute("maxlength");
+    if (maxValue && parseFloat(value) > parseFloat(maxValue)) {
+        value = maxValue;
+    }
+
+    // 콤마 처리 (천 단위 구분)
+    if (commaBool) {
+        inputElement.value = comma(value);
+    } else {
+        inputElement.value = value;
+    }
+}
+
 function autoResize(_0x34dd0a) {
     var _0x2720e8 = a1_0x5169e9;
     $(_0x34dd0a)["css"](_0x2720e8(0x147), _0x2720e8(0x19e)), $(_0x34dd0a)[_0x2720e8(0x170)](_0x2720e8(0x147), _0x34dd0a["scrollHeight"] + "px");

@@ -219,6 +219,7 @@ function initSearchEvents() {
                 updateURL({ curLat: _0xb4feaf["y"], curLng: _0xb4feaf["x"] }), handleUrlChange();
                 var _0x295806 = new kakao["maps"][_0x4579fc(0x12a)](_0xb4feaf["y"], _0xb4feaf["x"]);
                 map[_0x4579fc(0x1d0)](_0x295806), searchDetailAddrFromCoords(_0x295806, displayAddressInfo);
+                searchArroundPlaces({ lat: _0xb4feaf["y"], lng: _0xb4feaf["x"] }); // 주변 시설 정보 가져오기
             } else $(_0x4579fc(0x1fe))[_0x4579fc(0x227)](_0x4579fc(0x171)), $(_0x4579fc(0x1e4))[_0x4579fc(0x14c)](_0x4579fc(0x145));
         });
 }

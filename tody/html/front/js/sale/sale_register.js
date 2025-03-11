@@ -143,14 +143,14 @@ function initEvents() {
             const _0x1ed1f8 = _0x8acd1c,
                 _0xb3d3e1 = $(_0x1ed1f8(0xcd))["val"]();
             if (_0xb3d3e1) {
-                console.log(globalBrTitleInfo);
+                // console.log(globalBrTitleInfo);
 
                 const _0x173373 = globalBrTitleInfo["find"](function (_0x2a74b8) {
-                    console.log(_0x2a74b8["mgmBldrgstPk"]);
+                    // console.log(_0x2a74b8["mgmBldrgstPk"]);
 
                     return _0x2a74b8["mgmBldrgstPk"] == _0xb3d3e1;
                 });
-                console.log(_0x173373);
+                // console.log(_0x173373);
 
                 _0x173373 && buildingInfoBind(_0x173373);
             }
@@ -207,7 +207,7 @@ function initEvents() {
 
             // const addressList = await fetchAddressList(keyword);
             const addressList = await searchAddress($(this).val());
-            console.log(addressList);
+            // console.log(addressList);
             if (addressList.status === "OK") {
                 displayPlaces(addressList.result);
             } else {
@@ -258,8 +258,8 @@ function initEvents() {
 async function searchAddress(param) {
     return new Promise((resolve, reject) => {
         geocoder.addressSearch(param, function (result, status) {
-            console.log(result);
-            console.log(status);
+            // console.log(result);
+            // console.log(status);
 
             if (status === kakao.maps.services.Status.OK) {
                 resolve({ result, status }); // 검색 결과를 Promise의 resolve로 반환
@@ -307,7 +307,7 @@ async function displayPlaces(places) {
         (function (place) {
             // 리스트 click
             itemEl.onclick = async function () {
-                console.log(place);
+                // console.log(place);
 
                 const data = place;
                 const address = data.address;
