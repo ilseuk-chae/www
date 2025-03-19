@@ -202,7 +202,6 @@
 .header > dl > dd > ul > li > a.active {
     color: #ef8779;
 }
-
 @media all and (max-width: 479px) {
     .header {
         display: none;
@@ -235,7 +234,7 @@
         margin: 0 0 0 38px;
     }
     .header > dl > dd {
-        width: 40%;
+        width: 45%;
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 20px 15px 0;
