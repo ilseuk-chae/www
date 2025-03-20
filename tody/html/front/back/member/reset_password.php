@@ -46,7 +46,7 @@ try {
         "UPDATE user_master SET
             password = ?
         WHERE user_no_hmac = ?
-        AND platform = general
+        AND platform = 'general'
         ";
 
     // 조건 추가
