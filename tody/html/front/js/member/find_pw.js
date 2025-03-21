@@ -1,1 +1,211 @@
-const a15_0x776c3e=a15_0x2a2f;(function(_0x4dccac,_0x585cde){const _0x536f41=a15_0x2a2f,_0x71506d=_0x4dccac();while(!![]){try{const _0xb7d0cf=parseInt(_0x536f41(0x157))/0x1*(parseInt(_0x536f41(0x161))/0x2)+parseInt(_0x536f41(0x156))/0x3+parseInt(_0x536f41(0x162))/0x4+parseInt(_0x536f41(0x164))/0x5+parseInt(_0x536f41(0x15b))/0x6+-parseInt(_0x536f41(0x15c))/0x7+-parseInt(_0x536f41(0x160))/0x8;if(_0xb7d0cf===_0x585cde)break;else _0x71506d['push'](_0x71506d['shift']());}catch(_0x19a84e){_0x71506d['push'](_0x71506d['shift']());}}}(a15_0xd28c,0x9a556),$(document)[a15_0x776c3e(0x151)](async function(){countTime(),initEvent();}));function a15_0x2a2f(_0x13af7b,_0x4972ae){const _0xd28c3a=a15_0xd28c();return a15_0x2a2f=function(_0x2a2f4d,_0x94bb2d){_0x2a2f4d=_0x2a2f4d-0x145;let _0x2cf45a=_0xd28c3a[_0x2a2f4d];return _0x2cf45a;},a15_0x2a2f(_0x13af7b,_0x4972ae);}function a15_0xd28c(){const _0x380eec=['#email','#check_btn','user_no','input','#btn_spinner','platform','text','closeTime','#email_send_btn','click','ready','removeClass','email','forEach','show','2092821LzfpEB','245LPHoEt','SNS로\x20가입한\x20회원입니다.','0:00','TOO_MANY_REQUESTS','678114tAMplT','3358264kWOoTh','findIndex','time','val','14283456Mprhtw','4298OCmrpQ','2144316MdNSgy','인증번호가\x20발송되었습니다.','5120620IZQBKE','인증번호가\x20발송에\x20실패했습니다.','href','인증번호를\x20입력하세요.','요청이\x20너무\x20많습니다.\x2010분\x20후에\x20다시\x20시도해주세요.','/front/views/member/find_pw_step02.html','이메일을\x20입력하세요.','#email_send_group','SUCCESS','/front/back/oauth/auth_num_send.php','유효시간이\x20경과했습니다.\x20인증번호를\x20다시\x20발송해주세요.','type','log','#auth_code_group','message','attr','POST','hide','d-none','AUTH_CODE_ERROR','addClass','#auth_code','.certificationTime','/front/back/oauth/auth_code_check.php'];a15_0xd28c=function(){return _0x380eec;};return a15_0xd28c();}function initEvent(){const _0x405ff7=a15_0x776c3e;$('#email_send_btn')['on'](_0x405ff7(0x150),function(){send_auth_code();}),$(_0x405ff7(0x148))['on'](_0x405ff7(0x150),function(){auth_code_check();});}async function send_auth_code(){const _0x118827=a15_0x776c3e,_0x5ad133=$(_0x118827(0x147));let _0x31d660=!![];const _0x3c5dc1=[{'input':_0x5ad133,'type':'email','message':_0x118827(0x16a)}];_0x3c5dc1[_0x118827(0x154)](_0x2a8ab=>{const _0x3f1e04=_0x118827;_0x31d660=validateInput(_0x2a8ab[_0x3f1e04(0x14a)],_0x2a8ab[_0x3f1e04(0x16f)],_0x2a8ab[_0x3f1e04(0x172)])&&_0x31d660;}),console[_0x118827(0x170)](_0x31d660);if(!_0x31d660){sweetAlertMessage('이메일을\x20입력하세요.','','w');return;}const _0x23ea9a={'email':encodeURIComponent(_0x5ad133['val']())};$('#email_send_btn')['hide'](),$('#btn_spinner')[_0x118827(0x152)](_0x118827(0x176));const _0x109ff4=await callApi(_0x118827(0x174),_0x118827(0x16d),_0x23ea9a),{statusCode:_0x3c5a66,message:_0xe8a3cd,responseData:_0x1c17ed}=_0x109ff4;if(_0x3c5a66==0xc8&&_0xe8a3cd==_0x118827(0x16c))sweetAlertMessage(_0x118827(0x163),'','s'),$(_0x118827(0x16b))[_0x118827(0x175)](),$(_0x118827(0x171))['show'](),$('.certificationTime')[_0x118827(0x173)]('hidden',![]),$[_0x118827(0x14e)](),$[_0x118827(0x15e)](0x257);else _0x3c5a66==0x1ad&&_0xe8a3cd==_0x118827(0x15a)?(sweetAlertMessage(_0x118827(0x168),'','e'),$(_0x118827(0x16b))[_0x118827(0x155)](),$(_0x118827(0x171))[_0x118827(0x175)]()):(sweetAlertMessage(_0x118827(0x165),'','e'),$(_0x118827(0x16b))['show'](),$(_0x118827(0x171))[_0x118827(0x175)]());$(_0x118827(0x14f))['show'](),$(_0x118827(0x14b))[_0x118827(0x178)](_0x118827(0x176));}async function auth_code_check(){const _0x1ef775=a15_0x776c3e,_0x4b59b5=$(_0x1ef775(0x145)),_0x21fe67=$(_0x1ef775(0x147)),_0x355891=$(_0x1ef775(0x179));if(_0x4b59b5['text']()==_0x1ef775(0x159)){sweetAlertMessage(_0x1ef775(0x16e),'','w'),$(_0x1ef775(0x16b))['show'](),$(_0x1ef775(0x171))[_0x1ef775(0x175)]();return;}let _0x1f5dd8=!![];const _0x3457fb=[{'input':_0x21fe67,'type':_0x1ef775(0x153),'message':_0x1ef775(0x16a)}];_0x3457fb['forEach'](_0x2cdb17=>{const _0x5c7889=_0x1ef775;_0x1f5dd8=validateInput(_0x2cdb17[_0x5c7889(0x14a)],_0x2cdb17[_0x5c7889(0x16f)],_0x2cdb17['message'])&&_0x1f5dd8;});if(!_0x1f5dd8){sweetAlertMessage(_0x3457fb[_0x1ef775(0x172)],'','w');return;}if(!_0x355891[_0x1ef775(0x15f)]()){sweetAlertMessage(_0x1ef775(0x167),'','w');return;}const _0x382991={'email':encodeURIComponent(_0x21fe67[_0x1ef775(0x15f)]()),'authCode':encodeURIComponent(_0x355891[_0x1ef775(0x15f)]())},_0x4bd76e=await callApi(_0x1ef775(0x174),_0x1ef775(0x146),_0x382991),{statusCode:_0x3f4ad1,message:_0x1efa1d,responseData:_0x2bc5fc}=_0x4bd76e;if(_0x3f4ad1==0xc8&&_0x1efa1d==_0x1ef775(0x16c)){if(_0x2bc5fc['length']==0x0){const _0x2bf0eb=await sweetAlertForReturn('가입된\x20회원정보를\x20찾을\x20수\x20없습니다.','','w');return;}const _0x19ea94=_0x2bc5fc[_0x1ef775(0x15d)](_0x40c322=>_0x40c322[_0x1ef775(0x14c)]==='general');if(_0x19ea94==-0x1){const _0x327c87=await sweetAlertForReturn(_0x1ef775(0x158),'','w');return;}const {platform:_0x26043c,user_no:_0x56be00}=_0x2bc5fc[_0x19ea94];_0x26043c=='general'&&(setCookie(_0x1ef775(0x149),_0x56be00),location[_0x1ef775(0x166)]=_0x1ef775(0x169));}else{if(_0x1efa1d==_0x1ef775(0x177)){const _0x4ecc62=await sweetAlertForReturn('인증번호가\x20일치하지\x20않습니다.','','w');}else{const _0x116d2a=await sweetAlertForReturn('가입된\x20회원정보를\x20찾을\x20수\x20없습니다.','','w');}}}function countTime(){const _0x42d632=a15_0x776c3e;let _0xc7d209=0x0,_0x124f32;$[_0x42d632(0x15e)]=function(_0x575a05){_0xc7d209=_0x575a05,_0x124f32=setInterval(_0x48ed7f,0x3e8);},$['closeTime']=function(){clearInterval(_0x124f32);};function _0x48ed7f(){const _0x505b27=_0x42d632;let _0x509fe6=Math['floor'](_0xc7d209/0x3c),_0x4bf7b0=_0xc7d209-0x3c*_0x509fe6;_0x4bf7b0>0x9?$('.certificationTime')['text'](_0x509fe6+':'+_0x4bf7b0+''):$(_0x505b27(0x145))[_0x505b27(0x14d)](_0x509fe6+':0'+_0x4bf7b0+''),_0xc7d209<=0x0&&clearInterval(_0x124f32),_0xc7d209--;}}
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(document).ready(async function () {
+    // 인증번호 발송 후 3분 카운팅 함수
+    countTime();
+
+    initEvent();
+});
+
+/**
+ * 이벤트 모음 함수
+ */
+function initEvent() {
+    $("#email_send_btn").on("click", function () {
+        send_auth_code();
+    });
+
+    $("#check_btn").on("click", function () {
+        auth_code_check();
+    });
+}
+
+/**
+ * 인증번호 발송 함수
+ * @returns
+ */
+async function send_auth_code() {
+    const email = $("#email");
+
+    // ##################################
+    // 유효성 검사 시작
+    // ##################################
+    let isValid = true;
+    const fieldsToValidate = [{ input: email, type: "email", message: "이메일을 입력하세요." }];
+
+    fieldsToValidate.forEach((field) => {
+        isValid = validateInput(field.input, field.type, field.message) && isValid;
+    });
+    console.log(isValid);
+    if (!isValid) {
+        sweetAlertMessage("이메일을 입력하세요.", "", "w");
+        return; // 폼 제출 방지
+    }
+    // ##################################
+    // 유효성 검사 종료
+    // ##################################
+
+    const dataObj = {
+        email: encodeURIComponent(email.val()),
+    };
+
+    //20250320_cis $("#email_send_btn").hide();
+    $("#btn_spinner").removeClass("d-none");
+
+    const result = await callApi("POST", "/front/back/oauth/auth_num_send.php", dataObj);
+    const { statusCode, message, responseData } = result;
+    if (statusCode == 200 && message == "SUCCESS") {
+        sweetAlertMessage("인증번호가 발송되었습니다.", "", "s");
+        //20250320_cis $("#email_send_group").hide();
+        //20250320_cis $("#auth_code_group").show();
+
+        // 3분 카운팅
+        $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
+        $.closeTime(); // 기존의 setInterval 함수를 멈춤
+        $.time(599); // 새로운 setInterval 함수 실행
+    } else if (statusCode == 400) {
+        sweetAlertMessage(message, "", "w");
+        //20250320_cis change $("#email_send_group").show();
+        //20250320_cis change $("#auth_code_group").hide();
+
+        // 3분 카운팅
+        // $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
+        // $.closeTime(); // 기존의 setInterval 함수를 멈춤
+        // $.time(599); // 새로운 setInterval 함수 실행
+    } else if (statusCode == 429 && message == "TOO_MANY_REQUESTS") {
+        sweetAlertMessage("요청이 너무 많습니다. 10분 후에 다시 시도해주세요.", "", "e");
+        //20250320_cis $("#email_send_group").show();
+        //20250320_cis $("#auth_code_group").hide();
+
+        // 3분 카운팅
+        // $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
+        // $.closeTime(); // 기존의 setInterval 함수를 멈춤
+        // $.time(599); // 새로운 setInterval 함수 실행
+    } else {
+        sweetAlertMessage("인증번호가 발송에 실패했습니다.", "", "e");
+        //20250320_cis $("#email_send_group").show();
+        //20250320_cis $("#auth_code_group").hide();
+    }
+
+    //20250320_cis $("#email_send_btn").show();
+    $("#btn_spinner").addClass("d-none");
+}
+
+/**
+ * 인증번호 확인 함수
+ * @returns
+ */
+async function auth_code_check() {
+    const remainTime = $(".certificationTime");
+    const email = $("#email");
+    const authCode = $("#auth_code");
+
+    // ##################################
+    // 유효성 검사 시작
+    // ##################################
+    if (remainTime.text() == "0:00") {
+        sweetAlertMessage("유효시간이 경과했습니다. 인증번호를 다시 발송해주세요.", "", "w");
+        $("#email_send_group").show();
+        $("#auth_code_group").hide();
+        return;
+    }
+    let isValid = true;
+    const fieldsToValidate = [{ input: email, type: "email", message: "이메일을 입력하세요." }];
+    fieldsToValidate.forEach((field) => {
+        isValid = validateInput(field.input, field.type, field.message) && isValid;
+    });
+    if (!isValid) {
+        sweetAlertMessage(fieldsToValidate.message, "", "w");
+        return; // 폼 제출 방지
+    }
+    if (!authCode.val()) {
+        sweetAlertMessage("인증번호를 입력하세요.", "", "w");
+        return;
+    }
+    // ##################################
+    // 유효성 검사 종료
+    // ##################################
+
+    const dataObj = {
+        email: encodeURIComponent(email.val()),
+        authCode: encodeURIComponent(authCode.val()),
+    };
+
+    const result = await callApi("POST", "/front/back/oauth/auth_code_check.php", dataObj);
+    const { statusCode, message, responseData } = result;
+    if (statusCode == 200 && message == "SUCCESS") {
+        if (responseData.length == 0) {
+            const alertResult = await sweetAlertForReturn(`가입된 회원정보를 찾을 수 없습니다.`, "", "w");
+            return;
+        }
+
+        const index = responseData.findIndex((item) => item.platform === "general");
+        if (index == -1) {
+            const alertResult = await sweetAlertForReturn(`SNS로 가입한 회원입니다.`, "", "w");
+            return;
+        }
+
+        const { platform, user_no } = responseData[index];
+        if (platform == "general") {
+            setCookie("user_no", user_no);
+            location.href = `/front/views/member/find_pw_step02.html`;
+        }
+
+        // let alertResult;
+        // if (alertResult) {
+        //     location.href = "/index.html";
+        // }
+    } else {
+        if (message == "AUTH_CODE_ERROR") {
+            const alertResult = await sweetAlertForReturn(`인증번호가 일치하지 않습니다.`, "", "w");
+        } else {
+            const alertResult = await sweetAlertForReturn(`가입된 회원정보를 찾을 수 없습니다.`, "", "w");
+        }
+    }
+}
+
+/**
+ * 3분 카운팅 함수
+ */
+function countTime() {
+    // 인증하기 3분 카운팅을 위한 코드
+    let countTime = 0;
+    let intervalCall;
+
+    // 주어진 time 값을 기준으로 시간을 카운트 다운한다.
+    $.time = function (time) {
+        // countTime 변수에 time 값을 저장
+        countTime = time;
+        // 1초마다 alertFunc() 함수 호출
+        intervalCall = setInterval(alertFunc, 1000);
+    };
+
+    // 시간 카운트 다운을 멈추기 위해 setInterval() 함수 멈춘다.
+    $.closeTime = function () {
+        clearInterval(intervalCall);
+    };
+
+    // [EVENT] 인증하기 클릭 시 카운팅(3분)
+    // $("#send_number").on("click", function () {
+    //     $.time(179);
+    // });
+
+    /**
+     * 시간을 계산하여 텍스트로 표시하는 함수
+     */
+    function alertFunc() {
+        // countTime 변수를 분과 초로 변환하여 .certificationTime 요소에 텍스트를 업데이트한다.
+        let min = Math.floor(countTime / 60);
+        let sec = countTime - 60 * min;
+        if (sec > 9) {
+            $(".certificationTime").text(min + ":" + sec + "");
+        } else {
+            $(".certificationTime").text(min + ":0" + sec + "");
+        }
+
+        // 시간이 0이하가 되면 setInterval() 함수를 멈춘다.
+        if (countTime <= 0) {
+            clearInterval(intervalCall);
+        }
+        countTime--;
+    }
+}

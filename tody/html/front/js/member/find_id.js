@@ -56,15 +56,15 @@ async function send_auth_code() {
         email: encodeURIComponent(email.val()),
     };
 
-    $("#email_send_btn").hide();
+    //20250320_cis change $("#email_send_btn").hide();
     $("#btn_spinner").removeClass("d-none");
 
     const result = await callApi("POST", "/front/back/oauth/auth_num_send.php", dataObj);
     const { statusCode, message, responseData } = result;
     if (statusCode == 200 && message == "SUCCESS") {
         sweetAlertMessage("인증번호가 발송되었습니다.", "", "s");
-        $("#email_send_group").hide();
-        $("#auth_code_group").show();
+        //20250320_cis change$("#email_send_group").hide();
+        //20250320_cis change$("#auth_code_group").show();
 
         // 3분 카운팅
         $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
@@ -72,8 +72,8 @@ async function send_auth_code() {
         $.time(599); // 새로운 setInterval 함수 실행
     } else if (statusCode == 400) {
         sweetAlertMessage(message, "", "w");
-        $("#email_send_group").show();
-        $("#auth_code_group").hide();
+        //20250320_cis change$("#email_send_group").show();
+        //20250320_cis change$("#auth_code_group").hide();
 
         // 3분 카운팅
         // $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
@@ -81,8 +81,8 @@ async function send_auth_code() {
         // $.time(599); // 새로운 setInterval 함수 실행
     } else if (statusCode == 429 && message == "TOO_MANY_REQUESTS") {
         sweetAlertMessage("요청이 너무 많습니다. 10분 후에 다시 시도해주세요.", "", "e");
-        $("#email_send_group").show();
-        $("#auth_code_group").hide();
+        //20250320_cis change$("#email_send_group").show();
+        //20250320_cis change$("#auth_code_group").hide();
 
         // 3분 카운팅
         // $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
@@ -90,11 +90,11 @@ async function send_auth_code() {
         // $.time(599); // 새로운 setInterval 함수 실행
     } else {
         sweetAlertMessage("인증번호가 발송에 실패했습니다.", "", "e");
-        $("#email_send_group").show();
-        $("#auth_code_group").hide();
+        //20250320_cis change$("#email_send_group").show();
+        //20250320_cis change$("#auth_code_group").hide();
     }
 
-    $("#email_send_btn").show();
+    //20250320_cis change$("#email_send_btn").show();
     $("#btn_spinner").addClass("d-none");
 }
 // async function send_auth_code() {
