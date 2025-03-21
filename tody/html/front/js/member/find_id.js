@@ -63,8 +63,8 @@ async function send_auth_code() {
     const { statusCode, message, responseData } = result;
     if (statusCode == 200 && message == "SUCCESS") {
         sweetAlertMessage("인증번호가 발송되었습니다.", "", "s");
-        //20250320_cis change$("#email_send_group").hide();
-        //20250320_cis change$("#auth_code_group").show();
+        //20250320_cis change $("#email_send_group").hide();
+        //20250320_cis change $("#auth_code_group").show();
 
         // 3분 카운팅
         $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
@@ -72,8 +72,8 @@ async function send_auth_code() {
         $.time(599); // 새로운 setInterval 함수 실행
     } else if (statusCode == 400) {
         sweetAlertMessage(message, "", "w");
-        //20250320_cis change$("#email_send_group").show();
-        //20250320_cis change$("#auth_code_group").hide();
+        //20250320_cis change $("#email_send_group").show();
+        //20250320_cis change $("#auth_code_group").hide();
 
         // 3분 카운팅
         // $(".certificationTime").attr("hidden", false); // 3분 카운트 보여줌
