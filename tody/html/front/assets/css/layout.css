@@ -202,6 +202,15 @@
 .header > dl > dd > ul > li > a.active {
     color: #ef8779;
 }
+.header > dl > dd > ul > li.active {
+    color: #ef8779;
+}
+/* li와 a 둘 다 active일 때 다른 색상 적용 가능  임시로 추가*/
+/* 
+.header > dl > dd > ul > li.active > a.active {
+    color: #d94f3d;  
+}
+*/
 @media all and (max-width: 479px) {
     .header {
         display: none;
@@ -222,7 +231,7 @@
         width: 970px;
     }
     .header > dl > dt:first-child {
-        width: 20%;
+        width: 17%;
     }
     .header > dl > dt:last-child {
         width: 40%;
@@ -234,7 +243,7 @@
         margin: 0 0 0 38px;
     }
     .header > dl > dd {
-        width: 45%;
+        width: 43%;
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 20px 15px 0;
@@ -245,7 +254,7 @@
         width: 1180px;
     }
     .header > dl > dt:first-child {
-        width: 20%;
+        width: 17%;
     }
     .header > dl > dt:last-child {
         width: 40%;
@@ -254,7 +263,7 @@
         margin: 0 0 0 102px;
     }
     .header > dl > dd {
-        width: 40%;
+        width: 43%;
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 40px 15px 0;

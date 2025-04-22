@@ -1,0 +1,38 @@
+
+/* 20250321 cis add 206~236*/
+
+/* 메뉴 아이템 기본 스타일 */
+.menu-item {
+    text-decoration: none; /* 텍스트 장식 제거 */
+    color: #111; /*기본 텍스트 색상 설정*/ 
+    padding: 5px 10px; /* 패딩 설정 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    display: block;
+}
+/* hover된 메뉴 아이템 스타일 */
+.menu-item.hover {
+    color: #ef8779; /* hover 시 텍스트 색상 변경 */
+    border-radius: 4px; /* 모서리 둥글게 */
+}
+
+ /* 메뉴 아이템 활성화(active) 상태 스타일 */
+ .menu-item.active {
+    color: #ef8779; /* hover 시 텍스트 색상 변경 */
+    font-weight: bold;
+    border-radius: 4px;
+  }
+ 
+  
+  /* 메뉴 리스트 스타일 */
+  dd.mb-0 ul.mb-0 {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* 메뉴 리스트 아이템 */
+  dd.mb-0 ul.mb-0 li {
+    margin-bottom: 4px;
+  }
+  
+ 
