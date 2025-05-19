@@ -1,634 +1,911 @@
-const a8_0x55a5a0 = a8_0x40ae;
-(function (_0x4f9e47, _0x3f8ca6) {
-    const _0x3960cd = a8_0x40ae,
-        _0x2b5856 = _0x4f9e47();
-    while (!![]) {
-        try {
-            const _0x15e9cf =
-                (parseInt(_0x3960cd(0x1a9)) / 0x1) * (parseInt(_0x3960cd(0x18e)) / 0x2) +
-                -parseInt(_0x3960cd(0x1e9)) / 0x3 +
-                -parseInt(_0x3960cd(0x1a4)) / 0x4 +
-                parseInt(_0x3960cd(0x1de)) / 0x5 +
-                (-parseInt(_0x3960cd(0x1bf)) / 0x6) * (parseInt(_0x3960cd(0x175)) / 0x7) +
-                -parseInt(_0x3960cd(0x1bd)) / 0x8 +
-                parseInt(_0x3960cd(0x1a1)) / 0x9;
-            if (_0x15e9cf === _0x3f8ca6) break;
-            else _0x2b5856["push"](_0x2b5856["shift"]());
-        } catch (_0x5d2c2f) {
-            _0x2b5856["push"](_0x2b5856["shift"]());
-        }
+$(document).ready(function () {
+    
+    
+    if ($("#find_results_table").length > 0) {
+        //console.log("#find_results_table element exists in DOM");
+    } else {
+       // console.error("#find_results_table element does not exist in DOM");
     }
-})(a8_0x5ed1, 0xdc387),
-    $(document)[a8_0x55a5a0(0x1f6)](function () {
-        const _0x322cfd = a8_0x55a5a0;
-        initFilters(),
-            initFindList(),
-            initEvents(),
-            setInitialSort(),
-            window[_0x322cfd(0x1ce)](_0x322cfd(0x1cf), function (_0x5678fa) {
-                initFindList(), setFilters();
-            });
-    });
-function initEvents() {
-    const _0x3db9cf = a8_0x55a5a0;
-    $("#sido")["on"](_0x3db9cf(0x194), function () {
-        const _0x228315 = _0x3db9cf,
-            _0x524df3 = $(this)[_0x228315(0x190)]();
-        sgg_get(_0x524df3);
-    }),
-        $(_0x3db9cf(0x16f))["on"](_0x3db9cf(0x17a), function () {
-            const _0x4ec70b = collectFilterParams();
-            (_0x4ec70b["page"] = 0x1), updateQueryStringObject(_0x4ec70b);
-        }),
-        $(_0x3db9cf(0x197))["on"](_0x3db9cf(0x17a), resetFilters),
-        $(".sort-btn\x20button")["on"]("click", function () {
-            const _0x457965 = _0x3db9cf;
-            $(_0x457965(0x1be))["removeClass"](_0x457965(0x19a)), $(this)[_0x457965(0x1c3)](_0x457965(0x19a)), updateQueryString(_0x457965(0x1ed), $(this)[_0x457965(0x192)](_0x457965(0x185)));
-        });
-}
-function initFilters() {
-    const _0x23588c = a8_0x55a5a0;
-    estate_type_get(), sale_type_get(), sido_get();
-    var _0x435494 = document[_0x23588c(0x1ec)]("price_slider"),
-        _0x26cab6 = document[_0x23588c(0x1ec)](_0x23588c(0x191));
-    set_pice_slider(_0x435494), set_area_slider(_0x26cab6), setInitialSliderValues(_0x435494, _0x23588c(0x1e4), _0x23588c(0x1e8)), setInitialSliderValues(_0x26cab6, _0x23588c(0x1f5), _0x23588c(0x1e5));
-}
-function setFilters() {
-    const _0x4fd9a8 = a8_0x55a5a0;
-    setFilterValue(_0x4fd9a8(0x1b2), _0x4fd9a8(0x1ee)),
-        setFilterValue("#sgg", "sgg"),
-        setFilterValue(_0x4fd9a8(0x17b), _0x4fd9a8(0x16e), !![]),
-        setFilterValue("#sale_type", _0x4fd9a8(0x1b1), !![]),
-        setInitialSliderValues(document[_0x4fd9a8(0x1ec)](_0x4fd9a8(0x1eb)), _0x4fd9a8(0x1e4), _0x4fd9a8(0x1e8)),
-        setInitialSliderValues(document[_0x4fd9a8(0x1ec)]("area_slider"), _0x4fd9a8(0x1f5), _0x4fd9a8(0x1e5)),
-        setInitialSort();
-}
-async function estate_type_get() {
-    const _0x1c8582 = a8_0x55a5a0,
-        _0x36d244 = {};
-    callApiAbort(_0x1c8582(0x1e7), _0x1c8582(0x1ae), _0x36d244, _0x1c8582(0x186))
-        [_0x1c8582(0x171)]((_0x37683e) => {
-            const _0x246acd = _0x1c8582;
-            populateOptions(_0x246acd(0x17b), _0x37683e["responseData"], _0x246acd(0x196), _0x246acd(0x1e2));
-        })
-        [_0x1c8582(0x1a5)]((_0x3d36c4) => {
-            const _0x4ab5a6 = _0x1c8582;
-            console["error"](_0x4ab5a6(0x1cb), _0x3d36c4);
-        })
-        [_0x1c8582(0x17f)](() => {
-            const _0x1981b0 = _0x1c8582,
-                _0x4eeca3 = $(_0x1981b0(0x17b));
-            _0x4eeca3[_0x1981b0(0x176)]();
-            const _0x25d604 = getParameter("estateType");
-            if (_0x25d604) {
-                const _0x5a7144 = decodeURIComponent(_0x25d604)[_0x1981b0(0x1af)](",");
-                _0x4eeca3[_0x1981b0(0x190)](_0x5a7144)[_0x1981b0(0x1c9)](_0x1981b0(0x194));
-            }
-        });
-}
-async function sale_type_get() {
-    const _0x499029 = a8_0x55a5a0,
-        _0x1e7bfd = {};
-    callApiAbort(_0x499029(0x1c8), _0x499029(0x1ae), _0x1e7bfd, _0x499029(0x1d1))
-        ["then"]((_0x1c34c5) => {
-            const _0x27e848 = _0x499029;
-            populateOptions(_0x27e848(0x199), _0x1c34c5[_0x27e848(0x172)], _0x27e848(0x196), _0x27e848(0x1e2));
-        })
-        [_0x499029(0x1a5)]((_0x14c151) => {
-            const _0x507b89 = _0x499029;
-            console[_0x507b89(0x180)](_0x507b89(0x1cb), _0x14c151);
-        })
-        ["finally"](() => {
-            const _0x2c5cd5 = _0x499029,
-                _0xd5eb0a = $(_0x2c5cd5(0x199));
-            _0xd5eb0a["multiSelect"]();
-            const _0x193ca2 = getParameter("saleType");
-            if (_0x193ca2) {
-                const _0x2b317f = decodeURIComponent(_0x193ca2)[_0x2c5cd5(0x1af)](",");
-                _0xd5eb0a[_0x2c5cd5(0x190)](_0x2b317f)[_0x2c5cd5(0x1c9)]("change");
-            }
-        });
-}
-async function sido_get() {
-    const _0x34c20f = a8_0x55a5a0,
-        _0x14eb6b = {};
-    callApiAbort(_0x34c20f(0x184), "POST", _0x14eb6b, _0x34c20f(0x17e))
-        ["then"]((_0x28989c) => {
-            const _0x1a8807 = _0x34c20f;
-            populateOptions("#sido", _0x28989c[_0x1a8807(0x172)], "sido_cd", _0x1a8807(0x1bb));
-        })
-        ["catch"]((_0x76bb7f) => {
-            const _0x57de46 = _0x34c20f;
-            console[_0x57de46(0x180)](_0x57de46(0x1cb), _0x76bb7f);
-        })
-        [_0x34c20f(0x17f)](async () => {
-            const _0x4a89ba = _0x34c20f,
-                _0x3af684 = getParameter(_0x4a89ba(0x1ee));
-            _0x3af684 && ($(_0x4a89ba(0x1b2))[_0x4a89ba(0x190)](_0x3af684), sgg_get(_0x3af684));
-        });
-}
-async function sgg_get(_0x482ed6) {
-    const _0x1e731e = a8_0x55a5a0,
-        _0x3012ac = { sido_cd: encodeURIComponent(_0x482ed6 || getParameter(_0x1e731e(0x1ee))) };
-    callApiAbort(_0x1e731e(0x1ab), "POST", _0x3012ac, _0x1e731e(0x19f))
-        [_0x1e731e(0x171)]((_0x46a6ee) => {
-            const _0x515d74 = _0x1e731e;
-            $(_0x515d74(0x1c4))[_0x515d74(0x1d6)]()["append"](_0x515d74(0x1c2)), populateOptions("#sgg", _0x46a6ee["responseData"], "sgg_cd", _0x515d74(0x1cd));
-        })
-        ["catch"]((_0x1d77a5) => {
-            const _0x55332f = _0x1e731e;
-            console[_0x55332f(0x180)](_0x55332f(0x1cb), _0x1d77a5);
-        })
-        [_0x1e731e(0x17f)](() => {
-            const _0x3c3eaa = getParameter("sgg");
-            _0x3c3eaa && $("#sgg")["val"](_0x3c3eaa);
-        });
-}
-function set_pice_slider(_0x25994f) {
-    const _0x506c4d = a8_0x55a5a0,
-        _0x1f2ae0 = 0x0,
-        _0x3f1825 = 100000000;
-    noUiSlider["create"](_0x25994f, {
-        start: [_0x1f2ae0, _0x3f1825],
-        connect: !![],
-        tooltips: [
-            {
-                to: function (_0x22fd35) {
-                    return _0x22fd35;
-                },
-            },
-            {
-                to: function (_0xf1ac98) {
-                    return _0xf1ac98;
-                },
-            },
-        ],
-        step: 1000,
-        keyboardSupport: !![],
-        keyboardDefaultStep: 1000,
-        keyboardPageMultiplier: 1000,
-        range: { min: _0x1f2ae0, max: _0x3f1825 },
-        format: wNumb({ decimals: 0x0, suffix: "" }),
-    });
-    const _0x25034e = document["getElementById"](_0x506c4d(0x18d)),
-        _0x431cc2 = document[_0x506c4d(0x1ec)](_0x506c4d(0x1c6));
-    _0x25034e &&
-        _0x431cc2 &&
-        _0x25994f &&
-        (_0x25994f[_0x506c4d(0x1b5)]["on"](_0x506c4d(0x187), function (_0x3971f8, _0x4bcd15) {
-            const _0x3ab9b8 = _0x506c4d;
-            (_0x3971f8 = _0x3971f8[_0x4bcd15]), _0x4bcd15 ? (_0x431cc2[_0x3ab9b8(0x1dc)] = _0x3971f8) : (_0x25034e[_0x3ab9b8(0x1dc)] = _0x3971f8);
-        }),
-        _0x25034e[_0x506c4d(0x1ce)]("change", function () {
-            const _0x4fa327 = _0x506c4d;
-            _0x25994f[_0x4fa327(0x1b5)][_0x4fa327(0x1f0)]([this[_0x4fa327(0x1dc)], null]);
-        }),
-        _0x431cc2["addEventListener"]("change", function () {
-            const _0x1e7388 = _0x506c4d;
-            _0x25994f[_0x1e7388(0x1b5)][_0x1e7388(0x1f0)]([null, this[_0x1e7388(0x1dc)]]);
-        })),
-        mergeTooltips(_0x25994f, 0x32, _0x506c4d(0x1df));
-}
-function set_area_slider(_0x4d5fbd) {
-    const _0x1235f0 = a8_0x55a5a0;
-    noUiSlider["create"](_0x4d5fbd, {
-        start: [0x0, 1000000],
-        connect: !![],
-        tooltips: [
-            {
-                to: function (_0x34fe1c) {
-                    return _0x34fe1c + "㎡";
-                },
-            },
-            {
-                to: function (_0x3744a2) {
-                    return _0x3744a2 + "㎡";
-                },
-            },
-        ],
-        step: 0xa,
-        keyboardSupport: !![],
-        keyboardDefaultStep: 0x32,
-        keyboardPageMultiplier: 0x14,
-        keyboardMultiplier: 0xa,
-        range: { min: 0x0, max: 1000000 },
-        format: wNumb({ decimals: 0x0, suffix: "" }),
-    });
-    const _0x450f09 = document[_0x1235f0(0x1ec)](_0x1235f0(0x19c)),
-        _0x426323 = document["getElementById"]("input_area_end");
-    _0x450f09 &&
-        _0x426323 &&
-        _0x4d5fbd &&
-        (_0x4d5fbd["noUiSlider"]["on"]("update", function (_0x4211fa, _0x248e2b) {
-            const _0x88d0cb = _0x1235f0;
-            (_0x4211fa = _0x4211fa[_0x248e2b]), _0x248e2b ? (_0x426323[_0x88d0cb(0x1dc)] = _0x4211fa) : (_0x450f09[_0x88d0cb(0x1dc)] = _0x4211fa);
-        }),
-        _0x450f09[_0x1235f0(0x1ce)]("change", function () {
-            const _0x4dac05 = _0x1235f0;
-            _0x4d5fbd[_0x4dac05(0x1b5)]["set"]([this[_0x4dac05(0x1dc)], null]);
-        }),
-        _0x426323["addEventListener"](_0x1235f0(0x194), function () {
-            const _0x1e7be8 = _0x1235f0;
-            _0x4d5fbd[_0x1e7be8(0x1b5)][_0x1e7be8(0x1f0)]([null, this[_0x1e7be8(0x1dc)]]);
-        })),
-        mergeTooltips(_0x4d5fbd, 0x32, _0x1235f0(0x1df));
-}
-function mergeTooltips(_0x1bbe21, _0x3dcb56, _0x43b12d) {
-    const _0x1ef933 = a8_0x55a5a0;
-    var _0x5c4071 = _0x1bbe21["noUiSlider"][_0x1ef933(0x1d9)](),
-        _0x20436c = _0x1bbe21[_0x1ef933(0x1b5)][_0x1ef933(0x19b)](),
-        _0x39e588 = _0x1bbe21["noUiSlider"][_0x1ef933(0x181)][_0x1ef933(0x1da)] === _0x1ef933(0x1aa);
-    const _0x101dea = _0x1bbe21["id"] === _0x1ef933(0x1eb) ? (_0x52982d) => formatPrice(_0x52982d) : (_0x3f054f) => _0x3f054f + "㎡";
-    _0x5c4071["forEach"](function (_0x55e888, _0x129a79) {
-        const _0x3e4eec = _0x1ef933;
-        _0x55e888 && _0x20436c[_0x129a79][_0x3e4eec(0x174)](_0x55e888);
-    }),
-        _0x1bbe21["noUiSlider"]["on"]("update", function (_0x2200bc, _0x52632d, _0x21f14a, _0x282b72, _0x550dd4) {
-            const _0x3b875c = _0x1ef933;
-            var _0x55648b = [[]],
-                _0x34c9d9 = [[]],
-                _0x5e6d03 = 0x0;
-            _0x5c4071[0x0] && (_0x55648b[0x0][_0x3b875c(0x1ba)](0x0), _0x34c9d9[0x0][_0x3b875c(0x1ba)](_0x101dea(_0x2200bc[0x0])));
-            for (var _0x382996 = 0x1; _0x382996 < _0x550dd4[_0x3b875c(0x1b6)]; _0x382996++) {
-                (!_0x5c4071[_0x382996] || _0x550dd4[_0x382996] - _0x550dd4[_0x382996 - 0x1] > _0x3dcb56) && (_0x5e6d03++, (_0x55648b[_0x5e6d03] = []), (_0x34c9d9[_0x5e6d03] = [])),
-                    _0x5c4071[_0x382996] && (_0x55648b[_0x5e6d03][_0x3b875c(0x1ba)](_0x382996), _0x34c9d9[_0x5e6d03][_0x3b875c(0x1ba)](_0x101dea(_0x2200bc[_0x382996])));
-            }
-            _0x55648b[_0x3b875c(0x1f2)](function (_0xb50549, _0x55f9d0) {
-                const _0x2a2735 = _0x3b875c;
-                var _0x55263e = _0xb50549[_0x2a2735(0x1b6)];
-                _0xb50549[_0x2a2735(0x1f2)](function (_0x2ed757, _0x41231d) {
-                    const _0x4f658d = _0x2a2735;
-                    var _0x4542cf = _0x5c4071[_0x2ed757];
-                    if (_0x41231d === _0x55263e - 0x1) {
-                        var _0x59d7a8 = 0x0;
-                        _0xb50549[_0x4f658d(0x1f2)](function (_0x492ba6) {
-                            _0x59d7a8 += 0x3e8 - _0x550dd4[_0x492ba6];
-                        });
-                        var _0x3ddbd8 = _0x39e588 ? "bottom" : _0x4f658d(0x170),
-                            _0x451873 = 0x3e8 - _0x550dd4[_0xb50549[_0xb50549[_0x4f658d(0x1b6)] - 0x1]];
-                        (_0x59d7a8 = _0x59d7a8 / _0x55263e - _0x451873), (_0x4542cf[_0x4f658d(0x16d)] = _0x34c9d9[_0x55f9d0]["join"](_0x43b12d)), (_0x4542cf["style"][_0x4f658d(0x1f4)] = _0x4f658d(0x1c7)), (_0x4542cf["style"][_0x3ddbd8] = _0x59d7a8 + "%");
-                    } else _0x4542cf[_0x4f658d(0x1a2)][_0x4f658d(0x1f4)] = _0x4f658d(0x17d);
-                });
-            });
-        });
-}
-function initFindList() {
-    const _0x4d0ff5 = a8_0x55a5a0,
-        _0x587a09 = {
-            sido: encodeURIComponent(getParameter(_0x4d0ff5(0x1ee)) || ""),
-            sgg: encodeURIComponent(getParameter(_0x4d0ff5(0x198)) || ""),
-            estate_type: getParameter(_0x4d0ff5(0x16e)) || "",
-            sale_type: getParameter(_0x4d0ff5(0x1b1)) || "",
-            min_price: encodeURIComponent(getParameter("minPrice") || ""),
-            max_price: encodeURIComponent(getParameter(_0x4d0ff5(0x1e8)) || ""),
-            min_area: encodeURIComponent(getParameter("minArea") || ""),
-            max_area: encodeURIComponent(getParameter(_0x4d0ff5(0x1e5)) || ""),
-            sort: encodeURIComponent(getParameter(_0x4d0ff5(0x1ed)) || ""),
-            page: encodeURIComponent(getParameter("page") || 0x1),
-            items_per_page: encodeURIComponent(getParameter(_0x4d0ff5(0x19e)) || 0xc),
-        };
-    callApiAbort(_0x4d0ff5(0x1d8), _0x4d0ff5(0x1ae), _0x587a09, _0x4d0ff5(0x1ac))
-        [_0x4d0ff5(0x171)]((_0x2cfd87) => {
-            const _0x3d5786 = _0x4d0ff5,
-                { status: _0x4101d0, messagem: _0x3e9521, responseData: _0x3ccacb, current_page: _0x46450d, total_pages: _0x5c480d, total_records: _0x20232e } = _0x2cfd87;
-            if (_0x3ccacb[_0x3d5786(0x1b6)] > 0x0) {
-                const _0x3d3251 = _0x3ccacb["map"](function (_0x14fd02) {
-                    const _0x1efd0b = _0x3d5786,
-                        _0x11e52c = _0x14fd02[_0x1efd0b(0x1b7)] == "매매" ? _0x1efd0b(0x1a0) : _0x14fd02["sale_type"] == "전세" ? _0x1efd0b(0x16c) : _0x14fd02[_0x1efd0b(0x1b7)] == "월세" ? "bg-indigo1" : "";
-                    const exchangeType = _0x14fd02.exchange_fg === "Y" ? "교환가능" : "교환불가능";
 
-                    return (
-                        _0x1efd0b(0x1dd) +
-                        _0x14fd02[_0x1efd0b(0x1ca)] +
-                        _0x1efd0b(0x179) +
-                        _0x14fd02[_0x1efd0b(0x1ee)] +
-                        "\x20" +
-                        (_0x14fd02[_0x1efd0b(0x1ee)] !== _0x14fd02["sgg"] && _0x14fd02["sgg"] ? _0x14fd02[_0x1efd0b(0x198)] : "") +
-                        _0x1efd0b(0x1c5) +
-                        _0x11e52c +
-                        "\x22>" +
-                        _0x14fd02[_0x1efd0b(0x1b7)] +
-                        "</span>\x20" +
-                        "<p class='d-flex justify-content-between w-100'><span>" +
-                        _0x14fd02[_0x1efd0b(0x1b0)] +
-                        "</span><span>" +
-                        exchangeType +
-                        "</span></p>" +
-                        _0x1efd0b(0x1e6) +
-                        convertToPyeong(_0x14fd02["min_area"]) +
-                        "~" +
-                        convertToPyeong(_0x14fd02[_0x1efd0b(0x183)]) +
-                        _0x1efd0b(0x193) +
-                        formatPrice(_0x14fd02["min_price"]) +
-                        "~" +
-                        formatPrice(_0x14fd02["max_price"]) +
-                        _0x1efd0b(0x1ad) +
-                        _0x14fd02[_0x1efd0b(0x177)] +
-                        _0x1efd0b(0x1e0) +
-                        _0x14fd02["noti_count"] +
-                        _0x1efd0b(0x1ea)
-                    );
-                })["join"]("");
-                $(_0x3d5786(0x1b9))[_0x3d5786(0x1cc)](_0x3d3251), $("#total_count")["text"](comma(_0x20232e));
-            } else {
-                const _0x1a910e = _0x3d5786(0x182);
-                $(_0x3d5786(0x1b9))[_0x3d5786(0x1cc)](_0x1a910e);
+    initFilters(); // 검색 조건 초기화
+    initializeDataTable(); // 테이블 초기화
+    initEvents(); // 이벤트 초기화
+
+    //console.log("Document is ready"); // 문서 로드 확인
+    
+
+    // 이벤트 위임 방식으로 클릭 이벤트 바인딩
+    $("#find_results_table_container").on("click", "tr", function () {
+        const wantedNo = $(this).data("wanted-no"); // *** 여기 수정! ***
+        //console.log("Row clicked, Wanted No:", wantedNo); // 수정 후 로그 확인
+        if (wantedNo) {
+            location.href = `find_view.html?viewNo=${wantedNo}`;
+        }
+    });
+
+    $("#find_results_table").on("click", "thead th", function() {
+        //console.log("TH clicked:", $(this).text());
+        const table = $("#find_results_table").DataTable();
+        // 클릭된 th에 대한 DataTables 셀 객체 가져오기
+        const cell = table.cell(this);
+        if (cell) {
+            const colIndex = cell.index().column;
+            //console.log("Clicked column index:", colIndex);
+            // 해당 컬럼이 orderable 한지 확인
+            const column = table.column(colIndex);
+            //console.log("Is column orderable?", column.orderable()); // true 가 나와야 정렬 가능 설정된 컬럼
+        } else {
+             //console.log("Could not get DataTables cell object for clicked TH.");
+        }
+        // 이 시점에서 브라우저 Network 탭에서 새로운 AJAX 요청이 나가는지 확인합니다.
+    });
+});
+
+/**
+ * 검색 조건 초기화
+ */
+function initFilters() {
+    estate_type_get(); // 매물종류 필터
+    sale_type_get(); // 거래방식 필터
+    sido_get(); // 시/도 필터
+
+    // 가격대 슬라이더 초기화
+    const priceSlider = document.getElementById("price_slider");
+    const areaSlider = document.getElementById("area_slider");
+    set_price_slider(priceSlider);
+    set_area_slider(areaSlider);
+
+    setInitialSliderValues(priceSlider, "minPrice", "maxPrice");
+    setInitialSliderValues(areaSlider, "minArea", "maxArea");
+}
+
+/**
+ * DataTables 초기화
+ */
+function initializeDataTable() {
+    //console.log("initializeDataTable called"); // 함수 시작 로그
+    
+    if ($.fn.DataTable.isDataTable("#find_results_table")) {
+        //console.log("Destroying existing DataTable instance");
+        $("#find_results_table").DataTable().destroy();
+    }
+    
+    //console.log("Initializing DataTable with AJAX function..."); // 초기화 확인
+    const table = new DataTable("#find_results_table", {
+        language: {
+            url: "/assets/libs/datatables/lang/ko.json",
+        },
+        scrollX: true,
+        scrollY: "500px", // 세로 스크롤 활성화 및 높이 설정
+        scrollCollapse: true, // 테이블 높이가 데이터보다 작을 경우 스크롤 영역 축소
+        processing: true,
+        responsive: true,
+        //destroy: true, // 이 옵션은 필요 없을 수 있습니다. initializeDataTable 함수를 한 번만 부르는 로직으로 충분.
+        lengthChange: false, // 페이지당 보이는 개수 드롭다운 숨기기
+        paging: false, // 페이지네이션 숨기기
+        searching: false, // 검색창 숨기기
+        createdRow: function (row, data, dataIndex) {
+            // 'row'는 현재 생성되고 있는 <tr> DOM 요소입니다.
+            // 'data'는 이 행에 해당하는 서버 응답 데이터 객체입니다.
+            // 'dataIndex'는 데이터 배열에서의 이 행의 인덱스입니다.
+
+            // data 객체에는 서버로부터 받은 wanted_no 값이 포함되어 있을 것입니다.
+            // 이 값을 가져와 <tr> 요소에 data-wanted-no 속성으로 설정합니다.
+            if (data && data.wanted_no !== undefined) {
+                $(row).attr('data-wanted-no', data.wanted_no); // <tr> 요소에 data-wanted-no 속성 추가
             }
-            updatePagination(_0x20232e, _0x46450d, _0x587a09[_0x3d5786(0x1d5)]);
-        })
-        [_0x4d0ff5(0x1a5)]((_0x4e3ec7) => {
-            const _0x47b219 = _0x4d0ff5;
-            console[_0x47b219(0x180)](_0x47b219(0x1cb), _0x4e3ec7), $(_0x47b219(0x1b9))["html"](_0x47b219(0x182));
-        })
-        [_0x4d0ff5(0x17f)](() => {});
-}
-function updatePagination(_0x52d7e3, _0x40ce4d, _0xfc62e3) {
-    const _0x3cd509 = a8_0x55a5a0,
-        _0xd0b6db = Math[_0x3cd509(0x18c)](_0x52d7e3 / _0xfc62e3),
-        _0x3f5541 = 0x5,
-        _0x51047b = $(_0x3cd509(0x16b));
-    _0x51047b[_0x3cd509(0x1d6)]();
-    const _0x382611 = $(_0x3cd509(0x1c1));
-    _0x40ce4d > 0x1 ? _0x382611["on"](_0x3cd509(0x17a), handlePageClick) : _0x382611[_0x3cd509(0x1c3)](_0x3cd509(0x195));
-    _0x51047b[_0x3cd509(0x173)](_0x382611);
-    const _0x158a6f = $(_0x3cd509(0x1db) + (_0x40ce4d - 0x1) + _0x3cd509(0x1c0));
-    _0x40ce4d > 0x1 ? _0x158a6f["on"](_0x3cd509(0x17a), handlePageClick) : _0x158a6f[_0x3cd509(0x1c3)](_0x3cd509(0x195));
-    _0x51047b[_0x3cd509(0x173)](_0x158a6f);
-    const _0x4b01de = Math[_0x3cd509(0x1ef)](_0x3f5541 / 0x2);
-    let _0x363b6c = Math[_0x3cd509(0x1d2)](0x1, _0x40ce4d - _0x4b01de),
-        _0x26afb7 = Math[_0x3cd509(0x178)](_0xd0b6db, _0x40ce4d + _0x4b01de);
-    _0x40ce4d - _0x4b01de < 0x1 && (_0x26afb7 = Math[_0x3cd509(0x178)](_0xd0b6db, _0x26afb7 + (0x1 - (_0x40ce4d - _0x4b01de))));
-    _0x40ce4d + _0x4b01de > _0xd0b6db && (_0x363b6c = Math[_0x3cd509(0x1d2)](0x1, _0x363b6c - (_0x40ce4d + _0x4b01de - _0xd0b6db)));
-    for (let _0x14867f = _0x363b6c; _0x14867f <= _0x26afb7; _0x14867f++) {
-        const _0x5230fd = $("<a\x20href=\x27javascript:void(0)\x27\x20class=\x27move_page\x27\x20data-page=\x27" + _0x14867f + "\x27>" + _0x14867f + _0x3cd509(0x1d7));
-        _0x14867f === _0x40ce4d ? _0x5230fd["addClass"](_0x3cd509(0x19a)) : _0x5230fd["on"](_0x3cd509(0x17a), handlePageClick), _0x51047b["append"](_0x5230fd);
+
+            // (선택 사항) 마우스 커서 변경
+            $(row).css('cursor', 'pointer');
+        },
+        // *** createdRow 옵션 끝 ***
+        columns: [
+            { data: "wanted_no", title: "등록번호" },
+            { data: "sido", title: "시/도" }, // 시/도 컬럼
+            { data: "sgg", title: "시/군/구" }, // 시/군/구 컬럼
+            { data: "estate_type", title: "매물종류" },
+            { data: "sale_type", title: "거래방식", render: (data) => `<span class="label-default ${getBadgeClass(data)}">${data}</span>` },
+            { data: "exchange_fg", title: "교환", render: (data) => (data === "Y" ? "가능" : "불가능") },
+            { data: "min_area", title: "면적 (평)", render: (data, type, row) => `${convertToPyeong(row.min_area)}~${convertToPyeong(row.max_area)}평` },
+            { data: "min_price", title: "희망가격", render: (data, type, row) => `${formatPrice(row.min_price)}~${formatPrice(row.max_price)}` },
+            { data: "reg_date", title: "등록일" },
+            { data: "noti_count", title: "조회수(명)" },
+            { data: null, title: "비고", orderable: false, render: () => "" },
+        ],
+        order: [],
+         // *** 이 부분이 일괄 정렬 설정입니다. ***
+        columnDefs: [
+            //{ className: "dt-center", targets: "_all" } // 모든 컬럼을 가운데 정렬
+            //{ className: "dt-left",   targets: "_all" } // 모든 컬럼을 왼쪽 정렬
+             { className: "dt-right",  targets: "_all" } // 모든 컬럼을 오른쪽 정렬
+        ],
+        // *** 설정 끝 ***
+        // *** AJAX 데이터 로드 설정 (함수 형태) ***
+        // DataTables의 ajax 함수 설정
+        //ajax: function (data, callback, settings) {
+        //    console.log("DataTable ajax function triggered."); // ajax 함수 호출 확인 로그
+        //    const params = collectFilterParams(); // 현재 필터 파라미터 수집
+        //    console.log("Collected filter params for AJAX:", params); // 수집된 파라미터 확인
+
+            // fetchAndRenderPropertyList 대신, 데이터를 가져오는 로직만 수행하고
+            // DataTables 콜백 함수에 데이터를 전달합니다.
+            // fetchAndRenderPropertyList 안의 데이터 가져오는 부분을 이곳으로 옮기거나,
+            // fetchAndRenderPropertyList가 데이터를 가져온 후 DataTables의 callback 함수를 호출하도록 수정합니다.
+
+            // 예시: fetchAndRenderPropertyList 함수를 수정하여 callback을 받도록 함
+        //    fetchDataForDataTable(params, callback); // 이 함수가 데이터를 가져와 callback을 호출하도록 수정
+
+        //},
+        // ... 기타 설정
+        ajax: function (data, callback, settings) {
+            //console.log("DataTable ajax function triggered by DataTables.");
+
+            // DataTables가 보내는 기본 파라미터(페이지 정보, 정렬 정보 등)와
+            // collectFilterParams()에서 가져온 검색 필터 파라미터를 합칩니다.
+            // DataTables의 'data' 파라미터 안에는 start, length, order, search 등의 정보가 있습니다.
+            const filterParams = collectFilterParams();
+            const requestParams = $.extend({}, data, filterParams); // DataTables 기본 파라미터와 필터 파라미터 병합
+
+            //console.log("Sending AJAX request with merged params:", requestParams); // 서버로 보낼 최종 파라미터 확인
+
+            // fetchAndRenderPropertyList의 내부 로직 (API 호출 부분)을 이곳으로 옮기거나,
+            // fetchAndRenderPropertyList 함수를 DataTables 콜백을 받도록 수정합니다.
+
+            // Option 1: fetchAndRenderPropertyList 내부 로직을 이곳으로 옮기는 경우
+            callApi("POST", "/front/back/find/find_list.php", requestParams) // 병합된 파라미터 전달
+                .then((response) => {
+                    //console.log("API Response received for DataTables:", response);
+
+                    if (response && response.responseData) {
+                         // 서버 응답 데이터를 DataTables가 기대하는 형식으로 가공
+                         // serverSide: true 이므로 { data: [...], recordsTotal: N, recordsFiltered: M } 형태 필수
+                         const dtResponse = {
+                             data: response.responseData, // 테이블에 표시할 실제 데이터 배열
+                             recordsTotal: response.total_records || 0, // 필터링 전 총 레코드 수 (필요하다면 API에서 제공)
+                             recordsFiltered: response.total_records || 0 // 필터링 후 총 레코드 수 (검색 결과의 총 개수)
+                         };
+                         // DataTables 콜백 함수 호출하여 데이터 전달
+                         callback(dtResponse);
+                         //console.log("DataTable callback function called with data.");
+
+                         // 총 건수만 여기서 업데이트 (테이블 렌더링은 DataTables가 스스로 합니다)
+                         $("#total_count").text(typeof comma === 'function' ? comma(dtResponse.recordsFiltered) : dtResponse.recordsFiltered);
+
+                    } else {
+                        // 데이터가 없을 경우 빈 배열 전달
+                        callback({ data: [], recordsTotal: 0, recordsFiltered: 0 });
+                        //console.warn("API response has no data or invalid format.");
+                         $("#total_count").text(0);
+                    }
+                })
+                .catch((error) => {
+                    //console.error("데이터 로딩 중 오류 발생:", error);
+                    // 에러 발생 시 빈 데이터 전달
+                    callback({ data: [], recordsTotal: 0, recordsFiltered: 0 });
+                    //console.error("DataTable callback function called with empty data due to error.");
+                     $("#total_count").text(0);
+                });
+
+            // Option 2: fetchAndRenderPropertyList 함수를 수정하여 DataTables 콜백을 받도록 하는 경우
+            // fetchDataForDataTable(requestParams, callback); // 수정된 함수를 호출하고 callback 전달
+
+        },
+        // DataTables의 서버 사이드 처리 활성화 (API가 페이징, 정렬, 검색 처리)
+        //serverSide: true,
+        
+        // DataTables에게 어떤 파라미터를 서버에 보낼지 정의 (필요하다면)
+        // 기본 DataTables 파라미터(start, length, order, search) 외에 추가 파라미터 정의
+        // ajax.data 옵션을 사용하여 DataTables 기본 파라미터와 filterParams를 합치는 것이 더 유연합니다.
+        /*
+        ajax: {
+            url: "/front/back/find/find_list.php",
+            type: "POST", // 또는 GET
+            data: function (d) {
+                 // d는 DataTables 기본 파라미터 객체
+                 const filterParams = collectFilterParams();
+                 // DataTables 기본 파라미터에 필터 파라미터 추가
+                 return $.extend({}, d, filterParams);
+            },
+            dataSrc: function (json) {
+                 // 서버 응답 json에서 실제 데이터 배열을 반환
+                 // 여기서는 { data: [...], recordsTotal: N, recordsFiltered: M } 형식이므로 json.data를 반환
+                 // 만약 응답이 { responseData: [...], ... } 라면 json.responseData를 반환
+                 // 그리고 total_records, total_pages 등의 정보는 json에 직접 있어야 합니다.
+                 // DataTables는 dataSrc 함수가 아닌, ajax 함수 자체의 callback으로 { data: [...], ... } 객체를 전달받는 방식을 선호합니다.
+                 // 따라서 Option 1의 방식이 더 일반적입니다.
+                 console.log("DataTables dataSrc function received JSON:", json);
+                 // 총 건수 업데이트 로직을 DataTables ajax 함수의 success 콜백 안으로 옮기는 것이 좋습니다.
+                 const totalRecords = json.total_records || 0;
+                 $("#total_count").text(typeof comma === 'function' ? comma(totalRecords) : totalRecords);
+
+                 return json.responseData; // 실제 데이터 배열을 반환
+            },
+            error: function(xhr, status, error) {
+                 console.error("DataTables AJAX error:", error);
+                 $("#total_count").text(0);
+                 // 에러 발생 시 DataTables에 에러를 알림 (빈 데이터 등)
+                 // DataTables 콜백 함수를 직접 호출하는 Option 1 방식이 에러 처리에 더 용이합니다.
+            }
+        }
+        */
+    });
+
+    if (table) {
+        //console.log("DataTable initialized successfully:", table); // 초기화 성공 확인
+    } else {
+        //console.error("DataTable initialization failed!");
     }
-    const _0x36e39a = $(_0x3cd509(0x1f3) + (_0x40ce4d + 0x1) + _0x3cd509(0x1f1));
-    _0x40ce4d < _0xd0b6db ? _0x36e39a["on"](_0x3cd509(0x17a), handlePageClick) : _0x36e39a[_0x3cd509(0x1c3)](_0x3cd509(0x195));
-    _0x51047b[_0x3cd509(0x173)](_0x36e39a);
-    const _0x3e2a1e = $("<a\x20href=\x27javascript:void(0)\x27\x20class=\x27last_page\x27\x20data-page=\x27" + _0xd0b6db + "\x27><i\x20class=\x27fas\x20fa-angle-double-right\x27></i></a>");
-    _0x40ce4d < _0xd0b6db ? _0x3e2a1e["on"](_0x3cd509(0x17a), handlePageClick) : _0x3e2a1e["addClass"]("disabled"), _0x51047b["append"](_0x3e2a1e);
+    //console.log("initializeDataTable function finished."); // 함수 종료 로그
+
+    // initializeDataTable 함수 내부 마지막 부분
+    //console.log("Checking ajax setting immediately after initialization:");
+    //if ($.fn.DataTable.isDataTable("#find_results_table")) {
+    //    const tempTable = $("#find_results_table").DataTable();
+    //    try {
+    //        const tempAjaxSetting = tempTable.settings()[0].ajax;
+    //        console.log("Ajax setting right after init:", tempAjaxSetting);
+    //        console.log("Type of ajax setting right after init:", typeof tempAjaxSetting);
+    //    } catch(e) {
+    //        console.error("Error checking ajax setting right after init:", e);
+    //    }
+    //} else {
+    //    console.error("DataTable instance not found right after init!");
+    //}
+   
+    // 테이블 헤더에 구분선 추가
+    $("#find_results_table thead th").css("border-bottom", "2px solid #ced4da");
 }
-function handlePageClick(_0x252d1b) {
-    const _0x7d789a = a8_0x55a5a0;
-    _0x252d1b[_0x7d789a(0x1a8)]();
-    const _0x4f4448 = $(this)[_0x7d789a(0x188)](_0x7d789a(0x1d0));
-    updateQueryString(_0x7d789a(0x1d0), _0x4f4448);
+
+/**
+ * 이벤트 초기화
+ */
+function initEvents() {
+    // [EVENT] 변경 이벤트 - 시/도 필터
+    $("#sido").on("change", function () {
+        const sido_cd = $(this).val();
+        sgg_get(sido_cd); // 필터(시/군/구)
+    });
+
+    
+    // 검색 버튼 클릭 이벤트
+    $("#search_btn").off("click").on("click", function () {
+        //console.log("Search button clicked"); // 디버깅용 로그
+    
+        // DataTables 인스턴스가 해당 요소에 존재하는지 먼저 확인
+        if ($.fn.DataTable.isDataTable("#find_results_table")) {
+             //console.log("DataTable instance IS recognized by $.fn.DataTable.isDataTable().");
+    
+             // 인스턴스가 존재한다면, API 인스턴스를 가져옵니다.
+             const table = $("#find_results_table").DataTable();
+    
+             console.log("Retrieved DataTable API instance:", table);
+             // console.log("Type of retrieved object:", typeof table); // 객체 타입 확인
+    
+             // 인스턴스가 유효한지, 그리고 settings를 통해 ajax 설정을 가져올 수 있는지 확인
+             try {
+                 // settings() 메서드 호출 결과 확인
+                 const settingsArray = table.settings();
+                 //console.log("Result of table.settings():", settingsArray);
+                 // console.log("Type of settingsArray:", typeof settingsArray); // 배열 타입 확인
+                 // console.log("Length of settingsArray:", settingsArray ? settingsArray.length : 'N/A'); // 배열 길이 확인
+    
+                 if (settingsArray && settingsArray.length > 0 && settingsArray[0]) {
+                     //console.log("Accessing settingsArray[0]:", settingsArray[0]);
+                     // settingsArray[0]가 유효하다면 ajax 속성에 접근
+                     const ajaxSetting = settingsArray[0].ajax;
+                     //console.log("DataTable ajax setting:", ajaxSetting);
+                     //console.log("Type of ajax setting:", typeof ajaxSetting);
+    
+                     if (typeof ajaxSetting === 'function') {
+                          //console.log("ajax setting is a function. Proceeding with reload.");
+                          table.ajax.reload(null, false); // 테이블 데이터 다시 로드
+                     } else {
+                          //console.warn("DataTable instance found, but its ajax setting is not a function as expected.");
+                          //console.warn("Current ajax setting:", ajaxSetting);
+                     }
+                 } else {
+                      //console.warn("DataTable instance found, but settings() returned an empty or invalid array.");
+                 }
+    
+             } catch (e) {
+                 //console.error("Error attempting to access DataTable settings:", e);
+                 //console.error("The object retrieved by .DataTable() seems like a DataTables instance, but its settings are inaccessible.");
+             }
+    
+    
+        } else {
+            //console.error("DataTable instance NOT found using $.fn.DataTable.isDataTable().");
+            //console.error("This means the table was likely not initialized successfully or was destroyed before button click.");
+            //console.error("Please ensure initializeDataTable() function is called and completes without errors before the search button is clicked.");
+        }
+    });
+    // 초기화 버튼 클릭 이벤트
+    $("#reset_btn").on("click", function () {
+        resetFilters();
+        const table = $("#find_results_table").DataTable();
+        //console.log("Reloading table with params:", collectFilterParams()); // 디버깅용 로그
+        table.ajax.reload(null, false); // 테이블 데이터 다시 로드
+    });
+
+    $("#find_results_table tbody").on("click", "tr", function() {
+        const wantedNo = $(this).data("wanted-no");
+        //console.log("Row clicked, wanted_no:", wantedNo);
+        // wantedNo를 사용하여 상세 페이지 이동 등의 로직 수행
+        // 예: window.location.href = '/detail_page.html?no=' + wantedNo;
+    });
+    
 }
+
+/**
+ * 필터 파라미터 수집
+ */
 function collectFilterParams() {
-    const _0x7dccbe = a8_0x55a5a0;
-    return {
-        sido: $("#sido")[_0x7dccbe(0x190)](),
-        sgg: $(_0x7dccbe(0x1c4))["val"](),
-        estateType: $("#estate_type")[_0x7dccbe(0x190)](),
-        saleType: $(_0x7dccbe(0x199))["val"](),
-        minPrice: $("#input_price_start")[_0x7dccbe(0x190)](),
-        maxPrice: $(_0x7dccbe(0x1b3))[_0x7dccbe(0x190)](),
-        minArea: $("#input_area_start")[_0x7dccbe(0x190)](),
-        maxArea: $(_0x7dccbe(0x1bc))[_0x7dccbe(0x190)](),
-        page: getParameter(_0x7dccbe(0x1d0)) || 0x1,
-        items_per_page: getParameter(_0x7dccbe(0x19e)) || 0xc,
+    const params =  {
+        sido: $("#sido").val(),
+        sgg: $("#sgg").val(),
+        estateType: $("#estate_type").val(),
+        saleType: $("#sale_type").val(),
+        minPrice: $("#input_price_start").val(),
+        maxPrice: $("#input_price_end").val(),
+        minArea: $("#input_area_start").val(),
+        maxArea: $("#input_area_end").val(),
     };
+    //console.log("Collected filter params:", params); // 필터 값 확인
+    return params;
 }
-function setInitialSort() {
-    const _0x50f5be = a8_0x55a5a0,
-        _0x5dd576 = getParameter(_0x50f5be(0x1ed));
-    _0x5dd576 && ($(_0x50f5be(0x1be))["removeClass"](_0x50f5be(0x19a)), $(_0x50f5be(0x1e3) + _0x5dd576)[_0x50f5be(0x1c3)](_0x50f5be(0x19a)));
-}
+
+
+/**
+ * 필터 초기화
+ */
 function resetFilters() {
-    const _0x103fac = a8_0x55a5a0;
-    var _0x260e7e = document[_0x103fac(0x1ec)](_0x103fac(0x1eb)),
-        _0xc2fa11 = document[_0x103fac(0x1ec)](_0x103fac(0x191));
-    _0x260e7e[_0x103fac(0x1b5)]["set"]([0x0, 0x30d40]),
-        _0xc2fa11[_0x103fac(0x1b5)][_0x103fac(0x1f0)]([0x0, 0x3e8]),
-        $(_0x103fac(0x1b2))[_0x103fac(0x190)](""),
-        $(_0x103fac(0x1c4))[_0x103fac(0x190)](""),
-        $(_0x103fac(0x1c4))[_0x103fac(0x189)](_0x103fac(0x18a))[_0x103fac(0x18b)](),
-        $(_0x103fac(0x17b))[_0x103fac(0x190)]([])[_0x103fac(0x1c9)](_0x103fac(0x194)),
-        $(_0x103fac(0x199))[_0x103fac(0x190)]([])["trigger"](_0x103fac(0x194)),
-        $(_0x103fac(0x1be))["removeClass"]("active"),
-        $(_0x103fac(0x19d))[_0x103fac(0x1c3)](_0x103fac(0x19a));
-    var _0xc80878 = window[_0x103fac(0x1f7)]["href"][_0x103fac(0x1af)]("?")[0x0];
-    window[_0x103fac(0x1b8)]["replaceState"](null, "", _0xc80878), initFindList();
+    $("#sido").val("");
+    $("#sgg").val("");
+    $("#sgg").find("option:not(:first)").remove();
+    $("#estate_type").val([]).trigger("change");
+    $("#sale_type").val([]).trigger("change");
+
+    const priceSlider = document.getElementById("price_slider");
+    const areaSlider = document.getElementById("area_slider");
+    //priceSlider.noUiSlider.set([0, 200000]);
+    priceSlider.noUiSlider.set([0, 100000000]);
+    areaSlider.noUiSlider.set([0, 1000000]);
+
+    var newUrl = window.location.href.split("?")[0];
+    window.history.replaceState(null, "", newUrl);
+
 }
-function setFilterValue(_0x467a85, _0x5b39c9, _0x56ec2d = ![]) {
-    const _0x293660 = a8_0x55a5a0,
-        _0xdfd0d4 = getParameter(_0x5b39c9);
-    if (_0xdfd0d4) {
-        const _0xc43ae5 = _0x56ec2d ? decodeURIComponent(_0xdfd0d4)[_0x293660(0x1af)](",") : _0xdfd0d4;
-        $(_0x467a85)[_0x293660(0x190)](_0xc43ae5)[_0x293660(0x1c9)]("change");
-    }
-}
-function setInitialSliderValues(_0x45001a, _0x31d0a6, _0x37e0db) {
-    const _0x5034a3 = a8_0x55a5a0,
-        _0x2574d1 = getParameter(_0x31d0a6),
-        _0x41e763 = getParameter(_0x37e0db);
-    _0x2574d1 && _0x41e763 && _0x45001a[_0x5034a3(0x1b5)][_0x5034a3(0x1f0)]([_0x2574d1, _0x41e763]);
-}
-function a8_0x40ae(_0x14668e, _0x3c2c4f) {
-    const _0x5ed1b5 = a8_0x5ed1();
-    return (
-        (a8_0x40ae = function (_0x40ae18, _0x49c9b4) {
-            _0x40ae18 = _0x40ae18 - 0x16b;
-            let _0x512d1f = _0x5ed1b5[_0x40ae18];
-            return _0x512d1f;
-        }),
-        a8_0x40ae(_0x14668e, _0x3c2c4f)
-    );
-}
-function populateOptions(_0x5a51a2, _0xa79a5, _0x42c23f, _0x5356f1) {
-    const _0x5a7e7c = a8_0x55a5a0;
-    if (_0xa79a5[_0x5a7e7c(0x1b6)] > 0x0) {
-        _0xa79a5[_0x5a7e7c(0x1ed)]((_0x1dc229, _0x1e4381) => _0x1dc229[_0x5356f1]["localeCompare"](_0x1e4381[_0x5356f1]));
-        const _0x530d87 = _0xa79a5[_0x5a7e7c(0x1e1)]((_0x13040e) => _0x5a7e7c(0x18f) + _0x13040e[_0x42c23f] + "\x22>" + _0x13040e[_0x5356f1] + "</option>")["join"]("");
-        $(_0x5a51a2)[_0x5a7e7c(0x173)](_0x530d87);
-    }
-}
-function a8_0x5ed1() {
-    const _0x4a1a1a = [
-        "set",
-        "\x27><i\x20class=\x27fas\x20fa-caret-right\x27></i></a>",
-        "forEach",
-        "<a\x20href=\x27javascript:void(0)\x27\x20class=\x27next_page\x27\x20data-page=\x27",
-        "display",
-        "minArea",
-        "ready",
-        "location",
-        ".paging-list",
-        "bg-violet1",
-        "innerHTML",
-        "estateType",
-        "#search_btn",
-        "right",
-        "then",
-        "responseData",
-        "append",
-        "appendChild",
-        "805553dHIEfb",
-        "multiSelect",
-        "reg_date",
-        "min",
-        "\x27;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h2>",
-        "click",
-        "#estate_type",
-        "<a\x20href=\x27javascript:void(0)\x27\x20class=\x27",
-        "none",
-        "sido_get",
-        "finally",
-        "error",
-        "options",
-        "<p>결과값이\x20존재하지\x20않습니다.</p>",
-        "max_area",
-        "/front/back/find/sido_get.php",
-        "data-sort",
-        "estate_type_get",
-        "update",
-        "data",
-        "find",
-        "option:not(:first)",
-        "remove",
-        "ceil",
-        "input_price_start",
-        "5008xNeJAu",
-        "<option\x20value=\x22",
-        "val",
-        "area_slider",
-        "attr",
-        "평</h4>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h5>",
-        "change",
-        "disabled",
-        "type_code",
-        "#reset_btn",
-        "sgg",
-        "#sale_type",
-        "active",
-        "getOrigins",
-        "input_area_start",
-        "#sort_latest",
-        "itemsPerPage",
-        "sgg_get",
-        "bg-green1",
-        "15499566mdecpz",
-        "style",
-        "_end",
-        "3557616DjGTMo",
-        "catch",
-        "create",
-        "<a\x20href=\x27javascript:void(0)\x27\x20class=\x27move_page\x27\x20data-page=\x27",
-        "preventDefault",
-        "443ZjfrPr",
-        "vertical",
-        "/front/back/find/sgg_get.php",
-        "loadLists",
-        "</h5>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<dl>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<dt><i\x20class=\x22fa-light\x20fa-clock\x22></i>\x20",
-        "POST",
-        "split",
-        "estate_type",
-        "saleType",
-        "#sido",
-        "#input_price_end",
-        "\x27><i\x20class=\x27",
-        "noUiSlider",
-        "length",
-        "sale_type",
-        "history",
-        "#find_list_ul",
-        "push",
-        "locallow_nm",
-        "#input_area_end",
-        "5692720cXHVoM",
-        ".sort-btn\x20button",
-        "6pVTBUj",
-        "\x27><i\x20class=\x27fas\x20fa-caret-left\x27></i></a>",
-        "<a\x20href=\x27javascript:void(0)\x27\x20class=\x27first_page\x27\x20data-page=\x271\x27><i\x20class=\x27fas\x20fa-angle-double-left\x27></i></a>",
-        "<option\x20value=\x22\x22>선택하세요.</option>",
-        "addClass",
-        "#sgg",
-        "</h2>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3\x20class=\x22d-flex\x20align-items-center\x20gap-1\x22><span\x20class=\x22label-default\x20",
-        "input_price_end",
-        "block",
-        "/front/back/find/sale_type_get.php",
-        "trigger",
-        "wanted_no",
-        "API\x20호출\x20실패",
-        "html",
-        "locatadd_nm",
-        "addEventListener",
-        "popstate",
-        "page",
-        "sale_type_get",
-        "max",
-        "_start",
-        "\x27\x20data-page=\x27",
-        "items_per_page",
-        "empty",
-        "</a>",
-        "/front/back/find/find_list.php",
-        "getTooltips",
-        "orientation",
-        "<a\x20href=\x27javascript:void(0)\x27\x20class=\x27prev_page\x27\x20data-page=\x27",
-        "value",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20onclick=\x22location.href=\x27find_view.html?viewNo=",
-        "7012920DfCjHf",
-        "\x20~\x20",
-        "</dt>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<dd><i\x20class=\x22fa-sharp\x20fa-solid\x20fa-bell\x22></i>\x20",
-        "map",
-        "type_name",
-        "#sort_",
-        "minPrice",
-        "maxArea",
-        "</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h4>",
-        "/front/back/find/estate_type_get.php",
-        "maxPrice",
-        "4847802QGAHUj",
-        "명</dd>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</dl>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>",
-        "price_slider",
-        "getElementById",
-        "sort",
-        "sido",
-        "floor",
-    ];
-    a8_0x5ed1 = function () {
-        return _0x4a1a1a;
-    };
-    return a8_0x5ed1();
-}
-function createSlider(_0x2c2dca, _0x474005, _0x3fc1df, _0x1ba937) {
-    const _0x141809 = a8_0x55a5a0;
-    noUiSlider[_0x141809(0x1a6)](_0x2c2dca, { start: _0x474005, connect: !![], tooltips: !![], step: _0x3fc1df, range: { min: _0x474005[0x0], max: _0x474005[0x1] }, format: wNumb({ decimals: 0x0 }) });
-    const _0x3b7d1b = document[_0x141809(0x1ec)]("input_" + _0x1ba937 + _0x141809(0x1d3)),
-        _0x2ba625 = document[_0x141809(0x1ec)]("input_" + _0x1ba937 + _0x141809(0x1a3));
-    _0x2c2dca[_0x141809(0x1b5)]["on"]("update", function (_0x322ab5, _0x21eb3c) {
-        const _0x5a937d = _0x141809;
-        (_0x21eb3c ? _0x2ba625 : _0x3b7d1b)[_0x5a937d(0x1dc)] = _0x322ab5[_0x21eb3c];
-    }),
-        _0x3b7d1b[_0x141809(0x1ce)]("change", function () {
-            const _0x4e3a6f = _0x141809;
-            _0x2c2dca[_0x4e3a6f(0x1b5)][_0x4e3a6f(0x1f0)]([this[_0x4e3a6f(0x1dc)], null]);
-        }),
-        _0x2ba625[_0x141809(0x1ce)]("change", function () {
-            const _0x4e5230 = _0x141809;
-            _0x2c2dca[_0x4e5230(0x1b5)][_0x4e5230(0x1f0)]([null, this[_0x4e5230(0x1dc)]]);
+
+/**
+ * 테이블 데이터 불러오기
+ */
+// fetchAndRenderPropertyList 함수를 수정하거나, DataTables ajax 함수 안에서
+// 데이터를 가져오는 로직을 직접 구현합니다.
+// 만약 fetchAndRenderPropertyList 함수를 계속 사용하려면,
+// 이 함수가 DataTables ajax 함수의 'callback' 인자를 받아서 최종적으로 그 'callback'을 호출해야 합니다.
+/*
+function fetchAndRenderPropertyList(params, callback) {
+    console.log("Fetching data with params:", params); // 검색 조건 확인
+    callApi("POST", "/front/back/find/find_list.php", params)
+        .then((response) => {
+            console.log("API Response:", response); // // API 응답 확인
+            
+            if (response && response.responseData) {
+                // DataTables와 연동된 콜백 호출
+                
+                callback({ data: response.responseData });
+
+                // renderPropertyListTable 호출
+                renderPropertyListTable(response.responseData, response.total_records);
+
+                // 총 건수 업데이트
+                const totalRecords = response.total_records || 0;
+                $("#total_count").text(typeof comma === 'function' ? comma(totalRecords) : totalRecords);
+            } else {
+                // 데이터가 없을 경우 빈 배열 반환
+                callback({ data: [] });
+                renderPropertyListTable([], 0); // 빈 데이터로 테이블 렌더링
+                $("#total_count").text(0);
+            }
+        })
+        .catch((error) => {
+            console.error("데이터 로딩 중 오류 발생:", error);
+
+            // 오류 발생 시 빈 데이터 반환
+            callback({ data: [] });
+            $("#total_count").text(0);
         });
 }
-function addPaginationButton(_0x339eb0, _0x3d0574, _0x493613, _0x5202a2, _0x3b741a) {
-    const _0x435fb1 = a8_0x55a5a0,
-        _0x4781b3 = $(_0x435fb1(0x17c) + _0x3d0574 + _0x435fb1(0x1d4) + _0x493613 + _0x435fb1(0x1b4) + _0x3b741a + "\x27></i></a>");
-    _0x5202a2 ? _0x4781b3["on"](_0x435fb1(0x17a), handlePageClick) : _0x4781b3[_0x435fb1(0x1c3)](_0x435fb1(0x195)), _0x339eb0[_0x435fb1(0x173)](_0x4781b3);
+*/
+/**
+ * 테이블 렌더링 함수
+ */
+/*
+function renderPropertyListTable(dataArray, totalRecords) {
+    const tableContainerId = "find_results_table_container"; // 테이블이 삽입될 컨테이너 ID
+    const tableId = "find_results_table"; // 테이블 자체의 ID (정렬 이벤트 바인딩에 사용)
+    
+    if (dataArray && dataArray.length > 0) {
+        let tableHtml = `
+            <table class="table nowrap align-middle" style="width: 100%"  id="${tableId}">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th class="sortable" data-sort-key="sido" data-sort-type="text">시/도</th>
+                        <th class="sortable" data-sort-key="sgg" data-sort-type="text">시/군/구</th>
+                        <th class="sortable" data-sort-key="sale_type" data-sort-type="text">거래방식</th>
+                        <th class="sortable" data-sort-key="estate_type" data-sort-type="text">매물종류</th>
+                        <th class="sortable" data-sort-key="exchange_fg" data-sort-type="text">교환</th>
+                        <th class="sortable" data-sort-key="min_area" data-sort-type="number">면적 (평)</th>
+                        <th class="sortable" data-sort-key="min_price" data-sort-type="number">희망가격</th>
+                        <th class="sortable" data-sort-key="reg_date" data-sort-type="date">등록일</th>
+                        <th class="sortable" data-sort-key="noti_count" data-sort-type="number">조회수(명)</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        let i = 1;
+        dataArray.forEach(function (item) {
+            const badgeClass = getBadgeClass(item.sale_type);
+            const exchangeType = item.exchange_fg === "Y" ? "가능" : "불가능";
+            const areaText = `${convertToPyeong(item.min_area)}~${convertToPyeong(item.max_area)}평`;
+            const priceText = `${formatPrice(item.min_price)}~${formatPrice(item.max_price)}`;
+
+            tableHtml += `
+                <tr data-wanted-no="${item.wanted_no}" style="cursor: pointer;">
+                    <td>${item.wanted_no}</td>
+                    <td>${item.sido}</td>
+                    <td>${item.sgg || ""}</td>
+                    <td><span class="label-default ${badgeClass}">${item.sale_type}</span></td>
+                    <td>${item.estate_type}</td>
+                    <td>${exchangeType}</td>
+                    <td>${areaText}</td>
+                    <td>${priceText}</td>
+                    <td>${item.reg_date}</td>
+                    <td>${item.noti_count}</td>
+                    <td></td>
+                </tr>
+            `;
+        });
+
+        tableHtml += `
+                </tbody>
+            </table>
+        `;
+
+        // 컨테이너에 테이블 HTML 삽입
+        $("#" + tableContainerId).html(tableHtml);
+
+        // DataTables 초기화
+        $("#" + tableId).DataTable({
+            language: {
+                url: "/assets/libs/datatables/lang/ko.json",
+            },
+            scrollX: true,
+            scrollY: "500px", // 세로 스크롤 활성화 및 높이 설정
+            scrollCollapse: true, // 테이블 높이가 데이터보다 작을 경우 스크롤 영역 축소
+            processing: true,
+            responsive: true,
+            destroy: true,
+            lengthChange: false, // 페이지당 보이는 개수 드롭다운 숨기기
+            paging: false, // 페이지네이션 숨기기
+            searching: false, // 검색창 숨기기
+        });
+        // 테이블 헤더에 구분선 추가
+        $("#" + tableId + " thead th").css("border-bottom", "2px solid #ced4da");
+
+        // 총 레코드 수 업데이트
+        $("#total_count").text(typeof comma === 'function' ? comma(totalRecords) : totalRecords);
+
+        // 테이블 헤더에 정렬 이벤트 바인딩
+        
+        //$("#" + tableId).find('th.sortable').on('click', function () {
+        //    const sortKey = $(this).data('sort-key');
+        //    const sortType = $(this).data('sort-type');
+       //     handleTableSort(sortKey, sortType);
+       // });
+
+        // 정렬 상태 업데이트
+        //updateSortIndicators();
+    } else {
+        // 데이터가 없을 경우
+        $("#" + tableContainerId).html("<p>검색 결과가 없습니다.</p>");
+        $("#total_count").text(0);
+    }
 }
-function addPaginationPageNumber(_0x471e35, _0x3419a5, _0x4fd7bc) {
-    const _0x1c65dd = a8_0x55a5a0,
-        _0x131a68 = $(_0x1c65dd(0x1a7) + _0x3419a5 + "\x27>" + _0x3419a5 + _0x1c65dd(0x1d7));
-    _0x3419a5 === _0x4fd7bc ? _0x131a68[_0x1c65dd(0x1c3)](_0x1c65dd(0x19a)) : _0x131a68["on"](_0x1c65dd(0x17a), handlePageClick), _0x471e35["append"](_0x131a68);
+*/
+
+/**
+ * 거래방식에 따른 배지 클래스 반환
+ */
+function getBadgeClass(saleType) {
+    return saleType === "매매" ? "bg-green1" : saleType === "전세" ? "bg-violet1" : saleType === "월세" ? "bg-indigo1" : "";
 }
-function calculateVisiblePages(_0x2ef5b7, _0x527008, _0x3d8f8b) {
-    const _0x513841 = a8_0x55a5a0,
-        _0x48ed66 = Math[_0x513841(0x1ef)](_0x3d8f8b / 0x2);
-    let _0x1f2fcd = Math[_0x513841(0x1d2)](0x1, _0x2ef5b7 - _0x48ed66),
-        _0x36d3a5 = Math["min"](_0x527008, _0x2ef5b7 + _0x48ed66);
-    return (
-        _0x2ef5b7 - _0x48ed66 < 0x1 && (_0x36d3a5 = Math[_0x513841(0x178)](_0x527008, _0x36d3a5 + (0x1 - (_0x2ef5b7 - _0x48ed66)))),
-        _0x2ef5b7 + _0x48ed66 > _0x527008 && (_0x1f2fcd = Math[_0x513841(0x1d2)](0x1, _0x1f2fcd - (_0x2ef5b7 + _0x48ed66 - _0x527008))),
-        { startPage: _0x1f2fcd, endPage: _0x36d3a5 }
-    );
+
+// =============================================================================
+// 검색 필터 관련 함수
+// =============================================================================
+/**
+ * 매물종류 가져오는 함수
+ * @returns
+ */
+async function estate_type_get() {
+    const dataObj = {};
+
+    callApiAbort("/front/back/find/estate_type_get.php", "POST", dataObj, "estate_type_get")
+        .then((response) => {
+            populateOptions("#estate_type", response.responseData, "type_code", "type_name");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {
+            const estate_type = $("#estate_type");
+            estate_type.multiSelect();
+
+            const estateTypeArray = getParameter("estateType");
+            if (estateTypeArray) {
+                const decodedArray = decodeURIComponent(estateTypeArray).split(",");
+                estate_type.val(decodedArray).trigger("change");
+            }
+        });
+}
+
+/**
+ * 거래종류 가져오는 함수
+ * @returns
+ */
+async function sale_type_get() {
+    const dataObj = {};
+
+    callApiAbort("/front/back/find/sale_type_get.php", "POST", dataObj, "sale_type_get")
+        .then((response) => {
+            populateOptions("#sale_type", response.responseData, "type_code", "type_name");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {
+            const sale_type = $("#sale_type");
+            sale_type.multiSelect();
+            const estateTypeArray = getParameter("saleType");
+
+            if (estateTypeArray) {
+                const decodedArray = decodeURIComponent(estateTypeArray).split(",");
+                sale_type.val(decodedArray).trigger("change");
+            }
+        });
+}
+
+/**
+ * 시/도 가져오는 함수
+ * @returns
+ */
+async function sido_get() {
+    const dataObj = {};
+
+    callApiAbort("/front/back/find/sido_get.php", "POST", dataObj, "sido_get")
+        .then((response) => {
+            populateOptions("#sido", response.responseData, "sido_cd", "locallow_nm");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(async () => {
+            // sido 쿼리 스트링 있으면 필터에 적용
+            const sido = getParameter("sido");
+            if (sido) {
+                $("#sido").val(sido);
+                sgg_get(sido);
+            }
+        });
+}
+
+/**
+ * 시/군/구 가져오는 함수
+ * @returns
+ */
+async function sgg_get(sido_cd) {
+    const dataObj = {
+        sido_cd: encodeURIComponent(sido_cd || getParameter("sido")),
+    };
+
+    callApiAbort("/front/back/find/sgg_get.php", "POST", dataObj, "sgg_get")
+        .then((response) => {
+            $("#sgg").empty().append('<option value="">선택하세요.</option>');
+            populateOptions("#sgg", response.responseData, "sgg_cd", "locatadd_nm");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {
+            // sgg 쿼리 스트링 있으면 필터에 적용
+            const sgg = getParameter("sgg");
+            if (sgg) {
+                $("#sgg").val(sgg);
+            }
+        });
+}
+/**
+ * 필터 값을 설정하는 함수
+ * @param {string} selector jQuery 선택자
+ * @param {string} param URL 파라미터 이름
+ * @param {boolean} isArray 배열 여부
+ */
+function setFilterValue(selector, param, isArray = false) {
+    const value = getParameter(param);
+    if (value) {
+        const decodedValue = isArray ? decodeURIComponent(value).split(",") : value;
+        $(selector).val(decodedValue).trigger("change");
+    }
+}
+
+/**
+ * 초기 슬라이더 값을 설정하는 함수
+ * @param {Object} slider noUiSlider 객체
+ * @param {string} minParam 최소값 파라미터 이름
+ * @param {string} maxParam 최대값 파라미터 이름
+ */
+function setInitialSliderValues(slider, minParam, maxParam) {
+    const currentMin = getParameter(minParam);
+    const currentMax = getParameter(maxParam);
+    if (currentMin && currentMax) {
+        slider.noUiSlider.set([currentMin, currentMax]);
+    }
+}
+
+/**
+ * 선택자를 이용해 옵션을 채우는 함수
+ * @param {string} selector jQuery 선택자
+ * @param {Array} data 데이터 배열
+ * @param {string} valueKey 값 키
+ * @param {string} textKey 텍스트 키
+ */
+function populateOptions(selector, data, valueKey, textKey) {
+    if (data.length > 0) {
+        // 텍스트 기준 오름차순
+        data.sort((a, b) => a[textKey].localeCompare(b[textKey]));
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        $(selector).append(optionHtml);
+    }
+}
+
+/**
+ * 슬라이더를 생성하는 함수
+ * @param {Object} slider noUiSlider 객체
+ * @param {Array} range 슬라이더 범위
+ * @param {number} step 슬라이더 스텝
+ * @param {string} type 타입 (price 또는 area)
+ */
+function createSlider(slider, range, step, type) {
+    noUiSlider.create(slider, {
+        start: range,
+        connect: true,
+        tooltips: true,
+        step: step,
+        range: {
+            min: range[0],
+            max: range[1],
+        },
+        format: wNumb({ decimals: 0 }),
+    });
+
+    const inputStart = document.getElementById(`input_${type}_start`);
+    const inputEnd = document.getElementById(`input_${type}_end`);
+
+    slider.noUiSlider.on("update", function (values, handle) {
+        (handle ? inputEnd : inputStart).value = values[handle];
+    });
+
+    inputStart.addEventListener("change", function () {
+        slider.noUiSlider.set([this.value, null]);
+    });
+
+    inputEnd.addEventListener("change", function () {
+        slider.noUiSlider.set([null, this.value]);
+    });
+}
+
+/**
+ * 가격대 필터 셋팅 함수
+ * @param {*} slider
+ */
+function set_price_slider(slider) {
+    const min = 0;
+    const max = 100000000;
+
+    // range - 가격대 //
+    noUiSlider.create(slider, {
+        start: [min, max], //  초기 시작값 설정
+        connect: true, // 슬라이더 핸들 사이를 채움
+        // 툴팁 단위설정
+        tooltips: [
+            {
+                to: function (value) {
+                    return value; // 소수점 이하 2자리로 반올림
+                    // return formatPrice(Math.round(value * 100) / 100); // 소수점 이하 2자리로 반올림
+                },
+            },
+            {
+                to: function (value) {
+                    return value; // 소수점 이하 2자리로 반올림
+                    // return formatPrice(Math.round(value * 100) / 100); // 소수점 이하 2자리로 반올림
+                },
+            },
+        ],
+        step: 1000, // 슬라이더 스텝 크기 설정
+        keyboardSupport: true, // 키보드 지원 활성화
+        keyboardDefaultStep: 1000, // 키보드 화살표 키 기본 스탭 크기
+        keyboardPageMultiplier: 1000, // Page Up/Down 키에 대한 배수(기본 스텝 크기 기준)
+        // keyboardMultiplier: 10, // Shift 키와 함께 사용할 때 배수(기본 스텝 크기 기준)
+        range: {
+            min: min, // 슬라이더 최소값
+            max: max, // 슬라이더 최대값
+        },
+        format: wNumb({
+            decimals: 0, // 소수점 자릿수 설정
+            suffix: "", // 접미사 설정 (여기서는 빈 문자열)
+        }),
+    });
+
+    // 인풋박스와 연동
+    const inputNumber = document.getElementById("input_price_start");
+    const inputNumber2 = document.getElementById("input_price_end");
+    inputNumber &&
+        inputNumber2 &&
+        slider &&
+        (slider.noUiSlider.on("update", function (e, i) {
+            e = e[i];
+            i ? (inputNumber2.value = e) : (inputNumber.value = e);
+        }),
+        inputNumber.addEventListener("change", function () {
+            slider.noUiSlider.set([this.value, null]);
+        }),
+        inputNumber2.addEventListener("change", function () {
+            slider.noUiSlider.set([null, this.value]);
+        }));
+
+    // 툴팁 병합 처리 함수 호출
+    mergeTooltips(slider, 50, " ~ ");
+    // 툴팁 항상 생성하기
+    // mergeTooltips(slider, 100000, " - ");
+}
+
+/**
+ * 면적 필터 셋팅 함수
+ * @param {*} slider
+ */
+function set_area_slider(slider) {
+    // range - 면적 //
+    noUiSlider.create(slider, {
+        start: [0, 1000000], //  초기 시작값 설정
+        connect: true, // 슬라이더 핸들 사이를 채움
+        // 툴팁 단위설정
+        tooltips: [
+            {
+                to: function (value) {
+                    return value + "㎡";
+                },
+            },
+            {
+                to: function (value) {
+                    return value + "㎡";
+                },
+            },
+        ],
+        step: 10, // 슬라이더 스텝 크기 설정
+        keyboardSupport: true, // 키보드 지원 활성화
+        keyboardDefaultStep: 50, // 키보드 화살표 키 기본 스탭 크기
+        keyboardPageMultiplier: 20, // Page Up/Down 키에 대한 배수(기본 스텝 크기 기준)
+        keyboardMultiplier: 10, // Shift 키와 함께 사용할 때 배수(기본 스텝 크기 기준)
+        range: {
+            min: 0, // 슬라이더 최소값
+            max: 1000000, // 슬라이더 최대값
+        },
+        format: wNumb({
+            decimals: 0, // 소수점 자릿수 설정
+            suffix: "", // 접미사 설정 (여기서는 빈 문자열)
+        }),
+    });
+
+    // 인풋박스와 연동inputNumber
+    const inputNumber = document.getElementById("input_area_start");
+    const inputNumber2 = document.getElementById("input_area_end");
+    inputNumber &&
+        inputNumber2 &&
+        slider &&
+        (slider.noUiSlider.on("update", function (e, i) {
+            e = e[i];
+            i ? (inputNumber2.value = e) : (inputNumber.value = e);
+        }),
+        inputNumber.addEventListener("change", function () {
+            slider.noUiSlider.set([this.value, null]);
+        }),
+        inputNumber2.addEventListener("change", function () {
+            slider.noUiSlider.set([null, this.value]);
+        }));
+
+    // 툴팁 항상 생성하기
+    mergeTooltips(slider, 50, " ~ ");
+}
+
+/**
+ * 툴팁 병합 처리 함수
+ * @param slider 초기화된 슬라이더의 HTML 요소
+ * @param threshold 툴팁 병합을 위한 최소 거리 (퍼센트 단위)
+ * @param separator 병합된 툴팁을 구분하는 문자열
+ */
+function mergeTooltips(slider, threshold, separator) {
+    var tooltips = slider.noUiSlider.getTooltips();
+    var origins = slider.noUiSlider.getOrigins();
+    var isVertical = slider.noUiSlider.options.orientation === "vertical";
+
+    // 슬라이더 종류에 따른 형식 함수 설정
+    const formatValue = slider.id === "price_slider" ? (value) => formatPrice(value) : (value) => value + "㎡"; // 면적 슬라이더의 경우
+
+    // 툴팁을 원래 위치에 추가
+    tooltips.forEach(function (tooltip, index) {
+        if (tooltip) {
+            origins[index].appendChild(tooltip);
+        }
+    });
+
+    slider.noUiSlider.on("update", function (values, handle, unencoded, tap, positions) {
+        var pools = [[]]; // 병합 그룹들
+        var poolValues = [[]]; // 병합된 값
+        var atPool = 0;
+
+        // 첫 번째 툴팁을 첫 번째 병합 그룹에 추가하고 형식을 유지
+        if (tooltips[0]) {
+            pools[0].push(0);
+            poolValues[0].push(formatValue(values[0])); // 첫 툴팁의 형식 유지
+        }
+
+        for (var i = 1; i < positions.length; i++) {
+            // 병합 기준 초과 시 새로운 병합 그룹을 시작
+            if (!tooltips[i] || positions[i] - positions[i - 1] > threshold) {
+                atPool++;
+                pools[atPool] = []; // 새로운 병합 그룹으로 초기화
+                poolValues[atPool] = []; // 병합 값도 초기화
+            }
+
+            // 현재 툴팁을 병합 그룹에 추가
+            if (tooltips[i]) {
+                pools[atPool].push(i);
+                poolValues[atPool].push(formatValue(values[i])); // formatPrice로 값 형식 유지
+            }
+        }
+
+        // 병합 그룹을 순회하며, 각 그룹의 마지막 툴팁에만 병합된 내용을 표시
+        pools.forEach(function (pool, poolIndex) {
+            var handlesInPool = pool.length;
+
+            pool.forEach(function (handleIndex, j) {
+                var tooltip = tooltips[handleIndex];
+
+                // 병합 그룹의 마지막 툴팁에만 병합된 내용을 표시
+                if (j === handlesInPool - 1) {
+                    var offset = 0;
+
+                    pool.forEach(function (index) {
+                        offset += 1000 - positions[index];
+                    });
+
+                    var direction = isVertical ? "bottom" : "right";
+                    var lastOffset = 1000 - positions[pool[pool.length - 1]];
+                    offset = offset / handlesInPool - lastOffset;
+
+                    // 병합된 툴팁 내용 설정 (formatPrice로 형식 유지)
+                    tooltip.innerHTML = poolValues[poolIndex].join(separator);
+                    tooltip.style.display = "block";
+                    tooltip.style[direction] = offset + "%";
+                } else {
+                    // 나머지 툴팁 숨김
+                    tooltip.style.display = "none";
+                }
+            });
+        });
+    });
 }

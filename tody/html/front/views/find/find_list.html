@@ -22,6 +22,11 @@
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
+        <!-- Datatables Css-->
+        <link href="/assets/libs/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/colReorder.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/responsive.bootstrap5.min.css" rel="stylesheet" />
         <!-- Bootstrap Css -->
         <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- Sweet Alert css-->
@@ -276,37 +281,60 @@
                 <!-- 구분 및 옵션 -->
                 <dl class="sort-btn">
                     <dt>
+                        <!--
                         <button id="sort_latest" class="sort active" data-sort="latest"><i class="fa-solid fa-check"></i> 최신순</button>
                         <span>·</span>
                         <button id="sort_views" class="sort" data-sort="views"><i class="fa-solid fa-check"></i> 조회수순</button>
                         <span>·</span>
                         <button id="sort_price" class="sort" data-sort="price"><i class="fa-solid fa-check"></i> 높은 가격대순</button>
+                        -->
                     </dt>
                     <dd>
                         <a href="find_write.html" class="btn-line-red-b"><i class="fa-sharp fa-solid fa-building"></i> 삽니다 등록하기</a>
                     </dd>
                 </dl>
+                
                 <!-- 구분 및 옵션 끝 -->
 
-                <!-- 리스트 -->
-                <div class="find-list">
+                <!-- 리스트  <div class="table-list"> -->
+                <div class="search-area">
+                    
+                    <!--  20250513 deleted by cis 
                     <ul id="find_list_ul">
                         <p>결과값이 존재하지 않습니다.</p>
-                        <!-- <li onclick="location.href='find_view.html';">
-                            <h2>경기도 수원시 권선구</h2>
-                            <h3><span class="label-default bg-violet1">매매</span> 아파트</h3>
-                            <h4>500~550평</h4>
-                            <h5>10억~15억</h5>
-                            <dl>
-                                <dt><i class="fa-light fa-clock"></i> 2024.01.30</dt>
-                                <dd><i class="fa-sharp fa-solid fa-bell"></i> 230명</dd>
-                            </dl>
-                        </li> -->
+                        // <li onclick="location.href='find_view.html';">
+                        //    <h2>경기도 수원시 권선구</h2>
+                        //    <h3><span class="label-default bg-violet1">매매</span> 아파트</h3>
+                        //    <h4>500~550평</h4>
+                        //    <h5>10억~15억</h5>
+                        //    <dl>
+                        //        <dt><i class="fa-light fa-clock"></i> 2024.01.30</dt>
+                        //        <dd><i class="fa-sharp fa-solid fa-bell"></i> 230명</dd>
+                        //    </dl>
+                        //</li> 
                     </ul>
+                    -->
+                    <!-- 이 div 안에 자바스크립트로 생성된 테이블이 삽입됩니다 --20250513 added by cis(308~3014) -->
+                    <ul id="find_list_ul">
+                        <!-- 결과 없을 때 메시지용 또는 다른 용도 -->
+                    </ul>
+                    <div id="find_results_table_container">
+                        <table id="find_results_table" class="table nowrap align-middle" style="width: 100%">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                        </table>
+                        <!-- 로딩 중 메시지 또는 초기 메시지 
+                        <p>매물 정보를 불러오고 있습니다...</p> -->
+                    </div>
+                    <!-- 총 개수 표시 요소 -->
+                     <!--
+                    <p>총 <span id="total_count">0</span>건</p>
+                    -->
                 </div>
                 <!-- 리스트 끝 -->
 
-                <!-- 페이지넘버링 -->
+                <!-- 페이지넘버링 
                 <div class="paging-list">
                     <a href="#"><i class="fas fa-caret-left"></i></a>
                     <a href="#" class="active">1</a>
@@ -316,6 +344,7 @@
                     <a href="#">5</a>
                     <a href="#"><i class="fas fa-caret-right"></i></a>
                 </div>
+                -->
                 <!-- 페이지넘버링 끝 -->
             </div>
             <!-- 본문내용 끝 -->
@@ -351,6 +380,22 @@
         <script src="/assets/libs/wnumb/wNumb.min.js"></script>
         <script src="/assets/libs/nouislider/nouislider.min.js"></script>
 
+         <!--datatable js-->
+         <script src="/assets/libs/datatables/js/jszip.min.js"></script>
+         <script src="/assets/libs/datatables/js/pdfmake.min.js"></script>
+         <script src="/assets/libs/datatables/js/vfs_fonts.js"></script>
+         <script src="/assets/libs/datatables/js/dataTables.min.js"></script>
+         <script src="/assets/libs/datatables/js/dataTables.bootstrap5.min.js"></script>
+         <script src="/assets/libs/datatables/js/dataTables.buttons.min.js"></script>
+         <script src="/assets/libs/datatables/js/buttons.bootstrap5.min.js"></script>
+         <script src="/assets/libs/datatables/js/buttons.colVis.min.js"></script>
+         <script src="/assets/libs/datatables/js/buttons.html5.min.js"></script>
+         <script src="/assets/libs/datatables/js/buttons.print.min.js"></script>
+         <script src="/assets/libs/datatables/js/dataTables.colReorder.min.js"></script>
+         <script src="/assets/libs/datatables/js/dataTables.responsive.min.js"></script>
+         <script src="/assets/libs/datatables/js/responsive.bootstrap5.js"></script>
+
+         
         <!-- custom js -->
         <script src="/front/js/00-include/layout.js"></script>
         <script src="/front/js/00-include/functions.js"></script>
