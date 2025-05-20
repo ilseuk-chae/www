@@ -3340,6 +3340,25 @@
 .map-content .mc-tab-menu > dl > dd button span.active {
     color: #ef8779;
 }
+ /* cis add 2025.05.20 3343~3360*/
+.map-content .mc-tab-menu2 > dl > dd {
+    display: flex; /* 부모 요소는 Flex 컨테이너여야 합니다. */
+    justify-content: flex-end; /* Flex 아이템들을 컨테이너의 끝(오른쪽)으로 정렬합니다. */
+    width: 100%;
+    text-align: right;
+}
+.map-content .mc-tab-menu2 > dl > dd button {
+    padding: 12px 10px 0px 10px;
+    font-size: 12px;
+    line-height: 13px;
+    margin-right: 12px; /* 여기에 오른쪽 마진을 12px 추가합니다. */
+    margin-bottom: 0; /* 또는 원하시는 만큼의 마진 값 */
+    color: #111;
+    cursor: pointer;
+}
+.map-content .mc-tab-menu2 > dl > dd button span.active {
+    color: #ef8779;
+}
 
 .map-content .mc-tab-content {
     height: calc(100% - 264px);

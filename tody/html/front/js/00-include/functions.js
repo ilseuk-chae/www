@@ -1,1233 +1,1610 @@
-var a1_0x5169e9 = a1_0x35fb;
-(function (_0xc6122d, _0x5afa79) {
-    var _0x162e82 = a1_0x35fb,
-        _0x35b3f4 = _0xc6122d();
-    while (!![]) {
-        try {
-            var _0x257ec8 =
-                parseInt(_0x162e82(0x16e)) / 0x1 +
-                (parseInt(_0x162e82(0x226)) / 0x2) * (parseInt(_0x162e82(0x222)) / 0x3) +
-                (parseInt(_0x162e82(0x169)) / 0x4) * (-parseInt(_0x162e82(0x12e)) / 0x5) +
-                parseInt(_0x162e82(0x100)) / 0x6 +
-                (-parseInt(_0x162e82(0x1a3)) / 0x7) * (-parseInt(_0x162e82(0x160)) / 0x8) +
-                parseInt(_0x162e82(0x1be)) / 0x9 +
-                -parseInt(_0x162e82(0x111)) / 0xa;
-            if (_0x257ec8 === _0x5afa79) break;
-            else _0x35b3f4["push"](_0x35b3f4["shift"]());
-        } catch (_0x2ce8d5) {
-            _0x35b3f4["push"](_0x35b3f4["shift"]());
-        }
-    }
-})(a1_0x5572, 0x72a47);
+/* *******************************************************
+ * filename : functions.js
+ * description : 전체적으로 사용되는 JS
+ * date : 2022-03-14
+ ******************************************************** */
+
+/* ************************
+ * 브라우저를 체크할때 사용하는 함수
+ * return browser(브라우저name)
+ ************************ */
 function detectBrowser() {
-    var _0x89f5d7 = a1_0x35fb,
-        _0x5a1c19 = navigator[_0x89f5d7(0x140)]["toLowerCase"](),
-        _0x30a84a;
-    if (_0x5a1c19["indexOf"]("msie") > -0x1 || _0x5a1c19[_0x89f5d7(0x10a)]("trident") > -0x1 || _0x5a1c19[_0x89f5d7(0x10a)]("edge") > -0x1) _0x30a84a = "ie";
-    else {
-        if (_0x5a1c19[_0x89f5d7(0x10a)](_0x89f5d7(0x1af)) > -0x1) _0x30a84a = _0x89f5d7(0x1af);
-        else {
-            if (_0x5a1c19[_0x89f5d7(0x10a)](_0x89f5d7(0x13c)) > -0x1) _0x30a84a = _0x89f5d7(0x137);
-            else {
-                if (_0x5a1c19[_0x89f5d7(0x10a)](_0x89f5d7(0x185)) > -0x1) _0x30a84a = _0x89f5d7(0x185);
-                else _0x5a1c19[_0x89f5d7(0x10a)]("safari") > -0x1 && (_0x30a84a = _0x89f5d7(0x19d));
-            }
-        }
+    var agent = navigator.userAgent.toLowerCase();
+    var browser;
+
+    if (agent.indexOf("msie") > -1 || agent.indexOf("trident") > -1 || agent.indexOf("edge") > -1) {
+        browser = "ie";
+    } else if (agent.indexOf("firefox") > -1) {
+        browser = "firefox";
+    } else if (agent.indexOf("opr") > -1) {
+        browser = "opera";
+    } else if (agent.indexOf("chrome") > -1) {
+        browser = "chrome";
+    } else if (agent.indexOf("safari") > -1) {
+        browser = "safari";
     }
-    return _0x30a84a;
+
+    return browser;
 }
+
+/* ************************
+ * IE 버전을 체크할때 사용하는 함수
+ * return : IE 아닐때 false / IE 일때 9,10,11,"edge"
+ ************************ */
 function ieVersionCheck() {
-    var _0x5d4e72 = a1_0x35fb,
-        _0x1c86d2,
-        _0x34c552 = _0x5d4e72(0x21e),
-        _0x412121 = navigator[_0x5d4e72(0x140)][_0x5d4e72(0x128)](),
-        _0x20db4c = navigator[_0x5d4e72(0x14b)];
-    if (_0x20db4c == _0x5d4e72(0x1c5)) _0x1c86d2 = _0x5d4e72(0x1a8);
+    var word;
+    var version = "N/A";
+    var agent = navigator.userAgent.toLowerCase();
+    var name = navigator.appName;
+
+    // IE old version ( IE 10 or Lower )
+    if (name == "Microsoft Internet Explorer") word = "msie ";
     else {
-        if (_0x412121[_0x5d4e72(0x148)](_0x5d4e72(0x20b)) > -0x1) _0x1c86d2 = "trident/.*rv:";
-        else {
-            if (_0x412121[_0x5d4e72(0x148)](_0x5d4e72(0x159)) > -0x1) _0x1c86d2 = _0x5d4e72(0x159);
+        // IE 11
+        if (agent.search("trident") > -1) word = "trident/.*rv:";
+        // Microsoft Edge
+        else if (agent.search("edge/") > -1) word = "edge/";
+    }
+    var reg = new RegExp(word + "([0-9]{1,})(\\.{0,}[0-9]{0,1})");
+    if (reg.exec(agent) != null) version = RegExp.$1 + RegExp.$2;
+
+    if (version != "NaN" && version < 12) {
+        return parseInt(version);
+    } else if (word === "edge/") {
+        return false;
+    } else {
+        return false;
+    }
+}
+
+/* ************************
+ * OS 체크 함수
+ * android/ios 체크할때 사용
+ ************************ */
+function detectOS() {
+    var agent = navigator.userAgent.toLowerCase();
+    var osCheck;
+
+    if (agent.indexOf("android") > -1) {
+        return "android";
+    } else if (agent.indexOf("iphone") > -1 || agent.indexOf("ipad") > -1 || agent.indexOf("ipod") > -1 || agent.indexOf("macintosh") > -1) {
+        return "ios";
+    } else {
+        return "other";
+    }
+
+    return osCheck;
+}
+
+/* ************************
+ * 모바일 체크 함수
+ * return : 모바일 true / PC false
+ * Ipad Safari userAgent 변경으로 인해 if문 추가 (2020-07-17)
+ * Mac Os - Big Sur, Safari(14.0) Macintosh 로 체크되어 mobile로 분류되는 이슈로 가로사이즈 조건문 추가(2021-06-15)
+ ************************ */
+function isMobile() {
+    var UserAgent = navigator.userAgent;
+    if (UserAgent.match(/iPhone|iPad|iPad|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null) {
+        return true;
+    } else {
+        // Ipad Safari Browser
+        if (detectIpad()) {
+            return true;
+        } else {
+            return false;
         }
     }
-    var _0x5c585f = new RegExp(_0x1c86d2 + "([0-9]{1,})(\x5c.{0,}[0-9]{0,1})");
-    if (_0x5c585f[_0x5d4e72(0x123)](_0x412121) != null) _0x34c552 = RegExp["$1"] + RegExp["$2"];
-    if (_0x34c552 != _0x5d4e72(0x113) && _0x34c552 < 0xc) return parseInt(_0x34c552);
-    else return _0x1c86d2 === _0x5d4e72(0x159) ? ![] : ![];
-}
-function detectOS() {
-    var _0x34b771 = a1_0x35fb,
-        _0x27fcd8 = navigator[_0x34b771(0x140)][_0x34b771(0x128)](),
-        _0x265e3d;
-    if (_0x27fcd8[_0x34b771(0x10a)]("android") > -0x1) return _0x34b771(0x214);
-    else return _0x27fcd8[_0x34b771(0x10a)](_0x34b771(0x176)) > -0x1 || _0x27fcd8[_0x34b771(0x10a)](_0x34b771(0x172)) > -0x1 || _0x27fcd8["indexOf"](_0x34b771(0x1f1)) > -0x1 || _0x27fcd8[_0x34b771(0x10a)](_0x34b771(0x215)) > -0x1 ? _0x34b771(0x10f) : "other";
-    return _0x265e3d;
-}
-function isMobile() {
-    var _0x4dfbad = a1_0x35fb,
-        _0x37242d = navigator[_0x4dfbad(0x140)];
-    return _0x37242d[_0x4dfbad(0x13a)](/iPhone|iPad|iPad|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || _0x37242d[_0x4dfbad(0x13a)](/LG|SAMSUNG|Samsung/) != null ? !![] : detectIpad() ? !![] : ![];
 }
 function detectIpad() {
-    var _0x225820 = a1_0x35fb,
-        _0x3510fe = navigator["userAgent"] || navigator["vendor"] || window[_0x225820(0x137)];
-    if (_0x3510fe[_0x225820(0x13a)](/Macintosh/i) !== null && getWindowWidth() < 0x401) {
-        var _0x3fec73 = document[_0x225820(0x1ae)](_0x225820(0x21d));
-        if (_0x3fec73 !== null) {
-            var _0xeca657 = _0x3fec73[_0x225820(0x14a)](_0x225820(0x228)) || _0x3fec73["getContext"]("experimental-webgl");
-            if (_0xeca657) {
-                var _0x3d0797 = _0xeca657[_0x225820(0x129)](_0x225820(0x1ff));
-                if (_0x3d0797) {
-                    var _0x6e35e6 = _0xeca657["getParameter"](_0x3d0797[_0x225820(0x105)]);
-                    if (_0x6e35e6[_0x225820(0x10a)](_0x225820(0x10b)) !== -0x1) return !![];
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    // Lying iOS13 iPad
+    if (userAgent.match(/Macintosh/i) !== null && getWindowWidth() < 1025) {
+        // need to distinguish between Macbook and iPad
+        var canvas = document.createElement("canvas");
+        if (canvas !== null) {
+            var context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+            if (context) {
+                var info = context.getExtension("WEBGL_debug_renderer_info");
+                if (info) {
+                    var renderer = context.getParameter(info.UNMASKED_RENDERER_WEBGL);
+                    if (renderer.indexOf("Apple") !== -1) return true;
                 }
             }
         }
     }
-    return ![];
+    return false;
 }
-function winPopupOpen(_0x53b79b, _0x2cadcd, _0x427fa6) {
-    var _0x112c3a = a1_0x35fb;
-    window[_0x112c3a(0x1f0)](_0x53b79b, _0x2cadcd, _0x427fa6);
+
+/* ************************
+ * window 팝업 오픈 함수
+ * @param src : "팝업 페이지 주소"
+ * @param title : "팝업 페이지 타이틀"
+ * @param option : "width=너비, height=높이, left=x축 위치, top=y축 위치, resizable=리사이즈 여부, scrollbars=스크롤바 여부, status=상태 표시줄 여부"
+ ************************ */
+function winPopupOpen(src, title, option) {
+    window.open(src, title, option);
 }
+
+/* ************************
+ * 브라우저의 가로값, 세로값 측정 함수
+ * return 가로값/세로값
+ ************************ */
+/* 임의의 영역을 만들어 스크롤바 크기 측정 */
 function getScrollBarWidth() {
-    var _0x4bcedc = a1_0x35fb;
-    if ($(document)[_0x4bcedc(0x147)]() > $(window)[_0x4bcedc(0x147)]()) {
-        $(_0x4bcedc(0x174))[_0x4bcedc(0x107)]("<div\x20id=\x22fakescrollbar\x22\x20style=\x22width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;\x22></div>"), (fakeScrollBar = $(_0x4bcedc(0x14d))), fakeScrollBar[_0x4bcedc(0x107)](_0x4bcedc(0x189));
-        var _0x8da310 = fakeScrollBar[_0x4bcedc(0x18e)](_0x4bcedc(0x124))["innerWidth"]();
-        fakeScrollBar["css"](_0x4bcedc(0xec), _0x4bcedc(0x192));
-        var _0x2ce85f = $(_0x4bcedc(0x14d))[_0x4bcedc(0x18e)](_0x4bcedc(0x124))[_0x4bcedc(0x1fd)](_0x4bcedc(0x1bd))[_0x4bcedc(0x223)]();
-        return fakeScrollBar[_0x4bcedc(0x12d)](), _0x8da310 - _0x2ce85f;
+    if ($(document).height() > $(window).height()) {
+        $("body").append('<div id="fakescrollbar" style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"></div>');
+        fakeScrollBar = $("#fakescrollbar");
+        fakeScrollBar.append('<div style="height:100px;">&nbsp;</div>');
+        var w1 = fakeScrollBar.find("div").innerWidth();
+        fakeScrollBar.css("overflow-y", "scroll");
+        var w2 = $("#fakescrollbar").find("div").html("html is required to init new width.").innerWidth();
+        fakeScrollBar.remove();
+        return w1 - w2;
     }
-    return 0x0;
+    return 0;
 }
+/* 브라우저 가로, 세로크기 측정 */
 function getWindowWidth() {
-    var _0x36ef3a = a1_0x35fb;
-    return $(window)[_0x36ef3a(0x116)]() + getScrollBarWidth();
+    return $(window).outerWidth() + getScrollBarWidth();
 }
 function getWindowHeight() {
-    var _0x1e8fe6 = a1_0x35fb;
-    return $(window)[_0x1e8fe6(0x147)]();
+    return $(window).height();
 }
+
+/* ************************
+ * 브라우저의 스크롤바의 수직 위치 측정 함수
+ * return 스크롤바 위치 값
+ ************************ */
 function getScrollTop() {
-    var _0x34d2e9 = a1_0x35fb;
-    return $(window)[_0x34d2e9(0x202)]();
+    return $(window).scrollTop();
 }
-function moveScrollTop(_0x319d54, _0x53b3b5) {
-    var _0x5becb4 = a1_0x35fb;
-    $(_0x5becb4(0x20e))["animate"]({ scrollTop: _0x319d54 }, _0x53b3b5, _0x5becb4(0x1c2));
+
+/* ************************
+ * 브라우저의 스크롤을 이동시키는 함수
+ * @param top : 이동지점
+ * @param speed : 이동속도
+ ************************ */
+function moveScrollTop(top, speed) {
+    $("html, body").animate({ scrollTop: top }, speed, "easeInOutExpo");
 }
-function addClassName(_0x189754, _0x1f5760) {
-    var _0x117365 = a1_0x35fb;
-    $(_0x189754)[_0x117365(0x1ac)](_0x1f5760);
+
+/* ************************
+ * object toggleClass 함수
+ * @param object : 적용되야할 선택자
+ * @param className : toggleClass Name
+ ************************ */
+/* addClass Active */
+function addClassName(object, className) {
+    $(object).addClass(className);
 }
-function removeClassName(_0xb14c55, _0xa14632) {
-    var _0xc1a7b4 = a1_0x35fb;
-    $(_0xb14c55)[_0xc1a7b4(0x1df)](_0xa14632);
+function removeClassName(object, className) {
+    $(object).removeClass(className);
 }
-$[a1_0x5169e9(0x1e1)] = function (_0xb7eca8) {
-    var _0x19332d = a1_0x5169e9;
-    return $(_0xb7eca8)[_0x19332d(0x1f3)] > 0x0;
+
+/* ************************
+ * 갯수체크 함수
+ * @param selector : 선택자
+ * 1개이상 있으면 return true
+ ************************ */
+$.exists = function (selector) {
+    return $(selector).length > 0;
 };
-function magnificPopup(_0x4794be) {
-    var _0x5ba9f5 = a1_0x5169e9;
-    $(_0x4794be)[_0x5ba9f5(0x1f2)]({
+
+/* ************************
+ * magnificPopup Plugin ( 모달팝업갤러리 )
+ * jquery.magnific-popup.js 필요
+ ************************ */
+function magnificPopup(popupGallery) {
+    $(popupGallery).magnificPopup({
         delegate: "a",
-        type: _0x5ba9f5(0x126),
-        closeOnContentClick: !![],
-        closeBtnInside: !![],
-        fixedContentPos: !![],
-        mainClass: _0x5ba9f5(0x154),
-        removalDelay: 0x1f4,
+        type: "image",
+        closeOnContentClick: true,
+        closeBtnInside: true,
+        fixedContentPos: true,
+        mainClass: "mfp-with-zoom",
+        removalDelay: 500, //delay removal by X to allow out-animation
         callbacks: {
             beforeOpen: function () {
-                var _0x5c3bd0 = _0x5ba9f5;
-                (this["st"]["image"][_0x5c3bd0(0x13d)] = this["st"]["image"][_0x5c3bd0(0x13d)][_0x5c3bd0(0xf6)](_0x5c3bd0(0x162), "mfp-figure\x20mfp-with-anim")), (this["st"][_0x5c3bd0(0x153)] = "mfp-zoom-in");
+                // just a hack that adds mfp-anim class to markup
+                this.st.image.markup = this.st.image.markup.replace("mfp-figure", "mfp-figure mfp-with-anim");
+                this.st.mainClass = "mfp-zoom-in"; // this.st.el.attr('data-effect');
             },
         },
-        closeOnContentClick: !![],
-        midClick: !![],
+        closeOnContentClick: true,
+        midClick: true, // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
     });
 }
-function customScrollX(_0x51dc6f) {
-    var _0x22aebf = a1_0x5169e9;
-    $(_0x51dc6f)[_0x22aebf(0x211)]({ axis: "x", theme: _0x22aebf(0x146) });
+
+/* ************************
+ * mCustomScrollbar Plugin ( 스크롤바 커스텀 )
+ * jquery.mCustomScrollbar.concat.min.js 필요
+ * @param selector : 선택자
+ ************************ */
+/* Custom Scrollbar Plugin (x,y) */
+function customScrollX(scrollObject) {
+    $(scrollObject).mCustomScrollbar({
+        axis: "x",
+        theme: "dark",
+    });
 }
-function customScrollY(_0x21903e) {
-    var _0x3efa68 = a1_0x5169e9;
-    $(_0x21903e)[_0x3efa68(0x211)]({ axis: "y", theme: _0x3efa68(0x146) });
+function customScrollY(scrollObject) {
+    $(scrollObject).mCustomScrollbar({
+        axis: "y",
+        theme: "dark",
+    });
 }
-function getParameter(_0x23d3ad) {
-    var _0x27ee8c = a1_0x5169e9,
-        _0x877b8a = null;
-    return _0x23d3ad && (_0x877b8a = location[_0x27ee8c(0x148)][_0x27ee8c(0x13a)](new RegExp(_0x27ee8c(0xef) + _0x23d3ad + _0x27ee8c(0x132)))), _0x877b8a && _0x877b8a[0x1] ? _0x877b8a[0x1] : null;
+
+/* ************************
+ * PHP 주소 Parameter
+ * @param strParamName : 가져올 파라미터값
+ ************************ */
+/* PHP Get Parameter  */
+function getParameter(strParamName) {
+    var arrResult = null;
+    if (strParamName) {
+        arrResult = location.search.match(new RegExp("[&?]" + strParamName + "=(.*?)(&|$)"));
+    }
+    return arrResult && arrResult[1] ? arrResult[1] : null;
 }
-function toAnchorParameter(_0x567e8c) {
-    var _0x292fc7 = a1_0x5169e9;
-    if (getParameter(_0x567e8c)) {
-        var _0x596943 = $("#" + getParameter(_0x567e8c) + "")["offset"]()["top"],
-            _0xf0f67c = $(_0x292fc7(0x204))[_0x292fc7(0x147)]();
-        moveScrollTop(_0x596943 - _0xf0f67c, 0x1f4);
+function toAnchorParameter(anchor) {
+    if (getParameter(anchor)) {
+        var anchorConTop = $("#" + getParameter(anchor) + "").offset().top;
+        var headerHeight = $("#header").height();
+        moveScrollTop(anchorConTop - headerHeight, 500);
     }
 }
-function getQueryParam(_0x2c2ec2, _0x469d6b) {
-    var _0x36c3b8 = a1_0x5169e9,
-        _0x31c779 = {},
-        _0x61c943 = /([^&=]+)=([^&]*)/g,
-        _0x520a46;
-    while ((_0x520a46 = _0x61c943[_0x36c3b8(0x123)](_0x2c2ec2)) !== null) {
-        _0x31c779[decodeURIComponent(_0x520a46[0x1])] = decodeURIComponent(_0x520a46[0x2]);
+
+/**
+ * URL 쿼리 문자열이나 해시 부분을 파싱하여 특정 파라미터 값을 가져옵니다.
+ * @param {string} queryString - 파싱할 쿼리 문자열이나 해시 문자열.
+ * @param {string} paramName - 가져올 파라미터 이름.
+ * @returns {string|null} - 파라미터 값 또는 null.
+ */
+function getQueryParam(queryString, paramName) {
+    var params = {};
+    var regex = /([^&=]+)=([^&]*)/g;
+    var match;
+
+    while ((match = regex.exec(queryString)) !== null) {
+        params[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
     }
-    return _0x31c779[_0x469d6b] || null;
+
+    return params[paramName] || null;
 }
-function getHashParam(_0x1812b0) {
-    var _0x44ddf2 = a1_0x5169e9,
-        _0x19efdb = window["location"][_0x44ddf2(0x17a)][_0x44ddf2(0x1c7)](0x1);
-    return getQueryParam(_0x19efdb, _0x1812b0);
+
+/**
+ * URL의 해시 부분에서 특정 파라미터 값을 가져옵니다.
+ * @param {string} paramName - 가져올 파라미터 이름.
+ * @returns {string|null} - 파라미터 값 또는 null.
+ */
+function getHashParam(paramName) {
+    var queryString = window.location.hash.substring(1);
+    return getQueryParam(queryString, paramName);
 }
-function parseQueryString(_0x299ec2) {
-    var _0x46d2f5 = a1_0x5169e9,
-        _0x3e6d53 = {},
-        _0x155b3d = /([^&=]+)=([^&]*)/g,
-        _0x35a2c2;
-    while ((_0x35a2c2 = _0x155b3d[_0x46d2f5(0x123)](_0x299ec2)) !== null) {
-        _0x3e6d53[decodeURIComponent(_0x35a2c2[0x1])] = decodeURIComponent(_0x35a2c2[0x2]);
+
+/**
+ * URL 쿼리 문자열이나 해시 부분을 파싱하여 파라미터 객체를 반환합니다.
+ * @param {string} queryString - 파싱할 쿼리 문자열이나 해시 문자열.
+ * @returns {Object} - 파라미터 객체.
+ */
+function parseQueryString(queryString) {
+    var params = {};
+    var regex = /([^&=]+)=([^&]*)/g;
+    var match;
+
+    while ((match = regex.exec(queryString)) !== null) {
+        params[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
     }
-    return _0x3e6d53;
+
+    return params;
 }
-function a1_0x35fb(_0x1e2b8e, _0x5f4037) {
-    var _0x557258 = a1_0x5572();
-    return (
-        (a1_0x35fb = function (_0x35fb35, _0x309d65) {
-            _0x35fb35 = _0x35fb35 - 0xec;
-            var _0x27f2e1 = _0x557258[_0x35fb35];
-            return _0x27f2e1;
-        }),
-        a1_0x35fb(_0x1e2b8e, _0x5f4037)
-    );
-}
+
+/**
+ * URL의 해시 부분에서 파라미터 객체를 반환합니다.
+ * @returns {Object} - 파라미터 객체.
+ */
 function getHashParams() {
-    var _0x2d0bb0 = a1_0x5169e9,
-        _0x1c74e2 = window["location"][_0x2d0bb0(0x17a)][_0x2d0bb0(0x1c7)](0x1);
-    return parseQueryString(_0x1c74e2);
+    var queryString = window.location.hash.substring(1);
+    return parseQueryString(queryString);
 }
+/**
+ * URL의 쿼리 문자열에서 파라미터 객체를 반환합니다.
+ * @returns {Object} - 파라미터 객체.
+ */
 function getQueryParams() {
-    var _0x1fd9e3 = a1_0x5169e9,
-        _0x2362e0 = window["location"][_0x1fd9e3(0x148)][_0x1fd9e3(0x1c7)](0x1);
-    return parseQueryString(_0x2362e0);
+    var queryString = window.location.search.substring(1);
+    return parseQueryString(queryString);
 }
-function rollingActive(_0x2a181a) {
-    var _0x51b47b = a1_0x5169e9;
-    $(_0x2a181a)[_0x51b47b(0x191)](function (_0x2cf432) {
-        var _0x40d4a7 = _0x51b47b;
-        ($itemList = $(this)), ($item = $itemList["find"]("li")), (itemLength = $item[_0x40d4a7(0x1f3)]), (startNum = 0x0), (rollingSpeed = $itemList[_0x40d4a7(0x122)](_0x40d4a7(0x173)));
-        function _0x3fc605() {
-            startNum < itemLength - 0x1 ? startNum++ : (startNum = 0x0), _0x2fa5a9();
+
+/* ************************
+ * 순차적으로 active클래스가 붙는 함수
+ * @param activeList : 선택자
+ ************************ */
+/* Active cycle */
+function rollingActive(activeList) {
+    $(activeList).each(function (index) {
+        $itemList = $(this);
+        $item = $itemList.find("li");
+        itemLength = $item.length;
+        startNum = 0;
+        rollingSpeed = $itemList.data("rolling-time");
+
+        function visualTime() {
+            if (startNum < itemLength - 1) {
+                startNum++;
+            } else {
+                startNum = 0;
+            }
+            visualPlay();
         }
-        function _0x2fa5a9() {
-            var _0x452d2c = _0x40d4a7;
-            $item[_0x452d2c(0x191)](function (_0x18a47a) {
-                var _0x3c1fd6 = _0x452d2c;
-                _0x18a47a == startNum ? $(this)[_0x3c1fd6(0x1ac)](_0x3c1fd6(0x216)) : $(this)[_0x3c1fd6(0x1df)](_0x3c1fd6(0x216));
+        function visualPlay() {
+            $item.each(function (id) {
+                if (id == startNum) {
+                    $(this).addClass("active"); // li에 클래스 붙이기
+                } else {
+                    $(this).removeClass("active");
+                }
             });
         }
-        _0x2fa5a9(), (visual_timer = setInterval(_0x3fc605, rollingSpeed));
+        visualPlay();
+        visual_timer = setInterval(visualTime, rollingSpeed);
     });
 }
-function objectFixed(_0x5f2527, _0x40488c, _0x44697d) {
-    var _0x7cec07 = a1_0x5169e9;
-    getScrollTop() > _0x40488c ? !$(_0x5f2527)[_0x7cec07(0x196)](_0x44697d) && $(_0x5f2527)[_0x7cec07(0x1ac)](_0x44697d) : $(_0x5f2527)[_0x7cec07(0x196)](_0x44697d) && $(_0x5f2527)[_0x7cec07(0x1df)](_0x44697d);
-}
-function splittingText(_0x6dcb79) {
-    var _0x361287,
-        _0x4b480e = {
-            settings: { letters: $(_0x6dcb79) },
-            init: function () {
-                var _0x105cb5 = a1_0x35fb;
-                (_0x361287 = this[_0x105cb5(0x1a5)]), this[_0x105cb5(0x180)]();
-            },
-            bindEvents: function () {
-                var _0xa3d0a0 = a1_0x35fb;
-                _0x361287["letters"][_0xa3d0a0(0x1fd)](function (_0x55ff51, _0x15619d) {
-                    var _0x26ca0a = _0xa3d0a0,
-                        _0x4dac15 = $[_0x26ca0a(0xfb)](_0x15619d)[_0x26ca0a(0x103)]("");
-                    return _0x26ca0a(0x20c) + _0x4dac15["join"](_0x26ca0a(0xfa)) + _0x26ca0a(0x11a);
-                });
-            },
-        };
-    _0x4b480e["init"]();
-}
-function splittingTextDelay(_0x1245ef, _0x532e52, _0x5d8f3f) {
-    var _0x441b06 = a1_0x5169e9,
-        _0x181e90 = $(_0x1245ef)[_0x441b06(0x18e)](_0x441b06(0x158))[_0x441b06(0x1f3)];
-    for (var _0x1f14af = 0x0; _0x1f14af < _0x181e90; _0x1f14af++) {
-        if ($(_0x1245ef)[_0x441b06(0x122)](_0x441b06(0x20d)) == "animation")
-            $(_0x1245ef)
-                ["find"](".char")
-                ["eq"](_0x1f14af)
-                [_0x441b06(0x170)](_0x441b06(0x1ee), _0x5d8f3f + _0x1f14af * _0x532e52 + "s");
-        else
-            $(_0x1245ef)[_0x441b06(0x122)](_0x441b06(0x20d)) == "transition" &&
-                $(_0x1245ef)
-                    [_0x441b06(0x18e)](_0x441b06(0x158))
-                    ["eq"](_0x1f14af)
-                    [_0x441b06(0x170)](_0x441b06(0x145), _0x5d8f3f + _0x1f14af * _0x532e52 + "s");
+
+/* ************************
+ * 스크롤값에 따라 클래스가 붙는 함수
+ * @param object : 선택자
+ * @param fixedStartTop : 클래스가 붙는 시작되는지점
+ * @param className : 붙여야하는 클래스이름
+ * getScrollTop() 함수 필요
+ ************************ */
+/* Fixed Object */
+function objectFixed(object, fixedStartTop, className) {
+    if (getScrollTop() > fixedStartTop) {
+        if (!$(object).hasClass(className)) {
+            $(object).addClass(className);
+        }
+    } else {
+        if ($(object).hasClass(className)) {
+            $(object).removeClass(className);
+        }
     }
 }
-function checkOffset(_0x1015ee) {
-    var _0x33227e = a1_0x5169e9;
-    return $(_0x1015ee)[_0x33227e(0x1b0)]()[_0x33227e(0x1e9)];
+
+/* ************************
+ * splittingText : 텍스트 Split 함수
+ *  @param object : 선택자
+ * splittingTextDelay : Split 텍스트 delay
+ * @param object : 선택자
+ * @param speed : speed 간격
+ * @param delay_speed : delay시간
+ ************************ */
+function splittingText(object) {
+    var split_word;
+    var splitWordEvent = {
+        settings: {
+            letters: $(object),
+        },
+        init: function () {
+            split_word = this.settings;
+            this.bindEvents();
+        },
+        bindEvents: function () {
+            split_word.letters.html(function (i, el) {
+                var word_item = $.trim(el).split("");
+                // console.log(word_item);
+                return '<em class="char">' + word_item.join('</em><em class="char">') + "</em>";
+            });
+        },
+    };
+    splitWordEvent.init();
 }
+function splittingTextDelay(object, speed, delay_speed) {
+    var splitLength = $(object).find(".char").length;
+    for (var i = 0; i < splitLength; i++) {
+        if ($(object).data("css-property") == "animation") {
+            $(object)
+                .find(".char")
+                .eq(i)
+                .css("animation-delay", delay_speed + i * speed + "s");
+        } else if ($(object).data("css-property") == "transition") {
+            $(object)
+                .find(".char")
+                .eq(i)
+                .css("transition-delay", delay_speed + i * speed + "s");
+        }
+    }
+}
+
+/* ************************
+ * object의 offset 체크 함수
+ *  @param object : 선택자
+ * return : offset.top 값
+ ************************ */
+function checkOffset(object) {
+    return $(object).offset().top;
+}
+
+/* ************************
+ * 상단에 fixed를 되고있는 object의 높이값 체크 함수
+ * return : top-fixed 되고있는 높이의 total값
+ ************************ */
 function checkFixedHeight() {
-    var _0x109b87 = a1_0x5169e9,
-        _0x3cb3ae = null;
-    for (var _0x55b66c = 0x0; _0x55b66c < $(_0x109b87(0x1f9))[_0x109b87(0x1f3)]; _0x55b66c++) {
-        var _0x3cb3ae = _0x3cb3ae + $(_0x109b87(0x1f9))["eq"](_0x55b66c)[_0x109b87(0x10e)]();
+    var fixedTotalHeight = null;
+    for (var i = 0; i < $(".top-fixed").length; i++) {
+        var fixedTotalHeight = fixedTotalHeight + $(".top-fixed").eq(i).outerHeight();
     }
-    return _0x3cb3ae;
+    return fixedTotalHeight;
 }
-function toFit(_0x5a623b, _0x4972f5) {
-    var _0x477dbd = a1_0x5169e9,
-        _0x433916 = _0x4972f5["dismissCondition"],
-        _0x39b86c =
-            _0x433916 === void 0x0
+
+/* ************************
+ * event 최적화(requestAnimationFrame)
+ ************************ */
+function toFit(cb, _ref) {
+    var _ref$dismissCondition = _ref.dismissCondition,
+        dismissCondition =
+            _ref$dismissCondition === void 0
                 ? function () {
-                      return ![];
+                      return false;
                   }
-                : _0x433916,
-        _0x1648c8 = _0x4972f5[_0x477dbd(0x1b5)],
-        _0x5671c8 =
-            _0x1648c8 === void 0x0
+                : _ref$dismissCondition,
+        _ref$triggerCondition = _ref.triggerCondition,
+        triggerCondition =
+            _ref$triggerCondition === void 0
                 ? function () {
-                      return !![];
+                      return true;
                   }
-                : _0x1648c8;
-    if (!_0x5a623b) throw Error("Invalid\x20required\x20arguments");
-    var _0x120b2e = ![];
+                : _ref$triggerCondition;
+
+    if (!cb) {
+        throw Error("Invalid required arguments");
+    }
+
+    var tick = false;
     return function () {
-        if (_0x120b2e) return;
-        return (
-            (_0x120b2e = !![]),
-            requestAnimationFrame(function () {
-                if (_0x39b86c()) {
-                    _0x120b2e = ![];
-                    return;
-                }
-                if (_0x5671c8()) return (_0x120b2e = ![]), _0x5a623b();
-            })
-        );
+        //  console.log('scroll call')
+        if (tick) {
+            return;
+        }
+
+        tick = true;
+        return requestAnimationFrame(function () {
+            if (dismissCondition()) {
+                tick = false;
+                return;
+            }
+
+            if (triggerCondition()) {
+                //console.log('real call')
+                tick = false;
+                return cb();
+            }
+        });
     };
 }
-function htmlScrollControl(_0x45e50f) {
-    var _0x23443d = a1_0x5169e9;
-    _0x45e50f
-        ? $[_0x23443d(0x1e1)](_0x23443d(0x156)) || $["exists"](_0x23443d(0xf8))
-            ? ($["fn"][_0x23443d(0x161)][_0x23443d(0x21a)](![]), $["fn"][_0x23443d(0x161)]["setKeyboardScrolling"](![]))
-            : ($("html")[_0x23443d(0x170)]({ "margin-right": getScrollBarWidth(), "overflow-y": _0x23443d(0x1b4) }), $(_0x23443d(0x1fd))["is"](_0x23443d(0x1fb)) && smoothScroll_destory())
-        : $[_0x23443d(0x1e1)](_0x23443d(0x156)) || $["exists"](".fp-responsive")
-        ? ($["fn"][_0x23443d(0x161)][_0x23443d(0x21a)](!![]), $["fn"][_0x23443d(0x161)][_0x23443d(0x20a)](!![]))
-        : ($(_0x23443d(0x1fd))[_0x23443d(0x170)]({ "margin-right": "0", "overflow-y": "scroll" }), $(_0x23443d(0x1fd))["is"](".smooth-srolling") && smoothScroll());
+
+/* ************************
+ * html Scroll Controls
+ * return true( 스크롤막을때 ) / false( 스크롤사용할때 )
+ * $.exists 함수 필요
+ ************************ */
+function htmlScrollControl(toggle) {
+    if (toggle) {
+        // 스크롤 막을때
+        if ($.exists("#fullpage") || $.exists(".fp-responsive")) {
+            $.fn.fullpage.setAllowScrolling(false);
+            $.fn.fullpage.setKeyboardScrolling(false);
+        } else {
+            $("html").css({
+                "margin-right": getScrollBarWidth(),
+                "overflow-y": "hidden",
+            });
+            if ($("html").is(".smooth-srolling")) {
+                smoothScroll_destory();
+            }
+        }
+    } else {
+        // 스크롤 다시사용할때
+        if ($.exists("#fullpage") || $.exists(".fp-responsive")) {
+            $.fn.fullpage.setAllowScrolling(true);
+            $.fn.fullpage.setKeyboardScrolling(true);
+        } else {
+            $("html").css({
+                "margin-right": "0",
+                "overflow-y": "scroll",
+            });
+            if ($("html").is(".smooth-srolling")) {
+                smoothScroll();
+            }
+        }
+    }
 }
+
+/* ************************
+ * CSS Variable 100vh Setting
+ ************************ */
 function set100Vh() {
-    var _0x5aef89 = a1_0x5169e9;
-    document[_0x5aef89(0x208)][_0x5aef89(0x150)][_0x5aef89(0x198)](_0x5aef89(0x1c8), window["innerHeight"] + "px");
+    document.documentElement.style.setProperty("--full-height", window.innerHeight + "px");
 }
+// window.addEventListener('resize', set100Vh);
+
+/* ************************
+ * 익스플로러 엣지 전환 소스
+ * 익스플로러 브라우저 업데이트 안내 팝업
+ ************************ */
 function convertToEdge() {
-    var _0x34c2b3 = a1_0x5169e9;
-    /MSIE \d|Trident.*rv:/[_0x34c2b3(0x101)](navigator[_0x34c2b3(0x140)]) &&
-        ((window[_0x34c2b3(0x1c6)] = _0x34c2b3(0x1ab) + window[_0x34c2b3(0x1c6)]),
+    if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
+        window.location = "microsoft-edge:" + window.location;
         setTimeout(function () {
-            var _0x58823f = _0x34c2b3;
-            top[_0x58823f(0x1bf)]["open"](_0x58823f(0x143), _0x58823f(0x120))[_0x58823f(0x18b)](), (top[_0x58823f(0x1bf)][_0x58823f(0x194)] = self), top[_0x58823f(0x13b)][_0x58823f(0x18b)]();
-        }, 0x1));
+            top.window.open("about:blank", "_self").close();
+            top.window.opener = self;
+            top.self.close();
+        }, 1);
+    }
 }
 function popupUpdateBrowser() {
-    var _0x2960d8 = a1_0x5169e9,
-        _0x5dac78 = "";
-    (_0x5dac78 += "<article\x20id=\x22browserUpgradePopup\x22>"),
-        (_0x5dac78 += _0x2960d8(0x1d7)),
-        (_0x5dac78 += _0x2960d8(0x142)),
-        (_0x5dac78 += _0x2960d8(0x1a6)),
-        (_0x5dac78 += _0x2960d8(0x1de)),
-        (_0x5dac78 += _0x2960d8(0x1a4)),
-        (_0x5dac78 += _0x2960d8(0x19a)),
-        $(_0x2960d8(0x174))[_0x2960d8(0x107)](_0x5dac78),
-        $(document)["on"](_0x2960d8(0x1bb), _0x2960d8(0x1aa), function () {
-            var _0xe642c = _0x2960d8;
-            return $(_0xe642c(0x187))[_0xe642c(0x21c)](), ![];
-        });
+    var popupBrowser = "";
+    popupBrowser += '<article id="browserUpgradePopup">';
+    popupBrowser += '<div class="browser-upgrade-popup-dim"></div>';
+    popupBrowser += '<div class="browser-upgrade-popup-inner">';
+    popupBrowser += '<button class="browser-popup-close-btn" title="close"><i class="xi-close-thin"></i></button>';
+    popupBrowser +=
+        '<span class="browser-popup-caution-icon"><i class="xi-error-o"></i></span><h2 class="browser-popup-tit"><b>브라우저 업데이트</b> 안내</h2><p class="browser-popup-txt">현재 사용중인 브라우저는 곧 지원이 중단됩니다. <br>원활한 서비스를 제공받기 위해<br><b>보안과 속도가 강화된 브라우저로 업그레이드</b> 하시기 바랍니다.</p>';
+    popupBrowser += "</div>";
+    popupBrowser += "</article>";
+    $("body").append(popupBrowser);
+    $(document).on("click", ".browser-popup-close-btn", function () {
+        $("#browserUpgradePopup").hide();
+        return false;
+    });
 }
+
+/* ************************
+ * smooth Scroll
+ * gsap.min.js, ScrollToPlugin.min.js
+ ************************ */
+// Check Passive Support
 function smoothScroll_passive() {
-    var _0x243403 = a1_0x5169e9,
-        _0x4717b6 = ![];
+    var supportsPassive = false;
     try {
-        document[_0x243403(0x106)]("test", null, {
+        document.addEventListener("test", null, {
             get passive() {
-                _0x4717b6 = !![];
+                supportsPassive = true;
             },
         });
-    } catch (_0x5deb05) {}
-    return _0x4717b6;
+    } catch (e) {}
+    return supportsPassive;
 }
+
+// Start smooth Scroll
 function smoothScroll() {
-    var _0x1f7fe9 = a1_0x5169e9;
-    if (isMobile() || detectOS() === _0x1f7fe9(0x10f)) return;
-    var _0x453169 = $(window);
-    smoothScroll_passive() ? window[_0x1f7fe9(0x106)](_0x1f7fe9(0xfe), smoothScroll_scrolling, { passive: ![] }) : _0x453169["on"](_0x1f7fe9(0x17f), smoothScroll_scrolling), $(_0x1f7fe9(0x1fd))[_0x1f7fe9(0x1ac)](_0x1f7fe9(0x18a));
-}
-function smoothScroll_scrolling(_0x3d2b77) {
-    var _0x5c0246 = a1_0x5169e9;
-    _0x3d2b77[_0x5c0246(0x119)]();
-    var _0x5cb770 = $(window),
-        _0xb9a3d4 = 1.5,
-        _0x5bbf53 = 0x0;
+    if (isMobile() || detectOS() === "ios") return;
+    var $window = $(window);
     if (smoothScroll_passive()) {
-        var _0x4613ed = _0x5cb770[_0x5c0246(0x147)]() / 2.5;
-        _0x5bbf53 = _0x3d2b77[_0x5c0246(0x1e2)] / 0x78 || -_0x3d2b77["originalEvent"][_0x5c0246(0x157)] / 0x3;
+        window.addEventListener("wheel", smoothScroll_scrolling, { passive: false });
     } else {
-        var _0x4613ed = _0x5cb770[_0x5c0246(0x147)]() / 2.5;
-        typeof _0x3d2b77[_0x5c0246(0x155)]["deltaY"] != _0x5c0246(0x11d) ? (_0x5bbf53 = -_0x3d2b77[_0x5c0246(0x155)][_0x5c0246(0x1ef)] / 0x78) : (_0x5bbf53 = _0x3d2b77[_0x5c0246(0x155)][_0x5c0246(0x1e2)] / 0x78 || -_0x3d2b77[_0x5c0246(0x155)][_0x5c0246(0x157)] / 0x3);
+        $window.on("mousewheel DOMMouseScroll", smoothScroll_scrolling);
     }
-    var _0x213a39 = _0x5cb770["scrollTop"](),
-        _0x2da3eb = _0x213a39 - parseInt(_0x5bbf53 * _0x4613ed);
-    winScrolling = gsap["to"](_0x5cb770, _0xb9a3d4, { scrollTo: { y: _0x2da3eb, autoKill: !![] }, ease: Power4[_0x5c0246(0x200)], overwrite: 0x5 });
+    $("html").addClass("smooth-srolling");
 }
-function smoothScroll_destory(_0xb0cd49) {
-    var _0x33ed90 = a1_0x5169e9;
-    if (isMobile() || detectOS() === _0x33ed90(0x10f)) return;
-    smoothScroll_passive() ? window[_0x33ed90(0x102)](_0x33ed90(0xfe), smoothScroll_scrolling) : $(window)[_0x33ed90(0x134)]("mousewheel\x20DOMMouseScroll", smoothScroll_scrolling), gsap[_0x33ed90(0x125)]($(window), { scrollTo: !![] });
-}
-function callApi(_0x5d2e18, _0x5bc631, _0x2dbca4 = {}, _0x5498f7) {
-    return new Promise((_0x34a903, _0x948f10) => {
-        var _0x18c82a = a1_0x35fb;
-        if (_0x5d2e18["toUpperCase"]() === _0x18c82a(0x225) && Object[_0x18c82a(0xf5)](_0x2dbca4)[_0x18c82a(0x1f3)] > 0x0) {
-            const _0x5a20c6 = new URLSearchParams(_0x2dbca4)["toString"]();
-            _0x5bc631 += "?" + _0x5a20c6;
+
+// Scroll Event
+function smoothScroll_scrolling(event) {
+    event.preventDefault();
+    var $window = $(window);
+    var scrollTime = 1.5;
+    // var scrollDistance = $window.height() / 2.5;
+    var delta = 0;
+    if (smoothScroll_passive()) {
+        var scrollDistance = $window.height() / 2.5;
+        delta = event.wheelDelta / 120 || -event.originalEvent.detail / 3;
+    } else {
+        var scrollDistance = $window.height() / 2.5;
+        if (typeof event.originalEvent.deltaY != "undefined") {
+            delta = -event.originalEvent.deltaY / 120;
+        } else {
+            delta = event.originalEvent.wheelDelta / 120 || -event.originalEvent.detail / 3;
         }
-        $[_0x18c82a(0x1b9)]({
-            type: _0x5d2e18,
-            url: _0x5bc631,
-            data: _0x5d2e18[_0x18c82a(0x1d6)]() === _0x18c82a(0x225) ? undefined : _0x2dbca4,
-            dataType: _0x18c82a(0x230),
-            beforeSend: function (_0x243110) {
-                var _0x1c8d73 = _0x18c82a;
-                if (_0x5498f7 == "loading") $(_0x1c8d73(0x1fd))["attr"](_0x1c8d73(0xf1), _0x1c8d73(0x213));
-                else {
+    }
+
+    var scrollTop = $window.scrollTop();
+    var finalScroll = scrollTop - parseInt(delta * scrollDistance);
+    winScrolling = gsap.to($window, scrollTime, {
+        scrollTo: { y: finalScroll, autoKill: true },
+        ease: Power4.easeOut,
+        overwrite: 5,
+    });
+}
+
+// Destroy smooth Scroll
+function smoothScroll_destory(event) {
+    if (isMobile() || detectOS() === "ios") return;
+    if (smoothScroll_passive()) {
+        window.removeEventListener("wheel", smoothScroll_scrolling);
+    } else {
+        $(window).off("mousewheel DOMMouseScroll", smoothScroll_scrolling);
+    }
+    gsap.killTweensOf($(window), { scrollTo: true });
+}
+
+/**
+ * 서버로부터 Ajax 요청을 통해 데이터를 받아오는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-08
+ * 작성자 : IT7
+ * @param {string} type - HTTP 요청 타입 (예: "GET", "POST", "PUT", "DELETE")
+ * @param {string} url 요청할 URL
+ * @param {Object} [dataObj={}] - 요청에 사용할 데이터 객체
+ * @param {string} [loading] - 로딩 상태 표시 여부
+ * @returns {json} 서버로부터 받은 응답
+ */
+function callApi(type, url, dataObj = {}, loading) {
+    return new Promise((resolve, reject) => {
+        // GET 요청일 경우 dataObj를 쿼리 스트링으로 변환
+        if (type.toUpperCase() === "GET" && Object.keys(dataObj).length > 0) {
+            const queryParams = new URLSearchParams(dataObj).toString();
+            url += `?${queryParams}`;
+        }
+
+        $.ajax({
+            type,
+            url,
+            data: type.toUpperCase() === "GET" ? undefined : dataObj,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                // 로딩
+                if (loading == "loading") {
+                    $("html").attr("data-preloader", "enable");
+                    // sessionStorage.setItem("data-preloader", "enable");
+                } else {
+                    // sessionStorage.setItem("data-preloader", "disable");
                 }
             },
-            success: (_0x2ab65f) => {
-                _0x34a903(_0x2ab65f);
+            success: (result) => {
+                resolve(result);
             },
-            error: async (_0x17ee6c, _0x490140, _0x5df60f) => {
-                const { responseJSON: _0x100415 } = _0x17ee6c;
-                _0x34a903(_0x100415);
+            error: async (xhr, status, error) => {
+                const { responseJSON } = xhr;
+                resolve(responseJSON);
+
+                // const { message, statusCode } = responseJSON;
+
+                // switch (status) {
+                //     case 404:
+                //         sweetAlertMessage("문제가 발생했습니다. ", "", "e");
+                //         break;
+                //     case 500:
+                //         sweetAlertMessage("문제가 발생했습니다. ", "", "e");
+                //         break;
+                //     default:
+                //         resolve(responseJSON);
+                //         break;
+                // }
             },
-            complete: function (_0x3bffe7, _0x1db475) {
-                var _0x3b6e95 = _0x18c82a;
-                $(_0x3b6e95(0x1fd))[_0x3b6e95(0x1ea)](_0x3b6e95(0xf1), _0x3b6e95(0xf7));
-            },
-        });
-    });
-}
-function callApiFormData(_0x2e37cf, _0x72b071, _0x4241e9 = {}, _0x27e475) {
-    return new Promise((_0x14dd21, _0x4ffd70) => {
-        var _0x8e00d3 = a1_0x35fb;
-        const _0x202bd9 = _0x4241e9 instanceof FormData;
-        $["ajax"]({
-            type: _0x2e37cf,
-            url: _0x72b071,
-            data: _0x4241e9,
-            contentType: _0x202bd9 ? ![] : _0x8e00d3(0x1d4),
-            processData: !_0x202bd9,
-            dataType: _0x8e00d3(0x230),
-            beforeSend: function (_0x239020) {
-                var _0x36b6c2 = _0x8e00d3;
-                _0x27e475 !== "noLoading" ? sessionStorage[_0x36b6c2(0x138)](_0x36b6c2(0xf1), _0x36b6c2(0xf7)) : sessionStorage[_0x36b6c2(0x138)]("data-preloader", _0x36b6c2(0x213));
-            },
-            success: (_0x561331) => {
-                _0x14dd21(_0x561331);
-            },
-            error: async (_0x4123de, _0x48db6b, _0x515461) => {
-                const { responseJSON: _0x1af429 } = _0x4123de;
-                _0x14dd21(_0x1af429);
-            },
-            complete: function (_0x358501, _0x8f3abd) {
-                var _0x4f2724 = _0x8e00d3;
-                sessionStorage[_0x4f2724(0x138)](_0x4f2724(0xf1), _0x4f2724(0xf7));
+            complete: function (xhr, status) {
+                $("html").attr("data-preloader", "disable");
+                // sessionStorage.setItem("data-preloader", "disable");
             },
         });
     });
 }
+
+/**
+ * 서버로부터 Ajax 요청을 통해 데이터를 받아오는 함수
+ * 버전 : 0.1
+ * 작성자 : IT7
+ * @param {string} type - HTTP 요청 타입 (예: "GET", "POST", "PUT", "DELETE")
+ * @param {string} url 요청할 URL
+ * @param {FormData|Object} [dataObj={}] - 요청에 사용할 데이터 객체
+ * @param {string} [loading] - 로딩 상태 표시 여부
+ * @returns {Promise} 서버로부터 받은 응답을 Promise로 반환
+ */
+function callApiFormData(type, url, dataObj = {}, loading) {
+    return new Promise((resolve, reject) => {
+        const isFormData = dataObj instanceof FormData;
+
+        $.ajax({
+            type,
+            url,
+            data: dataObj,
+            contentType: isFormData ? false : "application/x-www-form-urlencoded; charset=UTF-8",
+            processData: !isFormData,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                if (loading !== "noLoading") {
+                    // 로딩
+                    sessionStorage.setItem("data-preloader", "disable");
+                } else {
+                    sessionStorage.setItem("data-preloader", "enable");
+                }
+            },
+            success: (result) => {
+                resolve(result);
+            },
+            error: async (xhr, status, error) => {
+                const { responseJSON } = xhr;
+                // const { message, statusCode } = responseJSON;
+
+                // handleError(message, statusCode);
+
+                // Status Code가 200, 300번 대가 아닐 경우 메시지를 띄운다.
+                // const isStatusOk = String(statusCode).startsWith("2") || String(statusCode).startsWith("3");
+
+                // if (!isStatusOk) {
+                // resolve(false);
+                // }
+
+                resolve(responseJSON);
+            },
+            complete: function (xhr, status) {
+                sessionStorage.setItem("data-preloader", "disable");
+            },
+        });
+    });
+}
+
+// 이벤트별 요청을 관리하는 객체
 let eventRequests = {};
-function callApiAbort(_0x1b2e54, _0x4c4ef2, _0x24578a, _0x293536) {
-    var _0x56b8cd = a1_0x5169e9;
-    return (
-        eventRequests[_0x293536] && eventRequests[_0x293536][_0x56b8cd(0x1c4)] && (eventRequests[_0x293536][_0x56b8cd(0x1c4)]["abort"](), (eventRequests[_0x293536][_0x56b8cd(0x109)] = "aborted"), delete eventRequests[_0x293536][_0x56b8cd(0x1c4)]),
-        new Promise((_0x3979e4, _0xcc235f) => {
-            var _0x1c8d34 = _0x56b8cd;
-            _0x4c4ef2 === _0x1c8d34(0x225) && _0x24578a && ((_0x1b2e54 += "?" + $[_0x1c8d34(0xf9)](_0x24578a)), (_0x24578a = null));
-            eventRequests[_0x293536] = { status: "pending", xhr: null };
-            const _0x3b645a = $[_0x1c8d34(0x1b9)]({
-                url: _0x1b2e54,
-                type: _0x4c4ef2,
-                data: _0x4c4ef2 === _0x1c8d34(0x225) ? null : _0x24578a,
-                dataType: _0x1c8d34(0x230),
-                beforeSend: function (_0x265201) {
-                    eventRequests[_0x293536]["xhr"] = _0x265201;
-                },
-                success: function (_0x5f37b9) {
-                    _0x3979e4(_0x5f37b9);
-                },
-                error: function (_0x586b66, _0x34bcd1, _0x55443d) {
-                    var _0x468d3d = _0x1c8d34;
-                    _0x34bcd1 === "abort" ? console[_0x468d3d(0x11f)]("Request\x20was\x20aborted") : console[_0x468d3d(0x15f)](_0x468d3d(0x1a7), _0x34bcd1, _0x55443d), _0x3979e4(_0x586b66[_0x468d3d(0x22c)]);
-                },
-                complete: function () {
-                    var _0xa27774 = _0x1c8d34;
-                    eventRequests[_0x293536] && eventRequests[_0x293536][_0xa27774(0x1c4)] === _0x3b645a && ((eventRequests[_0x293536][_0xa27774(0x109)] = _0xa27774(0xf2)), delete eventRequests[_0x293536][_0xa27774(0x1c4)]);
-                },
-            });
-        })
-    );
-}
-function abortRequest(_0x55b033) {
-    var _0x2e764a = a1_0x5169e9;
-    eventRequests[_0x55b033] && eventRequests[_0x55b033][_0x2e764a(0x1c4)]
-        ? (eventRequests[_0x55b033][_0x2e764a(0x1c4)][_0x2e764a(0x177)](), console[_0x2e764a(0x11f)](_0x2e764a(0x203) + _0x55b033 + "\x27\x20was\x20aborted."), delete eventRequests[_0x55b033][_0x2e764a(0x1c4)])
-        : console[_0x2e764a(0x11f)](_0x2e764a(0x1b1) + _0x55b033 + "\x27.");
-}
-function getRequestStatus(_0x5ca020) {
-    var _0x39447b = a1_0x5169e9;
-    if (eventRequests[_0x5ca020]) return eventRequests[_0x5ca020][_0x39447b(0x109)];
-    return null;
-}
-function checkRequestStatus(_0x106c79, _0x146c10, _0x4ce010 = 0x1f4, _0x138cfb = 0xa) {
-    let _0x1856fd = 0x0;
-    const _0x523243 = setInterval(() => {
-        var _0x425b85 = a1_0x35fb;
-        const _0x99241b = getRequestStatus(_0x106c79);
-        _0x1856fd++;
-        if (_0x99241b === _0x425b85(0xf2)) clearInterval(_0x523243), _0x146c10();
-        else {
-            if (_0x1856fd >= _0x138cfb) clearInterval(_0x523243);
-            else {
-            }
+/**
+ * API 호출 하는 공통 함수(AbortRequest)
+ * @param {string} url - API URL
+ * @param {string} method - HTTP 메서드 (GET, POST, etc.)
+ * @param {Object} data - 요청에 포함될 데이터
+ * @param {string} eventKey - 요청을 식별하기 위한 키
+ * @returns {Promise<Object|null>} - API 응답 데이터 또는 null
+ */
+function callApiAbort(url, method, data, eventKey) {
+    // 동일한 이벤트의 이전 요청이 있으면 취소합니다
+    if (eventRequests[eventKey] && eventRequests[eventKey].xhr) {
+        // 기존 요청이 있으면 취소
+        eventRequests[eventKey].xhr.abort();
+        eventRequests[eventKey].status = "aborted"; // 상태를 'aborted'로 업데이트
+        delete eventRequests[eventKey].xhr;
+    }
+
+    return new Promise((resolve, reject) => {
+        // GET 요청의 경우, 데이터 쿼리 스트링으로 변환
+        if (method === "GET" && data) {
+            url += "?" + $.param(data);
+            data = null;
         }
-    }, _0x4ce010);
+
+        // 요청의 상태를 기록 (대기 중)
+        eventRequests[eventKey] = { status: "pending", xhr: null };
+
+        // 새로운 요청을 생성합니다
+        const ajaxRequest = $.ajax({
+            url: url,
+            type: method,
+            data: method === "GET" ? null : data,
+            dataType: "json",
+            beforeSend: function (jqXHR) {
+                // 요청을 객체에 저장
+                eventRequests[eventKey].xhr = jqXHR;
+                // console.log(`Starting new request for event: ${eventKey}`);
+            },
+            success: function (response) {
+                resolve(response);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // console.log(jqXHR);
+                // console.log(textStatus);
+                // console.log(errorThrown);
+
+                if (textStatus === "abort") {
+                    console.log("Request was aborted");
+                } else {
+                    console.error("API 호출 에러 발생", textStatus, errorThrown);
+                    // reject(errorThrown);
+                }
+
+                // const { message, statusCode } = responseJSON;
+
+                resolve(jqXHR.responseJSON);
+            },
+            complete: function () {
+                // 어떤 요청이 중간에 취소되거나 새로운 요청이 같은 eventKey로 발행되었을 경우, 이전 요청이 complete 상태가 되더라도 그 요청이 이미 삭제되었는지 확인
+                if (eventRequests[eventKey] && eventRequests[eventKey].xhr === ajaxRequest) {
+                    // 요청이 완료되면 상태를 완료로 업데이트하고, xhr 객체는 삭제
+                    eventRequests[eventKey].status = "completed";
+                    delete eventRequests[eventKey].xhr;
+                }
+            },
+        });
+    });
 }
+
+/**
+ * 특정 이벤트 키의 요청을 강제로 중단
+ * @param {*} eventKey
+ */
+function abortRequest(eventKey) {
+    if (eventRequests[eventKey] && eventRequests[eventKey].xhr) {
+        eventRequests[eventKey].xhr.abort();
+        console.log(`Request for event '${eventKey}' was aborted.`);
+        delete eventRequests[eventKey].xhr; // 요청을 중단하고 삭제
+    } else {
+        console.log(`No active request found for event '${eventKey}'.`);
+    }
+}
+
+/**
+ * 특정 요청의 상태를 확인하는 함수
+ * @param {string} eventKey - 요청을 식별하기 위한 키
+ * @returns {string|null} - 'pending', 'completed', 'aborted' 등의 상태를 반환
+ */
+function getRequestStatus(eventKey) {
+    if (eventRequests[eventKey]) {
+        return eventRequests[eventKey].status;
+    }
+    return null; // 해당 요청이 없을 때
+}
+
+/**
+ * 상태가 "completed" 될 때까지 상태를 반복 확인하는 함수, 최대 지정된 횟수만큼 확인
+ * 상태가 "completed"로 확인되면 전달된 콜백 함수를 실행합니다.
+ *
+ * @param {string} eventKey - 요청을 식별하기 위한 키 (API 요청마다 고유하게 구분)
+ * @param {function} callback - 상태가 "completed"가 되었을 때 실행할 콜백 함수
+ * @param {number} [interval=500] - 상태 확인 주기 (밀리초), 기본값은 500ms
+ * @param {number} [maxAttempts=10] - 최대 상태 확인 시도 횟수, 기본값은 10번
+ *
+ * @example
+ * // 1초 간격으로 'landDetail' 이벤트 상태를 확인하고, 최대 5번까지 시도 후 완료되면 콜백 실행
+ * checkRequestStatus("landDetail", () => { console.log('요청 완료!'); }, 1000, 5);
+ *
+ * @returns {void} - 상태를 확인하는 함수이며, 반환 값은 없음
+ */
+function checkRequestStatus(eventKey, callback, interval = 500, maxAttempts = 10) {
+    let attempts = 0; // 확인 횟수 추적
+
+    const checkInterval = setInterval(() => {
+        const status = getRequestStatus(eventKey);
+        attempts++; // 시도 횟수 증가
+
+        // 상태가 null일 경우, 요청이 아직 없거나 오류가 발생한 상태로 처리
+        if (status === "completed") {
+            // console.log(`Request for event '${eventKey}' is completed.`);
+            clearInterval(checkInterval); // 상태가 "completed"면 확인 중단
+            callback(); // 콜백 함수 실행
+        } else if (attempts >= maxAttempts) {
+            // console.log(`Reached maximum attempts (${maxAttempts}) for event '${eventKey}'.`);
+            clearInterval(checkInterval); // 최대 시도 횟수 도달 시 확인 중단
+        } else {
+            // console.log(`Attempt ${attempts}: Request for event '${eventKey}' is still in progress. Status: ${status}`);
+        }
+    }, interval); // 지정한 시간 간격으로 상태 확인
+}
+
+// 현재 진행 중인 요청을 추적할 변수
 let currentRequest = null;
-function callApiBlob(_0x5a79f2, _0x3aea36, _0x2b5f1f) {
-    return new Promise((_0x299e6a, _0x34fc6c) => {
-        var _0x3af841 = a1_0x35fb;
-        currentRequest = $[_0x3af841(0x1b9)]({
-            type: _0x5a79f2,
-            url: _0x3aea36,
-            data: _0x2b5f1f,
-            xhrFields: { responseType: _0x3af841(0xfd) },
-            success: function (_0x384c60) {
-                _0x299e6a(_0x384c60);
+/**
+ * API 요청 함수 (Ajax)
+ * 동일한 API 호출이 완료되기 전에 재요청이 발생하면 이전 요청을 취소하고 새 요청을 실행.
+ *
+ * @param {string} method - 요청 방법 (GET, POST 등)
+ * @param {string} url - 요청을 보낼 URL
+ * @param {object} data - 요청에 사용할 데이터 (POST 시 전송할 파라미터)
+ * @return {Promise} - 요청이 완료되면 Blob 데이터를 반환하는 Promise
+ */
+function callApiBlob(method, url, data) {
+    // 현재 진행 중인 요청이 있으면 해당 요청을 취소
+    // if (currentRequest) {
+    //     currentRequest.abort(); // 이전 요청을 취소
+    //     currentRequest = null; // 변수 초기화
+    // }
+
+    // 새로운 요청을 Promise로 반환
+    return new Promise((resolve, reject) => {
+        // jQuery Ajax 요청을 실행하고 현재 요청을 currentRequest에 저장
+        currentRequest = $.ajax({
+            type: method, // HTTP 요청 방법 (GET, POST 등)
+            url: url, // 요청을 보낼 URL
+            data: data, // 요청에 사용될 데이터 (POST일 경우 전송할 데이터)
+            xhrFields: {
+                responseType: "blob", // 응답 데이터를 Blob 형식으로 받도록 설정
             },
-            error: function (_0x583cfd, _0x3e3ebf, _0x2baed6) {
-                var _0x47a8bd = _0x3af841;
-                _0x3e3ebf !== _0x47a8bd(0x177) && (console[_0x47a8bd(0x15f)](_0x47a8bd(0x10c), _0x2baed6), _0x34fc6c(_0x2baed6));
+            success: function (response) {
+                resolve(response); // 요청이 성공하면 Blob 데이터를 반환
+            },
+            error: function (xhr, status, error) {
+                // 요청이 "abort" 상태로 종료된 경우는 무시
+                if (status !== "abort") {
+                    console.error("API 호출 중 오류 발생:", error); // 오류 로그 출력
+                    reject(error); // 오류 발생 시 Promise를 reject로 처리
+                }
             },
         });
     });
 }
-function setCookie(_0x2899af, _0x37a13e, _0x18f499) {
-    var _0x203b9 = a1_0x5169e9;
-    let _0x3a77ac = _0x2899af + "=" + _0x37a13e + _0x203b9(0x206);
-    if (typeof _0x18f499 !== _0x203b9(0x11d)) {
-        const _0x2dea97 = new Date();
-        _0x2dea97[_0x203b9(0x1ba)](_0x2dea97[_0x203b9(0x193)]() + _0x18f499 * 0x18 * 0x3c * 0x3c * 0x3e8), (_0x3a77ac += _0x203b9(0x149) + _0x2dea97[_0x203b9(0x1b7)]());
+
+/**
+ * 쿠기를 저장하는 함수
+ * 버전 : 0.2
+ * 작성일 : 2023-12-05
+ * 작성자 : IT7
+ * @param {string} key
+ * @param {string} value
+ * @param {number} exp
+ */
+function setCookie(key, value, exp) {
+    let cookieString = key + "=" + value + ";path=/";
+
+    if (typeof exp !== "undefined") {
+        const date = new Date();
+        date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
+        cookieString += ";expires=" + date.toUTCString();
     }
-    document[_0x203b9(0x115)] = _0x3a77ac;
+
+    document.cookie = cookieString;
 }
-function getCookie(_0x4bb78d) {
-    var _0x5938c1 = a1_0x5169e9;
-    const _0x1cf60a = document[_0x5938c1(0x115)][_0x5938c1(0x103)](";"),
-        _0x1ff9bb = _0x1cf60a[_0x5938c1(0x18e)]((_0x32f927) => _0x32f927["includes"](_0x4bb78d));
-    if (_0x1ff9bb) {
-        const _0x6ef8cd = _0x1ff9bb[_0x5938c1(0x103)]("=")[0x1];
-        return _0x6ef8cd;
-    } else return null;
+
+/**
+ * 쿠기를 가져오는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-14
+ * 작성자 : IT7
+ * @param {string} key
+ */
+function getCookie(key) {
+    const cookies = document.cookie.split(";");
+    const cookie = cookies.find((cookie) => cookie.includes(key));
+    if (cookie) {
+        const cookieValue = cookie.split("=")[1];
+        return cookieValue;
+    } else {
+        return null;
+    }
 }
-function deleteCookie(_0x18f20c) {
-    var _0x43e55b = a1_0x5169e9;
-    const _0x48e172 = new Date();
-    _0x48e172[_0x43e55b(0x1ba)](_0x48e172[_0x43e55b(0x193)]() - 0x3e8 * 0x3c * 0x3c * 0x18);
-    const _0x470f75 = "expires=" + _0x48e172[_0x43e55b(0x1b7)]();
-    document[_0x43e55b(0x115)] = _0x18f20c + "=;\x20" + _0x470f75 + _0x43e55b(0x141);
+
+/**
+ * 특정 이름의 쿠키를 제거하는 함수
+ * @param {string} name - 제거할 쿠키의 이름
+ */
+function deleteCookie(name) {
+    // 현재 날짜와 시간을 가져옵니다.
+    const date = new Date();
+    // 쿠키의 유효기간을 과거로 설정합니다.
+    date.setTime(date.getTime() - 1000 * 60 * 60 * 24);
+    // 쿠키의 만료일자를 과거로 설정하여 쿠키를 제거합니다.
+    const expires = "expires=" + date.toUTCString();
+    // 쿠키를 설정합니다.
+    document.cookie = name + "=; " + expires + "; path=/";
 }
+
+/**
+ * 현재 페이지의 모든 쿠키를 삭제하는 함수
+ */
 function deleteAllCookies() {
-    var _0x22fa5c = a1_0x5169e9;
-    const _0x3a6ce8 = document[_0x22fa5c(0x115)]["split"](";");
-    _0x3a6ce8["forEach"]((_0x24f3bd) => {
-        var _0x315743 = _0x22fa5c;
-        const _0x3af973 = _0x24f3bd["split"]("=")[0x0]["trim"]();
-        document[_0x315743(0x115)] = _0x3af973 + _0x315743(0x17d);
+    // 현재 페이지에서 설정된 모든 쿠키를 가져옵니다.
+    const cookies = document.cookie.split(";");
+
+    // 각 쿠키를 순회하면서 삭제합니다.
+    cookies.forEach((cookie) => {
+        // 쿠키의 이름을 추출합니다.
+        const cookieName = cookie.split("=")[0].trim();
+        // 쿠키를 삭제합니다.
+        document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
     });
 }
-function autoResize(_0x4cf046) {
-    var _0x334499 = a1_0x5169e9;
-    (_0x4cf046[_0x334499(0x150)][_0x334499(0x147)] = _0x334499(0x19e)), (_0x4cf046["style"]["height"] = _0x4cf046[_0x334499(0x218)] + "px");
+
+/**
+ * textarea 높이 자동조절 해주는 함수
+ * @param {*} textarea
+ */
+function autoResize(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
 }
-function getUrlParameter(_0x5f4edd, _0x262fbc) {
-    var _0x4e0340 = a1_0x5169e9;
-    if (!_0x262fbc) _0x262fbc = window[_0x4e0340(0x1c6)]["href"];
-    _0x5f4edd = _0x5f4edd["replace"](/[\[\]]/g, _0x4e0340(0xed));
-    var _0x1441f4 = new RegExp(_0x4e0340(0x232) + _0x5f4edd + _0x4e0340(0x15b)),
-        _0x346999 = _0x1441f4[_0x4e0340(0x123)](_0x262fbc);
-    if (!_0x346999) return null;
-    if (!_0x346999[0x2]) return "";
-    return decodeURIComponent(_0x346999[0x2][_0x4e0340(0xf6)](/\+/g, "\x20"));
+
+/**
+ * 특정 url에서 특정 parameter 값 가져오는 함수
+ * @param {*} name = parameter 이름
+ * @param {*} url = url
+ * @returns
+ */
+function getUrlParameter(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-function sweetAlertMessage(_0x30d849, _0x42a9fc, _0x29e618) {
-    return new Promise((_0x2bb101, _0x36c325) => {
-        var _0x15ed8e = a1_0x35fb;
-        if (_0x29e618 == "q") _0x29e618 = _0x15ed8e(0x1c1);
-        else {
-            if (_0x29e618 == "e") _0x29e618 = "error";
-            else {
-                if (_0x29e618 == "w") _0x29e618 = _0x15ed8e(0x12b);
-                else {
-                    if (_0x29e618 == "s") _0x29e618 = _0x15ed8e(0x1b8);
-                    else {
-                        if (_0x29e618 == "i") _0x29e618 = _0x15ed8e(0x1cf);
-                    }
-                }
-            }
-        }
-        Swal[_0x15ed8e(0x221)]({ title: _0x30d849, html: _0x42a9fc, icon: _0x29e618, confirmButtonText: _0x15ed8e(0x1ca) })[_0x15ed8e(0x15c)]((_0x45aee6) => {
-            _0x2bb101(_0x45aee6);
+
+/**
+ * sweetalert alert창 함수 (return 없음)
+ * @param {*} title = 제목
+ * @param {*} text = 내용
+ * @param {*} icon = q: question, e: error, w: warning, s: success
+ * @returns
+ */
+function sweetAlertMessage(title, text, icon) {
+    return new Promise((resolve, reject) => {
+        if (icon == "q") icon = "question";
+        else if (icon == "e") icon = "error";
+        else if (icon == "w") icon = "warning";
+        else if (icon == "s") icon = "success";
+        else if (icon == "i") icon = "info";
+
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            confirmButtonText: "확   인",
+        }).then((result) => {
+            resolve(result);
         });
     });
 }
-async function sweetAlertForReturn(_0x1f5055, _0x366350, _0x204e33) {
-    return new Promise((_0x17bce2, _0x583bcb) => {
-        var _0x397aa0 = a1_0x35fb;
-        if (_0x204e33 == "q") _0x204e33 = _0x397aa0(0x1c1);
-        else {
-            if (_0x204e33 == "e") _0x204e33 = "error";
-            else {
-                if (_0x204e33 == "w") _0x204e33 = "warning";
-                else {
-                    if (_0x204e33 == "s") _0x204e33 = _0x397aa0(0x1b8);
-                    else {
-                        if (_0x204e33 == "i") _0x204e33 = _0x397aa0(0x1cf);
-                    }
-                }
+
+/**
+ * sweetalert alert창 함수 (return 있음)
+ * @param {*} title = 제목
+ * @param {*} text = 내용
+ * @param {*} icon = q: question, e: error, w: warning, s: success
+ * @returns
+ */
+async function sweetAlertForReturn(title, text, icon) {
+    return new Promise((resolve, reject) => {
+        if (icon == "q") icon = "question";
+        else if (icon == "e") icon = "error";
+        else if (icon == "w") icon = "warning";
+        else if (icon == "s") icon = "success";
+        else if (icon == "i") icon = "info";
+
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            confirmButtonText: "확   인",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                resolve(true);
+            } else {
+                resolve(false);
             }
-        }
-        Swal["fire"]({ title: _0x1f5055, html: _0x366350, icon: _0x204e33, confirmButtonText: _0x397aa0(0x1ca) })[_0x397aa0(0x15c)]((_0x26da34) => {
-            var _0x4a1737 = _0x397aa0;
-            _0x26da34[_0x4a1737(0x188)] ? _0x17bce2(!![]) : _0x17bce2(![]);
         });
     });
 }
-async function sweetConfirm(_0x3bc49c, _0x4e4732, _0x259c83) {
-    return new Promise((_0x3dbdc5, _0x436dc2) => {
-        var _0x27e099 = a1_0x35fb;
-        if (_0x259c83 == "q") _0x259c83 = "question";
-        else {
-            if (_0x259c83 == "e") _0x259c83 = _0x27e099(0x15f);
-            else {
-                if (_0x259c83 == "w") _0x259c83 = _0x27e099(0x12b);
-                else {
-                    if (_0x259c83 == "s") _0x259c83 = _0x27e099(0x1b8);
-                    else {
-                        if (_0x259c83 == "i") _0x259c83 = _0x27e099(0x1cf);
-                    }
-                }
+
+/**
+ * sweetalert confirm창 함수
+ * @param {*} title = 제목
+ * @param {*} text = 내용
+ * @param {*} icon = q: question, e: error, w: warning, s: success
+ * @returns
+ */
+async function sweetConfirm(title, text, icon) {
+    return new Promise((resolve, reject) => {
+        if (icon == "q") icon = "question";
+        else if (icon == "e") icon = "error";
+        else if (icon == "w") icon = "warning";
+        else if (icon == "s") icon = "success";
+        else if (icon == "i") icon = "info";
+
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            cancelButtonText: "닫기",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                resolve(true);
+            } else {
+                resolve(false);
             }
-        }
-        Swal[_0x27e099(0x221)]({ title: _0x3bc49c, html: _0x4e4732, icon: _0x259c83, showCancelButton: !![], confirmButtonText: "확인", cancelButtonText: "닫기" })[_0x27e099(0x15c)]((_0x3647a2) => {
-            var _0x441e16 = _0x27e099;
-            _0x3647a2[_0x441e16(0x188)] ? _0x3dbdc5(!![]) : _0x3dbdc5(![]);
         });
     });
 }
-function uploadLabel(_0x5beccb, _0x299b2a) {
-    var _0x29c793 = a1_0x5169e9;
-    $(document)["on"](_0x29c793(0x1e8), _0x5beccb, function () {
-        var _0x555262 = _0x29c793,
-            _0x506c7e = $(this)[_0x555262(0x167)]()[_0x555262(0x103)]("\x5c")[_0x555262(0x18c)]();
-        _0x506c7e ? $(_0x299b2a)[_0x555262(0x1ec)](_0x506c7e) : $(_0x299b2a)["text"](_0x555262(0x1fc));
+
+/**
+ * File 선택 시, label의 텍스트를 파일 이름으로 변경시키는 함수
+ * @param {*} inputId = input file의 id
+ * @param {*} labelSelector = label의 selector
+ * 사용법 : uploadLabel("#file_id", "label[for="file_id"]");
+ */
+function uploadLabel(inputId, labelSelector) {
+    $(document).on("change", inputId, function () {
+        var fileName = $(this).val().split("\\").pop();
+        if (fileName) {
+            $(labelSelector).text(fileName);
+        } else {
+            $(labelSelector).text("선택된 파일"); // 파일이 선택되지 않았을 때 기본 텍스트로 설정
+        }
     });
 }
-function selectElementsById(_0x5ce6e1) {
-    var _0x43e6e8 = a1_0x5169e9;
-    const _0x50943a = {};
-    return (
-        _0x5ce6e1[_0x43e6e8(0x1c3)]((_0x37d5d3) => {
-            var _0x28d6c5 = _0x43e6e8;
-            const _0x4706b3 = $("#" + _0x37d5d3);
-            _0x4706b3[_0x28d6c5(0x1f3)] && (_0x50943a[_0x37d5d3] = _0x4706b3);
-        }),
-        _0x50943a
-    );
+
+/**
+ * 주어진 ID 배열을 사용하여 해당 ID를 가진 요소들을 선택하는 함수
+ * @param {Array} idArray - ID 문자열 배열
+ * @returns {Object} 선택된 요소들을 포함하는 객체
+ */
+function selectElementsById(idArray) {
+    const elements = {};
+    idArray.forEach((id) => {
+        const element = $(`#${id}`);
+        if (element.length) {
+            elements[id] = element;
+        }
+    });
+    return elements;
 }
-function a1_0x5572() {
-    var _0x1ca117 = [
-        "hasClass",
-        "target",
-        "setProperty",
-        "jpg.gif",
-        "</article>",
-        "ppt.gif",
-        "sido",
-        "safari",
-        "auto",
-        "getTooltips",
-        "data-choices-text-disabled-true",
-        "pushState",
-        "btn\x20btn-light",
-        "9583xiaQAt",
-        "</div>",
-        "settings",
-        "<button\x20class=\x22browser-popup-close-btn\x22\x20title=\x22close\x22><i\x20class=\x22xi-close-thin\x22></i></button>",
-        "API\x20호출\x20에러\x20발생",
-        "msie\x20",
-        "xls.gif",
-        ".browser-popup-close-btn",
-        "microsoft-edge:",
-        "addClass",
-        "defaults",
-        "createElement",
-        "firefox",
-        "offset",
-        "No\x20active\x20request\x20found\x20for\x20event\x20\x27",
-        "roadAddress",
-        "maxItemCount",
-        "hidden",
-        "triggerCondition",
-        "all",
-        "toUTCString",
-        "success",
-        "ajax",
-        "setTime",
-        "click",
-        "&amp;",
-        "html\x20is\x20required\x20to\x20init\x20new\x20width.",
-        "3634308eDUWjJ",
-        "window",
-        "doc.gif",
-        "question",
-        "easeInOutExpo",
-        "forEach",
-        "xhr",
-        "Microsoft\x20Internet\x20Explorer",
-        "location",
-        "substring",
-        "--full-height",
-        "bcode",
-        "확\x20\x20\x20인",
-        "data-choices-search-true",
-        "appendChild",
-        "getElementById",
-        "src",
-        "info",
-        "This\x20is\x20a\x20placeholder\x20set\x20in\x20the\x20config",
-        "noUiSlider",
-        "wav.gif",
-        "data-choices-removeItem",
-        "application/x-www-form-urlencoded;\x20charset=UTF-8",
-        "hwp.gif",
-        "toUpperCase",
-        "<div\x20class=\x22browser-upgrade-popup-dim\x22></div>",
-        "classList",
-        "unknown.gif",
-        "string",
-        "zip.gif",
-        "Err\x20::\x20",
-        "floor",
-        "<span\x20class=\x22browser-popup-caution-icon\x22><i\x20class=\x22xi-error-o\x22></i></span><h2\x20class=\x22browser-popup-tit\x22><b>브라우저\x20업데이트</b>\x20안내</h2><p\x20class=\x22browser-popup-txt\x22>현재\x20사용중인\x20브라우저는\x20곧\x20지원이\x20중단됩니다.\x20<br>원활한\x20서비스를\x20제공받기\x20위해<br><b>보안과\x20속도가\x20강화된\x20브라우저로\x20업그레이드</b>\x20하시기\x20바랍니다.</p>",
-        "removeClass",
-        "input[name=\x27sido\x27]",
-        "exists",
-        "wheelDelta",
-        "btn\x20btn-dark",
-        "uploadFile[]",
-        "/back-end/00-include/uploadMultipleTempImage.php",
-        "buildingCode",
-        "notifier",
-        "change",
-        "top",
-        "attr",
-        "bottom",
-        "text",
-        "right",
-        "animation-delay",
-        "deltaY",
-        "open",
-        "ipod",
-        "magnificPopup",
-        "length",
-        "+$1-$2-$3-$4",
-        "tagName",
-        "input[name=\x27postal_code\x27]",
-        "attributes",
-        "vertical",
-        ".top-fixed",
-        "autoJibunAddress",
-        ".smooth-srolling",
-        "선택된\x20파일",
-        "html",
-        "slice",
-        "WEBGL_debug_renderer_info",
-        "easeOut",
-        "shouldSort",
-        "scrollTop",
-        "Request\x20for\x20event\x20\x27",
-        "#header",
-        "prompt",
-        ";path=/",
-        "IMG",
-        "documentElement",
-        "input[name=\x27sigungu\x27]",
-        "setKeyboardScrolling",
-        "trident",
-        "<em\x20class=\x22char\x22>",
-        "css-property",
-        "html,\x20body",
-        "toLocaleString",
-        "form-control",
-        "mCustomScrollbar",
-        "placeholderValue",
-        "enable",
-        "android",
-        "macintosh",
-        "active",
-        "none",
-        "scrollHeight",
-        "zoom",
-        "setAllowScrolling",
-        "contains",
-        "hide",
-        "canvas",
-        "N/A",
-        "duplicateItemsAllowed",
-        "from",
-        "fire",
-        "12039gGuGDB",
-        "innerWidth",
-        "/back-end/00-include/uploadTempImage.php",
-        "GET",
-        "338frMRcq",
-        "ra.gif",
-        "webgl",
-        "result",
-        "includes",
-        "jibunAddress",
-        "responseJSON",
-        "input[name=\x27address_jibun\x27]",
-        "transition",
-        "input[name=\x27address_road\x27]",
-        "json",
-        "position",
-        "[?&]",
-        "overflow-y",
-        "\x5c$&",
-        "update",
-        "[&?]",
-        "bname",
-        "data-preloader",
-        "completed",
-        "onerror",
-        "href",
-        "keys",
-        "replace",
-        "disable",
-        ".fp-responsive",
-        "param",
-        "</em><em\x20class=\x22char\x22>",
-        "trim",
-        "display",
-        "blob",
-        "wheel",
-        "gif.gif",
-        "4078440HRfWIE",
-        "test",
-        "removeEventListener",
-        "split",
-        "sigungu",
-        "UNMASKED_RENDERER_WEBGL",
-        "addEventListener",
-        "append",
-        "theme",
-        "status",
-        "indexOf",
-        "Apple",
-        "API\x20호출\x20중\x20오류\x20발생:",
-        "removeItemButton",
-        "outerHeight",
-        "ios",
-        "/back-end/00-include/uploadMultipleImage.php",
-        "14712880ZvZETN",
-        "com.gif",
-        "NaN",
-        "toFixed",
-        "cookie",
-        "outerWidth",
-        "asp.gif",
-        "setChoiceByValue",
-        "preventDefault",
-        "</em>",
-        "choices",
-        "zonecode",
-        "undefined",
-        "data-choices-editItem-true",
-        "log",
-        "_self",
-        "address",
-        "data",
-        "exec",
-        "div",
-        "killTweensOf",
-        "image",
-        "&lt;",
-        "toLowerCase",
-        "getExtension",
-        "onload",
-        "warning",
-        "message",
-        "remove",
-        "301935nNGOhE",
-        "searchEnabled",
-        "only-uk",
-        "set",
-        "=(.*?)(&|$)",
-        "pdf.gif",
-        "off",
-        "sound.gif",
-        "compressed.gif",
-        "opera",
-        "setItem",
-        "name",
-        "match",
-        "self",
-        "opr",
-        "markup",
-        "data-choices-limit",
-        "mp3.gif",
-        "userAgent",
-        ";\x20path=/",
-        "<div\x20class=\x22browser-upgrade-popup-inner\x22>",
-        "about:blank",
-        "readAsDataURL",
-        "transition-delay",
-        "dark",
-        "height",
-        "search",
-        ";expires=",
-        "getContext",
-        "appName",
-        "exe.gif",
-        "#fakescrollbar",
-        "sigunguCode",
-        "multipart/form-data",
-        "style",
-        "post",
-        "history",
-        "mainClass",
-        "mfp-with-zoom",
-        "originalEvent",
-        "#fullpage",
-        "detail",
-        ".char",
-        "edge/",
-        "innerHTML",
-        "(=([^&#]*)|&|#|$)",
-        "then",
-        "input[name=\x27dong_code\x27]",
-        "rtl",
-        "error",
-        "3680ANscCB",
-        "fullpage",
-        "mfp-figure",
-        "push",
-        "/assets/images/no-image.png",
-        "addItems",
-        "null",
-        "val",
-        "html.gif",
-        "60lrByMw",
-        "Postcode",
-        "destroy",
-        "focus",
-        "input[name=\x27address_detail\x27]",
-        "455179JZmuuk",
-        "delay",
-        "css",
-        "alert",
-        "ipad",
-        "rolling-time",
-        "body",
-        "bmp.gif",
-        "iphone",
-        "abort",
-        "dispatchEvent",
-        "&#39;",
-        "hash",
-        "editItems",
-        "querySelectorAll",
-        "=;\x20expires=Thu,\x2001\x20Jan\x201970\x2000:00:00\x20GMT;\x20path=/",
-        "confirm",
-        "mousewheel\x20DOMMouseScroll",
-        "bindEvents",
-        "options",
-        "toString",
-        "$1-$2-$3",
-        "value",
-        "chrome",
-        "data-choices-multiple-remove",
-        "#browserUpgradePopup",
-        "isConfirmed",
-        "<div\x20style=\x22height:100px;\x22>&nbsp;</div>",
-        "smooth-srolling",
-        "close",
-        "pop",
-        "direction",
-        "find",
-        "txt.gif",
-        "block",
-        "each",
-        "scroll",
-        "getTime",
-        "opener",
-        "default.gif",
-    ];
-    a1_0x5572 = function () {
-        return _0x1ca117;
-    };
-    return a1_0x5572();
+
+/**
+ * 데이터 Key값을 배열로 받아서, 해당 배열의 Key값들로 된 id에서 데이터를 추출하여 객체로 반환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-11
+ * 작성자 : IT7
+ * @param {array} idArray 데이터를 추출할 id 배열
+ * @returns {object} 추출한 데이터 객체
+ */
+function extractDataObject(idArray) {
+    const extractedData = {};
+
+    idArray.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            extractedData[id] = element.value;
+        }
+    });
+
+    return extractedData;
 }
-function extractDataObject(_0x1c188c) {
-    var _0x3a098b = a1_0x5169e9;
-    const _0xfee8aa = {};
-    return (
-        _0x1c188c[_0x3a098b(0x1c3)]((_0x1a5627) => {
-            var _0x525226 = _0x3a098b;
-            const _0x4d4860 = document[_0x525226(0x1cd)](_0x1a5627);
-            _0x4d4860 && (_0xfee8aa[_0x1a5627] = _0x4d4860[_0x525226(0x184)]);
-        }),
-        _0xfee8aa
-    );
-}
-function bindJsonData(_0x275cbe) {
-    var _0x5ad42d = a1_0x5169e9;
-    const _0x483e9d = Object[_0x5ad42d(0xf5)](_0x275cbe);
-    for (const _0x4dafe2 of _0x483e9d) {
-        const _0x5210a3 = document[_0x5ad42d(0x1cd)](_0x4dafe2);
-        if (!_0x5210a3) continue;
-        _0x5210a3[_0x5ad42d(0x1f5)] === _0x5ad42d(0x207)
-            ? (_0x5210a3[_0x5ad42d(0x1ce)] = _0x275cbe[_0x4dafe2] ?? _0x5ad42d(0x164))
-            : _0x5210a3[_0x5ad42d(0x1d8)][_0x5ad42d(0x21b)]("choices__input") && _0x5210a3[_0x5ad42d(0x11b)]
-            ? _0x5210a3[_0x5ad42d(0x11b)][_0x5ad42d(0x118)](_0x275cbe[_0x4dafe2])
-            : (_0x5210a3[_0x5ad42d(0x184)] = _0x275cbe[_0x4dafe2]);
+
+/**
+ * JSON의 key값을 id로 가지는 엘리먼트에 value를 바인딩하는 함수
+ * 엘리먼트가 img 태그면, src 속성에 value를 바인딩한다.
+ * 버전 : 0.1
+ * 작성일 : 2023-09-11
+ * 작성자 : IT7
+ * @param {object} dataJson JSON 데이터 객체
+ */
+function bindJsonData(dataJson) {
+    const keys = Object.keys(dataJson);
+    for (const key of keys) {
+        const element = document.getElementById(key);
+        // 요소가 없으면 다음으로 넘어간다.
+        if (!element) continue;
+
+        // 이미지일 경우, src 속성에 value를 바인딩한다.
+        // 바인딩할 src가 없을 경우, default 이미지(/assets/images/no-image.png)를 바인딩한다.
+        if (element.tagName === "IMG") {
+            element.src = dataJson[key] ?? "/assets/images/no-image.png";
+        } else {
+            // Choices.js가 사용된 select 요소일 경우, Choices 인스턴스를 사용해 값 설정
+            if (element.classList.contains("choices__input") && element.choices) {
+                element.choices.setChoiceByValue(dataJson[key]);
+            } else {
+                element.value = dataJson[key];
+            }
+        }
     }
 }
-function getElementValues(_0x4f9c6f) {
-    var _0x5e4218 = a1_0x5169e9;
-    const _0x350f7a = {};
-    return (
-        _0x4f9c6f[_0x5e4218(0x1c3)]((_0x10adb2) => {
-            var _0x42c4d6 = _0x5e4218;
-            const _0x209e9f = document[_0x42c4d6(0x1cd)](_0x10adb2);
-            _0x209e9f && (_0x209e9f[_0x42c4d6(0x1f5)] === _0x42c4d6(0x207) ? (_0x350f7a[_0x10adb2] = base64ToBlob(_0x209e9f[_0x42c4d6(0x1ce)])) : (_0x350f7a[_0x10adb2] = _0x209e9f[_0x42c4d6(0x184)]));
-        }),
-        _0x350f7a
-    );
-}
-function uploadTempFile(_0x179320) {
-    return new Promise((_0x5876cb, _0x548d6c) => {
-        var _0x5dde1b = a1_0x35fb;
-        const _0x481e3f = new FormData();
-        _0x481e3f[_0x5dde1b(0x107)]("uploadFile", _0x179320),
-            $[_0x5dde1b(0x1b9)]({
-                type: _0x5dde1b(0x151),
-                enctype: _0x5dde1b(0x14f),
-                url: _0x5dde1b(0x224),
-                data: _0x481e3f,
-                processData: ![],
-                contentType: ![],
-                success: function (_0x4d98ae) {
-                    _0x5876cb(_0x4d98ae);
-                },
-                error: function (_0x59d2aa) {
-                    var _0x358ac5 = _0x5dde1b;
-                    console[_0x358ac5(0x15f)]("Err\x20::\x20" + _0x59d2aa);
-                },
-            });
-    });
-}
-function uploadMultipleTempFile(_0x8c5701) {
-    return new Promise((_0x3bc118, _0x20f82d) => {
-        var _0xc89c47 = a1_0x35fb;
-        const _0x5de8c8 = new FormData();
-        for (const _0x4e53d8 of _0x8c5701) {
-            _0x5de8c8[_0xc89c47(0x107)]("uploadFile[]", _0x4e53d8);
+
+/**
+ * Element의 ID들을 배열로 받아, ID를 Key 값으로, Element의 value를 Value 값으로 하는 JSON 객체를 반환하는 함수
+ * Element가 img 태그면, src 속성의 값을 반환한다.
+ * 버전 : 0.1
+ * 작성일 : 2023-09-13
+ * 작성자 : IT7
+ * @param {array} idArray Element의 ID 배열
+ * @returns {object} Element의 ID를 Key 값으로, Element의 value를 Value 값으로 하는 JSON 객체
+ */
+function getElementValues(idArray) {
+    const dataObj = {};
+
+    idArray.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            if (element.tagName === "IMG") {
+                dataObj[id] = base64ToBlob(element.src);
+            } else {
+                dataObj[id] = element.value;
+            }
         }
-        $["ajax"]({
-            type: _0xc89c47(0x151),
+    });
+
+    return dataObj;
+}
+
+/**
+ * 파라미터로 받은 파일을 임시 경로로 파일 업로드 하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-10-26
+ * 작성자 : IT7
+ * @param {file} file 파일
+ */
+function uploadTempFile(file) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("uploadFile", file);
+        $.ajax({
+            type: "post",
             enctype: "multipart/form-data",
-            url: _0xc89c47(0x1e5),
-            data: _0x5de8c8,
-            processData: ![],
-            contentType: ![],
-            success: function (_0x32e5cb) {
-                _0x3bc118(_0x32e5cb);
+            url: "/back-end/00-include/uploadTempImage.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
             },
-            error: function (_0x94463a) {
-                var _0x23c106 = _0xc89c47;
-                console[_0x23c106(0x15f)](_0x23c106(0x1dc) + _0x94463a);
+            error: function (err) {
+                console.error("Err :: " + err);
             },
         });
     });
 }
-function uploadMultipleFile(_0x47f36f) {
-    return new Promise((_0x1fbfad, _0x3b19d4) => {
-        var _0x107844 = a1_0x35fb;
-        const _0x5c3b7f = new FormData();
-        for (const _0x48ce40 of _0x47f36f) {
-            _0x5c3b7f[_0x107844(0x107)](_0x107844(0x1e4), _0x48ce40);
+
+/**
+ * 파라미터로 받은 파일들을 임시 경로로 파일 업로드 하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-10-26
+ * 작성자 : IT7
+ * @param {file} file 파일
+ */
+function uploadMultipleTempFile(files) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append("uploadFile[]", file);
         }
-        $[_0x107844(0x1b9)]({
-            type: _0x107844(0x151),
-            enctype: _0x107844(0x14f),
-            url: _0x107844(0x110),
-            data: _0x5c3b7f,
-            processData: ![],
-            contentType: ![],
-            success: function (_0x21bcea) {
-                _0x1fbfad(_0x21bcea);
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/back-end/00-include/uploadMultipleTempImage.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
             },
-            error: function (_0x1eb31e) {
-                var _0x5265e6 = _0x107844;
-                console[_0x5265e6(0x15f)]("Err\x20::\x20" + _0x1eb31e);
+            error: function (err) {
+                console.error("Err :: " + err);
             },
         });
     });
 }
-function fileToBase64(_0x3b92ab) {
-    return new Promise((_0x4ec89d, _0x3406b1) => {
-        var _0xfec8fb = a1_0x35fb;
-        const _0x4ccd15 = new FileReader();
-        _0x4ccd15[_0xfec8fb(0x144)](_0x3b92ab),
-            (_0x4ccd15[_0xfec8fb(0x12a)] = function () {
-                var _0x54a5b0 = _0xfec8fb;
-                const _0x27a1c1 = _0x4ccd15[_0x54a5b0(0x229)];
-                _0x4ec89d(_0x27a1c1);
-            });
+
+/**
+ * 파라미터로 받은 파일들을 파일 업로드 하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-11-14
+ * 작성자 : IT7
+ * @param {file} file 파일
+ */
+function uploadMultipleFile(files) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append("uploadFile[]", file);
+        }
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/back-end/00-include/uploadMultipleImage.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (err) {
+                console.error("Err :: " + err);
+            },
+        });
     });
 }
-function openDaumPostcode() {
-    var _0x485322 = a1_0x5169e9;
-    new daum[_0x485322(0x16a)]({
-        oncomplete: function (_0x5144e0) {
-            var _0x23964a = _0x485322;
-            console[_0x23964a(0x11f)](_0x5144e0),
-                $(_0x23964a(0x1f6))[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x11c)]),
-                $(_0x23964a(0x22f))[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x1b2)]),
-                $(_0x23964a(0x22d))[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x22b)] || _0x5144e0[_0x23964a(0x1fa)]),
-                $("input[name=\x27address_primary\x27]")[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x121)]),
-                $(_0x23964a(0x1e0))[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x19c)]),
-                $(_0x23964a(0x209))[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x104)]),
-                $("input[name=\x27sigungu_code\x27]")["val"](_0x5144e0[_0x23964a(0x14e)]),
-                $("input[name=\x27bcode\x27]")[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x1c9)]),
-                $(_0x23964a(0x15d))["val"](_0x5144e0["bcode"]),
-                $("input[name=\x27dong\x27]")[_0x23964a(0x167)](_0x5144e0[_0x23964a(0xf0)]),
-                $("input[name=\x27buildingCode\x27]")[_0x23964a(0x167)](_0x5144e0[_0x23964a(0x1e6)]),
-                $(_0x23964a(0x16d))[_0x23964a(0x16c)]();
-        },
-    })[_0x485322(0x1f0)]();
+
+/**
+ * 파일 박스의 파일을 파라미터로 받아, Base64로 변환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-13
+ * 작성자 : IT7
+ * @param {File} file 파일 박스의 파일
+ * @returns {string} Base64로 변환된 파일
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = function () {
+            const base64 = reader.result;
+            resolve(base64);
+        };
+    });
 }
-function initializeChoices(_0x6f0e96 = null) {
-    var _0x43bdcb = a1_0x5169e9,
-        _0x35f485 = _0x6f0e96 ? [document[_0x43bdcb(0x1cd)](_0x6f0e96)] : document[_0x43bdcb(0x17c)]("[data-choices]"),
-        _0x459eea = [];
-    Array[_0x43bdcb(0x220)](_0x35f485)[_0x43bdcb(0x1c3)](function (_0x4399ff) {
-        var _0x2ac027 = _0x43bdcb;
-        if (!_0x4399ff) return;
-        var _0x4c2c01 = {},
-            _0x385715 = _0x4399ff[_0x2ac027(0x1f7)];
-        Array[_0x2ac027(0x220)](_0x385715)[_0x2ac027(0x1c3)](function (_0x56f0a6) {
-            var _0x4fc79e = _0x2ac027;
-            switch (_0x56f0a6[_0x4fc79e(0x139)]) {
+
+/**
+ * daum 주소 api 실행 및 바인딩 함수
+ */
+function openDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            console.log(data);
+            $("input[name='postal_code']").val(data.zonecode);
+            $("input[name='address_road']").val(data.roadAddress);
+            $("input[name='address_jibun']").val(data.jibunAddress || data.autoJibunAddress);
+            $("input[name='address_primary']").val(data.address);
+            $("input[name='sido']").val(data.sido);
+            $("input[name='sigungu']").val(data.sigungu);
+            $("input[name='sigungu_code']").val(data.sigunguCode);
+            $("input[name='bcode']").val(data.bcode);
+            $("input[name='dong_code']").val(data.bcode);
+            $("input[name='dong']").val(data.bname);
+            $("input[name='buildingCode']").val(data.buildingCode);
+            $("input[name='address_detail']").focus();
+        },
+    }).open();
+}
+
+/**
+ * 주소기반산업지원서비스 주소팝업 콜백 함수
+ * @param {*} addressData
+ */
+function jusoCallBack(addressData) {
+    console.log(addressData);
+
+    $("input[name='postal_code']").val(addressData.zipNo);
+    $("input[name='address_road']").val(addressData.roadAddrPart1);
+    $("input[name='address_jibun']").val(addressData.jibunAddr);
+    $("input[name='address_primary']").val(addressData.roadAddrPart1);
+    $("input[name='address_detail']").val(addressData.addrDetail);
+    $("input[name='sido']").val(addressData.siNm);
+    $("input[name='sigungu']").val(addressData.sggNm);
+    $("input[name='sigungu_code']").val(addressData.admCd.substring(0, 5));
+    $("input[name='bcode']").val(addressData.admCd);
+    $("input[name='dong_code']").val(addressData.admCd);
+    $("input[name='dong']").val(addressData.emdNm);
+    $("input[name='buildingCode']").val(addressData.bdMgtSn);
+    $("input[name='address_detail']").focus();
+}
+
+/**
+ * choices.js init
+ * @param {*} id
+ */
+function initializeChoices(id = null) {
+    var elements = id ? [document.getElementById(id)] : document.querySelectorAll("[data-choices]");
+    var choicesInstances = [];
+
+    Array.from(elements).forEach(function (element) {
+        if (!element) return;
+
+        var config = {};
+        var attributes = element.attributes;
+
+        Array.from(attributes).forEach(function (attribute) {
+            switch (attribute.name) {
                 case "data-choices-groups":
-                    _0x4c2c01[_0x4fc79e(0x212)] = _0x4fc79e(0x1d0);
+                    config.placeholderValue = "This is a placeholder set in the config";
                     break;
                 case "data-choices-search-false":
-                    _0x4c2c01["searchEnabled"] = ![];
+                    config.searchEnabled = false;
                     break;
-                case _0x4fc79e(0x1cb):
-                    _0x4c2c01[_0x4fc79e(0x12f)] = !![];
+                case "data-choices-search-true":
+                    config.searchEnabled = true;
                     break;
-                case _0x4fc79e(0x1d3):
-                    _0x4c2c01[_0x4fc79e(0x10d)] = !![];
+                case "data-choices-removeItem":
+                    config.removeItemButton = true;
                     break;
                 case "data-choices-sorting-false":
-                    _0x4c2c01[_0x4fc79e(0x201)] = ![];
+                    config.shouldSort = false;
                     break;
                 case "data-choices-sorting-true":
-                    _0x4c2c01[_0x4fc79e(0x201)] = !![];
+                    config.shouldSort = true;
                     break;
-                case _0x4fc79e(0x186):
-                    _0x4c2c01[_0x4fc79e(0x10d)] = !![];
+                case "data-choices-multiple-remove":
+                    config.removeItemButton = true;
                     break;
-                case _0x4fc79e(0x13e):
-                    _0x4c2c01[_0x4fc79e(0x1b3)] = _0x56f0a6["value"];
+                case "data-choices-limit":
+                    config.maxItemCount = attribute.value;
                     break;
-                case _0x4fc79e(0x11e):
-                    _0x4c2c01["editItems"] = !![];
+                case "data-choices-editItem-true":
+                    config.editItems = true;
                     break;
                 case "data-choices-editItem-false":
-                    _0x4c2c01[_0x4fc79e(0x17b)] = ![];
+                    config.editItems = false;
                     break;
                 case "data-choices-text-unique-true":
-                    _0x4c2c01[_0x4fc79e(0x21f)] = ![];
+                    config.duplicateItemsAllowed = false;
                     break;
-                case _0x4fc79e(0x1a0):
-                    _0x4c2c01[_0x4fc79e(0x165)] = ![];
+                case "data-choices-text-disabled-true":
+                    config.addItems = false;
                     break;
             }
-        }),
-            _0x4399ff[_0x2ac027(0x11b)] && _0x4399ff["choices"][_0x2ac027(0x16b)](),
-            (_0x4399ff[_0x2ac027(0x11b)] = new Choices(_0x4399ff, _0x4c2c01)),
-            _0x385715[_0x2ac027(0x1a0)] && _0x4399ff["choices"][_0x2ac027(0xf7)](),
-            _0x459eea["push"](_0x4399ff["choices"]);
+        });
+
+        // 기존 Choices 인스턴스가 있는지 확인하고 파괴
+        if (element.choices) {
+            element.choices.destroy();
+        }
+
+        // 새로운 Choices 인스턴스 생성 및 저장
+        element.choices = new Choices(element, config);
+
+        if (attributes["data-choices-text-disabled-true"]) {
+            element.choices.disable();
+        }
+
+        choicesInstances.push(element.choices);
     });
-    if (_0x6f0e96) return _0x459eea[0x0];
-    else {
+
+    // id가 있을 경우 해당 Choices 인스턴스 반환
+    if (id) {
+        return choicesInstances[0];
+    } else {
+        // return choicesInstances;
     }
 }
-function comma(_0x4316fd) {
-    var _0x1011eb = a1_0x5169e9;
-    _0x4316fd = String(_0x4316fd);
-    if (!_0x4316fd || _0x4316fd === _0x1011eb(0x166)) return "";
-    const _0x200f34 = _0x4316fd[_0x1011eb(0x103)]("."),
-        _0x429fc8 = _0x200f34[0x0][_0x1011eb(0xf6)](/\B(?=(\d{3})+(?!\d))/g, ","),
-        _0x5c9d83 = _0x200f34[0x1] !== undefined ? _0x200f34[0x1] : "";
-    return _0x5c9d83["length"] > 0x0 || _0x4316fd[_0x1011eb(0x22a)](".") ? _0x429fc8 + "." + _0x5c9d83 : _0x429fc8;
+
+/**
+ * 숫자 또는 문자열을 받아서, 3자리마다 콤마를 찍어서 반환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-12
+ * 작성자 : IT7
+ * @param {string|number} str
+ * @returns {string} 3자리마다 콤마가 찍힌 문자열
+ */
+
+function comma(str) {
+    str = String(str);
+    if (!str || str === "null") return "";
+
+    // 입력된 값을 소수점 기준으로 나눔
+    const parts = str.split(".");
+
+    // 소수점 앞의 숫자에 콤마 찍기
+    const wholeNumber = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // 소수점 뒤의 값이 없을 때도 소수점 자체는 유지
+    const decimal = parts[1] !== undefined ? parts[1] : "";
+
+    // 소수점 뒤에 값이 없으면 '.'을 유지한 채 반환
+    return decimal.length > 0 || str.includes(".") ? wholeNumber + "." + decimal : wholeNumber;
 }
-function uncomma(_0x450533) {
-    var _0x3f1a69 = a1_0x5169e9;
-    return (_0x450533 = String(_0x450533)), _0x450533[_0x3f1a69(0xf6)](/[^\d]+/g, "");
-}
-function priceToString(_0x24a417) {
-    var _0x667a6c = a1_0x5169e9;
-    return _0x24a417[_0x667a6c(0x182)]()[_0x667a6c(0xf6)](/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-const phoneOnDash = (_0x508fbd) => {
-    var _0x510fe9 = a1_0x5169e9;
-    if (typeof _0x508fbd !== _0x510fe9(0x1da)) return "";
-    _0x508fbd = _0x508fbd[_0x510fe9(0xf6)](/[^0-9]/g, "");
-    _0x508fbd[_0x510fe9(0x1f3)] > 0xb && (_0x508fbd = _0x508fbd["slice"](0x0, 0xb));
-    if (_0x508fbd[_0x510fe9(0x10a)]("82") === 0x0) return _0x508fbd["replace"](/(^82)(2|\d{2})(\d+)?(\d{4})$/, _0x510fe9(0x1f4));
-    else {
-        if (_0x508fbd[_0x510fe9(0x10a)]("1") === 0x0) return _0x508fbd["replace"](/(^1\d{3})(\d{4})$/, "$1-$2");
+/*
+
+// 소수점이하를 2자리로 고정
+function comma(str) {
+    // 입력값이 null, undefined이거나 문자열 "null"인 경우 처리
+    if (str === null || str === undefined) {
+        // null 또는 undefined인 경우, 숫자 형식으로 0.00을 반환하는 것이 일반적입니다.
+        return "0.00";
     }
-    return _0x508fbd["replace"](/(^02|^0504|^0505|^0\d{2})(\d+)?(\d{4})$/, _0x510fe9(0x183));
+    if (String(str).toLowerCase() === "null") {
+         // 원본 코드의 "null" 문자열 처리 로직 유지 (빈 문자열 반환)
+         return "";
+    }
+
+    // 숫자로 변환하기 전에 입력된 문자열에서 콤마를 제거합니다.
+    // 이는 "2,935.00"과 같은 입력도 올바르게 파싱하기 위함입니다.
+    const cleanedStr = String(str).replace(/,/g, '');
+
+    // 문자열을 부동소수점 숫자로 변환합니다.
+    const num = parseFloat(cleanedStr);
+
+    // 숫자로 변환할 수 없는 경우 (NaN) 처리
+    if (isNaN(num)) {
+        console.warn("comma 함수에 유효하지 않은 숫자 입력:", str);
+        // 유효하지 않은 입력에 대해 0.00을 반환하는 것이 좋습니다.
+        return "0.00";
+    }
+
+    // toFixed(2)를 사용하여 소수점 이하 두 자리로 만들고 문자열로 변환합니다.
+    // 이 과정에서 반올림이 수행되고, 필요시 0으로 채워집니다 (예: 100 -> "100.00", 123.4 -> "123.40", 123.456 -> "123.46").
+    const fixedStr = num.toFixed(2);
+
+    // fixedStr은 이제 항상 "정수부.소수부(2자리)" 형태의 문자열입니다.
+    // 이 문자열을 소수점을 기준으로 다시 나눕니다.
+    const parts = fixedStr.split('.'); // parts[0] = 정수부, parts[1] = 소수부 (항상 2자리)
+
+    // 정수부에 콤마를 찍습니다.
+    const wholeNumberFormatted = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // 정수부와 (toFixed(2)로 인해 항상 존재하는) 소수부 두 자리를 합쳐 반환합니다.
+    const decimalPart = parts[1]; // 예: "00", "60", "68"
+
+    return wholeNumberFormatted + "." + decimalPart;
+}
+*/
+/**
+ * 콤마 처리 되어 있는 문자열을 받아서, 콤마를 해제하여 반환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-12
+ * 작성자 : IT7
+ * @param {string|number} str
+ * @returns {string} 콤마가 해제된 문자열
+ */
+function uncomma(str) {
+    str = String(str);
+    return str.replace(/[^\d]+/g, "");
+}
+
+/*
+ * 숫자를 문자열로 변환하고 천 단위 구분자를 추가하는 함수
+ */
+function priceToString(price) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// 전화번호에 - 붙이는 함수
+const phoneOnDash = (str) => {
+    if (typeof str !== "string") return "";
+    str = str.replace(/[^0-9]/g, "");
+
+    // 최대 길이를 11로 제한
+    if (str.length > 11) {
+        str = str.slice(0, 11);
+    }
+
+    if (str.indexOf("82") === 0) {
+        return str.replace(/(^82)(2|\d{2})(\d+)?(\d{4})$/, "+$1-$2-$3-$4"); // +82
+    } else if (str.indexOf("1") === 0) {
+        return str.replace(/(^1\d{3})(\d{4})$/, "$1-$2"); // 1588, 1566, 1677, ...
+    }
+    return str.replace(/(^02|^0504|^0505|^0\d{2})(\d+)?(\d{4})$/, "$1-$2-$3"); // 02/0504/0505/010/011/031
 };
+
+/**
+ * 숫자를 '억', '만' 단위로 변환하는 함수
+ *
+ * @param {number|string} price - 변환할 숫자(가격)입니다. 숫자 또는 숫자형 문자열을 입력받습니다.
+ * @param {string} [showUnit="all"] - 변환된 가격을 출력할 때, 표시할 단위를 지정합니다.
+ *    - "all": 억, 만 단위를 모두 표시합니다.
+ *    - "only-uk": 억 단위만 표시하고, 만 단위는 생략합니다.
+ * @param {boolean} isWon - price가 원 단위인지 여부를 나타냅니다. true일 경우 만원 단위로 자동 변환합니다.
+ * @param {boolean} [displayDecimal=false] - 억 단위에 소수점을 표시할지 여부를 나타냅니다.
+ * @returns {string} - 입력된 숫자를 '억', '만' 단위로 변환한 문자열을 반환합니다. 유효하지 않은 값이 들어오면 빈 문자열을 반환합니다.
+ *    - ex) 12345678 -> "1234억 5678만"
+ *    - ex) 12340000 -> "1234억"
+ *    - ex) 560000 -> "560만"
+ *    - ex) 0 -> "0만"
+ */
+// function formatPrice(price, showUnit = "all", isWon = false, displayDecimal = false) {
+//     price = parseInt(price, 10);
+//     if (isNaN(price)) return "";
+
+//     // 만원 단위가 아닌 경우(원 단위) 만원 단위로 변환
+//     if (isWon) {
+//         price = Math.floor(price / 10000); // 원 단위를 만원 단위로 변환
+//     }
+
+//     // 가격(억, 만 구분)
+//     // const price_rest = priceToString(price % 10000); // 만 단위의 돈에서 나머지 (만 원)
+//     const price_rest = price % 10000; // 만 단위의 돈에서 나머지 (만 원)
+//     const price_share_raw = price / 10000; // 소수 포함한 억 단위 계산
+//     let price_share = Math.floor(price_share_raw); // 정수로 변환한 억 단위
+
+//     // 만 단위와 억 단위가 모두 0이면 빈 문자열 반환
+//     if (price_share === "0" && price_rest === "0") {
+//         return "0만";
+//     }
+
+//     // 만약 금액이 1억 미만일 경우, 만 단위만 반환
+//     if (price < 10000) {
+//         return `${price_rest.toLocaleString()}만`;
+//     }
+
+//     // 소수점 표시가 활성화된 경우, 억 단위에 소수점 표시
+//     if (displayDecimal && price_share > 0) {
+//         price_share = price_share_raw.toFixed(1); // 소수점 포함
+//         return `${price_share}억`; // 만 단위 생략
+//     }
+
+//     switch (showUnit) {
+//         case "all":
+//             return price_rest !== 0 ? `${price_share}억 ${price_rest.toLocaleString()}만` : `${price_share}억`;
+//         case "only-uk":
+//             return price_share !== "0" ? `${price_share}억` : "";
+//         default:
+//             return "0만";
+//     }
+// }
 
 /**
  * 숫자를 '조', '억', '만' 단위로 변환하는 함수
@@ -1299,136 +1676,189 @@ function formatPrice(price, showUnit = "all", isWon = false, displayDecimal = fa
             return "0만";
     }
 }
-// function formatPrice(_0x2aa3be, _0x24593d = a1_0x5169e9(0x1b6), _0x1c2271 = ![], _0x6b8621 = ![]) {
-//     var _0x5e5b00 = a1_0x5169e9;
-//     _0x2aa3be = parseInt(_0x2aa3be, 0xa);
-//     if (isNaN(_0x2aa3be)) return "";
-//     _0x1c2271 && (_0x2aa3be = Math["floor"](_0x2aa3be / 0x2710));
-//     const _0x3ccf1e = _0x2aa3be % 0x2710,
-//         _0x440ef8 = _0x2aa3be / 0x2710;
-//     let _0x297df3 = Math[_0x5e5b00(0x1dd)](_0x440ef8);
-//     if (_0x297df3 === "0" && _0x3ccf1e === "0") return "0만";
-//     if (_0x2aa3be < 0x2710) return _0x3ccf1e[_0x5e5b00(0x20f)]() + "만";
-//     if (_0x6b8621 && _0x297df3 > 0x0) return (_0x297df3 = _0x440ef8[_0x5e5b00(0x114)](0x1)), _0x297df3 + "억";
-//     switch (_0x24593d) {
-//         case "all":
-//             return _0x3ccf1e !== 0x0 ? _0x297df3 + "억\x20" + _0x3ccf1e[_0x5e5b00(0x20f)]() + "만" : _0x297df3 + "억";
-//         case _0x5e5b00(0x130):
-//             return _0x297df3 !== "0" ? _0x297df3 + "억" : "";
-//         default:
-//             return "0만";
-//     }
-// }
-function convertToPyeong(_0x4df5ed) {
-    var _0x30ae19 = a1_0x5169e9;
-    const _0x27d29f = (_0x4df5ed / 3.305)[_0x30ae19(0x114)](0x1);
-    return _0x27d29f;
+
+/**
+ * 면적 m2 -> 평 변환 후 바인딩 함수
+ * @param {*} rcvValue
+ */
+function convertToPyeong(rcvValue) {
+    const pyeongValue = (rcvValue / 3.305).toFixed(1);
+    return pyeongValue;
 }
-function convertToM2(_0x5a91ed) {
-    const _0x7506ee = (_0x5a91ed * 3.305)["toFixed"](0x1);
-    return _0x7506ee;
+
+/**
+ * 면적 평 -> m2 변환 후 바인딩 함수
+ * @param {*} rcvValue
+ */
+function convertToM2(rcvValue) {
+    const squareMeterValue = (rcvValue * 3.305).toFixed(1);
+    return squareMeterValue;
 }
-function mergeTooltips(_0x35b0dd, _0xadd98d, _0x15db35) {
-    var _0x4895be = a1_0x5169e9,
-        _0x1dfe31 = _0x4895be(0x15e) === getComputedStyle(_0x35b0dd)[_0x4895be(0x18d)],
-        _0x44688e = _0x4895be(0x15e) === _0x35b0dd[_0x4895be(0x1d1)][_0x4895be(0x181)][_0x4895be(0x18d)],
-        _0xe515d0 = _0x4895be(0x1f8) === _0x35b0dd[_0x4895be(0x1d1)][_0x4895be(0x181)]["orientation"],
-        _0x5f4ee0 = _0x35b0dd["noUiSlider"][_0x4895be(0x19f)](),
-        _0x21215a = _0x35b0dd[_0x4895be(0x1d1)]["getOrigins"]();
-    Array[_0x4895be(0x220)](_0x5f4ee0)[_0x4895be(0x1c3)](function (_0x4d7971, _0x36cf82) {
-        var _0x44c864 = _0x4895be;
-        _0x4d7971 && _0x21215a[_0x36cf82][_0x44c864(0x1cc)](_0x4d7971);
-    }),
-        _0x35b0dd &&
-            _0x35b0dd["noUiSlider"]["on"](_0x4895be(0xee), function (_0x2649f1, _0x423606, _0x7af8af, _0x397a2c, _0x2b3388) {
-                var _0x31e577 = _0x4895be,
-                    _0xee85a0 = [[]],
-                    _0x212029 = [[]],
-                    _0x107547 = [[]],
-                    _0xf3e264 = 0x0;
-                _0x5f4ee0[0x0] && ((_0xee85a0[0x0][0x0] = 0x0), (_0x212029[0x0][0x0] = _0x2b3388[0x0]), (_0x107547[0x0][0x0] = _0x2649f1[0x0]));
-                for (var _0x280f80 = 0x1; _0x280f80 < _0x2b3388["length"]; _0x280f80++) {
-                    (!_0x5f4ee0[_0x280f80] || _0x2b3388[_0x280f80] - _0x2b3388[_0x280f80 - 0x1] > _0xadd98d) && ((_0xee85a0[++_0xf3e264] = []), (_0x107547[_0xf3e264] = []), (_0x212029[_0xf3e264] = [])),
-                        _0x5f4ee0[_0x280f80] && (_0xee85a0[_0xf3e264][_0x31e577(0x163)](_0x280f80), _0x107547[_0xf3e264][_0x31e577(0x163)](_0x2649f1[_0x280f80]), _0x212029[_0xf3e264][_0x31e577(0x163)](_0x2b3388[_0x280f80]));
-                }
-                Array[_0x31e577(0x220)](_0xee85a0)["forEach"](function (_0x224ffd, _0x1dcd84) {
-                    var _0x126eba = _0x31e577;
-                    for (var _0x14e835 = _0x224ffd[_0x126eba(0x1f3)], _0x597d63 = 0x0; _0x597d63 < _0x14e835; _0x597d63++) {
-                        var _0x26098f,
-                            _0x3cd9cc,
-                            _0x1b796c,
-                            _0x115187 = _0x224ffd[_0x597d63];
-                        _0x597d63 === _0x14e835 - 0x1
-                            ? ((_0x1b796c = 0x0),
-                              Array[_0x126eba(0x220)](_0x212029[_0x1dcd84])[_0x126eba(0x1c3)](function (_0x26ef14) {
-                                  _0x1b796c += 0x3e8 - _0x26ef14;
-                              }),
-                              (_0x26098f = _0xe515d0 ? _0x126eba(0x1eb) : _0x126eba(0x1ed)),
-                              (_0x3cd9cc = 0x3e8 - _0x212029[_0x1dcd84][_0x44688e ? 0x0 : _0x14e835 - 0x1]),
-                              (_0x1b796c = (_0x1dfe31 && !_0xe515d0 ? 0x64 : 0x0) + _0x1b796c / _0x14e835 - _0x3cd9cc),
-                              (_0x5f4ee0[_0x115187][_0x126eba(0x15a)] = _0x107547[_0x1dcd84]["join"](_0x15db35)),
-                              (_0x5f4ee0[_0x115187][_0x126eba(0x150)]["display"] = _0x126eba(0x190)),
-                              (_0x5f4ee0[_0x115187]["style"][_0x26098f] = _0x1b796c + "%"))
-                            : (_0x5f4ee0[_0x115187][_0x126eba(0x150)][_0x126eba(0xfc)] = _0x126eba(0x217));
+/**
+ * noUiSlider.js 에서 슬라이더 상단에 툴팁을 넣는 함수
+ * @param {*} e - noUiSlider 슬라이더 요소
+ * @param {*} c - 툴팁을 병합하는 거리 기준 (숫자)
+ * @param {*} m - 툴팁 사이의 구분자 (문자열)
+ */
+function mergeTooltips(e, c, m) {
+    // 슬라이더의 방향 및 옵션을 가져옴
+    var u = "rtl" === getComputedStyle(e).direction, // 슬라이더의 텍스트 방향이 오른쪽에서 왼쪽인지 확인
+        S = "rtl" === e.noUiSlider.options.direction, // 슬라이더의 방향 옵션이 오른쪽에서 왼쪽인지 확인
+        g = "vertical" === e.noUiSlider.options.orientation, // 슬라이더의 방향 옵션이 수직인지 확인
+        p = e.noUiSlider.getTooltips(), // 슬라이더의 툴팁 요소들을 가져옴
+        t = e.noUiSlider.getOrigins(); // 슬라이더의 핸들 요소들을 가져옴
+
+    // 모든 툴팁 요소를 해당 핸들 요소에 붙임
+    Array.from(p).forEach(function (e, i) {
+        e && t[i].appendChild(e);
+    });
+
+    // 슬라이더의 'update' 이벤트에 대한 리스너 추가
+    e &&
+        e.noUiSlider.on("update", function (e, i, t, n, l) {
+            var r = [[]], // 툴팁 인덱스 그룹 배열
+                a = [[]], // 툴팁 값 그룹 배열
+                s = [[]], // 슬라이더 값 그룹 배열
+                o = 0; // 그룹 인덱스
+
+            // 첫 번째 툴팁 초기화
+            p[0] && ((r[0][0] = 0), (a[0][0] = l[0]), (s[0][0] = e[0]));
+
+            // 각 핸들에 대해 툴팁 병합 기준을 적용
+            for (var d = 1; d < l.length; d++) {
+                (!p[d] || l[d] - l[d - 1] > c) && ((r[++o] = []), (s[o] = []), (a[o] = []));
+                p[d] && (r[o].push(d), s[o].push(e[d]), a[o].push(l[d]));
+            }
+
+            // 각 툴팁 그룹에 대해 병합 및 위치 조정
+            Array.from(r).forEach(function (e, i) {
+                for (var t = e.length, n = 0; n < t; n++) {
+                    var l,
+                        r,
+                        o,
+                        d = e[n];
+
+                    if (n === t - 1) {
+                        // 그룹의 마지막 툴팁 처리
+                        // 그룹 툴팁 위치 및 내용 계산
+                        o = 0;
+                        Array.from(a[i]).forEach(function (e) {
+                            o += 1e3 - e;
+                        });
+                        l = g ? "bottom" : "right";
+                        r = 1e3 - a[i][S ? 0 : t - 1];
+                        o = (u && !g ? 100 : 0) + o / t - r;
+
+                        // 툴팁 내용 설정 및 표시
+                        p[d].innerHTML = s[i].join(m);
+                        p[d].style.display = "block";
+                        p[d].style[l] = o + "%";
+                    } else {
+                        // 그룹의 중간 툴팁 숨기기
+                        p[d].style.display = "none";
                     }
-                });
+                }
             });
+        });
 }
-function handleFileInputChange(_0x3247dc, _0x5e8def) {
-    var _0x5614f0 = a1_0x5169e9;
-    const _0x4e6789 = new FileReader();
-    _0x4e6789["onload"] = function () {
-        var _0x33f378 = a1_0x35fb;
-        _0x3247dc[_0x33f378(0x1ce)] = _0x4e6789[_0x33f378(0x229)];
+
+/**
+ * 파일 입력 변경 처리
+ * @param {HTMLElement} imgElement - 이미지 요소
+ * @param {File} file - 선택된 파일
+ */
+function handleFileInputChange(imgElement, file) {
+    const reader = new FileReader();
+    reader.onload = function () {
+        imgElement.src = reader.result;
+        // return imgElement.src;
     };
-    if (_0x5e8def) _0x4e6789[_0x5614f0(0x144)](_0x5e8def);
+    if (file) reader.readAsDataURL(file);
 }
-async function handleFileInputChangeMultiple(_0x27fb8c) {
-    return new Promise((_0x32e03c, _0x1e411b) => {
-        var _0x407194 = a1_0x35fb;
-        const _0x4b653 = new FileReader();
-        (_0x4b653[_0x407194(0x12a)] = function (_0x45b41d) {
-            var _0xa17958 = _0x407194;
-            _0x32e03c(_0x45b41d[_0xa17958(0x197)][_0xa17958(0x229)]);
-        }),
-            (_0x4b653[_0x407194(0xf3)] = function (_0x47003b) {
-                _0x1e411b(_0x47003b);
-            });
-        if (_0x27fb8c) _0x4b653[_0x407194(0x144)](_0x27fb8c);
+
+/**
+ * 파일 입력 변경 처리
+ * @param {File} file - 선택된 파일
+ */
+async function handleFileInputChangeMultiple(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            resolve(event.target.result);
+        };
+        reader.onerror = function (error) {
+            reject(error);
+        };
+        if (file) reader.readAsDataURL(file);
     });
 }
-function updateQueryString(_0x28e024, _0x250f49) {
-    var _0x2c8327 = a1_0x5169e9;
-    const _0x26f0c3 = window[_0x2c8327(0x1c6)][_0x2c8327(0xf4)],
-        _0x266cb0 = new URL(_0x26f0c3),
-        _0x1e3aed = new URLSearchParams(_0x266cb0[_0x2c8327(0x148)]);
-    _0x1e3aed["set"](_0x28e024, _0x250f49), (_0x266cb0[_0x2c8327(0x148)] = _0x1e3aed[_0x2c8327(0x182)]()), window["history"]["pushState"]({}, "", _0x266cb0[_0x2c8327(0x182)]());
-    const _0xa812b0 = new PopStateEvent("popstate", { state: {} });
-    window[_0x2c8327(0x178)](_0xa812b0);
-}
-function updateQueryStringObject(_0x15be95) {
-    var _0xc76eb2 = a1_0x5169e9;
-    const _0x3bba0a = window[_0xc76eb2(0x1c6)]["href"],
-        _0x4dc45f = new URL(_0x3bba0a),
-        _0x376132 = new URLSearchParams(_0x4dc45f[_0xc76eb2(0x148)]);
-    for (const _0x16db7a in _0x15be95) {
-        _0x15be95["hasOwnProperty"](_0x16db7a) && _0x376132[_0xc76eb2(0x131)](_0x16db7a, _0x15be95[_0x16db7a]);
-    }
-    (_0x4dc45f[_0xc76eb2(0x148)] = _0x376132["toString"]()), window[_0xc76eb2(0x152)][_0xc76eb2(0x1a1)]({}, "", _0x4dc45f["toString"]());
-    const _0x223b23 = new PopStateEvent("popstate", { state: {} });
-    window["dispatchEvent"](_0x223b23);
-}
-function allowOnlyNumbers(inputElement, maxLength, commaBool = false) {
-    // var _0x217182 = a1_0x5169e9;
-    // let _0x1cbe4f = _0x29d599[_0x217182(0x184)]["replace"](/[^0-9]/g, "");
-    // const _0x17edaf = _0x29d599["getAttribute"]("maxlength");
-    // _0x2fcadb && _0x1cbe4f[_0x217182(0x1f3)] > _0x2fcadb && (_0x1cbe4f = _0x1cbe4f[_0x217182(0x1fe)](0x0, _0x2fcadb)), _0x17edaf && parseInt(_0x1cbe4f) > parseInt(_0x17edaf) && (_0x1cbe4f = _0x17edaf), (_0x29d599[_0x217182(0x184)] = _0x1cbe4f);
 
+/**
+ * 현재 URL의 쿼리 스트링 값을 추가하거나 수정하는 함수
+ * @param {string} param - 추가하거나 수정할 쿼리 파라미터 이름
+ * @param {string} value - 추가하거나 수정할 쿼리 파라미터 값
+ */
+function updateQueryString(param, value) {
+    // 현재 URL 가져오기
+    const currentUrl = window.location.href;
+    const urlObj = new URL(currentUrl);
+    const params = new URLSearchParams(urlObj.search);
+
+    // 쿼리 파라미터 추가 또는 수정
+    params.set(param, value);
+
+    // 수정된 쿼리 스트링을 URL에 반영
+    urlObj.search = params.toString();
+
+    // URL을 변경
+    window.history.pushState({}, "", urlObj.toString());
+
+    // 수동으로 popstate 이벤트를 트리거
+    const popStateEvent = new PopStateEvent("popstate", { state: {} });
+    window.dispatchEvent(popStateEvent);
+}
+
+/**
+ * 현재 URL의 쿼리 스트링 값을 추가하거나 수정하는 함수
+ * @param {Object} paramsObj - 추가하거나 수정할 쿼리 파라미터 객체
+ */
+function updateQueryStringObject(paramsObj) {
+    // 현재 URL 가져오기
+    const currentUrl = window.location.href;
+    const urlObj = new URL(currentUrl);
+    const params = new URLSearchParams(urlObj.search);
+
+    // 쿼리 파라미터 추가 또는 수정
+    for (const key in paramsObj) {
+        if (paramsObj.hasOwnProperty(key)) {
+            params.set(key, paramsObj[key]);
+        }
+    }
+
+    // 수정된 쿼리 스트링을 URL에 반영
+    urlObj.search = params.toString();
+
+    // URL을 변경
+    window.history.pushState({}, "", urlObj.toString());
+
+    // 수동으로 popstate 이벤트를 트리거
+    const popStateEvent = new PopStateEvent("popstate", { state: {} });
+    window.dispatchEvent(popStateEvent);
+}
+
+/**
+ * 숫자만 입력되게 하는 함수(oninput용)
+ * ex) oninput="allowOnlyNumbers(this)"
+ * @param {*} inputElement
+ * @param {*} maxLength 최대자릿수
+ */
+function allowOnlyNumbers(inputElement, maxLength, commaBool = false) {
     // 입력된 값을 숫자만 남기고 다른 문자는 제거
     let value = inputElement.value.replace(/[^0-9]/g, "");
 
     // 입력 필드에 설정된 maxlength 속성 값 가져오기
     const maxValue = inputElement.getAttribute("maxlength");
+    const minValue = inputElement.getAttribute("minlength");
 
     // 최대자릿수 조건 있을 때
     if (maxLength) {
@@ -1490,113 +1920,148 @@ function allowOnlyNumericAndDecimal(inputElement, maxLength, commaBool = false) 
     }
 }
 
-function autoResize(_0x34dd0a) {
-    var _0x2720e8 = a1_0x5169e9;
-    $(_0x34dd0a)["css"](_0x2720e8(0x147), _0x2720e8(0x19e)), $(_0x34dd0a)[_0x2720e8(0x170)](_0x2720e8(0x147), _0x34dd0a["scrollHeight"] + "px");
+/**
+ * textarea 높이 자동조절 해주는 함수
+ * @param {*} textarea
+ */
+function autoResize(textarea) {
+    $(textarea).css("height", "auto");
+    $(textarea).css("height", textarea.scrollHeight + "px");
+    // textarea.style.height = "auto";
+    // textarea.style.height = textarea.scrollHeight + "px";
 }
+
+// 확장자별 이미지 매핑
 var extensionToImageMap = {
-    asp: a1_0x5169e9(0x117),
+    asp: "asp.gif",
     bat: "bat.gif",
-    bmp: a1_0x5169e9(0x175),
-    com: a1_0x5169e9(0x112),
-    compressed: a1_0x5169e9(0x136),
-    default: a1_0x5169e9(0x195),
-    doc: a1_0x5169e9(0x1c0),
-    docx: a1_0x5169e9(0x1c0),
-    exe: a1_0x5169e9(0x14c),
-    gif: a1_0x5169e9(0xff),
-    html: a1_0x5169e9(0x168),
-    hwp: a1_0x5169e9(0x1d5),
-    jpg: a1_0x5169e9(0x199),
-    jpeg: "jpg.gif",
-    mp3: a1_0x5169e9(0x13f),
-    pdf: a1_0x5169e9(0x133),
+    bmp: "bmp.gif",
+    com: "com.gif",
+    compressed: "compressed.gif",
+    default: "default.gif",
+    doc: "doc.gif",
+    docx: "doc.gif",
+    exe: "exe.gif",
+    gif: "gif.gif",
+    html: "html.gif",
+    hwp: "hwp.gif",
+    jpg: "jpg.gif",
+    jpeg: "jpg.gif", // jpg와 동일한 이미지 사용
+    mp3: "mp3.gif",
+    pdf: "pdf.gif",
     png: "png.gif",
-    ppt: a1_0x5169e9(0x19b),
-    ra: a1_0x5169e9(0x227),
-    sound: a1_0x5169e9(0x135),
-    txt: a1_0x5169e9(0x18f),
-    unknown: a1_0x5169e9(0x1d9),
+    ppt: "ppt.gif",
+    ra: "ra.gif",
+    sound: "sound.gif",
+    txt: "txt.gif",
+    unknown: "unknown.gif",
     url: "url.gif",
-    wav: a1_0x5169e9(0x1d2),
-    xls: a1_0x5169e9(0x1a9),
-    zip: a1_0x5169e9(0x1db),
+    wav: "wav.gif",
+    xls: "xls.gif",
+    zip: "zip.gif",
 };
-function showAlert(_0x4307c1 = "알림", _0x4bf221, _0x359f45 = function () {}) {
-    var _0x446171 = a1_0x5169e9;
-    (alertify[_0x446171(0x1ad)][_0x446171(0x22e)] = _0x446171(0x219)), (alertify[_0x446171(0x1ad)][_0x446171(0x108)]["ok"] = _0x446171(0x1e3)), alertify[_0x446171(0x171)](_0x4307c1, _0x4bf221, _0x359f45);
+
+// alertify 라이브러리를 이용한 알림창 함수
+function showAlert(title = "알림", message, callback = function () {}) {
+    alertify.defaults.transition = "zoom";
+    alertify.defaults.theme.ok = "btn btn-dark";
+    alertify.alert(title, message, callback);
 }
-function showConfirm(_0x420a40 = "알림", _0x34fddd) {
-    var _0x1906f8 = a1_0x5169e9;
-    return (
-        (alertify[_0x1906f8(0x1ad)][_0x1906f8(0x22e)] = _0x1906f8(0x219)),
-        new Promise((_0x53d80d, _0x558ab2) => {
-            var _0x5d1dcc = _0x1906f8;
-            alertify[_0x5d1dcc(0x17e)](
-                _0x420a40,
-                _0x34fddd,
-                function () {
-                    _0x53d80d(!![]);
-                },
-                function () {
-                    _0x53d80d(![]);
-                }
-            );
-        })
-    );
+
+// alertify 라이브러리를 이용한 확인창 함수
+function showConfirm(title = "알림", message) {
+    alertify.defaults.transition = "zoom";
+    return new Promise((resolve, reject) => {
+        alertify.confirm(
+            title,
+            message,
+            function () {
+                resolve(true);
+            },
+            function () {
+                resolve(false);
+            }
+        );
+    });
 }
-function showPrompt(_0x4e75ff = "알림", _0x56cfd4) {
-    var _0x368277 = a1_0x5169e9;
-    return (
-        (alertify[_0x368277(0x1ad)][_0x368277(0x22e)] = _0x368277(0x219)),
-        (alertify[_0x368277(0x1ad)][_0x368277(0x108)]["ok"] = "btn\x20btn-dark"),
-        (alertify["defaults"][_0x368277(0x108)]["cancel"] = _0x368277(0x1a2)),
-        (alertify["defaults"][_0x368277(0x108)]["input"] = _0x368277(0x210)),
-        new Promise((_0x537569, _0x4ec763) => {
-            var _0x4ccacd = _0x368277;
-            alertify[_0x4ccacd(0x205)](
-                _0x4e75ff,
-                _0x56cfd4,
-                "",
-                function (_0x23611c, _0x471703) {
-                    _0x537569(_0x471703);
-                },
-                function () {
-                    _0x537569(null);
-                }
-            );
-        })
-    );
+
+// alertify 라이브러리를 이용한 프롬프트창 함수
+function showPrompt(title = "알림", message) {
+    alertify.defaults.transition = "zoom";
+    alertify.defaults.theme.ok = "btn btn-dark";
+    alertify.defaults.theme.cancel = "btn btn-light";
+    alertify.defaults.theme.input = "form-control";
+    return new Promise((resolve, reject) => {
+        alertify.prompt(
+            title,
+            message,
+            "",
+            function (evt, value) {
+                resolve(value);
+            },
+            function () {
+                resolve(null);
+            }
+        );
+    });
 }
-function showToastMessage(_0x56555c, _0xd016d3 = a1_0x5169e9(0x1b8), _0x49cee4 = 0x3, _0x8e0ba4 = function () {}) {
-    var _0x373ffe = a1_0x5169e9;
-    (alertify[_0x373ffe(0x1ad)][_0x373ffe(0x1e7)][_0x373ffe(0x16f)] = _0x49cee4), (alertify[_0x373ffe(0x1ad)]["notifier"][_0x373ffe(0x231)] = "top-right");
-    switch (_0xd016d3) {
-        case _0x373ffe(0x1b8):
-            alertify["success"](_0x56555c);
+
+// alertify 라이브러리를 이용한 토스트 메시지 함수
+function showToastMessage(message, type = "success", delay = 3, callback = function () {}) {
+    alertify.defaults.notifier.delay = delay;
+    alertify.defaults.notifier.position = "top-right";
+
+    switch (type) {
+        case "success":
+            alertify.success(message);
             break;
-        case _0x373ffe(0x15f):
-            alertify[_0x373ffe(0x15f)](_0x56555c);
+        case "error":
+            alertify.error(message);
             break;
-        case _0x373ffe(0x12b):
-            alertify[_0x373ffe(0x12b)](_0x56555c);
+        case "warning":
+            alertify.warning(message);
             break;
         default:
-            alertify[_0x373ffe(0x12c)](_0x56555c);
+            alertify.message(message);
             break;
     }
+
     setTimeout(() => {
-        _0x8e0ba4();
-    }, _0x49cee4 * 0x3e8);
+        callback();
+    }, delay * 1000);
 }
-function escapeHtml(_0x37e61f) {
-    var _0x34fd4f = a1_0x5169e9;
-    return _0x37e61f[_0x34fd4f(0xf6)](/&/g, _0x34fd4f(0x1bc))["replace"](/</g, _0x34fd4f(0x127))[_0x34fd4f(0xf6)](/>/g, "&gt;")[_0x34fd4f(0xf6)](/"/g, "&quot;")[_0x34fd4f(0xf6)](/'/g, _0x34fd4f(0x179));
+
+/**
+ * 이스케이프 처리 함수
+ * @param {*} unsafe
+ * @returns
+ */
+function escapeHtml(unsafe) {
+    return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
-function debounce(_0x2708e9, _0x44449f) {
-    let _0x480b4e;
-    return function (..._0x239670) {
-        const _0x39e668 = this;
-        clearTimeout(_0x480b4e), (_0x480b4e = setTimeout(() => _0x2708e9["apply"](_0x39e668, _0x239670), _0x44449f));
+
+/**
+ * Debounce 함수
+ *
+ * 지정된 시간(`wait`) 동안 여러 번 호출된 함수(`func`) 중 마지막 호출만 실행되도록 하는 함수입니다.
+ * 주로 사용자가 입력 필드에 텍스트를 빠르게 입력할 때, 실시간으로 API 호출 등의 작업을 방지하고,
+ * 마지막 입력 후 일정 시간 대기한 후에만 작업을 수행하고자 할 때 유용합니다.
+ *
+ * 예시 사용 시나리오:
+ * - 검색어 자동 완성: 사용자가 입력을 멈춘 후 일정 시간 대기한 뒤에만 검색을 수행
+ * - 윈도우 크기 변경 이벤트에서 마지막 크기 변경 후 작업을 수행
+ *
+ * @param {Function} func - 디바운스 적용을 원하는 함수. 마지막으로 호출된 후 일정 시간(`wait`)이 지나야 실행됩니다.
+ * @param {number} wait - 함수가 실행되기 전에 대기해야 하는 시간 (밀리초 단위).
+ * @returns {Function} - 디바운스 처리가 적용된 새로운 함수. 연속적으로 호출될 경우, 마지막 호출만 대기 시간 후에 실행됩니다.
+ */
+function debounce(func, wait) {
+    let timeout; // 이전 호출 시 설정된 타이머를 추적하기 위한 변수
+    return function (...args) {
+        // 반환되는 함수는 원래 함수에 전달될 인자를 모두 받습니다
+        const context = this; // 현재 호출된 함수의 실행 컨텍스트를 유지하기 위한 참조
+        clearTimeout(timeout); // 이전에 설정된 타이머가 있으면 이를 제거하여 실행을 방지
+        // 새로운 타이머를 설정하여 일정 시간 대기 후 원래 함수 실행
+        timeout = setTimeout(() => func.apply(context, args), wait);
     };
 }
