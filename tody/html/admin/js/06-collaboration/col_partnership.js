@@ -1,1 +1,225 @@
-function a31_0x48d5(_0x15e589,_0x45df1d){const _0x4c8b66=a31_0x4c8b();return a31_0x48d5=function(_0x48d5e2,_0x458e18){_0x48d5e2=_0x48d5e2-0x1f0;let _0x240cd6=_0x4c8b66[_0x48d5e2];return _0x240cd6;},a31_0x48d5(_0x15e589,_0x45df1d);}const a31_0x51be82=a31_0x48d5;(function(_0x1bfbb1,_0x270884){const _0x15c394=a31_0x48d5,_0x29a235=_0x1bfbb1();while(!![]){try{const _0x314aaa=parseInt(_0x15c394(0x212))/0x1*(-parseInt(_0x15c394(0x215))/0x2)+parseInt(_0x15c394(0x206))/0x3*(-parseInt(_0x15c394(0x1fa))/0x4)+parseInt(_0x15c394(0x201))/0x5+parseInt(_0x15c394(0x21b))/0x6*(parseInt(_0x15c394(0x1f0))/0x7)+parseInt(_0x15c394(0x1f1))/0x8+-parseInt(_0x15c394(0x1fd))/0x9+-parseInt(_0x15c394(0x20e))/0xa;if(_0x314aaa===_0x270884)break;else _0x29a235['push'](_0x29a235['shift']());}catch(_0x259351){_0x29a235['push'](_0x29a235['shift']());}}}(a31_0x4c8b,0x83051),$(document)[a31_0x51be82(0x1f7)](async function(){initializeDataTable('');}));function a31_0x4c8b(){const _0x833e07=['getItem','text-start\x20align-content-center','keyup','ready','rows','통신\x20실패!!!','1235260IZZNAR','title','api','5083434liLreK','addClass','AJAX\x20요청\x20중\x20오류\x20발생:','column','4167305xqCevW','<option\x20value=\x22','prependTo','60%','POST','3gpxntr','/admin/back/06-collaboration/partnership_list.php','</option>','tooltip','.dt-search\x20input','loading','#ajax-datatables','map','4181920JQvwUg','reg_date','.dt-search','</a>','526QHBQgV','input-group','every','1756MuNLsk','then','length','index','trigger','form-control\x20form-control-sm','72FPcZJu','search','<select\x20class=\x22form-select\x20form-select-sm\x22><option\x20value=\x22\x22>전체</option></select>','value','change','append','error','SUCCESS','[data-bs-toggle=\x22tooltip\x22]','<a\x20href=\x22/admin/views/col_manage/popup_partnership.html?no=','val','langCode','draw','add','300783NLCvPj','7529832QkGVfw','log','상세\x20정보를\x20불러오는데\x20실패했습니다..'];a31_0x4c8b=function(){return _0x833e07;};return a31_0x4c8b();}function initializeDataTable(){const _0x262aa7=a31_0x51be82;let _0xc52a02=new DataTable(_0x262aa7(0x20c),{'language':{'url':'/assets/libs/datatables/lang/ko.json'},'initComplete':function(){const _0x1414eb=_0x262aa7;let _0x28bcb9=this[_0x1414eb(0x1fc)]();$(_0x1414eb(0x210))[_0x1414eb(0x1fe)](_0x1414eb(0x213));let _0x356d0e=$(_0x1414eb(0x20a))[_0x1414eb(0x1fe)](_0x1414eb(0x21a)),_0xd25a56=$(_0x1414eb(0x21d))[_0x1414eb(0x203)](_0x1414eb(0x210))['on'](_0x1414eb(0x21f),function(){const _0x5a3733=_0x1414eb;let _0x5deec7=$(this)[_0x5a3733(0x225)]();_0x356d0e[_0x5a3733(0x219)](_0x5a3733(0x1f6));});_0x28bcb9['columns']()[_0x1414eb(0x214)](function(){const _0x4a63d4=_0x1414eb;this[_0x4a63d4(0x218)]()!==0x3&&_0xd25a56[_0x4a63d4(0x220)](_0x4a63d4(0x202)+this[_0x4a63d4(0x218)]()+'\x22>'+$(this['header']())['text']()+_0x4a63d4(0x208));}),_0x356d0e['on'](_0x1414eb(0x1f6),function(){const _0x5693c3=_0x1414eb;let _0x18ac59=this[_0x5693c3(0x21e)],_0x3bc473=_0xd25a56['val']();_0x3bc473?_0x28bcb9[_0x5693c3(0x200)](_0x3bc473)[_0x5693c3(0x21c)](_0x18ac59)[_0x5693c3(0x227)]():_0x28bcb9[_0x5693c3(0x21c)](_0x18ac59)[_0x5693c3(0x227)]();});},'scrollX':!![],'processing':!![],'destroy':!![],'ajax':function(_0x21807e,_0x4e504b,_0x1b65cd){loadTableData(_0xc52a02,_0x4e504b);},'columns':[{'data':'no','title':'no'},{'data':'title','title':'제목'},{'data':'reg_date','title':'등록일자'},{'data':'management','title':'관리','orderable':![],'searchable':![]}],'order':[],'columnDefs':[{'className':_0x262aa7(0x1f5),'targets':[0x0,0x1,0x2]},{'className':'text-center\x20align-content-center','targets':[0x3]},{'width':_0x262aa7(0x204),'targets':[0x1]}]});}function loadTableData(_0x394a24,_0x1e75d4){const _0x1e7020=a31_0x51be82;let _0x4fca67=$('.change-public-select')[_0x1e7020(0x225)]()||'';const _0x43f51e={...adminUserInfo(),'public_fg':_0x4fca67};callApi(_0x1e7020(0x205),_0x1e7020(0x207),_0x43f51e,_0x1e7020(0x20b))[_0x1e7020(0x216)](_0x4c0350=>{const _0x2594fc=_0x1e7020;if(!_0x4c0350){console[_0x2594fc(0x1f2)](_0x2594fc(0x1f9));if(_0x1e75d4)_0x1e75d4({'data':[]});return;}const {status:_0x20ea1a,message:_0x1973c3,responseData:_0x388a77}=_0x4c0350;if(!_0x388a77){console[_0x2594fc(0x1f2)](_0x1973c3);if(_0x1e75d4)_0x1e75d4({'data':[]});return;}const _0x17c47d=_0x388a77[_0x2594fc(0x20d)]((_0x35f92e,_0x4f8fe2)=>{const _0x4480dc=_0x2594fc,_0x454113=_0x388a77[_0x4480dc(0x217)]-_0x4f8fe2;return{'no':_0x35f92e['no'],'title':_0x4480dc(0x224)+_0x35f92e['no']+'\x22\x20class=\x22modal-open-btn\x20link-dark\x20link-body-emphasis\x20link-offset-2\x20text-decoration-underline\x20link-underline-opacity-25\x20link-underline-opacity-75-hover\x22>'+_0x35f92e[_0x4480dc(0x1fb)]+_0x4480dc(0x211),'reg_date':_0x35f92e[_0x4480dc(0x20f)],'management':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22/admin/views/col_manage/popup_partnership.html?no='+_0x35f92e['no']+'\x22\x20type=\x22button\x22\x20class=\x22modal-open-btn\x20btn\x20btn-soft-danger\x20btn-icon\x20waves-effect\x20waves-light\x22\x20data-bs-toggle=\x22tooltip\x22\x20data-bs-placement=\x22top\x22\x20title=\x22상세\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-eye-fill\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>'};});_0x1e75d4?_0x1e75d4({'data':_0x17c47d}):_0x394a24['clear']()[_0x2594fc(0x1f8)][_0x2594fc(0x228)](_0x17c47d)[_0x2594fc(0x227)](),$(_0x2594fc(0x223))[_0x2594fc(0x209)]();})['catch'](_0x4aa01b=>{const _0x3eea7b=_0x1e7020;console[_0x3eea7b(0x221)](_0x3eea7b(0x1ff),_0x4aa01b);if(_0x1e75d4)_0x1e75d4({'data':[]});});}async function partnership_detail(_0x130bee){const _0x14ebb7=a31_0x51be82,_0x578646=localStorage[_0x14ebb7(0x1f4)](_0x14ebb7(0x226))??'kr',_0x1470f6=adminUserInfo(),_0x2fb98d={..._0x1470f6,'langCode':_0x578646,'no':_0x130bee},_0x240060=await callApi(_0x14ebb7(0x205),'/admin/back/06-collaboration/partnership_detail.php',_0x2fb98d);if(!_0x240060)return;const {status:_0x593e3b,message:_0x186ad3,responseData:_0x3a6400}=_0x240060;if(_0x186ad3===_0x14ebb7(0x222))bindJsonData(_0x3a6400);else{const _0x5c3f4c=await sweetAlertForReturn(_0x14ebb7(0x1f3),'','e');if(!_0x5c3f4c)return;}}
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(document).ready(async function () {
+    // DataTables 초기화
+    initializeDataTable("");
+});
+
+// =============================================================================
+// table 관련 함수
+// =============================================================================
+/**
+ * DataTables 초기화
+ */
+function initializeDataTable() {
+    let table = new DataTable("#ajax-datatables", {
+        language: {
+            url: "/assets/libs/datatables/lang/ko.json",
+        },
+        initComplete: function () {
+            let api = this.api();
+
+            // ====================================================================================================
+            // 검색박스 및 선택박스 생성 시작 =====================================================================
+            $(".dt-search").addClass("input-group");
+            let searchBox = $(".dt-search input").addClass("form-control form-control-sm");
+            let columnSelect = $('<select class="form-select form-select-sm"><option value="">전체</option></select>')
+                .prependTo(".dt-search")
+                .on("change", function () {
+                    let selectedColumn = $(this).val();
+                    searchBox.trigger("keyup");
+                });
+
+            // 각 컬럼 이름으로 옵션 추가
+            api.columns().every(function () {
+                // 특정 컬럼 제외
+                if (this.index() !== 3) {
+                    columnSelect.append('<option value="' + this.index() + '">' + $(this.header()).text() + "</option>");
+                }
+            });
+
+            // 검색박스 이벤트 핸들러 설정
+            searchBox.on("keyup", function () {
+                let searchTerm = this.value;
+                let selectedColumn = columnSelect.val();
+
+                if (selectedColumn) {
+                    api.column(selectedColumn).search(searchTerm).draw();
+                } else {
+                    api.search(searchTerm).draw();
+                }
+            });
+            // 검색박스 및 선택박스 생성 끝 =====================================================================
+            // ====================================================================================================
+        },
+        scrollX: true, // 가로 스크롤 활성화
+        processing: true, // 처리 중 메시지 활성화
+        // serverSide: true, // 서버 사이드 처리를 활성화
+        // colReorder: true,    // 컬럼 이동 활성화
+        destroy: true, // 테이블 파괴 가능
+        // lengthChange: false,
+        ajax: function (data, callback, settings) {
+            loadTableData(table, callback);
+        },
+        columns: [
+            { data: "no", title: "no" }, // 첫 번째 열로 순서를 추가
+            { data: "title", title: "제목" },
+            { data: "reg_date", title: "등록일자" },
+            { data: "management", title: "관리", orderable: false, searchable: false },
+        ],
+        // rowReorder: {
+        //     selector: "td:nth-child(1)", // 첫 번째 열을 기준으로 row 재정렬
+        // },
+        order: [], // 기본 정렬 비활성화
+        columnDefs: [
+            { className: "text-start align-content-center", targets: [0, 1, 2] }, // 모든 열에 좌측 정렬 클래스 추가
+            { className: "text-center align-content-center", targets: [3] }, // 10 번째 열에 우측 정렬 클래스 추가
+            { width: "60%", targets: [1] },
+        ],
+    });
+}
+
+/**
+ * 테이블 데이터 불러오는 함수
+ * @param {*} table
+ * @param {*} callback
+ */
+function loadTableData(table, callback) {
+    let filterValue = $(".change-public-select").val() || "";
+    const dataObj = {
+        ...adminUserInfo(),
+        public_fg: filterValue,
+    };
+    callApi("POST", "/admin/back/06-collaboration/partnership_list.php", dataObj, "loading")
+        .then((result) => {
+            if (!result) {
+                console.log("통신 실패!!!");
+                if (callback) callback({ data: [] });
+                return;
+            }
+
+            const { status, message, responseData } = result;
+
+            if (!responseData) {
+                console.log(message);
+                if (callback) callback({ data: [] });
+                return;
+            }
+
+            // 데이터를 올바르게 변환하여 DataTables에 전달합니다.
+            const formattedData = responseData.map((item, index) => {
+                // 순서(DESC)
+                const reversedOrder = responseData.length - index;
+
+                // 기타메모 5자 이내만 보여지도록
+                // const shortNote = item.additional_note.length > 5 ? item.additional_note.substring(0, 5) + "..." : item.additional_note;
+
+                return {
+                    // no: reversedOrder,
+                    no: item.no,
+                    title: `<a href="/admin/views/col_manage/popup_partnership.html?no=${item.no}" class="modal-open-btn link-dark link-body-emphasis link-offset-2 text-decoration-underline link-underline-opacity-25 link-underline-opacity-75-hover">${item.title}</a>`,
+                    reg_date: item.reg_date,
+                    management: `
+                    <div class="dropdown d-inline-block">
+                        <a href="/admin/views/col_manage/popup_partnership.html?no=${item.no}" type="button" class="modal-open-btn btn btn-soft-danger btn-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="상세">
+                            <i class="ri-eye-fill"></i>
+                        </a>
+                    </div>`,
+                };
+            });
+
+            if (callback) {
+                callback({ data: formattedData });
+            } else {
+                table.clear().rows.add(formattedData).draw();
+            }
+
+            // 툴팁 초기화
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        })
+        .catch((error) => {
+            console.error("AJAX 요청 중 오류 발생:", error);
+            if (callback) callback({ data: [] });
+        });
+}
+
+/**
+ * 상세정보 가져오는 함수
+ * @param {*} val = 변경할 상태값
+ * @returns
+ */
+async function partnership_detail(no) {
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        no,
+    };
+
+    const result = await callApi("POST", "/admin/back/06-collaboration/partnership_detail.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message, responseData } = result;
+
+    if (message === "SUCCESS") {
+        bindJsonData(responseData);
+        countUp(no)
+    } else {
+        const confirm = await sweetAlertForReturn("상세 정보를 불러오는데 실패했습니다..", "", "e");
+        if (!confirm) return;
+    }
+}
+/**
+ * 조회수 증가 함수
+ * @returns
+ */
+function countUp(viewNo) {
+    if (!viewNo) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        viewNo,
+    };
+    callApiAbort("/admin/back/06-collaboration/partnership_count_up.php", "POST", dataObj, "countUp")
+        .then((response) => {
+        // ----------------------------------------------------
+            // *** response가 유효한 객체인지 확인 후 처리 ***
+            // ----------------------------------------------------
+            if (response && typeof response === 'object') {
+                // response가 객체일 때만 안전하게 비구조화 할당 및 속성 접근
+                const { responseData, message, statusCode } = response;
+
+                // 서버 응답의 statusCode를 확인하여 성공/실패 로직 분기
+                if (statusCode === 200) {
+                    console.log("countUp API 호출 성공:", message, responseData);
+                    // 성공적으로 처리되었을 때 필요한 로직 수행
+                    // 예: 메뉴의 전체 제안 개수 뱃지를 새로고침
+                    updateMenuCounts(adminInfo); // 필요하다면 이 함수를 호출하여 메뉴 개수 업데이트
+
+                } else {
+                    // 서버에서 200이 아닌 상태 코드로 응답했지만 callApiAbort의 error 핸들러에서 resolve(responseJSON) 한 경우
+                    console.warn("countUp API 호출, 서버 비정상 응답:", { statusCode, message, responseData });
+                    // 사용자에게 오류 메시지 표시 (response.message 활용)
+                    // sweetAlertMessage(message || "조회수 증가 처리 중 오류가 발생했습니다.", "", "e");
+                }
+
+            } else {
+                // response가 false (callApiAbort 오류 처리 결과) 이거나 undefined/null 인 경우
+                console.warn("countUp API 호출 실패 또는 비정상 응답 형태:", response);
+                // 사용자에게 오류 메시지 표시 (일반적인 오류 메시지 사용)
+                // sweetAlertMessage("조회수 증가 처리 중 오류가 발생했습니다.", "", "e");
+            }
+        })
+        .catch((error) => {
+            // callApiAbort가 reject를 호출했을 때 실행됨
+            console.error("countUp API 호출 중 Promise rejected:", error);
+             // 사용자에게 오류 메시지 표시
+            // sweetAlertMessage("조회수 증가 처리 중 치명적인 오류가 발생했습니다.", "", "e");
+        });
+}

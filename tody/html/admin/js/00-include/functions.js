@@ -1,1 +1,1513 @@
-(function(_0x2c8068,_0x14d80a){var _0x395daa=a1_0x1e64,_0x5d75a3=_0x2c8068();while(!![]){try{var _0x2b46ae=-parseInt(_0x395daa(0x22f))/0x1*(-parseInt(_0x395daa(0x23e))/0x2)+parseInt(_0x395daa(0x1cd))/0x3+-parseInt(_0x395daa(0x1c4))/0x4*(parseInt(_0x395daa(0x214))/0x5)+parseInt(_0x395daa(0x255))/0x6*(-parseInt(_0x395daa(0x22a))/0x7)+parseInt(_0x395daa(0x208))/0x8*(-parseInt(_0x395daa(0x1de))/0x9)+parseInt(_0x395daa(0x1db))/0xa*(-parseInt(_0x395daa(0x233))/0xb)+parseInt(_0x395daa(0x24c))/0xc*(parseInt(_0x395daa(0x206))/0xd);if(_0x2b46ae===_0x14d80a)break;else _0x5d75a3['push'](_0x5d75a3['shift']());}catch(_0x14db81){_0x5d75a3['push'](_0x5d75a3['shift']());}}}(a1_0x5c1e,0xbf7c4));function detectBrowser(){var _0xa0a502=a1_0x1e64,_0x13c5cc=navigator[_0xa0a502(0x193)][_0xa0a502(0x1a7)](),_0x26826a;if(_0x13c5cc[_0xa0a502(0x256)](_0xa0a502(0x1dc))>-0x1||_0x13c5cc['indexOf'](_0xa0a502(0x1b3))>-0x1||_0x13c5cc['indexOf'](_0xa0a502(0x25d))>-0x1)_0x26826a='ie';else{if(_0x13c5cc[_0xa0a502(0x256)](_0xa0a502(0x1e2))>-0x1)_0x26826a=_0xa0a502(0x1e2);else{if(_0x13c5cc[_0xa0a502(0x256)](_0xa0a502(0x275))>-0x1)_0x26826a='opera';else{if(_0x13c5cc['indexOf'](_0xa0a502(0x25f))>-0x1)_0x26826a='chrome';else _0x13c5cc[_0xa0a502(0x256)](_0xa0a502(0x1d9))>-0x1&&(_0x26826a=_0xa0a502(0x1d9));}}}return _0x26826a;}function ieVersionCheck(){var _0x10b376=a1_0x1e64,_0x4ea10c,_0x5a8597=_0x10b376(0x27d),_0x4722c9=navigator['userAgent'][_0x10b376(0x1a7)](),_0x2273a1=navigator[_0x10b376(0x25c)];if(_0x2273a1==_0x10b376(0x18d))_0x4ea10c=_0x10b376(0x1f1);else{if(_0x4722c9[_0x10b376(0x1d1)](_0x10b376(0x1b3))>-0x1)_0x4ea10c=_0x10b376(0x1ca);else{if(_0x4722c9['search'](_0x10b376(0x198))>-0x1)_0x4ea10c=_0x10b376(0x198);}}var _0x675575=new RegExp(_0x4ea10c+_0x10b376(0x257));if(_0x675575[_0x10b376(0x1ed)](_0x4722c9)!=null)_0x5a8597=RegExp['$1']+RegExp['$2'];if(_0x5a8597!='NaN'&&_0x5a8597<0xc)return parseInt(_0x5a8597);else return _0x4ea10c===_0x10b376(0x198)?![]:![];}function detectOS(){var _0x4736d1=a1_0x1e64,_0x2ea84b=navigator[_0x4736d1(0x193)][_0x4736d1(0x1a7)](),_0x4808b3;if(_0x2ea84b[_0x4736d1(0x256)]('android')>-0x1)return _0x4736d1(0x19b);else return _0x2ea84b[_0x4736d1(0x256)]('iphone')>-0x1||_0x2ea84b['indexOf'](_0x4736d1(0x273))>-0x1||_0x2ea84b[_0x4736d1(0x256)](_0x4736d1(0x244))>-0x1||_0x2ea84b[_0x4736d1(0x256)](_0x4736d1(0x1a2))>-0x1?_0x4736d1(0x226):'other';return _0x4808b3;}function isMobile(){var _0x3a7d5b=a1_0x1e64,_0x3e527e=navigator[_0x3a7d5b(0x193)];return _0x3e527e[_0x3a7d5b(0x26f)](/iPhone|iPad|iPad|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i)!=null||_0x3e527e['match'](/LG|SAMSUNG|Samsung/)!=null?!![]:detectIpad()?!![]:![];}function a1_0x1e64(_0x229cf2,_0x8b2f83){var _0x5c1ea3=a1_0x5c1e();return a1_0x1e64=function(_0x1e64a4,_0x34ddc8){_0x1e64a4=_0x1e64a4-0x180;var _0x3cd546=_0x5c1ea3[_0x1e64a4];return _0x3cd546;},a1_0x1e64(_0x229cf2,_0x8b2f83);}function detectIpad(){var _0xdc0702=a1_0x1e64,_0x43ec0a=navigator[_0xdc0702(0x193)]||navigator['vendor']||window[_0xdc0702(0x217)];if(_0x43ec0a[_0xdc0702(0x26f)](/Macintosh/i)!==null&&getWindowWidth()<0x401){var _0x7c64ef=document['createElement'](_0xdc0702(0x1a8));if(_0x7c64ef!==null){var _0x2aee9e=_0x7c64ef['getContext'](_0xdc0702(0x24d))||_0x7c64ef[_0xdc0702(0x1fa)](_0xdc0702(0x200));if(_0x2aee9e){var _0x565c87=_0x2aee9e[_0xdc0702(0x25e)](_0xdc0702(0x242));if(_0x565c87){var _0x2eb8c2=_0x2aee9e[_0xdc0702(0x182)](_0x565c87['UNMASKED_RENDERER_WEBGL']);if(_0x2eb8c2[_0xdc0702(0x256)]('Apple')!==-0x1)return!![];}}}}return![];}function winPopupOpen(_0x39969a,_0x2643b8,_0x20604b){var _0x15f97b=a1_0x1e64;window[_0x15f97b(0x18c)](_0x39969a,_0x2643b8,_0x20604b);}function getScrollBarWidth(){var _0x190e5c=a1_0x1e64;if($(document)[_0x190e5c(0x269)]()>$(window)[_0x190e5c(0x269)]()){$(_0x190e5c(0x277))[_0x190e5c(0x241)](_0x190e5c(0x270)),fakeScrollBar=$(_0x190e5c(0x1a4)),fakeScrollBar[_0x190e5c(0x241)](_0x190e5c(0x1e9));var _0x183252=fakeScrollBar[_0x190e5c(0x265)](_0x190e5c(0x248))['innerWidth']();fakeScrollBar[_0x190e5c(0x279)]('overflow-y',_0x190e5c(0x1e8));var _0x4c103a=$(_0x190e5c(0x1a4))[_0x190e5c(0x265)]('div')[_0x190e5c(0x205)]('html\x20is\x20required\x20to\x20init\x20new\x20width.')[_0x190e5c(0x201)]();return fakeScrollBar[_0x190e5c(0x223)](),_0x183252-_0x4c103a;}return 0x0;}function getWindowWidth(){var _0x18076c=a1_0x1e64;return $(window)[_0x18076c(0x246)]()+getScrollBarWidth();}function getWindowHeight(){return $(window)['height']();}function getScrollTop(){return $(window)['scrollTop']();}function moveScrollTop(_0x55e43f,_0x191802){var _0x3ed843=a1_0x1e64;$(_0x3ed843(0x230))[_0x3ed843(0x20d)]({'scrollTop':_0x55e43f},_0x191802,_0x3ed843(0x20f));}function addClassName(_0x1c5a79,_0x55cd2a){var _0x19ee5a=a1_0x1e64;$(_0x1c5a79)[_0x19ee5a(0x24f)](_0x55cd2a);}function removeClassName(_0x38258b,_0x1fbfaa){var _0x363887=a1_0x1e64;$(_0x38258b)[_0x363887(0x1e4)](_0x1fbfaa);}$['exists']=function(_0x21d66e){return $(_0x21d66e)['length']>0x0;};function magnificPopup(_0x21662b){var _0x290be5=a1_0x1e64;$(_0x21662b)[_0x290be5(0x1b7)]({'delegate':'a','type':_0x290be5(0x1e6),'closeOnContentClick':!![],'closeBtnInside':!![],'fixedContentPos':!![],'mainClass':_0x290be5(0x191),'removalDelay':0x1f4,'callbacks':{'beforeOpen':function(){var _0x49e9e6=_0x290be5;this['st'][_0x49e9e6(0x1e6)][_0x49e9e6(0x1ae)]=this['st']['image'][_0x49e9e6(0x1ae)]['replace'](_0x49e9e6(0x1ba),_0x49e9e6(0x18f)),this['st'][_0x49e9e6(0x19d)]='mfp-zoom-in';}},'closeOnContentClick':!![],'midClick':!![]});}function customScrollX(_0x2f509f){var _0x457e78=a1_0x1e64;$(_0x2f509f)[_0x457e78(0x261)]({'axis':'x','theme':_0x457e78(0x1ef)});}function customScrollY(_0x28706e){var _0x3b4dbd=a1_0x1e64;$(_0x28706e)[_0x3b4dbd(0x261)]({'axis':'y','theme':_0x3b4dbd(0x1ef)});}function getParameter(_0x2eba72){var _0x2a2b39=a1_0x1e64,_0x5d660c=null;return _0x2eba72&&(_0x5d660c=location[_0x2a2b39(0x1d1)]['match'](new RegExp(_0x2a2b39(0x1c8)+_0x2eba72+_0x2a2b39(0x1c5)))),_0x5d660c&&_0x5d660c[0x1]?_0x5d660c[0x1]:null;}function toAnchorParameter(_0x5c39b7){var _0x3f799a=a1_0x1e64;if(getParameter(_0x5c39b7)){var _0x577f25=$('#'+getParameter(_0x5c39b7)+'')['offset']()[_0x3f799a(0x1e1)],_0x4e1e7d=$(_0x3f799a(0x1f0))['height']();moveScrollTop(_0x577f25-_0x4e1e7d,0x1f4);}}function rollingActive(_0x32277f){var _0x24fb18=a1_0x1e64;$(_0x32277f)[_0x24fb18(0x1fe)](function(_0x5bfb35){var _0x4bca0f=_0x24fb18;$itemList=$(this),$item=$itemList['find']('li'),itemLength=$item['length'],startNum=0x0,rollingSpeed=$itemList[_0x4bca0f(0x1f6)](_0x4bca0f(0x23c));function _0x5cba2f(){startNum<itemLength-0x1?startNum++:startNum=0x0,_0x16c0fc();}function _0x16c0fc(){var _0x30022d=_0x4bca0f;$item[_0x30022d(0x1fe)](function(_0x1198bf){var _0x2589ac=_0x30022d;_0x1198bf==startNum?$(this)['addClass'](_0x2589ac(0x180)):$(this)[_0x2589ac(0x1e4)](_0x2589ac(0x180));});}_0x16c0fc(),visual_timer=setInterval(_0x5cba2f,rollingSpeed);});}function objectFixed(_0x253a4d,_0x410ae4,_0xd2cb38){var _0x54b8a1=a1_0x1e64;getScrollTop()>_0x410ae4?!$(_0x253a4d)[_0x54b8a1(0x19c)](_0xd2cb38)&&$(_0x253a4d)[_0x54b8a1(0x24f)](_0xd2cb38):$(_0x253a4d)[_0x54b8a1(0x19c)](_0xd2cb38)&&$(_0x253a4d)[_0x54b8a1(0x1e4)](_0xd2cb38);}function splittingText(_0x5dc9a9){var _0x4395de=a1_0x1e64,_0xd633cc,_0x578465={'settings':{'letters':$(_0x5dc9a9)},'init':function(){_0xd633cc=this['settings'],this['bindEvents']();},'bindEvents':function(){var _0x3e90ee=a1_0x1e64;_0xd633cc[_0x3e90ee(0x22e)]['html'](function(_0x589240,_0x50ea25){var _0x3eb132=_0x3e90ee,_0x35e25c=$[_0x3eb132(0x21a)](_0x50ea25)['split']('');return _0x3eb132(0x1cc)+_0x35e25c[_0x3eb132(0x204)](_0x3eb132(0x1f5))+'</em>';});}};_0x578465[_0x4395de(0x274)]();}function splittingTextDelay(_0x32a19a,_0x41c80a,_0x599e88){var _0xe57697=a1_0x1e64,_0x22da40=$(_0x32a19a)[_0xe57697(0x265)](_0xe57697(0x192))['length'];for(var _0x34a3ba=0x0;_0x34a3ba<_0x22da40;_0x34a3ba++){if($(_0x32a19a)['data'](_0xe57697(0x268))=='animation')$(_0x32a19a)[_0xe57697(0x265)](_0xe57697(0x192))['eq'](_0x34a3ba)[_0xe57697(0x279)](_0xe57697(0x235),_0x599e88+_0x34a3ba*_0x41c80a+'s');else $(_0x32a19a)[_0xe57697(0x1f6)](_0xe57697(0x268))=='transition'&&$(_0x32a19a)[_0xe57697(0x265)]('.char')['eq'](_0x34a3ba)[_0xe57697(0x279)](_0xe57697(0x1e0),_0x599e88+_0x34a3ba*_0x41c80a+'s');}}function checkOffset(_0x5159ec){var _0x36f8d4=a1_0x1e64;return $(_0x5159ec)['offset']()[_0x36f8d4(0x1e1)];}function a1_0x5c1e(){var _0x1e5658=['html','53885YwpPoE','--full-height','53384KusxKN','pop','src','innerHTML','getOrigins','animate','includes','easeInOutExpo','sigungu','/admin/index.html','length','dismissCondition','5DxvCDG','/assets/images/no-image.png','$1-$2','opera','toString','data-choices-editItem-false','trim','attributes','setProperty','data-preloader','classList','duplicateItemsAllowed','data-choices-sorting-true','killTweensOf','val','remove','input[name=\x27address_primary\x27]','startsWith','ios','direction','editItems','</div>','194341ZLpwul','getTime','slice','placeholderValue','letters','1284901WkqyuK','html,\x20body','vertical','getElementById','754963yFanGV','setItem','animation-delay','detail','result','removeItemButton','originalEvent','shouldSort','/back-end/00-include/uploadMultipleImage.php','rolling-time','<article\x20id=\x22browserUpgradePopup\x22>','2fuWToC','$1-$2-$3','#browserUpgradePopup','append','WEBGL_debug_renderer_info','success','ipod','input[name=\x27dong_code\x27]','outerWidth','.smooth-srolling','div','from','question','\x5c$&','1188UixvxQ','webgl','close','addClass','onload',';\x20path=/','setTime','name','Invalid\x20required\x20arguments','276zPDFsJ','indexOf','([0-9]{1,})(\x5c.{0,}[0-9]{0,1})','enable','input[name=\x27sigungu\x27]','확\x20\x20\x20인','[?&]','appName','edge','getExtension','chrome','contains','mCustomScrollbar','warning','$1,','문제가\x20발생했습니다.','find','then',';path=/','css-property','height','noLoading','hidden','uploadFile[]','preventDefault','text','match','<div\x20id=\x22fakescrollbar\x22\x20style=\x22width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;\x22></div>','json','undefined','ipad','init','opr','readAsDataURL','body','right','css','getTooltips','data-choices-search-false','data-choices-groups','N/A','_self','location','active','<span\x20class=\x22browser-popup-caution-icon\x22><i\x20class=\x22xi-error-o\x22></i></span><h2\x20class=\x22browser-popup-tit\x22><b>브라우저\x20업데이트</b>\x20안내</h2><p\x20class=\x22browser-popup-txt\x22>현재\x20사용중인\x20브라우저는\x20곧\x20지원이\x20중단됩니다.\x20<br>원활한\x20서비스를\x20제공받기\x20위해<br><b>보안과\x20속도가\x20강화된\x20브라우저로\x20업그레이드</b>\x20하시기\x20바랍니다.</p>','getParameter','data-choices-sorting-false','fire','input[name=\x27dong\x27]','style','microsoft-edge:','isConfirmed','change','cookie','multipart/form-data','open','Microsoft\x20Internet\x20Explorer','wheelDelta','mfp-figure\x20mfp-with-anim','bcode','mfp-with-zoom','.char','userAgent','maxItemCount','addEventListener','error','disable','edge/','input[name=\x27sido\x27]','.browser-popup-close-btn','android','hasClass','mainClass','none','=;\x20','address','wheel','macintosh','addItems','#fakescrollbar','setChoiceByValue','.fp-responsive','toLowerCase','canvas','searchEnabled','push','replace','tagName','data-choices-editItem-true','markup','data-choices-removeItem','display','ajax','test','trident','<div\x20class=\x22browser-upgrade-popup-dim\x22></div>','post','value','magnificPopup','floor','innerHeight','mfp-figure','href','This\x20is\x20a\x20placeholder\x20set\x20in\x20the\x20config','SELECT','bottom','data-choices-multiple-remove','getItem','choices__input','langCode','로그인\x20정보가\x20일치하지\x20않습니다.','190088PBrnkQ','=(.*?)(&|$)','IMG','exists','[&?]','uploadFile','trident/.*rv:','rtl','<em\x20class=\x22char\x22>','2928294Srqdgp','noUiSlider','zonecode','choices','search','expires=','data-choices-text-unique-true','smooth-srolling','Err\x20::\x20','options','중복된\x20항목입니다.','keys','safari','orientation','80UGsWyt','msie','split','18uQrKTx','data-choices-text-disabled-true','transition-delay','top','firefox','hide','removeClass','sido','image','forEach','scroll','<div\x20style=\x22height:100px;\x22>&nbsp;</div>','.top-fixed','input[name=\x27address_detail\x27]','outerHeight','exec','documentElement','dark','#header','msie\x20','fullpage','string','input[name=\x27postal_code\x27]','</em><em\x20class=\x22char\x22>','data','bname','+$1-$2-$3-$4','Postcode','getContext','선택된\x20파일','window','setAllowScrolling','each','querySelectorAll','experimental-webgl','innerWidth','update','toUTCString','join'];a1_0x5c1e=function(){return _0x1e5658;};return a1_0x5c1e();}function checkFixedHeight(){var _0x325dcf=a1_0x1e64,_0x40287d=null;for(var _0x26c41b=0x0;_0x26c41b<$(_0x325dcf(0x1ea))['length'];_0x26c41b++){var _0x40287d=_0x40287d+$(_0x325dcf(0x1ea))['eq'](_0x26c41b)[_0x325dcf(0x1ec)]();}return _0x40287d;}function toFit(_0x3ced51,_0x56b15f){var _0x3c24dc=a1_0x1e64,_0x28b830=_0x56b15f[_0x3c24dc(0x213)],_0x2b3cec=_0x28b830===void 0x0?function(){return![];}:_0x28b830,_0xb31156=_0x56b15f['triggerCondition'],_0x250e36=_0xb31156===void 0x0?function(){return!![];}:_0xb31156;if(!_0x3ced51)throw Error(_0x3c24dc(0x254));var _0x3e9306=![];return function(){if(_0x3e9306)return;return _0x3e9306=!![],requestAnimationFrame(function(){if(_0x2b3cec()){_0x3e9306=![];return;}if(_0x250e36())return _0x3e9306=![],_0x3ced51();});};}function htmlScrollControl(_0x7557c1){var _0x1caba9=a1_0x1e64;_0x7557c1?$[_0x1caba9(0x1c7)]('#fullpage')||$[_0x1caba9(0x1c7)](_0x1caba9(0x1a6))?($['fn'][_0x1caba9(0x1f2)][_0x1caba9(0x1fd)](![]),$['fn'][_0x1caba9(0x1f2)]['setKeyboardScrolling'](![])):($(_0x1caba9(0x205))[_0x1caba9(0x279)]({'margin-right':getScrollBarWidth(),'overflow-y':_0x1caba9(0x26b)}),$(_0x1caba9(0x205))['is'](_0x1caba9(0x247))&&smoothScroll_destory()):$[_0x1caba9(0x1c7)]('#fullpage')||$[_0x1caba9(0x1c7)](_0x1caba9(0x1a6))?($['fn'][_0x1caba9(0x1f2)][_0x1caba9(0x1fd)](!![]),$['fn']['fullpage']['setKeyboardScrolling'](!![])):($('html')[_0x1caba9(0x279)]({'margin-right':'0','overflow-y':_0x1caba9(0x1e8)}),$(_0x1caba9(0x205))['is'](_0x1caba9(0x247))&&smoothScroll());}function set100Vh(){var _0x224601=a1_0x1e64;document[_0x224601(0x1ee)][_0x224601(0x186)][_0x224601(0x21c)](_0x224601(0x207),window[_0x224601(0x1b9)]+'px');}function convertToEdge(){var _0x4dab67=a1_0x1e64;/MSIE \d|Trident.*rv:/[_0x4dab67(0x1b2)](navigator[_0x4dab67(0x193)])&&(window[_0x4dab67(0x27f)]=_0x4dab67(0x187)+window[_0x4dab67(0x27f)],setTimeout(function(){var _0x3fb755=_0x4dab67;top[_0x3fb755(0x1fc)][_0x3fb755(0x18c)]('about:blank',_0x3fb755(0x27e))['close'](),top['window']['opener']=self,top['self'][_0x3fb755(0x24e)]();},0x1));}function popupUpdateBrowser(){var _0x4e3227=a1_0x1e64,_0x240923='';_0x240923+=_0x4e3227(0x23d),_0x240923+=_0x4e3227(0x1b4),_0x240923+='<div\x20class=\x22browser-upgrade-popup-inner\x22>',_0x240923+='<button\x20class=\x22browser-popup-close-btn\x22\x20title=\x22close\x22><i\x20class=\x22xi-close-thin\x22></i></button>',_0x240923+=_0x4e3227(0x181),_0x240923+=_0x4e3227(0x229),_0x240923+='</article>',$(_0x4e3227(0x277))[_0x4e3227(0x241)](_0x240923),$(document)['on']('click',_0x4e3227(0x19a),function(){var _0x6eecba=_0x4e3227;return $(_0x6eecba(0x240))[_0x6eecba(0x1e3)](),![];});}function smoothScroll_passive(){var _0x3d3de8=a1_0x1e64,_0x36318d=![];try{document[_0x3d3de8(0x195)](_0x3d3de8(0x1b2),null,{get 'passive'(){_0x36318d=!![];}});}catch(_0x26cb2b){}return _0x36318d;}function smoothScroll(){var _0x36ce20=a1_0x1e64;if(isMobile()||detectOS()===_0x36ce20(0x226))return;var _0x5052e4=$(window);smoothScroll_passive()?window[_0x36ce20(0x195)](_0x36ce20(0x1a1),smoothScroll_scrolling,{'passive':![]}):_0x5052e4['on']('mousewheel\x20DOMMouseScroll',smoothScroll_scrolling),$('html')['addClass'](_0x36ce20(0x1d4));}function smoothScroll_scrolling(_0x433c46){var _0x2fce60=a1_0x1e64;_0x433c46[_0x2fce60(0x26d)]();var _0x14714d=$(window),_0x11ee5c=1.5,_0x1cdd74=0x0;if(smoothScroll_passive()){var _0x5654e7=_0x14714d[_0x2fce60(0x269)]()/2.5;_0x1cdd74=_0x433c46[_0x2fce60(0x18e)]/0x78||-_0x433c46['originalEvent'][_0x2fce60(0x236)]/0x3;}else{var _0x5654e7=_0x14714d[_0x2fce60(0x269)]()/2.5;typeof _0x433c46[_0x2fce60(0x239)]['deltaY']!=_0x2fce60(0x272)?_0x1cdd74=-_0x433c46['originalEvent']['deltaY']/0x78:_0x1cdd74=_0x433c46[_0x2fce60(0x239)][_0x2fce60(0x18e)]/0x78||-_0x433c46[_0x2fce60(0x239)]['detail']/0x3;}var _0x62039b=_0x14714d['scrollTop'](),_0x169bd3=_0x62039b-parseInt(_0x1cdd74*_0x5654e7);winScrolling=gsap['to'](_0x14714d,_0x11ee5c,{'scrollTo':{'y':_0x169bd3,'autoKill':!![]},'ease':Power4['easeOut'],'overwrite':0x5});}function smoothScroll_destory(_0x31f553){var _0x277865=a1_0x1e64;if(isMobile()||detectOS()===_0x277865(0x226))return;smoothScroll_passive()?window['removeEventListener'](_0x277865(0x1a1),smoothScroll_scrolling):$(window)['off']('mousewheel\x20DOMMouseScroll',smoothScroll_scrolling),gsap[_0x277865(0x221)]($(window),{'scrollTo':!![]});}function callApi(_0x230601,_0x2ec15f,_0x3403d5={},_0x44ccef){return new Promise((_0x17331c,_0x294be6)=>{var _0xd8b931=a1_0x1e64;$[_0xd8b931(0x1b1)]({'type':_0x230601,'url':_0x2ec15f,'data':_0x3403d5,'dataType':_0xd8b931(0x271),'beforeSend':function(_0x1fac17){var _0x134251=_0xd8b931;_0x44ccef!==_0x134251(0x26a)?sessionStorage[_0x134251(0x234)](_0x134251(0x21d),_0x134251(0x197)):sessionStorage[_0x134251(0x234)](_0x134251(0x21d),_0x134251(0x258));},'success':_0x376b5f=>{_0x17331c(_0x376b5f);},'error':async(_0x44f724,_0x41e288,_0x275345)=>{var _0x181268=_0xd8b931;const {responseJSON:_0x1182ff}=_0x44f724,{message:_0x30127d,statusCode:_0x1862b2}=_0x1182ff,_0x549df2=localStorage[_0x181268(0x1c0)](_0x181268(0x1c2))??'KR',_0x35d9e9=String(_0x1862b2)['startsWith']('2')||String(_0x1862b2)[_0x181268(0x225)]('3');if(!_0x35d9e9){switch(_0x1862b2){case 0x191:const _0x3c12f0=await sweetAlertForReturn('로그인\x20정보가\x20일치하지\x20않습니다.','','e');if(_0x3c12f0){location[_0x181268(0x1bb)]='/admin/index.html';break;}case 0x199:sweetAlertMessage(_0x181268(0x1d7),'','e');break;default:sweetAlertMessage(_0x30127d,'','e');break;}_0x17331c(![]);}_0x17331c(_0x1182ff);},'complete':function(_0x72eb40,_0x2ac4fb){var _0x3a56a9=_0xd8b931;sessionStorage['setItem'](_0x3a56a9(0x21d),'disable');}});});}function callApiFormData(_0x418a11,_0x11754b,_0x4aad13={},_0x4c6c2f){return new Promise((_0xc74e2f,_0x1887d5)=>{var _0x355493=a1_0x1e64;const _0x174cea=_0x4aad13 instanceof FormData;$[_0x355493(0x1b1)]({'type':_0x418a11,'url':_0x11754b,'data':_0x4aad13,'contentType':_0x174cea?![]:'application/x-www-form-urlencoded;\x20charset=UTF-8','processData':!_0x174cea,'dataType':_0x355493(0x271),'beforeSend':function(_0x6129ba){var _0x49c311=_0x355493;_0x4c6c2f!==_0x49c311(0x26a)?sessionStorage[_0x49c311(0x234)](_0x49c311(0x21d),_0x49c311(0x197)):sessionStorage[_0x49c311(0x234)]('data-preloader',_0x49c311(0x258));},'success':_0x39f7d5=>{_0xc74e2f(_0x39f7d5);},'error':async(_0x5c5021,_0x271f9f,_0x9109a)=>{var _0x4f6c50=_0x355493;const {responseJSON:_0xf6684}=_0x5c5021,{message:_0x399466,statusCode:_0x533aad}=_0xf6684,_0x2e3e99=localStorage[_0x4f6c50(0x1c0)](_0x4f6c50(0x1c2))??'KR',_0x38d2c7=String(_0x533aad)[_0x4f6c50(0x225)]('2')||String(_0x533aad)[_0x4f6c50(0x225)]('3');if(!_0x38d2c7){switch(_0x533aad){case 0x191:const _0x130999=await sweetAlertForReturn(_0x4f6c50(0x1c3),'','e');_0x130999&&(location[_0x4f6c50(0x1bb)]=_0x4f6c50(0x211));break;default:_0x533aad[_0x4f6c50(0x218)]()['startsWith']('4')?sweetAlertMessage(_0x399466,'','e'):sweetAlertMessage(_0x4f6c50(0x264),'','e');break;}_0xc74e2f(![]);}_0xc74e2f(_0xf6684);},'complete':function(_0x3d03d1,_0x6a2630){var _0x49b53d=_0x355493;sessionStorage[_0x49b53d(0x234)](_0x49b53d(0x21d),_0x49b53d(0x197));}});});}function setCookie(_0xff869e,_0x9e456a,_0x57692b){var _0x1fa6cf=a1_0x1e64;const _0x3d19b0=new Date();typeof _0x57692b===_0x1fa6cf(0x272)?_0x3d19b0[_0x1fa6cf(0x252)](_0x3d19b0[_0x1fa6cf(0x22b)]()+0x64*0x16d*0x18*0x3c*0x3c*0x3e8):_0x3d19b0[_0x1fa6cf(0x252)](_0x3d19b0[_0x1fa6cf(0x22b)]()+_0x57692b*0x18*0x3c*0x3c*0x3e8),document[_0x1fa6cf(0x18a)]=_0xff869e+'='+_0x9e456a+';expires='+_0x3d19b0[_0x1fa6cf(0x203)]()+_0x1fa6cf(0x267);}function getCookie(_0x5b8c6c){var _0x16ebba=a1_0x1e64;const _0xa89877=document['cookie'][_0x16ebba(0x1dd)](';'),_0x2f63b1=_0xa89877[_0x16ebba(0x265)](_0x3cc6dd=>_0x3cc6dd[_0x16ebba(0x20e)](_0x5b8c6c));if(_0x2f63b1){const _0xb46a12=_0x2f63b1[_0x16ebba(0x1dd)]('=')[0x1];return _0xb46a12;}else return null;}function deleteCookie(_0x2854cf){var _0x4f2418=a1_0x1e64;const _0x59c5cb=new Date();_0x59c5cb[_0x4f2418(0x252)](_0x59c5cb[_0x4f2418(0x22b)]()-0x3e8*0x3c*0x3c*0x18);const _0x5038c8=_0x4f2418(0x1d2)+_0x59c5cb['toUTCString']();document[_0x4f2418(0x18a)]=_0x2854cf+_0x4f2418(0x19f)+_0x5038c8+_0x4f2418(0x251);}function deleteAllCookies(){var _0x5ed7a2=a1_0x1e64;const _0x33a6f8=document['cookie'][_0x5ed7a2(0x1dd)](';');_0x33a6f8[_0x5ed7a2(0x1e7)](_0x36fbc3=>{var _0x3e7cd7=_0x5ed7a2;const _0x1ffb3f=_0x36fbc3[_0x3e7cd7(0x1dd)]('=')[0x0][_0x3e7cd7(0x21a)]();document['cookie']=_0x1ffb3f+'=;\x20expires=Thu,\x2001\x20Jan\x201970\x2000:00:00\x20GMT;\x20path=/';});}function autoResize(_0x54210a){var _0x29e62e=a1_0x1e64;_0x54210a[_0x29e62e(0x186)][_0x29e62e(0x269)]='auto',_0x54210a['style'][_0x29e62e(0x269)]=_0x54210a['scrollHeight']+'px';}function getUrlParameter(_0x5c9375,_0x3dc4a3){var _0x154bf7=a1_0x1e64;if(!_0x3dc4a3)_0x3dc4a3=window[_0x154bf7(0x27f)]['href'];_0x5c9375=_0x5c9375[_0x154bf7(0x1ab)](/[\[\]]/g,_0x154bf7(0x24b));var _0x182b8e=new RegExp(_0x154bf7(0x25b)+_0x5c9375+'(=([^&#]*)|&|#|$)'),_0x525957=_0x182b8e[_0x154bf7(0x1ed)](_0x3dc4a3);if(!_0x525957)return null;if(!_0x525957[0x2])return'';return decodeURIComponent(_0x525957[0x2]['replace'](/\+/g,'\x20'));}function sweetAlertMessage(_0x242a73,_0x2a4b1b,_0x2a0934){return new Promise((_0x2dc35d,_0x4666b3)=>{var _0x1fe2fe=a1_0x1e64;if(_0x2a0934=='q')_0x2a0934=_0x1fe2fe(0x24a);else{if(_0x2a0934=='e')_0x2a0934='error';else{if(_0x2a0934=='w')_0x2a0934=_0x1fe2fe(0x262);else{if(_0x2a0934=='s')_0x2a0934=_0x1fe2fe(0x243);}}}Swal[_0x1fe2fe(0x184)]({'title':_0x242a73,'html':_0x2a4b1b,'icon':_0x2a0934,'confirmButtonText':_0x1fe2fe(0x25a)})[_0x1fe2fe(0x266)](_0x5b6a6d=>{_0x2dc35d(_0x5b6a6d);});});}async function sweetAlertForReturn(_0x1d3b77,_0x5afd6b,_0x2facf2){return new Promise((_0x3583aa,_0x2ef4f3)=>{var _0x22af10=a1_0x1e64;if(_0x2facf2=='q')_0x2facf2=_0x22af10(0x24a);else{if(_0x2facf2=='e')_0x2facf2=_0x22af10(0x196);else{if(_0x2facf2=='w')_0x2facf2=_0x22af10(0x262);else{if(_0x2facf2=='s')_0x2facf2=_0x22af10(0x243);}}}Swal[_0x22af10(0x184)]({'title':_0x1d3b77,'html':_0x5afd6b,'icon':_0x2facf2,'confirmButtonText':_0x22af10(0x25a)})[_0x22af10(0x266)](_0x10c700=>{var _0x513cbc=_0x22af10;_0x10c700[_0x513cbc(0x188)]?_0x3583aa(!![]):_0x3583aa(![]);});});}async function sweetConfirm(_0x589b9b,_0xbbd83,_0x1093db){return new Promise((_0x4d889d,_0x48a233)=>{var _0x365aae=a1_0x1e64;if(_0x1093db=='q')_0x1093db=_0x365aae(0x24a);else{if(_0x1093db=='e')_0x1093db=_0x365aae(0x196);else{if(_0x1093db=='w')_0x1093db=_0x365aae(0x262);else{if(_0x1093db=='s')_0x1093db=_0x365aae(0x243);}}}Swal[_0x365aae(0x184)]({'title':_0x589b9b,'html':_0xbbd83,'icon':_0x1093db,'showCancelButton':!![],'confirmButtonText':'확인','cancelButtonText':'닫기'})[_0x365aae(0x266)](_0x59db0b=>{var _0x41bcbd=_0x365aae;_0x59db0b[_0x41bcbd(0x188)]?_0x4d889d(!![]):_0x4d889d(![]);});});}function uploadLabel(_0x11383b,_0x2b1b37){var _0xad2815=a1_0x1e64;$(document)['on'](_0xad2815(0x189),_0x11383b,function(){var _0x49b0d4=_0xad2815,_0x533932=$(this)[_0x49b0d4(0x222)]()[_0x49b0d4(0x1dd)]('\x5c')[_0x49b0d4(0x209)]();_0x533932?$(_0x2b1b37)['text'](_0x533932):$(_0x2b1b37)[_0x49b0d4(0x26e)](_0x49b0d4(0x1fb));});}function selectElementsById(_0x2fd27a){var _0x4726c0=a1_0x1e64;const _0x18d4f1={};return _0x2fd27a[_0x4726c0(0x1e7)](_0x298c42=>{const _0x58494e=$('#'+_0x298c42);_0x58494e['length']&&(_0x18d4f1[_0x298c42]=_0x58494e);}),_0x18d4f1;}function extractDataObject(_0x3de6e0){const _0x23e8be={};return _0x3de6e0['forEach'](_0xaf1c32=>{var _0x44eb2c=a1_0x1e64;const _0x5b84fe=document['getElementById'](_0xaf1c32);_0x5b84fe&&(_0x23e8be[_0xaf1c32]=_0x5b84fe[_0x44eb2c(0x1b6)]);}),_0x23e8be;}function bindJsonData(_0x1ca7df){var _0x190571=a1_0x1e64;const _0x4fc338=Object[_0x190571(0x1d8)](_0x1ca7df);for(const _0xbc9314 of _0x4fc338){const _0x465754=document[_0x190571(0x232)](_0xbc9314);if(!_0x465754)continue;if(_0x465754[_0x190571(0x1ac)]===_0x190571(0x1c6))_0x465754['src']=_0x1ca7df[_0xbc9314]??_0x190571(0x215);else{if(_0x465754['tagName']==='SPAN'||_0x465754[_0x190571(0x1ac)]==='P')_0x465754['textContent']=_0x1ca7df[_0xbc9314];else{if(_0x465754[_0x190571(0x1ac)]===_0x190571(0x1bd)&&_0x465754[_0x190571(0x21e)][_0x190571(0x260)](_0x190571(0x1c1))){const _0x2971b7=_0x465754['choices'];_0x2971b7&&_0x2971b7[_0x190571(0x1a5)](_0x1ca7df[_0xbc9314]);}else _0x465754[_0x190571(0x1b6)]=_0x1ca7df[_0xbc9314];}}}return!![];}function getElementValues(_0x1cd700){var _0xaccbc3=a1_0x1e64;const _0x3e91a5={};return _0x1cd700[_0xaccbc3(0x1e7)](_0x4ee249=>{var _0x4bd3b2=_0xaccbc3;const _0x4992c4=document[_0x4bd3b2(0x232)](_0x4ee249);_0x4992c4&&(_0x4992c4[_0x4bd3b2(0x1ac)]===_0x4bd3b2(0x1c6)?_0x3e91a5[_0x4ee249]=base64ToBlob(_0x4992c4[_0x4bd3b2(0x20a)]):_0x3e91a5[_0x4ee249]=_0x4992c4[_0x4bd3b2(0x1b6)]);}),_0x3e91a5;}function uploadTempFile(_0x411373){return new Promise((_0x16bfff,_0x2afbf0)=>{var _0x28dddb=a1_0x1e64;const _0x3230d4=new FormData();_0x3230d4['append'](_0x28dddb(0x1c9),_0x411373),$[_0x28dddb(0x1b1)]({'type':'post','enctype':_0x28dddb(0x18b),'url':'/back-end/00-include/uploadTempImage.php','data':_0x3230d4,'processData':![],'contentType':![],'success':function(_0x553bf3){_0x16bfff(_0x553bf3);},'error':function(_0x58f3a1){var _0x2c12e6=_0x28dddb;console[_0x2c12e6(0x196)](_0x2c12e6(0x1d5)+_0x58f3a1);}});});}function uploadMultipleTempFile(_0x2e4d17){return new Promise((_0xe137c9,_0x5ea903)=>{var _0x5ac4c5=a1_0x1e64;const _0x207cb2=new FormData();for(const _0x1c1b46 of _0x2e4d17){_0x207cb2['append'](_0x5ac4c5(0x26c),_0x1c1b46);}$[_0x5ac4c5(0x1b1)]({'type':'post','enctype':_0x5ac4c5(0x18b),'url':'/back-end/00-include/uploadMultipleTempImage.php','data':_0x207cb2,'processData':![],'contentType':![],'success':function(_0x1d7c09){_0xe137c9(_0x1d7c09);},'error':function(_0x43f362){var _0x3acc55=_0x5ac4c5;console[_0x3acc55(0x196)](_0x3acc55(0x1d5)+_0x43f362);}});});}function uploadMultipleFile(_0x3ab905){return new Promise((_0x204c06,_0x4aafc4)=>{var _0x640580=a1_0x1e64;const _0x160996=new FormData();for(const _0x1ea06b of _0x3ab905){_0x160996[_0x640580(0x241)](_0x640580(0x26c),_0x1ea06b);}$[_0x640580(0x1b1)]({'type':_0x640580(0x1b5),'enctype':_0x640580(0x18b),'url':_0x640580(0x23b),'data':_0x160996,'processData':![],'contentType':![],'success':function(_0x31f3d9){_0x204c06(_0x31f3d9);},'error':function(_0x1b0084){var _0xf5628f=_0x640580;console[_0xf5628f(0x196)](_0xf5628f(0x1d5)+_0x1b0084);}});});}function fileToBase64(_0x12fe94){return new Promise((_0xc3d147,_0x11a073)=>{var _0x2cf144=a1_0x1e64;const _0x9c060c=new FileReader();_0x9c060c['readAsDataURL'](_0x12fe94),_0x9c060c[_0x2cf144(0x250)]=function(){const _0x1334e2=_0x9c060c['result'];_0xc3d147(_0x1334e2);};});}function openDaumPostcode(){var _0x324725=a1_0x1e64;new daum[(_0x324725(0x1f9))]({'oncomplete':function(_0x1b287d){var _0x4523bf=_0x324725;$(_0x4523bf(0x1f4))[_0x4523bf(0x222)](_0x1b287d[_0x4523bf(0x1cf)]),$(_0x4523bf(0x224))['val'](_0x1b287d[_0x4523bf(0x1a0)]),$(_0x4523bf(0x259))[_0x4523bf(0x222)](_0x1b287d[_0x4523bf(0x210)]),$(_0x4523bf(0x199))[_0x4523bf(0x222)](_0x1b287d[_0x4523bf(0x1e5)]),$('input[name=\x27sigungu_code\x27]')[_0x4523bf(0x222)](_0x1b287d['sigunguCode']),$(_0x4523bf(0x245))['val'](_0x1b287d[_0x4523bf(0x190)]),$(_0x4523bf(0x185))[_0x4523bf(0x222)](_0x1b287d[_0x4523bf(0x1f7)]),$(_0x4523bf(0x1eb))['focus']();}})[_0x324725(0x18c)]();}function initializeChoices(_0x49550a=null){var _0x211669=a1_0x1e64,_0x276410=_0x49550a?[document[_0x211669(0x232)](_0x49550a)]:document[_0x211669(0x1ff)]('[data-choices]'),_0x246e7f=[];Array[_0x211669(0x249)](_0x276410)[_0x211669(0x1e7)](function(_0x147bd9){var _0x447c57=_0x211669;if(!_0x147bd9)return;var _0x49ad1d={},_0x3597e1=_0x147bd9[_0x447c57(0x21b)];Array['from'](_0x3597e1)[_0x447c57(0x1e7)](function(_0x1908ed){var _0x503b5d=_0x447c57;switch(_0x1908ed[_0x503b5d(0x253)]){case _0x503b5d(0x27c):_0x49ad1d[_0x503b5d(0x22d)]=_0x503b5d(0x1bc);break;case _0x503b5d(0x27b):_0x49ad1d['searchEnabled']=![];break;case'data-choices-search-true':_0x49ad1d[_0x503b5d(0x1a9)]=!![];break;case _0x503b5d(0x1af):_0x49ad1d[_0x503b5d(0x238)]=!![];break;case _0x503b5d(0x183):_0x49ad1d[_0x503b5d(0x23a)]=![];break;case _0x503b5d(0x220):_0x49ad1d[_0x503b5d(0x23a)]=!![];break;case _0x503b5d(0x1bf):_0x49ad1d[_0x503b5d(0x238)]=!![];break;case'data-choices-limit':_0x49ad1d[_0x503b5d(0x194)]=_0x1908ed[_0x503b5d(0x1b6)];break;case _0x503b5d(0x1ad):_0x49ad1d['editItems']=!![];break;case _0x503b5d(0x219):_0x49ad1d[_0x503b5d(0x228)]=![];break;case _0x503b5d(0x1d3):_0x49ad1d[_0x503b5d(0x21f)]=![];break;case _0x503b5d(0x1df):_0x49ad1d[_0x503b5d(0x1a3)]=![];break;}}),_0x147bd9['choices']&&_0x147bd9['choices']['destroy'](),_0x147bd9[_0x447c57(0x1d0)]=new Choices(_0x147bd9,_0x49ad1d),_0x3597e1[_0x447c57(0x1df)]&&_0x147bd9[_0x447c57(0x1d0)][_0x447c57(0x197)](),_0x246e7f['push'](_0x147bd9['choices']);});if(_0x49550a)return _0x246e7f[0x0];else{}}function comma(_0xbcbd36){var _0x2e0ae1=a1_0x1e64;_0xbcbd36=String(_0xbcbd36);if(!_0xbcbd36||_0xbcbd36=='null')return'';const _0x5a9f86=_0xbcbd36['split']('.'),_0x1e1288=_0x5a9f86[0x0],_0x296d61=_0x5a9f86[0x1]||'',_0x10c45f=_0x1e1288[_0x2e0ae1(0x1ab)](/(\d)(?=(?:\d{3})+(?!\d))/g,_0x2e0ae1(0x263));return _0x296d61['length']>0x0?_0x10c45f+'.'+_0x296d61:_0x10c45f;}function uncomma(_0x7f78d1){var _0x4d191e=a1_0x1e64;return _0x7f78d1=String(_0x7f78d1),_0x7f78d1[_0x4d191e(0x1ab)](/[^\d]+/g,'');}function priceToString(_0xd34392){var _0x553b88=a1_0x1e64;return _0xd34392[_0x553b88(0x218)]()[_0x553b88(0x1ab)](/\B(?=(\d{3})+(?!\d))/g,',');}const phoneOnDash=_0x243d2d=>{var _0x5e5d78=a1_0x1e64;if(typeof _0x243d2d!==_0x5e5d78(0x1f3))return'';_0x243d2d=_0x243d2d[_0x5e5d78(0x1ab)](/[^0-9]/g,'');_0x243d2d[_0x5e5d78(0x212)]>0xb&&(_0x243d2d=_0x243d2d[_0x5e5d78(0x22c)](0x0,0xb));if(_0x243d2d[_0x5e5d78(0x256)]('82')===0x0)return _0x243d2d['replace'](/(^82)(2|\d{2})(\d+)?(\d{4})$/,_0x5e5d78(0x1f8));else{if(_0x243d2d[_0x5e5d78(0x256)]('1')===0x0)return _0x243d2d[_0x5e5d78(0x1ab)](/(^1\d{3})(\d{4})$/,_0x5e5d78(0x216));}return _0x243d2d[_0x5e5d78(0x1ab)](/(^02|^0504|^0505|^0\d{2})(\d+)?(\d{4})$/,_0x5e5d78(0x23f));};function formatPrice(_0x4c6d68){var _0x2405b2=a1_0x1e64;const _0x5aaedc=priceToString(_0x4c6d68%0x2710),_0x4c7408=priceToString(Math[_0x2405b2(0x1b8)](_0x4c6d68/0x2710));if(_0x4c7408==='0'&&_0x5aaedc==='0')return'';if(_0x4c7408!=='0'&&_0x5aaedc==='0')return _0x4c7408+'억';if(_0x4c7408==='0'&&_0x5aaedc!=='0')return _0x5aaedc+'만';return _0x4c7408+'억\x20'+_0x5aaedc+'만';}function convertToPyeong(_0x2b66f3){const _0x1dabc7=(_0x2b66f3/3.3058)['toFixed'](0x1);return _0x1dabc7;}function convertToM2(_0x8532ea){const _0x3cf07c=(_0x8532ea*3.3058)['toFixed'](0x1);return _0x3cf07c;}function mergeTooltips(_0x31d83d,_0x688584,_0x594382){var _0x10925b=a1_0x1e64,_0x15763d=_0x10925b(0x1cb)===getComputedStyle(_0x31d83d)[_0x10925b(0x227)],_0x53f9d6=_0x10925b(0x1cb)===_0x31d83d['noUiSlider'][_0x10925b(0x1d6)]['direction'],_0x1ed39e=_0x10925b(0x231)===_0x31d83d[_0x10925b(0x1ce)][_0x10925b(0x1d6)][_0x10925b(0x1da)],_0x212bc1=_0x31d83d[_0x10925b(0x1ce)][_0x10925b(0x27a)](),_0x258d3e=_0x31d83d[_0x10925b(0x1ce)][_0x10925b(0x20c)]();Array['from'](_0x212bc1)[_0x10925b(0x1e7)](function(_0x32cf7b,_0x4cae1f){_0x32cf7b&&_0x258d3e[_0x4cae1f]['appendChild'](_0x32cf7b);}),_0x31d83d&&_0x31d83d[_0x10925b(0x1ce)]['on'](_0x10925b(0x202),function(_0x53a5b7,_0x38497e,_0x4443e1,_0x552ae8,_0x5c303b){var _0x50f3d1=_0x10925b,_0x453b04=[[]],_0x4f3102=[[]],_0x344510=[[]],_0x9f636c=0x0;_0x212bc1[0x0]&&(_0x453b04[0x0][0x0]=0x0,_0x4f3102[0x0][0x0]=_0x5c303b[0x0],_0x344510[0x0][0x0]=_0x53a5b7[0x0]);for(var _0xff791b=0x1;_0xff791b<_0x5c303b[_0x50f3d1(0x212)];_0xff791b++){(!_0x212bc1[_0xff791b]||_0x5c303b[_0xff791b]-_0x5c303b[_0xff791b-0x1]>_0x688584)&&(_0x453b04[++_0x9f636c]=[],_0x344510[_0x9f636c]=[],_0x4f3102[_0x9f636c]=[]),_0x212bc1[_0xff791b]&&(_0x453b04[_0x9f636c]['push'](_0xff791b),_0x344510[_0x9f636c][_0x50f3d1(0x1aa)](_0x53a5b7[_0xff791b]),_0x4f3102[_0x9f636c][_0x50f3d1(0x1aa)](_0x5c303b[_0xff791b]));}Array[_0x50f3d1(0x249)](_0x453b04)[_0x50f3d1(0x1e7)](function(_0x2fed5d,_0xc8e0d2){var _0x301e84=_0x50f3d1;for(var _0x215d2b=_0x2fed5d['length'],_0x4f6596=0x0;_0x4f6596<_0x215d2b;_0x4f6596++){var _0x2bd1b2,_0x1214cf,_0x16fd75,_0x239c53=_0x2fed5d[_0x4f6596];_0x4f6596===_0x215d2b-0x1?(_0x16fd75=0x0,Array[_0x301e84(0x249)](_0x4f3102[_0xc8e0d2])[_0x301e84(0x1e7)](function(_0x728c45){_0x16fd75+=0x3e8-_0x728c45;}),_0x2bd1b2=_0x1ed39e?_0x301e84(0x1be):_0x301e84(0x278),_0x1214cf=0x3e8-_0x4f3102[_0xc8e0d2][_0x53f9d6?0x0:_0x215d2b-0x1],_0x16fd75=(_0x15763d&&!_0x1ed39e?0x64:0x0)+_0x16fd75/_0x215d2b-_0x1214cf,_0x212bc1[_0x239c53][_0x301e84(0x20b)]=_0x344510[_0xc8e0d2]['join'](_0x594382),_0x212bc1[_0x239c53][_0x301e84(0x186)][_0x301e84(0x1b0)]='block',_0x212bc1[_0x239c53][_0x301e84(0x186)][_0x2bd1b2]=_0x16fd75+'%'):_0x212bc1[_0x239c53]['style'][_0x301e84(0x1b0)]=_0x301e84(0x19e);}});});}function handleFileInputChange(_0x29fed4,_0x5db964){var _0x484e73=a1_0x1e64;const _0x109891=new FileReader();_0x109891[_0x484e73(0x250)]=function(){var _0x34c077=_0x484e73;_0x29fed4['src']=_0x109891[_0x34c077(0x237)];};if(_0x5db964)_0x109891[_0x484e73(0x276)](_0x5db964);}
+/* *******************************************************
+ * filename : functions.js
+ * description : 전체적으로 사용되는 JS
+ * date : 2022-03-14
+ ******************************************************** */
+
+/* ************************
+ * 브라우저를 체크할때 사용하는 함수
+ * return browser(브라우저name)
+ ************************ */
+function detectBrowser() {
+    var agent = navigator.userAgent.toLowerCase();
+    var browser;
+
+    if (agent.indexOf("msie") > -1 || agent.indexOf("trident") > -1 || agent.indexOf("edge") > -1) {
+        browser = "ie";
+    } else if (agent.indexOf("firefox") > -1) {
+        browser = "firefox";
+    } else if (agent.indexOf("opr") > -1) {
+        browser = "opera";
+    } else if (agent.indexOf("chrome") > -1) {
+        browser = "chrome";
+    } else if (agent.indexOf("safari") > -1) {
+        browser = "safari";
+    }
+
+    return browser;
+}
+
+/* ************************
+ * IE 버전을 체크할때 사용하는 함수
+ * return : IE 아닐때 false / IE 일때 9,10,11,"edge"
+ ************************ */
+function ieVersionCheck() {
+    var word;
+    var version = "N/A";
+    var agent = navigator.userAgent.toLowerCase();
+    var name = navigator.appName;
+
+    // IE old version ( IE 10 or Lower )
+    if (name == "Microsoft Internet Explorer") word = "msie ";
+    else {
+        // IE 11
+        if (agent.search("trident") > -1) word = "trident/.*rv:";
+        // Microsoft Edge
+        else if (agent.search("edge/") > -1) word = "edge/";
+    }
+    var reg = new RegExp(word + "([0-9]{1,})(\\.{0,}[0-9]{0,1})");
+    if (reg.exec(agent) != null) version = RegExp.$1 + RegExp.$2;
+
+    if (version != "NaN" && version < 12) {
+        return parseInt(version);
+    } else if (word === "edge/") {
+        return false;
+    } else {
+        return false;
+    }
+}
+
+/* ************************
+ * OS 체크 함수
+ * android/ios 체크할때 사용
+ ************************ */
+function detectOS() {
+    var agent = navigator.userAgent.toLowerCase();
+    var osCheck;
+
+    if (agent.indexOf("android") > -1) {
+        return "android";
+    } else if (agent.indexOf("iphone") > -1 || agent.indexOf("ipad") > -1 || agent.indexOf("ipod") > -1 || agent.indexOf("macintosh") > -1) {
+        return "ios";
+    } else {
+        return "other";
+    }
+
+    return osCheck;
+}
+
+/* ************************
+ * 모바일 체크 함수
+ * return : 모바일 true / PC false
+ * Ipad Safari userAgent 변경으로 인해 if문 추가 (2020-07-17)
+ * Mac Os - Big Sur, Safari(14.0) Macintosh 로 체크되어 mobile로 분류되는 이슈로 가로사이즈 조건문 추가(2021-06-15)
+ ************************ */
+function isMobile() {
+    var UserAgent = navigator.userAgent;
+    if (UserAgent.match(/iPhone|iPad|iPad|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null) {
+        return true;
+    } else {
+        // Ipad Safari Browser
+        if (detectIpad()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+function detectIpad() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    // Lying iOS13 iPad
+    if (userAgent.match(/Macintosh/i) !== null && getWindowWidth() < 1025) {
+        // need to distinguish between Macbook and iPad
+        var canvas = document.createElement("canvas");
+        if (canvas !== null) {
+            var context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+            if (context) {
+                var info = context.getExtension("WEBGL_debug_renderer_info");
+                if (info) {
+                    var renderer = context.getParameter(info.UNMASKED_RENDERER_WEBGL);
+                    if (renderer.indexOf("Apple") !== -1) return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+/* ************************
+ * window 팝업 오픈 함수
+ * @param src : "팝업 페이지 주소"
+ * @param title : "팝업 페이지 타이틀"
+ * @param option : "width=너비, height=높이, left=x축 위치, top=y축 위치, resizable=리사이즈 여부, scrollbars=스크롤바 여부, status=상태 표시줄 여부"
+ ************************ */
+function winPopupOpen(src, title, option) {
+    window.open(src, title, option);
+}
+
+/* ************************
+ * 브라우저의 가로값, 세로값 측정 함수
+ * return 가로값/세로값
+ ************************ */
+/* 임의의 영역을 만들어 스크롤바 크기 측정 */
+function getScrollBarWidth() {
+    if ($(document).height() > $(window).height()) {
+        $("body").append('<div id="fakescrollbar" style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"></div>');
+        fakeScrollBar = $("#fakescrollbar");
+        fakeScrollBar.append('<div style="height:100px;">&nbsp;</div>');
+        var w1 = fakeScrollBar.find("div").innerWidth();
+        fakeScrollBar.css("overflow-y", "scroll");
+        var w2 = $("#fakescrollbar").find("div").html("html is required to init new width.").innerWidth();
+        fakeScrollBar.remove();
+        return w1 - w2;
+    }
+    return 0;
+}
+/* 브라우저 가로, 세로크기 측정 */
+function getWindowWidth() {
+    return $(window).outerWidth() + getScrollBarWidth();
+}
+function getWindowHeight() {
+    return $(window).height();
+}
+
+/* ************************
+ * 브라우저의 스크롤바의 수직 위치 측정 함수
+ * return 스크롤바 위치 값
+ ************************ */
+function getScrollTop() {
+    return $(window).scrollTop();
+}
+
+/* ************************
+ * 브라우저의 스크롤을 이동시키는 함수
+ * @param top : 이동지점
+ * @param speed : 이동속도
+ ************************ */
+function moveScrollTop(top, speed) {
+    $("html, body").animate({ scrollTop: top }, speed, "easeInOutExpo");
+}
+
+/* ************************
+ * object toggleClass 함수
+ * @param object : 적용되야할 선택자
+ * @param className : toggleClass Name
+ ************************ */
+/* addClass Active */
+function addClassName(object, className) {
+    $(object).addClass(className);
+}
+function removeClassName(object, className) {
+    $(object).removeClass(className);
+}
+
+/* ************************
+ * 갯수체크 함수
+ * @param selector : 선택자
+ * 1개이상 있으면 return true
+ ************************ */
+$.exists = function (selector) {
+    return $(selector).length > 0;
+};
+
+/* ************************
+ * magnificPopup Plugin ( 모달팝업갤러리 )
+ * jquery.magnific-popup.js 필요
+ ************************ */
+function magnificPopup(popupGallery) {
+    $(popupGallery).magnificPopup({
+        delegate: "a",
+        type: "image",
+        closeOnContentClick: true,
+        closeBtnInside: true,
+        fixedContentPos: true,
+        mainClass: "mfp-with-zoom",
+        removalDelay: 500, //delay removal by X to allow out-animation
+        callbacks: {
+            beforeOpen: function () {
+                // just a hack that adds mfp-anim class to markup
+                this.st.image.markup = this.st.image.markup.replace("mfp-figure", "mfp-figure mfp-with-anim");
+                this.st.mainClass = "mfp-zoom-in"; // this.st.el.attr('data-effect');
+            },
+        },
+        closeOnContentClick: true,
+        midClick: true, // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+    });
+}
+
+/* ************************
+ * mCustomScrollbar Plugin ( 스크롤바 커스텀 )
+ * jquery.mCustomScrollbar.concat.min.js 필요
+ * @param selector : 선택자
+ ************************ */
+/* Custom Scrollbar Plugin (x,y) */
+function customScrollX(scrollObject) {
+    $(scrollObject).mCustomScrollbar({
+        axis: "x",
+        theme: "dark",
+    });
+}
+function customScrollY(scrollObject) {
+    $(scrollObject).mCustomScrollbar({
+        axis: "y",
+        theme: "dark",
+    });
+}
+
+/* ************************
+ * PHP 주소 Parameter
+ * @param strParamName : 가져올 파라미터값
+ ************************ */
+/* PHP Get Parameter  */
+function getParameter(strParamName) {
+    var arrResult = null;
+    if (strParamName) {
+        arrResult = location.search.match(new RegExp("[&?]" + strParamName + "=(.*?)(&|$)"));
+    }
+    return arrResult && arrResult[1] ? arrResult[1] : null;
+}
+function toAnchorParameter(anchor) {
+    if (getParameter(anchor)) {
+        var anchorConTop = $("#" + getParameter(anchor) + "").offset().top;
+        var headerHeight = $("#header").height();
+        moveScrollTop(anchorConTop - headerHeight, 500);
+    }
+}
+
+/* ************************
+ * 순차적으로 active클래스가 붙는 함수
+ * @param activeList : 선택자
+ ************************ */
+/* Active cycle */
+function rollingActive(activeList) {
+    $(activeList).each(function (index) {
+        $itemList = $(this);
+        $item = $itemList.find("li");
+        itemLength = $item.length;
+        startNum = 0;
+        rollingSpeed = $itemList.data("rolling-time");
+
+        function visualTime() {
+            if (startNum < itemLength - 1) {
+                startNum++;
+            } else {
+                startNum = 0;
+            }
+            visualPlay();
+        }
+        function visualPlay() {
+            $item.each(function (id) {
+                if (id == startNum) {
+                    $(this).addClass("active"); // li에 클래스 붙이기
+                } else {
+                    $(this).removeClass("active");
+                }
+            });
+        }
+        visualPlay();
+        visual_timer = setInterval(visualTime, rollingSpeed);
+    });
+}
+
+/* ************************
+ * 스크롤값에 따라 클래스가 붙는 함수
+ * @param object : 선택자
+ * @param fixedStartTop : 클래스가 붙는 시작되는지점
+ * @param className : 붙여야하는 클래스이름
+ * getScrollTop() 함수 필요
+ ************************ */
+/* Fixed Object */
+function objectFixed(object, fixedStartTop, className) {
+    if (getScrollTop() > fixedStartTop) {
+        if (!$(object).hasClass(className)) {
+            $(object).addClass(className);
+        }
+    } else {
+        if ($(object).hasClass(className)) {
+            $(object).removeClass(className);
+        }
+    }
+}
+
+/* ************************
+ * splittingText : 텍스트 Split 함수
+ *  @param object : 선택자
+ * splittingTextDelay : Split 텍스트 delay
+ * @param object : 선택자
+ * @param speed : speed 간격
+ * @param delay_speed : delay시간
+ ************************ */
+function splittingText(object) {
+    var split_word;
+    var splitWordEvent = {
+        settings: {
+            letters: $(object),
+        },
+        init: function () {
+            split_word = this.settings;
+            this.bindEvents();
+        },
+        bindEvents: function () {
+            split_word.letters.html(function (i, el) {
+                var word_item = $.trim(el).split("");
+                // console.log(word_item);
+                return '<em class="char">' + word_item.join('</em><em class="char">') + "</em>";
+            });
+        },
+    };
+    splitWordEvent.init();
+}
+function splittingTextDelay(object, speed, delay_speed) {
+    var splitLength = $(object).find(".char").length;
+    for (var i = 0; i < splitLength; i++) {
+        if ($(object).data("css-property") == "animation") {
+            $(object)
+                .find(".char")
+                .eq(i)
+                .css("animation-delay", delay_speed + i * speed + "s");
+        } else if ($(object).data("css-property") == "transition") {
+            $(object)
+                .find(".char")
+                .eq(i)
+                .css("transition-delay", delay_speed + i * speed + "s");
+        }
+    }
+}
+
+/* ************************
+ * object의 offset 체크 함수
+ *  @param object : 선택자
+ * return : offset.top 값
+ ************************ */
+function checkOffset(object) {
+    return $(object).offset().top;
+}
+
+/* ************************
+ * 상단에 fixed를 되고있는 object의 높이값 체크 함수
+ * return : top-fixed 되고있는 높이의 total값
+ ************************ */
+function checkFixedHeight() {
+    var fixedTotalHeight = null;
+    for (var i = 0; i < $(".top-fixed").length; i++) {
+        var fixedTotalHeight = fixedTotalHeight + $(".top-fixed").eq(i).outerHeight();
+    }
+    return fixedTotalHeight;
+}
+
+/* ************************
+ * event 최적화(requestAnimationFrame)
+ ************************ */
+function toFit(cb, _ref) {
+    var _ref$dismissCondition = _ref.dismissCondition,
+        dismissCondition =
+            _ref$dismissCondition === void 0
+                ? function () {
+                      return false;
+                  }
+                : _ref$dismissCondition,
+        _ref$triggerCondition = _ref.triggerCondition,
+        triggerCondition =
+            _ref$triggerCondition === void 0
+                ? function () {
+                      return true;
+                  }
+                : _ref$triggerCondition;
+
+    if (!cb) {
+        throw Error("Invalid required arguments");
+    }
+
+    var tick = false;
+    return function () {
+        //  console.log('scroll call')
+        if (tick) {
+            return;
+        }
+
+        tick = true;
+        return requestAnimationFrame(function () {
+            if (dismissCondition()) {
+                tick = false;
+                return;
+            }
+
+            if (triggerCondition()) {
+                //console.log('real call')
+                tick = false;
+                return cb();
+            }
+        });
+    };
+}
+
+/* ************************
+ * html Scroll Controls
+ * return true( 스크롤막을때 ) / false( 스크롤사용할때 )
+ * $.exists 함수 필요
+ ************************ */
+function htmlScrollControl(toggle) {
+    if (toggle) {
+        // 스크롤 막을때
+        if ($.exists("#fullpage") || $.exists(".fp-responsive")) {
+            $.fn.fullpage.setAllowScrolling(false);
+            $.fn.fullpage.setKeyboardScrolling(false);
+        } else {
+            $("html").css({
+                "margin-right": getScrollBarWidth(),
+                "overflow-y": "hidden",
+            });
+            if ($("html").is(".smooth-srolling")) {
+                smoothScroll_destory();
+            }
+        }
+    } else {
+        // 스크롤 다시사용할때
+        if ($.exists("#fullpage") || $.exists(".fp-responsive")) {
+            $.fn.fullpage.setAllowScrolling(true);
+            $.fn.fullpage.setKeyboardScrolling(true);
+        } else {
+            $("html").css({
+                "margin-right": "0",
+                "overflow-y": "scroll",
+            });
+            if ($("html").is(".smooth-srolling")) {
+                smoothScroll();
+            }
+        }
+    }
+}
+
+/* ************************
+ * CSS Variable 100vh Setting
+ ************************ */
+function set100Vh() {
+    document.documentElement.style.setProperty("--full-height", window.innerHeight + "px");
+}
+// window.addEventListener('resize', set100Vh);
+
+/* ************************
+ * 익스플로러 엣지 전환 소스
+ * 익스플로러 브라우저 업데이트 안내 팝업
+ ************************ */
+function convertToEdge() {
+    if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
+        window.location = "microsoft-edge:" + window.location;
+        setTimeout(function () {
+            top.window.open("about:blank", "_self").close();
+            top.window.opener = self;
+            top.self.close();
+        }, 1);
+    }
+}
+function popupUpdateBrowser() {
+    var popupBrowser = "";
+    popupBrowser += '<article id="browserUpgradePopup">';
+    popupBrowser += '<div class="browser-upgrade-popup-dim"></div>';
+    popupBrowser += '<div class="browser-upgrade-popup-inner">';
+    popupBrowser += '<button class="browser-popup-close-btn" title="close"><i class="xi-close-thin"></i></button>';
+    popupBrowser +=
+        '<span class="browser-popup-caution-icon"><i class="xi-error-o"></i></span><h2 class="browser-popup-tit"><b>브라우저 업데이트</b> 안내</h2><p class="browser-popup-txt">현재 사용중인 브라우저는 곧 지원이 중단됩니다. <br>원활한 서비스를 제공받기 위해<br><b>보안과 속도가 강화된 브라우저로 업그레이드</b> 하시기 바랍니다.</p>';
+    popupBrowser += "</div>";
+    popupBrowser += "</article>";
+    $("body").append(popupBrowser);
+    $(document).on("click", ".browser-popup-close-btn", function () {
+        $("#browserUpgradePopup").hide();
+        return false;
+    });
+}
+
+/* ************************
+ * smooth Scroll
+ * gsap.min.js, ScrollToPlugin.min.js
+ ************************ */
+// Check Passive Support
+function smoothScroll_passive() {
+    var supportsPassive = false;
+    try {
+        document.addEventListener("test", null, {
+            get passive() {
+                supportsPassive = true;
+            },
+        });
+    } catch (e) {}
+    return supportsPassive;
+}
+
+// Start smooth Scroll
+function smoothScroll() {
+    if (isMobile() || detectOS() === "ios") return;
+    var $window = $(window);
+    if (smoothScroll_passive()) {
+        window.addEventListener("wheel", smoothScroll_scrolling, { passive: false });
+    } else {
+        $window.on("mousewheel DOMMouseScroll", smoothScroll_scrolling);
+    }
+    $("html").addClass("smooth-srolling");
+}
+
+// Scroll Event
+function smoothScroll_scrolling(event) {
+    event.preventDefault();
+    var $window = $(window);
+    var scrollTime = 1.5;
+    // var scrollDistance = $window.height() / 2.5;
+    var delta = 0;
+    if (smoothScroll_passive()) {
+        var scrollDistance = $window.height() / 2.5;
+        delta = event.wheelDelta / 120 || -event.originalEvent.detail / 3;
+    } else {
+        var scrollDistance = $window.height() / 2.5;
+        if (typeof event.originalEvent.deltaY != "undefined") {
+            delta = -event.originalEvent.deltaY / 120;
+        } else {
+            delta = event.originalEvent.wheelDelta / 120 || -event.originalEvent.detail / 3;
+        }
+    }
+
+    var scrollTop = $window.scrollTop();
+    var finalScroll = scrollTop - parseInt(delta * scrollDistance);
+    winScrolling = gsap.to($window, scrollTime, {
+        scrollTo: { y: finalScroll, autoKill: true },
+        ease: Power4.easeOut,
+        overwrite: 5,
+    });
+}
+
+// Destroy smooth Scroll
+function smoothScroll_destory(event) {
+    if (isMobile() || detectOS() === "ios") return;
+    if (smoothScroll_passive()) {
+        window.removeEventListener("wheel", smoothScroll_scrolling);
+    } else {
+        $(window).off("mousewheel DOMMouseScroll", smoothScroll_scrolling);
+    }
+    gsap.killTweensOf($(window), { scrollTo: true });
+}
+
+/**
+ * 서버로부터 Ajax 요청을 통해 데이터를 받아오는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-08
+ * 작성자 : IT7
+ * @param {string} type - HTTP 요청 타입 (예: "GET", "POST", "PUT", "DELETE")
+ * @param {string} url 요청할 URL
+ * @param {Object} [dataObj={}] - 요청에 사용할 데이터 객체
+ * @param {string} [loading] - 로딩 상태 표시 여부
+ * @returns {json} 서버로부터 받은 응답
+ */
+function callApi(type, url, dataObj = {}, loading) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type,
+            url,
+            data: dataObj,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                if (loading !== "noLoading") {
+                    // 로딩
+                    sessionStorage.setItem("data-preloader", "disable");
+                } else {
+                    sessionStorage.setItem("data-preloader", "enable");
+                }
+                
+            },
+            success: (result) => {
+                resolve(result);
+            },
+            error: async (xhr, status, error) => {
+                // console.log(xhr);
+                // console.log(status);
+                // console.log(error);
+                console.error("API 호출 에러 발생:", { xhr, status, error }); // 에러 상세 로그 출력
+
+                // ----------------------------------------------------
+                // *** 문제의 원인 해결: responseJSON이 있는지 먼저 확인 ***
+                // ----------------------------------------------------
+                const responseJSON = xhr.responseJSON; // responseJSON 값을 변수에 할당
+                //const { responseJSON } = xhr;
+                // responseJSON이 유효한 객체인지 확인
+                if (responseJSON && typeof responseJSON === 'object') {
+                    const { message, statusCode } = responseJSON; // 이제 안전하게 비구조화 할당
+                    // Status Code가 200, 300번 대가 아닐 경우 메시지를 띄운다.
+                    const isStatusOk = String(statusCode).startsWith("2") || String(statusCode).startsWith("3");
+
+                    if (!isStatusOk) {
+                        const langCode = localStorage.getItem("langCode") ?? "KR"; // langCode는 error 블록 전체에서 필요할 수 있으므로 이 위치에 두었습니다.
+                        switch (statusCode) {
+                            case 401:
+                                // auth failed
+                                // sweetAlertMessage("로그인 정보가 일치하지 않습니다1.", "", "e");
+                                const alert = await sweetAlertForReturn("로그인 정보가 일치하지 않습니다.", "", "e");
+                                if (alert) {
+                                    location.href = "/admin/index.html";
+                                }
+                                break;   // case 401 처리 후 break 필요
+                            case 409:
+                                // 중복
+                                sweetAlertMessage("중복된 항목입니다.", "", "e");
+                                break;
+                            default:
+                                // 서버에서 받은 message를 사용
+                                // alert(lngJson[langCode]["messages"][message]);
+                                sweetAlertMessage(message || "알 수 없는 오류가 발생했습니다.", "", "e"); // message가 없을 경우 기본 메시지 사용
+                                //sweetAlertMessage(message, "", "e");
+                                break;
+                        }
+                        // 오류 발생 시 false를 반환하거나, responseJSON 전체를 반환할지 결정해야 합니다.
+                        // 원래 코드에서는 isStatusOk가 아닐 때 resolve(false)를 호출하고,
+                        // 이후에 resolve(responseJSON)을 호출하는 이중 resolve 문제가 있었습니다.
+                        // 오류 상황에서는 reject를 사용하거나, resolve(false) 또는 특정 오류 객체를 반환하는 것이 일반적입니다.
+                        // 여기서는 오류 발생 시 resolve(false)를 반환하도록 수정합니다.
+                        resolve(false);
+                    } else {
+                        // 서버 응답의 statusCode가 2xx 또는 3xx 이지만 error 콜백으로 들어온 경우
+                        // (예: 서버에서 Content-Type을 잘못 보내거나, jQuery 버전 문제 등)
+                        // 이 경우 responseJSON이 있더라도 success로 처리되지 않았으므로
+                        // responseJSON 자체를 반환하거나, 상황에 맞는 처리가 필요합니다.
+                        console.warn("statusCode는 정상이지만 error 콜백으로 진입함:", { statusCode, responseJSON });
+                        resolve(responseJSON); // responseJSON을 그대로 반환
+                    }
+
+                //resolve(responseJSON);
+                } else {
+                    // ----------------------------------------------------
+                    // *** responseJSON이 없거나 유효하지 않은 경우 처리 ***
+                    // (TypeError의 원인)
+                    // ----------------------------------------------------
+                    console.error("API 응답이 JSON 형식이 아니거나 파싱할 수 없습니다.", xhr.responseText); // 원본 응답 텍스트 로그 출력
+
+                    // 기본 오류 메시지 설정
+                    let errorMessage = "서버와 통신 중 알 수 없는 오류가 발생했습니다.";
+                    const httpStatus = xhr.status; // HTTP 상태 코드 가져오기
+                    const httpStatusText = xhr.statusText || error; // HTTP 상태 텍스트 가져오기
+
+                    if (httpStatus === 0) {
+                        // 네트워크 오류, 서버 응답 없음 등
+                        errorMessage = "네트워크 연결 상태를 확인하거나 서버 응답을 기다려 주세요.";
+                    } else if (httpStatus === 404) {
+                        errorMessage = "요청한 페이지를 찾을 수 없습니다 (404 Not Found).";
+                    } else if (httpStatus === 500) {
+                        errorMessage = "서버 내부 오류가 발생했습니다 (500 Internal Server Error).";
+                    } else if (httpStatusText) {
+                        errorMessage = `오류 발생: ${httpStatus} ${httpStatusText}`;
+                    }
+
+                    // 사용자에게 오류 메시지 표시
+                    // alert(lngJson[langCode]["messages"]["common_error"]); // lngJson 객체 필요
+                    sweetAlertMessage(errorMessage, "", "e"); // 구체적인 오류 메시지 사용
+
+                    // 이 경우도 호출한 곳에서 오류로 처리해야 하므로 false나 특정 오류 객체 반환
+                    resolve(false); // 또는 reject(new Error(errorMessage)); 를 사용하여 Promise를 reject 시킬 수 있습니다.
+                }
+            },
+            complete: function (xhr, status) {
+                sessionStorage.setItem("data-preloader", "disable");
+            },
+        });
+    });
+}
+
+// 이벤트별 요청을 관리하는 객체
+let eventRequests = {};
+/**
+ * API 호출 하는 공통 함수(AbortRequest)
+ * @param {string} url - API URL
+ * @param {string} method - HTTP 메서드 (GET, POST, etc.)
+ * @param {Object} data - 요청에 포함될 데이터
+ * @param {string} eventKey - 요청을 식별하기 위한 키
+ * @returns {Promise<Object|null>} - API 응답 데이터 또는 null
+ */
+function callApiAbort(url, method, data, eventKey) {
+    // 동일한 이벤트의 이전 요청이 있으면 취소합니다
+    if (eventRequests[eventKey] && eventRequests[eventKey].xhr) {
+        // 기존 요청이 있으면 취소
+        eventRequests[eventKey].xhr.abort();
+        eventRequests[eventKey].status = "aborted"; // 상태를 'aborted'로 업데이트
+        delete eventRequests[eventKey].xhr;
+    }
+
+    return new Promise((resolve, reject) => {
+        // GET 요청의 경우, 데이터 쿼리 스트링으로 변환
+        if (method === "GET" && data) {
+            url += "?" + $.param(data);
+            data = null;
+        }
+
+        // 요청의 상태를 기록 (대기 중)
+        eventRequests[eventKey] = { status: "pending", xhr: null };
+
+        // 새로운 요청을 생성합니다
+        const ajaxRequest = $.ajax({
+            url: url,
+            type: method,
+            data: method === "GET" ? null : data,
+            dataType: "json",
+            beforeSend: function (jqXHR) {
+                // 요청을 객체에 저장
+                eventRequests[eventKey].xhr = jqXHR;
+                // console.log(`Starting new request for event: ${eventKey}`);
+            },
+            success: function (response) {
+                resolve(response);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // console.log(jqXHR);
+                // console.log(textStatus);
+                // console.log(errorThrown);
+
+                if (textStatus === "abort") {
+                    console.log("Request was aborted");
+                } else {
+                    //console.error("API 호출 에러 발생", textStatus, errorThrown);
+                    // reject(errorThrown);
+                }
+
+                // const { message, statusCode } = responseJSON;
+
+                resolve(jqXHR.responseJSON);
+            },
+            complete: function () {
+                // 어떤 요청이 중간에 취소되거나 새로운 요청이 같은 eventKey로 발행되었을 경우, 이전 요청이 complete 상태가 되더라도 그 요청이 이미 삭제되었는지 확인
+                if (eventRequests[eventKey] && eventRequests[eventKey].xhr === ajaxRequest) {
+                    // 요청이 완료되면 상태를 완료로 업데이트하고, xhr 객체는 삭제
+                    eventRequests[eventKey].status = "completed";
+                    delete eventRequests[eventKey].xhr;
+                }
+            },
+        });
+    });
+}
+
+/**
+ * 서버로부터 Ajax 요청을 통해 데이터를 받아오는 함수
+ * 버전 : 0.1
+ * 작성자 : IT7
+ * @param {string} type - HTTP 요청 타입 (예: "GET", "POST", "PUT", "DELETE")
+ * @param {string} url 요청할 URL
+ * @param {FormData|Object} [dataObj={}] - 요청에 사용할 데이터 객체
+ * @param {string} [loading] - 로딩 상태 표시 여부
+ * @returns {Promise} 서버로부터 받은 응답을 Promise로 반환
+ */
+function callApiFormData(type, url, dataObj = {}, loading) {
+    return new Promise((resolve, reject) => {
+        const isFormData = dataObj instanceof FormData;
+
+        $.ajax({
+            type,
+            url,
+            data: dataObj,
+            contentType: isFormData ? false : "application/x-www-form-urlencoded; charset=UTF-8",
+            processData: !isFormData,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                if (loading !== "noLoading") {
+                    // 로딩
+                    sessionStorage.setItem("data-preloader", "disable");
+                } else {
+                    sessionStorage.setItem("data-preloader", "enable");
+                }
+            },
+            success: (result) => {
+                resolve(result);
+            },
+            error: async (xhr, status, error) => {
+                const { responseJSON } = xhr;
+                const { message, statusCode } = responseJSON;
+                const langCode = localStorage.getItem("langCode") ?? "KR";
+
+                // Status Code가 200, 300번 대가 아닐 경우 메시지를 띄운다.
+                const isStatusOk = String(statusCode).startsWith("2") || String(statusCode).startsWith("3");
+
+                if (!isStatusOk) {
+                    switch (statusCode) {
+                        case 401:
+                            const alert = await sweetAlertForReturn("로그인 정보가 일치하지 않습니다.", "", "e");
+                            if (alert) {
+                                location.href = "/admin/index.html";
+                            }
+                            break;
+                        default:
+                            if (statusCode.toString().startsWith("4")) {
+                                // 4로 시작하는 경우, message를 표시
+                                sweetAlertMessage(message, "", "e");
+                            } else {
+                                // 그 외의 경우에는 기본 메시지를 표시
+                                sweetAlertMessage("문제가 발생했습니다.", "", "e");
+                            }
+                            break;
+                    }
+
+                    resolve(false);
+                }
+
+                resolve(responseJSON);
+            },
+            complete: function (xhr, status) {
+                sessionStorage.setItem("data-preloader", "disable");
+            },
+        });
+    });
+}
+
+/**
+ * 쿠기를 저장하는 함수
+ * 버전 : 0.2
+ * 작성일 : 2023-12-05
+ * 작성자 : IT7
+ * @param {string} key
+ * @param {string} value
+ * @param {number} exp
+ */
+function setCookie(key, value, exp) {
+    const date = new Date();
+    // exp 값이 없거나 undefined인 경우 아주 미래의 날짜로 설정
+    if (typeof exp === "undefined") {
+        date.setTime(date.getTime() + 100 * 365 * 24 * 60 * 60 * 1000); // 100년 후
+    } else {
+        date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
+    }
+    document.cookie = key + "=" + value + ";expires=" + date.toUTCString() + ";path=/";
+}
+
+/**
+ * 쿠기를 가져오는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-14
+ * 작성자 : IT7
+ * @param {string} key
+ */
+function getCookie(key) {
+    const cookies = document.cookie.split(";");
+    const cookie = cookies.find((cookie) => cookie.includes(key));
+    if (cookie) {
+        const cookieValue = cookie.split("=")[1];
+        return cookieValue;
+    } else {
+        return null;
+    }
+}
+
+/**
+ * 특정 이름의 쿠키를 제거하는 함수
+ * @param {string} name - 제거할 쿠키의 이름
+ */
+function deleteCookie(name) {
+    // 현재 날짜와 시간을 가져옵니다.
+    const date = new Date();
+    // 쿠키의 유효기간을 과거로 설정합니다.
+    date.setTime(date.getTime() - 1000 * 60 * 60 * 24);
+    // 쿠키의 만료일자를 과거로 설정하여 쿠키를 제거합니다.
+    const expires = "expires=" + date.toUTCString();
+    // 쿠키를 설정합니다.
+    document.cookie = name + "=; " + expires + "; path=/";
+}
+
+/**
+ * 현재 페이지의 모든 쿠키를 삭제하는 함수
+ */
+function deleteAllCookies() {
+    // 현재 페이지에서 설정된 모든 쿠키를 가져옵니다.
+    const cookies = document.cookie.split(";");
+
+    // 각 쿠키를 순회하면서 삭제합니다.
+    cookies.forEach((cookie) => {
+        // 쿠키의 이름을 추출합니다.
+        const cookieName = cookie.split("=")[0].trim();
+        // 쿠키를 삭제합니다.
+        document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    });
+}
+
+/**
+ * textarea 높이 자동조절 해주는 함수
+ * @param {*} textarea
+ */
+function autoResize(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
+
+/**
+ * 특정 url에서 특정 parameter 값 가져오는 함수
+ * @param {*} name = parameter 이름
+ * @param {*} url = url
+ * @returns
+ */
+function getUrlParameter(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+/**
+ * sweetalert alert창 함수 (retur 없음)
+ * @param {*} title = 제목
+ * @param {*} text = 내용
+ * @param {*} icon = q: question, e: error, w: warning, s: success
+ * @returns
+ */
+function sweetAlertMessage(title, text, icon) {
+    return new Promise((resolve, reject) => {
+        if (icon == "q") icon = "question";
+        else if (icon == "e") icon = "error";
+        else if (icon == "w") icon = "warning";
+        else if (icon == "s") icon = "success";
+
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            confirmButtonText: "확   인",
+        }).then((result) => {
+            resolve(result);
+        });
+    });
+}
+
+/**
+ * sweetalert alert창 함수 (return 있음)
+ * @param {*} title = 제목
+ * @param {*} text = 내용
+ * @param {*} icon = q: question, e: error, w: warning, s: success
+ * @returns
+ */
+async function sweetAlertForReturn(title, text, icon) {
+    return new Promise((resolve, reject) => {
+        if (icon == "q") icon = "question";
+        else if (icon == "e") icon = "error";
+        else if (icon == "w") icon = "warning";
+        else if (icon == "s") icon = "success";
+
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            confirmButtonText: "확   인",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
+
+/**
+ * sweetalert confirm창 함수
+ * @param {*} title = 제목
+ * @param {*} text = 내용
+ * @param {*} icon = q: question, e: error, w: warning, s: success
+ * @returns
+ */
+async function sweetConfirm(title, text, icon) {
+    return new Promise((resolve, reject) => {
+        if (icon == "q") icon = "question";
+        else if (icon == "e") icon = "error";
+        else if (icon == "w") icon = "warning";
+        else if (icon == "s") icon = "success";
+
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: icon,
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            cancelButtonText: "닫기",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
+
+/**
+ * File 선택 시, label의 텍스트를 파일 이름으로 변경시키는 함수
+ * @param {*} inputId = input file의 id
+ * @param {*} labelSelector = label의 selector
+ * 사용법 : uploadLabel("#file_id", "label[for="file_id"]");
+ */
+function uploadLabel(inputId, labelSelector) {
+    $(document).on("change", inputId, function () {
+        var fileName = $(this).val().split("\\").pop();
+        if (fileName) {
+            $(labelSelector).text(fileName);
+        } else {
+            $(labelSelector).text("선택된 파일"); // 파일이 선택되지 않았을 때 기본 텍스트로 설정
+        }
+    });
+}
+
+/**
+ * 주어진 ID 배열을 사용하여 해당 ID를 가진 요소들을 선택하는 함수
+ * @param {Array} idArray - ID 문자열 배열
+ * @returns {Object} 선택된 요소들을 포함하는 객체
+ */
+function selectElementsById(idArray) {
+    const elements = {};
+    idArray.forEach((id) => {
+        const element = $(`#${id}`);
+        if (element.length) {
+            elements[id] = element;
+        }
+    });
+    return elements;
+}
+
+/**
+ * 데이터 Key값을 배열로 받아서, 해당 배열의 Key값들로 된 id에서 데이터를 추출하여 객체로 반환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-11
+ * 작성자 : IT7
+ * @param {array} idArray 데이터를 추출할 id 배열
+ * @returns {object} 추출한 데이터 객체
+ */
+function extractDataObject(idArray) {
+    const extractedData = {};
+
+    idArray.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            extractedData[id] = element.value;
+        }
+    });
+
+    return extractedData;
+}
+
+/**
+ * JSON의 key값을 id로 가지는 엘리먼트에 value를 바인딩하는 함수
+ * 엘리먼트가 img 태그면, src 속성에 value를 바인딩한다.
+ * 버전 : 0.1
+ * 작성일 : 2023-09-11
+ * 작성자 : IT7
+ * @param {object} dataJson JSON 데이터 객체
+ */
+function bindJsonData(dataJson) {
+    const keys = Object.keys(dataJson);
+    for (const key of keys) {
+        const element = document.getElementById(key);
+        // 요소가 없으면 다음으로 넘어간다.
+        if (!element) continue;
+
+        // 이미지일 경우, src 속성에 value를 바인딩한다.
+        // 바인딩할 src가 없을 경우, default 이미지(/assets/images/no-image.png)를 바인딩한다.
+        if (element.tagName === "IMG") {
+            element.src = dataJson[key] ?? "/assets/images/no-image.png";
+        } else if (element.tagName === "SPAN" || element.tagName === "P") {
+            element.textContent = dataJson[key];
+        } else if (element.tagName === "SELECT" && element.classList.contains("choices__input")) {
+            // Choices.js가 사용된 select 요소일 경우, Choices 인스턴스를 사용해 값 설정
+            const choicesInstance = element.choices;
+            if (choicesInstance) {
+                choicesInstance.setChoiceByValue(dataJson[key]);
+            }
+        } else {
+            element.value = dataJson[key];
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Element의 ID들을 배열로 받아, ID를 Key 값으로, Element의 value를 Value 값으로 하는 JSON 객체를 반환하는 함수
+ * Element가 img 태그면, src 속성의 값을 반환한다.
+ * 버전 : 0.1
+ * 작성일 : 2023-09-13
+ * 작성자 : IT7
+ * @param {array} idArray Element의 ID 배열
+ * @returns {object} Element의 ID를 Key 값으로, Element의 value를 Value 값으로 하는 JSON 객체
+ */
+function getElementValues(idArray) {
+    const dataObj = {};
+
+    idArray.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) {
+            if (element.tagName === "IMG") {
+                dataObj[id] = base64ToBlob(element.src);
+            } else {
+                dataObj[id] = element.value;
+            }
+        }
+    });
+
+    return dataObj;
+}
+
+/**
+ * 파라미터로 받은 파일을 임시 경로로 파일 업로드 하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-10-26
+ * 작성자 : IT7
+ * @param {file} file 파일
+ */
+function uploadTempFile(file) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("uploadFile", file);
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/back-end/00-include/uploadTempImage.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (err) {
+                console.error("Err :: " + err);
+            },
+        });
+    });
+}
+
+/**
+ * 파라미터로 받은 파일들을 임시 경로로 파일 업로드 하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-10-26
+ * 작성자 : IT7
+ * @param {file} file 파일
+ */
+function uploadMultipleTempFile(files) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append("uploadFile[]", file);
+        }
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/back-end/00-include/uploadMultipleTempImage.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (err) {
+                console.error("Err :: " + err);
+            },
+        });
+    });
+}
+
+/**
+ * 파라미터로 받은 파일들을 파일 업로드 하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-11-14
+ * 작성자 : IT7
+ * @param {file} file 파일
+ */
+function uploadMultipleFile(files) {
+    return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append("uploadFile[]", file);
+        }
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/back-end/00-include/uploadMultipleImage.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (err) {
+                console.error("Err :: " + err);
+            },
+        });
+    });
+}
+
+/**
+ * 파일 박스의 파일을 파라미터로 받아, Base64로 변환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-13
+ * 작성자 : IT7
+ * @param {File} file 파일 박스의 파일
+ * @returns {string} Base64로 변환된 파일
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onload = function () {
+            const base64 = reader.result;
+            resolve(base64);
+        };
+    });
+}
+
+/**
+ * daum 주소 api 실행 및 바인딩 함수
+ */
+function openDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            $("input[name='postal_code']").val(data.zonecode);
+            $("input[name='address_primary']").val(data.address);
+            $("input[name='sigungu']").val(data.sigungu);
+            $("input[name='sido']").val(data.sido);
+            $("input[name='sigungu_code']").val(data.sigunguCode);
+            $("input[name='dong_code']").val(data.bcode);
+            $("input[name='dong']").val(data.bname);
+            $("input[name='address_detail']").focus();
+        },
+    }).open();
+}
+
+/**
+ */
+/**
+ * choices.js init
+ * @param {*} id
+ */
+function initializeChoices(id = null) {
+    var elements = id ? [document.getElementById(id)] : document.querySelectorAll("[data-choices]");
+    var choicesInstances = [];
+
+    Array.from(elements).forEach(function (element) {
+        if (!element) return;
+
+        var config = {};
+        var attributes = element.attributes;
+
+        Array.from(attributes).forEach(function (attribute) {
+            switch (attribute.name) {
+                case "data-choices-groups":
+                    config.placeholderValue = "This is a placeholder set in the config";
+                    break;
+                case "data-choices-search-false":
+                    config.searchEnabled = false;
+                    break;
+                case "data-choices-search-true":
+                    config.searchEnabled = true;
+                    break;
+                case "data-choices-removeItem":
+                    config.removeItemButton = true;
+                    break;
+                case "data-choices-sorting-false":
+                    config.shouldSort = false;
+                    break;
+                case "data-choices-sorting-true":
+                    config.shouldSort = true;
+                    break;
+                case "data-choices-multiple-remove":
+                    config.removeItemButton = true;
+                    break;
+                case "data-choices-limit":
+                    config.maxItemCount = attribute.value;
+                    break;
+                case "data-choices-editItem-true":
+                    config.editItems = true;
+                    break;
+                case "data-choices-editItem-false":
+                    config.editItems = false;
+                    break;
+                case "data-choices-text-unique-true":
+                    config.duplicateItemsAllowed = false;
+                    break;
+                case "data-choices-text-disabled-true":
+                    config.addItems = false;
+                    break;
+            }
+        });
+
+        // 기존 Choices 인스턴스가 있는지 확인하고 파괴
+        if (element.choices) {
+            element.choices.destroy();
+        }
+
+        // 새로운 Choices 인스턴스 생성 및 저장
+        element.choices = new Choices(element, config);
+
+        if (attributes["data-choices-text-disabled-true"]) {
+            element.choices.disable();
+        }
+
+        choicesInstances.push(element.choices);
+    });
+
+    // id가 있을 경우 해당 Choices 인스턴스 반환
+    if (id) {
+        return choicesInstances[0];
+    } else {
+        // return choicesInstances;
+    }
+}
+
+/**
+ * 숫자 또는 문자열을 받아서, 3자리마다 콤마를 찍어서 반환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-12
+ * 작성자 : IT7
+ * @param {string|number} str
+ * @returns {string} 3자리마다 콤마가 찍힌 문자열
+ */
+function comma(str) {
+    str = String(str);
+    if (!str || str == "null") return "";
+
+    const parts = str.split(".");
+    const wholeNumber = parts[0];
+    const decimal = parts[1] || "";
+
+    const formattedWholeNumber = wholeNumber.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, "$1,");
+
+    return decimal.length > 0 ? formattedWholeNumber + "." + decimal : formattedWholeNumber;
+}
+
+/**
+ * 콤마 처리 되어 있는 문자열을 받아서, 콤마를 해제하여 반환하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-12
+ * 작성자 : IT7
+ * @param {string|number} str
+ * @returns {string} 콤마가 해제된 문자열
+ */
+function uncomma(str) {
+    str = String(str);
+    return str.replace(/[^\d]+/g, "");
+}
+
+/*
+ * 숫자를 문자열로 변환하고 천 단위 구분자를 추가하는 함수
+ */
+function priceToString(price) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// 전화번호에 - 붙이는 함수
+const phoneOnDash = (str) => {
+    if (typeof str !== "string") return "";
+    str = str.replace(/[^0-9]/g, "");
+    // 최대 길이를 11로 제한
+    if (str.length > 11) {
+        str = str.slice(0, 11);
+    }
+
+    if (str.indexOf("82") === 0) {
+        return str.replace(/(^82)(2|\d{2})(\d+)?(\d{4})$/, "+$1-$2-$3-$4"); // +82
+    } else if (str.indexOf("1") === 0) {
+        return str.replace(/(^1\d{3})(\d{4})$/, "$1-$2"); // 1588, 1566, 1677, ...
+    }
+    return str.replace(/(^02|^0504|^0505|^0\d{2})(\d+)?(\d{4})$/, "$1-$2-$3"); // 02/0504/0505/010/011/031
+};
+
+/*
+ * 가격을 억, 만 단위 구분하는 함수
+ */
+function formatPrice(price) {
+    // 가격(억, 만 구분)
+    const price_rest = priceToString(price % 10000); // 만 단위의 돈에서 나머지 (만 원)
+    const price_share = priceToString(Math.floor(price / 10000)); // 만 단위의 돈에서 몫 (억 원)
+    // 만 단위와 억 단위가 모두 0이면 빈 문자열 반환
+    if (price_share === "0" && price_rest === "0") {
+        return "";
+    }
+
+    // 억 단위만 출력
+    if (price_share !== "0" && price_rest === "0") {
+        return `${price_share}억`;
+    }
+
+    // 만 단위만 출력
+    if (price_share === "0" && price_rest !== "0") {
+        return `${price_rest}만`;
+    }
+
+    // 억 단위와 만 단위 모두 출력
+    return `${price_share}억 ${price_rest}만`;
+}
+
+/**
+ * 면적 m2 -> 평 변환 후 바인딩 함수
+ * @param {*} rcvValue
+ */
+function convertToPyeong(rcvValue) {
+    const pyeongValue = (rcvValue / 3.3058).toFixed(1);
+    return pyeongValue;
+}
+
+/**
+ * 면적 평 -> m2 변환 후 바인딩 함수
+ * @param {*} rcvValue
+ */
+function convertToM2(rcvValue) {
+    const squareMeterValue = (rcvValue * 3.3058).toFixed(1);
+    return squareMeterValue;
+}
+/**
+ * noUiSlider.js 에서 슬라이더 상단에 툴팁을 넣는 함수
+ * @param {*} e - noUiSlider 슬라이더 요소
+ * @param {*} c - 툴팁을 병합하는 거리 기준 (숫자)
+ * @param {*} m - 툴팁 사이의 구분자 (문자열)
+ */
+function mergeTooltips(e, c, m) {
+    // 슬라이더의 방향 및 옵션을 가져옴
+    var u = "rtl" === getComputedStyle(e).direction, // 슬라이더의 텍스트 방향이 오른쪽에서 왼쪽인지 확인
+        S = "rtl" === e.noUiSlider.options.direction, // 슬라이더의 방향 옵션이 오른쪽에서 왼쪽인지 확인
+        g = "vertical" === e.noUiSlider.options.orientation, // 슬라이더의 방향 옵션이 수직인지 확인
+        p = e.noUiSlider.getTooltips(), // 슬라이더의 툴팁 요소들을 가져옴
+        t = e.noUiSlider.getOrigins(); // 슬라이더의 핸들 요소들을 가져옴
+
+    // 모든 툴팁 요소를 해당 핸들 요소에 붙임
+    Array.from(p).forEach(function (e, i) {
+        e && t[i].appendChild(e);
+    });
+
+    // 슬라이더의 'update' 이벤트에 대한 리스너 추가
+    e &&
+        e.noUiSlider.on("update", function (e, i, t, n, l) {
+            var r = [[]], // 툴팁 인덱스 그룹 배열
+                a = [[]], // 툴팁 값 그룹 배열
+                s = [[]], // 슬라이더 값 그룹 배열
+                o = 0; // 그룹 인덱스
+
+            // 첫 번째 툴팁 초기화
+            p[0] && ((r[0][0] = 0), (a[0][0] = l[0]), (s[0][0] = e[0]));
+
+            // 각 핸들에 대해 툴팁 병합 기준을 적용
+            for (var d = 1; d < l.length; d++) {
+                (!p[d] || l[d] - l[d - 1] > c) && ((r[++o] = []), (s[o] = []), (a[o] = []));
+                p[d] && (r[o].push(d), s[o].push(e[d]), a[o].push(l[d]));
+            }
+
+            // 각 툴팁 그룹에 대해 병합 및 위치 조정
+            Array.from(r).forEach(function (e, i) {
+                for (var t = e.length, n = 0; n < t; n++) {
+                    var l,
+                        r,
+                        o,
+                        d = e[n];
+
+                    if (n === t - 1) {
+                        // 그룹의 마지막 툴팁 처리
+                        // 그룹 툴팁 위치 및 내용 계산
+                        o = 0;
+                        Array.from(a[i]).forEach(function (e) {
+                            o += 1e3 - e;
+                        });
+                        l = g ? "bottom" : "right";
+                        r = 1e3 - a[i][S ? 0 : t - 1];
+                        o = (u && !g ? 100 : 0) + o / t - r;
+
+                        // 툴팁 내용 설정 및 표시
+                        p[d].innerHTML = s[i].join(m);
+                        p[d].style.display = "block";
+                        p[d].style[l] = o + "%";
+                    } else {
+                        // 그룹의 중간 툴팁 숨기기
+                        p[d].style.display = "none";
+                    }
+                }
+            });
+        });
+}
+
+/**
+ * 파일 입력 변경 처리
+ * @param {HTMLElement} imgElement - 이미지 요소
+ * @param {File} file - 선택된 파일
+ */
+function handleFileInputChange(imgElement, file) {
+    const reader = new FileReader();
+    reader.onload = function () {
+        imgElement.src = reader.result;
+    };
+    if (file) reader.readAsDataURL(file);
+}

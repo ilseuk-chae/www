@@ -1,1 +1,379 @@
-function a0_0x1437(){const _0x1d9970=['\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20data-key=\x22t-','\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','sa_token','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22collapse\x20menu-dropdown\x22\x20id=\x22sidebar_','80IlWBtL','href','sa_cont_no','1005471iTqydN','sa_cont_token','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','split','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22nav-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20class=\x22nav-link\x20menu-link\x22\x20href=\x22#sidebar_','/admin/back/00-include/menu_info_get.php','POST','sa_name','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22nav\x20nav-sm\x20flex-column\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','1690995BrOBiT','html','127317CMWnhU','3122343WOsyMa','</span>\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','sa_per_no','.html\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','/admin/index.html','130170hPfMYx','attach','\x22>\x20','2504992PWGDEi','#navbar-nav','sa_no','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22nav-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20class=\x22nav-link\x20menu-link\x22\x20href=\x22/admin/views/','<li\x20class=\x22menu-title\x22><span\x20data-key=\x22t-menu\x22>메뉴</span></li>','1229988ASjjfh','length','map','50zVnmMS','2aRPHBx'];a0_0x1437=function(){return _0x1d9970;};return a0_0x1437();}(function(_0x31cdc8,_0x3971d0){const _0x53dd7f=a0_0x21f6,_0x12d475=_0x31cdc8();while(!![]){try{const _0x5e6fd9=parseInt(_0x53dd7f(0x179))/0x1+parseInt(_0x53dd7f(0x18c))/0x2*(-parseInt(_0x53dd7f(0x177))/0x3)+parseInt(_0x53dd7f(0x16b))/0x4*(parseInt(_0x53dd7f(0x180))/0x5)+-parseInt(_0x53dd7f(0x188))/0x6+-parseInt(_0x53dd7f(0x17a))/0x7+parseInt(_0x53dd7f(0x183))/0x8+-parseInt(_0x53dd7f(0x16e))/0x9*(-parseInt(_0x53dd7f(0x18b))/0xa);if(_0x5e6fd9===_0x3971d0)break;else _0x12d475['push'](_0x12d475['shift']());}catch(_0xa1833e){_0x12d475['push'](_0x12d475['shift']());}}}(a0_0x1437,0x4a76c),$(function(){const _0x38b4a6=a0_0x21f6;Waves['init'](),Waves[_0x38b4a6(0x181)]('.waves-effect');}));function adminUserInfo(){const _0x3bf215=a0_0x21f6,_0x5d5ddf={'sa_no':getCookie(_0x3bf215(0x185)),'sa_name':getCookie(_0x3bf215(0x175)),'sa_cont_no':getCookie(_0x3bf215(0x16d)),'sa_cont_token':getCookie(_0x3bf215(0x16f)),'sa_token':getCookie(_0x3bf215(0x18f))};for(let _0x552f5e in _0x5d5ddf){if(!_0x5d5ddf[_0x552f5e])return alert('로그인\x20정보가\x20확인되지\x20않습니다.\x20다시\x20로그인\x20해주세요.'),location[_0x3bf215(0x16c)]='/admin/index',![];}return _0x5d5ddf;}function a0_0x21f6(_0x6d566a,_0x199400){const _0x143747=a0_0x1437();return a0_0x21f6=function(_0x21f63d,_0x3145f6){_0x21f63d=_0x21f63d-0x16a;let _0x28b5ee=_0x143747[_0x21f63d];return _0x28b5ee;},a0_0x21f6(_0x6d566a,_0x199400);}async function getMenuInfo(_0x47f366){const _0x1a0f51=a0_0x21f6,_0x41179d=_0x47f366,_0x5f5a79=await callApi(_0x1a0f51(0x174),_0x1a0f51(0x173),_0x41179d);if(!_0x5f5a79)return;const _0x459442=$(_0x1a0f51(0x184)),{status:_0x2a9bd7,message:_0x43c916,responseData:_0x8e308d}=_0x5f5a79;let _0x2991dc=_0x1a0f51(0x187),_0x173901='';_0x8e308d[_0x1a0f51(0x18a)](function(_0x1424d8){const _0x5a74c7=_0x1a0f51,{menu_class:_0x2bb5e9,menu_sub_cd:_0x39f9a0,menu_title_link:_0x27074b,menu_title:_0x1cd4a7,menu_icon:_0x3c6e2f}=_0x1424d8,_0x16f6be=_0x39f9a0[_0x5a74c7(0x171)](','),_0xdb6452=_0x1cd4a7['split'](','),_0xb268cb=_0x27074b[_0x5a74c7(0x171)](',');let _0x467ebc='';if(_0x16f6be[_0x5a74c7(0x189)]!=0x1){const _0x1e38ea=_0xb268cb[0x0],_0x301e18=_0xdb6452[0x0];_0x467ebc+=_0x5a74c7(0x172)+_0x1e38ea+'\x22\x20data-bs-toggle=\x22collapse\x22\x20role=\x22button\x22\x20aria-expanded=\x22false\x22\x20aria-controls=\x22sidebar_'+_0x1e38ea+_0x5a74c7(0x170)+_0x3c6e2f+_0x5a74c7(0x18d)+_0x1e38ea+'\x22>'+_0x301e18+_0x5a74c7(0x16a)+_0x1e38ea+_0x5a74c7(0x176);for(let _0x4c4029=0x1;_0x4c4029<_0x16f6be[_0x5a74c7(0x189)];_0x4c4029++){_0x467ebc+='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22nav-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22/admin/views/'+_0x1e38ea+'/'+_0xb268cb[_0x4c4029]+'.html\x22\x20class=\x22nav-link\x22\x20data-key=\x22t-'+_0xb268cb[_0x4c4029]+_0x5a74c7(0x182)+_0xdb6452[_0x4c4029]+_0x5a74c7(0x18e);}_0x467ebc+=_0x5a74c7(0x17c);}else _0x467ebc+=_0x5a74c7(0x186)+_0x27074b+'/'+_0x27074b+_0x5a74c7(0x17e)+_0x3c6e2f+_0x5a74c7(0x18d)+_0x27074b+'\x22>'+_0x1cd4a7+_0x5a74c7(0x17b);_0x173901+=_0x467ebc;})['join'](''),_0x2991dc+=_0x173901,_0x459442[_0x1a0f51(0x178)](_0x2991dc);}function logout(){const _0x4c5d6e=a0_0x21f6;try{deleteCookie(_0x4c5d6e(0x16d)),deleteCookie(_0x4c5d6e(0x16f)),deleteCookie(_0x4c5d6e(0x175)),deleteCookie(_0x4c5d6e(0x185)),deleteCookie(_0x4c5d6e(0x17d)),deleteCookie('sa_token');}catch(_0x36ac8c){}finally{location[_0x4c5d6e(0x16c)]=_0x4c5d6e(0x17f);}}
+$(function () {
+    // waves.js 초기화
+    Waves.init();
+    Waves.attach(".waves-effect");
+});
+
+/**
+ * 쿠키에서 관리자 정보 가져오는 함수
+ * @returns
+ */
+function adminUserInfo() {
+    const userInfo = {
+        sa_no: getCookie("sa_no"),
+        sa_name: getCookie("sa_name"),
+        sa_cont_no: getCookie("sa_cont_no"),
+        sa_cont_token: getCookie("sa_cont_token"),
+        sa_token: getCookie("sa_token"),
+    };
+
+    // 모든 속성이 유효한지 확인
+    for (let key in userInfo) {
+        if (!userInfo[key]) {
+            alert("로그인 정보가 확인되지 않습니다. 다시 로그인 해주세요.");
+            location.href = "/admin/index";
+
+            return false;
+        }
+    }
+
+    return userInfo;
+}
+
+/**
+ * 메뉴 리스트 가져오는 함수
+ * @param {*} rcvUserInfo = 유저 정보
+ */
+async function getMenuInfo(rcvUserInfo) {
+    const userInfo = rcvUserInfo;
+
+    const result = await callApi("POST", "/admin/back/00-include/menu_info_get.php", userInfo);
+
+    if (!result) return;
+
+    const menu = $("#navbar-nav");
+
+    const { status, message, responseData } = result;
+
+    let menuHtml = `<li class="menu-title"><span data-key="t-menu">메뉴</span></li>`;
+
+    //let combinedHtml = "";
+    //responseData
+    //    .map(function (item) {
+    const combinedHtmlArray = responseData.map(function (item) {
+            const { menu_class, menu_sub_cd, menu_title_link, menu_title, menu_icon } = item;
+
+            // 메뉴 타이틀 배열로 변환
+            //const subCodes = menu_sub_cd.split(",");
+            //const titles = menu_title.split(",");
+            //const links = menu_title_link.split(",");
+
+            // 메뉴 타이틀, 링크, 서브코드 배열로 변환 (null/undefined 처리 및 공백 제거, 빈 문자열 제거)
+            const subCodes = menu_sub_cd ? menu_sub_cd.split(",").map(s => s.trim()).filter(s => s) : [];
+            const titles = menu_title ? menu_title.split(",").map(s => s.trim()).filter(s => s) : [];
+            const links = menu_title_link ? menu_title_link.split(",").map(s => s.trim()).filter(s => s) : [];
+
+            let html = "";
+            // 하위 항목이 있는 메뉴는 하위 메뉴 생성
+            // titles 배열의 길이가 1보다 크면 하위 메뉴가 있는 것으로 간주
+            //if (subCodes.length != 1) {
+            if (titles.length > 1) {
+                // 첫 번째 링크 값을 사용
+                //const firstLink = links[0];
+                //const firstTitle = titles[0];
+                // 첫 번째 항목은 상위 메뉴 (예: "제휴/제안 관리")
+                const firstLink = links.length > 0 ? links[0] : '';
+                const firstTitle = titles.length > 0 ? titles[0] : '';
+
+                if (!firstLink) { // 링크가 없으면 해당 메뉴 항목 생성 건너뛰기
+                    //console.warn("상위 메뉴 링크가 없어 해당 메뉴 항목을 건너뜁니다:", item);
+                    return "";
+                }
+
+                //html += `
+                //<li class="nav-item">
+                //    <a class="nav-link menu-link" href="#sidebar_${firstLink}" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebar_${firstLink}">
+                //        ${menu_icon}
+                //        <span data-key="t-${firstLink}">${firstTitle}</span>
+                //    </a>
+                //    <div class="collapse menu-dropdown" id="sidebar_${firstLink}">
+                //        <ul class="nav nav-sm flex-column">
+                //`;
+                //  '제휴/제안 관리' 상위 메뉴 뒤에 span 추가 
+                 // 상위 메뉴에 개수 표시 span 추가 (ID 부여)
+                 // 상위 메뉴 뒤에 ID가 부여된 span 추가 
+                const topLevelCountSpan = (firstTitle === '제휴/제안 관리') ?
+                    `<span class="menu-count-badge" id="count-for-${firstLink}"></span>` : '';
+                html += `
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebar_${firstLink}" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebar_${firstLink}">
+                        ${menu_icon || ''}
+                        <span data-key="t-${firstLink}">${firstTitle}</span>
+                        ${topLevelCountSpan} 
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebar_${firstLink}">
+                        <ul class="nav nav-sm flex-column">
+                 `;
+
+                // 서브 메뉴 항목 추가
+                // 나머지 항목은 하위 메뉴 (인덱스 1부터 시작)
+                // 예: titles[1] = "제휴 관리", titles[2] = "제안 관리"
+                //for (let i = 1; i < subCodes.length; i++) {
+                //    // 첫 항목은 이미 사용되었으므로 1부터 시작
+                //    html += `
+                //    <li class="nav-item">
+                //        <a href="/admin/views/${firstLink}/${links[i]}.html" class="nav-link" data-key="t-${links[i]}"> ${titles[i]} </a>
+                //    </li>
+                //    `;
+                //}
+
+                for (let i = 1; i < titles.length; i++) {
+                    const subLink = links.length > i ? links[i] : '';
+                    const subTitle = titles.length > i ? titles[i] : '';
+    
+                     // 하위 메뉴 링크가 유효한 경우에만 HTML 생성
+                    if (subLink) { // 링크가 있어야 유효한 메뉴 항목
+                       // 하위 메뉴에 개수 표시 span 추가 (ID 부여)
+                       const subMenuCountSpan = ((subTitle === '제휴 관리' && subLink === 'col_partnership') || (subTitle === '제안 관리' && subLink === 'col_proposal')) ?
+                            `<span class="menu-count-badge" id="count-for-${subLink}"></span>` : ''; // 링크를 ID의 일부로 사용
+
+                       html += `
+                        <li class="nav-item">
+                            <a href="/admin/views/${firstLink}/${subLink}.html" class="nav-link" data-key="t-${subLink}">
+                                ${subTitle}
+                                ${subMenuCountSpan} 
+                            </a>
+                        </li>
+                        `;
+                    } else {
+                         console.warn(`상위 메뉴 "${firstTitle}"의 ${i}번째 하위 메뉴 링크가 없어 건너뜁니다:`, item);
+                    }
+                }
+
+                // HTML 구조 마무리
+                html += `
+                        </ul>
+                    </div>
+                </li>
+                `;
+            // } else {
+            //     // 하위 항목이 없는 메뉴는 하위 메뉴 생성X
+            //     html += `
+            //    <li class="nav-item">
+            //        <a class="nav-link menu-link" href="/admin/views/${menu_title_link}/${menu_title_link}.html">
+            //            ${menu_icon}
+            //            <span data-key="t-${menu_title_link}">${menu_title}</span> 
+            //        </a>
+            //    </li>
+            //    `;
+            //}
+            } else if (titles.length === 1) { // 하위 메뉴가 없는 단일 메뉴 항목 처리 (기존 로직 유지)
+                const singleLink = links.length > 0 ? links[0] : '';
+                const singleTitle = titles.length > 0 ? titles[0] : '';
+
+                // 단일 메뉴 링크가 유효한 경우에만 HTML 생성
+                // 만약 단일 메뉴 항목이 '제휴 관리' 또는 '제안 관리'일 경우 (참고용) 
+                if (singleLink) { // 링크가 있어야 유효한 메뉴 항목
+                     // 단일 메뉴에 개수 표시 span 추가 (ID 부여)
+                    const singleMenuCountSpan = ((singleTitle === '제휴 관리' && singleLink === 'col_partnership') || (singleTitle === '제안 관리' && singleLink === 'col_proposal')) ?
+                        `<span class="menu-count-badge" id="count-for-${singleLink}"></span>` : ''; // 링크를 ID의 일부로 사용
+                    html += `
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="/admin/views/${singleLink}/${singleLink}.html">
+                                ${menu_icon || ''}
+                                <span data-key="t-${singleLink}">${singleTitle}</span>
+                                ${singleMenuCountSpan} 
+                            </a>
+                        </li>
+                    `;
+                } else {
+                    console.warn("단일 메뉴 링크가 없어 해당 메뉴 항목을 건너뜁니다:", item);
+                }
+            }
+            // titles.length가 0인 경우는 HTML을 생성하지 않음
+            return html;
+
+            // 생성된 HTML을 합침
+            //combinedHtml += html;
+        })
+    //    .join(""); // join을 사용하여 배열을 하나의 문자열로 합침
+
+    // 생성된 모든 HTML을 하나의 문자열로 합침
+    menuHtml += combinedHtmlArray.join("");
+    //menuHtml += combinedHtml;
+
+    // 최종적으로 합쳐진 HTML을 원하는 요소에 삽입
+    menu.html(menuHtml);
+    updateMenuCounts(userInfo) 
+    
+}
+
+// --- 개수를 가져와서 업데이트하는 별도의 JavaScript 함수 예시 ---
+async function updateMenuCounts(rcvUserInfo) {
+    const userInfo = rcvUserInfo;
+    
+    const counts = {
+        'col_manage': 0, // '제휴/제안 관리' 전체 개수 (필요하다면)
+        'col_partnership': 0, // '제휴 관리' 개수
+        'col_proposal': 0 // '제안 관리' 개수
+    };
+    // 1. 각 메뉴 항목에 해당하는 개수를 서버 등에서 비동기적으로 가져옵니다.
+    //console.log("updateMenuCounts 시작: 메뉴별 개수 가져오기");
+    // *** 중요: 서버에 이 경로로 요청을 받아 view_count가 0인 proposal_master 행 수를 세어 JSON 형태로 반환하는 스크립트가 필요합니다. ***
+    const apiEndpointForProposalCount = "/admin/back/06-collaboration/proposal_count.php"; 
+    
+    // 서버에 전달할 데이터 (예: 사용자 인증 정보 등, 필요 없다면 빈 객체 {})
+    let requestData = {}; // 서버 스크립트에서 특정 조건이 필요하다면 추가
+    try {
+        // callApi 함수를 사용하여 서버 API 호출
+        const result = await callApi("POST", apiEndpointForProposalCount, userInfo);
+
+        // API 응답 확인 및 데이터 추출
+        //if (result && result.message === 'success' && result.responseData !== undefined) {
+        if (result && typeof result === 'object' && result.statusCode === 200 && result.responseData !== undefined) {
+            // 서버 응답 형식에 따라 개수 정보를 추출하는 방식을 수정해야 합니다.
+            const unseenProposalCount = result.responseData.unseenCount;
+
+            if (unseenProposalCount !== undefined && unseenProposalCount !== null) {
+                //console.log(`서버 API로부터 가져온 '제안 관리' (col_proposal) 개수: ${unseenProposalCount}`);
+                counts['col_proposal']= unseenProposalCount;
+            } else {
+                 //console.error("API 응답 형식 오류: responseData에 예상된 개수 정보가 없습니다.", result.responseData);
+            }
+
+        } else {
+            //console.error("API 호출 실패 또는 응답 상태 오류:", result);
+            //console.error("서버 메시지:", result ? result.message : "응답 메시지 없음");
+        }
+
+    } catch (error) {
+        //console.error("'제안 관리' 개수 API 호출 중 예외 발생:", error);
+    }
+    //console.log("updateMenuCounts 시작: 메뉴별 개수 가져오기");
+    // *** 중요: 서버에 이 경로로 요청을 받아 view_count가 0인 proposal_master 행 수를 세어 JSON 형태로 반환하는 스크립트가 필요합니다. ***
+    const apiEndpointForPartnershipCount = "/admin/back/06-collaboration/partnership_count.php"; 
+    
+    // 서버에 전달할 데이터 (예: 사용자 인증 정보 등, 필요 없다면 빈 객체 {})
+    requestData = {}; // 서버 스크립트에서 특정 조건이 필요하다면 추가
+    try {
+        // callApi 함수를 사용하여 서버 API 호출
+        const result = await callApi("POST", apiEndpointForPartnershipCount, userInfo);
+
+        // API 응답 확인 및 데이터 추출
+        //if (result && result.message === 'success' && result.responseData !== undefined) {
+        if (result && typeof result === 'object' && result.statusCode === 200 && result.responseData !== undefined) {
+            // 서버 응답 형식에 따라 개수 정보를 추출하는 방식을 수정해야 합니다.
+            const unseenPartnershipCount = result.responseData.unseenCount;
+
+            if (unseenPartnershipCount !== undefined && unseenPartnershipCount !== null) {
+                //console.log(`서버 API로부터 가져온 '제휴 관리' (col_partnership) 개수: ${unseenPartnershipCount}`);
+                counts['col_partnership']= unseenPartnershipCount;
+            } else {
+                 //console.error("API 응답 형식 오류: responseData에 예상된 개수 정보가 없습니다.", result.responseData);
+            }
+
+        } else {
+            //console.error("API 호출 실패 또는 응답 상태 오류:", result);
+            //console.error("서버 메시지:", result ? result.message : "응답 메시지 없음");
+        }
+
+    } catch (error) {
+        //console.error("'제휴 관리' 개수 API 호출 중 예외 발생:", error);
+    }
+    counts['col_manage'] = counts['col_proposal'] + counts['col_partnership']
+
+    // 2. 가져온 개수를 바탕으로 해당하는 span 요소를 찾아 내용을 업데이트합니다.
+
+    // '제휴/제안 관리' 상위 메뉴 개수 업데이트
+    const $topLevelSpan = $('#count-for-col_manage'); // 고유 ID로 선택
+    if ($topLevelSpan.length && counts['col_manage'] !== undefined) {
+         if (counts['col_manage'] > 0) {
+            $topLevelSpan.text(counts['col_manage']);
+            $topLevelSpan.show(); // 개수가 0보다 크면 보이게 함
+            $topLevelSpan[0].offsetHeight; 
+            
+            $topLevelSpan.css({
+                'display': 'inline-block',
+                'min-width': '1.5em',
+                'height': '1.5em',
+                'line-height': '1.5em',
+                'border-radius': '50%',
+                'background-color': '#dc3545', // 실제 CSS 값 사용
+                'color': 'white',
+                'text-align': 'center',
+                'font-size': '0.8em',
+                'margin-left': '0.5em',
+                'padding': '0 0.2em',
+                'box-sizing': 'border-box',
+                'vertical-align': 'middle'
+            });
+            $topLevelSpan.css('display');
+         } else {
+            $topLevelSpan.hide(); // 개수가 0이면 숨김
+         }
+    }
+
+     // '제휴 관리' 서브 메뉴 개수 업데이트
+    const $partnershipSpan = $('#count-for-col_partnership'); // 고유 ID로 선택
+     if ($partnershipSpan.length && counts['col_partnership'] !== undefined) {
+         if (counts['col_partnership'] > 0) {
+            $partnershipSpan.text(counts['col_partnership']);
+            $partnershipSpan.show();
+            $partnershipSpan[0].offsetHeight; 
+            
+            $partnershipSpan.css({
+                'display': 'inline-block',
+                'min-width': '1.5em',
+                'height': '1.5em',
+                'line-height': '1.5em',
+                'border-radius': '50%',
+                'background-color': '#dc3545', // 실제 CSS 값 사용
+                'color': 'white',
+                'text-align': 'center',
+                'font-size': '0.8em',
+                'margin-left': '0.5em',
+                'padding': '0 0.2em',
+                'box-sizing': 'border-box',
+                'vertical-align': 'middle'
+            });
+            $partnershipSpan.css('display');
+         } else {
+            $partnershipSpan.hide();
+         }
+    }
+
+    // '제안 관리' 서브 메뉴 개수 업데이트
+    const $proposalSpan = $('#count-for-col_proposal'); // 고유 ID로 선택
+    if ($proposalSpan.length && counts['col_proposal'] !== undefined) {
+         if (counts['col_proposal'] > 0) {
+            $proposalSpan.text(counts['col_proposal']);
+            $proposalSpan.show();
+            $proposalSpan[0].offsetHeight; 
+            
+            $proposalSpan.css({
+                'display': 'inline-block',
+                'min-width': '1.5em',
+                'height': '1.5em',
+                'line-height': '1.5em',
+                'border-radius': '50%',
+                'background-color': '#dc3545', // 실제 CSS 값 사용
+                'color': 'white',
+                'text-align': 'center',
+                'font-size': '0.8em',
+                'margin-left': '0.5em',
+                'padding': '0 0.2em',
+                'box-sizing': 'border-box',
+                'vertical-align': 'middle'
+            });
+            $proposalSpan.css('display');
+         } else {
+            $proposalSpan.hide();
+         }
+    }
+
+    
+}
+
+function logout() {
+    try {
+        deleteCookie("sa_cont_no");
+        deleteCookie("sa_cont_token");
+        deleteCookie("sa_name");
+        deleteCookie("sa_no");
+        deleteCookie("sa_per_no");
+        deleteCookie("sa_token");
+    } catch (error) {
+    } finally {
+        location.href = "/admin/index.html";
+    }
+}

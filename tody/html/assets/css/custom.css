@@ -5,3 +5,21 @@ Website: https://themesbrand.com/
 Contact: support@themesbrand.com
 File: Custom Css File
 */
+
+/* --- CSS 스타일 예시 (.menu-count-badge 클래스) ---*/
+
+.menu-count-badge {
+    display: inline-block;
+    min-width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    border-radius: 50%;
+    background-color: #dc3545; 
+    color: white;
+    text-align: center;
+    font-size: 0.8em;
+    margin-left: 0.5em;
+    padding: 0 0.2em;
+    box-sizing: border-box;
+    vertical-align: middle; 
+}
