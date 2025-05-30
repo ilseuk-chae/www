@@ -194,6 +194,7 @@ async function getMenuInfo(rcvUserInfo) {
 
     // 최종적으로 합쳐진 HTML을 원하는 요소에 삽입
     menu.html(menuHtml);
+    
     updateMenuCounts(userInfo) 
     
 }
@@ -361,7 +362,8 @@ async function updateMenuCounts(rcvUserInfo) {
          }
     }
 
-    
+    const activeLink = $("#navbar-nav").find("a.nav-link.active")[0];
+    openParentMenus(activeLink)
 }
 
 function logout() {
@@ -376,4 +378,49 @@ function logout() {
     } finally {
         location.href = "/admin/index.html";
     }
+}
+
+/**
+ * 주어진 메뉴 링크 요소의 부모 .collapse.menu-dropdown 메뉴를 모두 펼칩니다.
+ * @param {Element} activeLinkElement - 현재 활성화된 a.nav-link DOM 요소
+ */
+function openParentMenus(activeLinkElement) {
+    if (!activeLinkElement) {
+        //console.warn("openParentMenus: 활성화된 링크 요소가 없습니다.");
+        return;
+    }
+     console.log("openParentMenus 시작: 부모 메뉴 펼치기", activeLinkElement);
+
+    // 현재 활성화된 링크의 가장 가까운 부모 .collapse.menu-dropdown 요소를 찾습니다.
+    let parentCollapse = activeLinkElement.closest('.collapse.menu-dropdown');
+
+    // 부모 collapse 요소가 있는 동안 반복합니다.
+    while (parentCollapse) {
+        console.log("openParentMenus: 다음 부모 collapse 찾음", parentCollapse);
+        // Bootstrap의 'show' 클래스를 추가하여 메뉴를 펼칩니다.
+        parentCollapse.classList.add('show');
+
+        // 이 collapse를 제어하는 토글러 (보통 이전 형제 요소인 a.nav-link)를 찾습니다.
+        const toggler = parentCollapse.previousElementSibling;
+        if (toggler && toggler.classList.contains('menu-link')) {
+             console.log("openParentMenus: 해당 collapse의 토글러 찾음", toggler);
+            // 토글러에도 'active' 클래스를 추가하고 aria-expanded를 true로 설정합니다.
+            toggler.classList.add('active');
+            toggler.setAttribute('aria-expanded', 'true');
+        } else {
+             console.warn("openParentMenus: 해당 collapse의 토글러(menu-link)를 찾을 수 없습니다.", parentCollapse);
+        }
+
+        // 현재 collapse 요소의 부모 li 요소를 찾습니다.
+        const parentLi = parentCollapse.parentElement;
+        if (parentLi) {
+            // 이 부모 li의 상위 조상 중에서 다음 .collapse.menu-dropdown 요소를 찾습니다.
+            parentCollapse = parentLi.closest('.collapse.menu-dropdown');
+        } else {
+            // 더 이상 부모 li가 없으면 반복을 종료합니다.
+            parentCollapse = null;
+             console.log("openParentMenus: 더 이상 부모 li가 없습니다.");
+        }
+    }
+     console.log("openParentMenus 종료");
 }

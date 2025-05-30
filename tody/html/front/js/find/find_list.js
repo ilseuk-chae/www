@@ -228,6 +228,14 @@ function initializeDataTable() {
             }
         }
         */
+       // *** DataTables 초기화 완료 후 실행될 코드 추가 ***
+       initComplete: function(settings, json) {
+        // 테이블 헤더에 구분선 추가
+        // DataTables가 완전히 그려진 후에 실행되므로 th 요소가 존재합니다.
+        $("#find_results_table_wrapper .dt-scroll-head thead th").css("border-bottom", "2px solid #999");
+        
+        }
+        // *** initComplete 옵션 끝 ***
     });
 
     if (table) {
@@ -237,23 +245,6 @@ function initializeDataTable() {
     }
     //console.log("initializeDataTable function finished."); // 함수 종료 로그
 
-    // initializeDataTable 함수 내부 마지막 부분
-    //console.log("Checking ajax setting immediately after initialization:");
-    //if ($.fn.DataTable.isDataTable("#find_results_table")) {
-    //    const tempTable = $("#find_results_table").DataTable();
-    //    try {
-    //        const tempAjaxSetting = tempTable.settings()[0].ajax;
-    //        console.log("Ajax setting right after init:", tempAjaxSetting);
-    //        console.log("Type of ajax setting right after init:", typeof tempAjaxSetting);
-    //    } catch(e) {
-    //        console.error("Error checking ajax setting right after init:", e);
-    //    }
-    //} else {
-    //    console.error("DataTable instance not found right after init!");
-    //}
-   
-    // 테이블 헤더에 구분선 추가
-    $("#find_results_table thead th").css("border-bottom", "2px solid #ced4da");
 }
 
 /**

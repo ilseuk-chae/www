@@ -11,6 +11,10 @@ $(document).ready(async function () {
  * DataTables 초기화
  */
 function initializeDataTable() {
+    // 기존 DataTables 인스턴스가 있다면 파괴
+    if ($.fn.DataTable.isDataTable("#ajax-datatables")) {
+        $("#ajax-datatables").DataTable().destroy();
+    }
     let table = new DataTable("#ajax-datatables", {
         language: {
             url: "/assets/libs/datatables/lang/ko.json",
@@ -18,7 +22,6 @@ function initializeDataTable() {
         initComplete: function () {
             let api = this.api();
 
-            // ====================================================================================================
             // 검색박스 및 선택박스 생성 시작 =====================================================================
             $(".dt-search").addClass("input-group");
             let searchBox = $(".dt-search input").addClass("form-control form-control-sm");
@@ -48,8 +51,18 @@ function initializeDataTable() {
                     api.search(searchTerm).draw();
                 }
             });
-            // 검색박스 및 선택박스 생성 끝 =====================================================================
-            // ====================================================================================================
+            // 검색박스 및 선택박스 생성 끝 
+            // DataTables 렌더링 완료 후 툴팁 초기화
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        },
+        // 각 행이 생성될 때 호출
+        createdRow: function (row, data, dataIndex) {
+            // TR 요소에 data-no 속성 추가 (loadTableData에서 넘겨받은 data.no 사용)
+            if (data && data.no !== undefined) {
+                $(row).attr('data-no', data.no);
+            }
+             // (선택 사항) 마우스 커서 변경 등 다른 row 스타일링
+            // $(row).css('cursor', 'pointer');
         },
         scrollX: true, // 가로 스크롤 활성화
         processing: true, // 처리 중 메시지 활성화
@@ -65,7 +78,7 @@ function initializeDataTable() {
             { data: "proposal_type", title: "제안종류" },
             { data: "title", title: "제목" },
             { data: "reg_date", title: "등록일자" },
-            { data: "management", title: "관리", orderable: false, searchable: false },
+            { data: "management", title: "확인여부", orderable: false, searchable: false }, 
         ],
         // rowReorder: {
         //     selector: "td:nth-child(1)", // 첫 번째 열을 기준으로 row 재정렬
@@ -113,6 +126,28 @@ function loadTableData(table, callback) {
 
                 // 기타메모 5자 이내만 보여지도록
                 // const shortNote = item.additional_note.length > 5 ? item.additional_note.substring(0, 5) + "..." : item.additional_note;
+               
+                // === management 컬럼의 버튼 안에 들어갈 내용을 결정합니다 ===
+                let buttonContent = '';
+                if (item.view_count > 0) {
+                    // view_count가 0보다 크면 아이콘 사용
+                    //buttonContent = '<i class="ri-eye-fill"></i>';
+                    buttonContent = '<span style="color: black;">읽음</span>';
+                } else {
+                    // view_count가 0이면 하늘색 "New" 텍스트 사용
+                    buttonContent = '<span style="color: blue;">신규</span>';
+                }
+                // =======================================================
+
+                // === 결정된 내용을 사용하여 management 컬럼의 최종 HTML을 생성합니다 ===
+                const managementHtml = `
+                <div class="dropdown d-inline-block">
+                    <a href="/admin/views/col_manage/popup_proposal.html?no=${item.no}" type="button" class="modal-open-btn btn btn-soft-danger btn-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="상세" data-no="${item.no}">
+                        ${buttonContent}  <!-- 여기에 위에서 결정된 내용을 삽입 -->
+                    </a>
+                </div>`;
+                // ==================================================================
+
 
                 return {
                     // no: reversedOrder,
@@ -120,29 +155,123 @@ function loadTableData(table, callback) {
                     proposal_type: item.proposal_type,
                     title: `<a href="/admin/views/col_manage/popup_proposal.html?no=${item.no}" class="modal-open-btn link-dark link-body-emphasis link-offset-2 text-decoration-underline link-underline-opacity-25 link-underline-opacity-75-hover">${item.title}</a>`,
                     reg_date: item.reg_date,
-                    management: `
-                    <div class="dropdown d-inline-block">
-                        <a href="/admin/views/col_manage/popup_proposal.html?no=${item.no}" type="button" class="modal-open-btn btn btn-soft-danger btn-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="상세">
-                            <i class="ri-eye-fill"></i>
-                        </a>
-                    </div>`,
+                    //view_count: item.view_count,
+                    management: managementHtml, // 결정된 HTML 문자열을 management 속성에 할당,
                 };
+                
             });
 
             if (callback) {
                 callback({ data: formattedData });
             } else {
-                table.clear().rows.add(formattedData).draw();
-            }
-
-            // 툴팁 초기화
-            $('[data-bs-toggle="tooltip"]').tooltip();
+                // table 객체가 DataTables 인스턴스라고 가정하고 데이터 로드
+                // DataTables 초기화 시 ajax 옵션을 사용하고 있다면 이 else 블록은 사용되지 않을 수 있습니다.
+                // DataTables 초기화 코드에서 ajax 옵션을 통해 loadTableData의 콜백을 사용하는 방식이 더 일반적입니다.
+                if (table && typeof table.clear === 'function' && typeof table.rows === 'function' && typeof table.draw === 'function') {
+                    table.clear().rows.add(formattedData).draw();
+                } else {
+                    console.error("DataTables table object is not valid or not initialized.");
+                }
+            }            
         })
         .catch((error) => {
             console.error("AJAX 요청 중 오류 발생:", error);
             if (callback) callback({ data: [] });
         });
 }
+
+
+// 상세 내용을 보여주는 모달의 실제 셀렉터 (클래스 사용)
+const proposalDetailModalSelector = '.modal-pop-wrapper'; // 필요시 사용
+
+// DataTables 테이블 본문(#ajax-datatables tbody) 내의 모달 열기 버튼(.modal-open-btn) 클릭 이벤트 리스너
+$('#ajax-datatables tbody').on('click', 'a.modal-open-btn', async function(e) {
+    // e.preventDefault(); // Bootstrap data-bs-toggle="modal" 사용시 필요 없을 수 있습니다.
+
+    const clickedLink = $(this);
+    const proposalNo = clickedLink.data('no');
+    
+    // proposal_detail 함수 호출 (데이터 로딩, 조회수 증가 및 모달 열기 포함)
+    await proposal_detail(proposalNo);
+   
+});
+
+// *** 상세 모달 닫힘 이벤트를 문서 전체에 위임하여 감지하는 리스너 ***
+// 이 리스너는 DataTables 초기화 코드나 loadTableData 함수 외부에, 문서 로딩이 완료된 후에 추가합니다.
+$(document).on('hidden.bs.modal', function (event) {
+    const $closedModal = $(event.target); // 닫힌 모달 요소
+    
+    // 닫힌 모달이 우리가 찾는 상세 모달(.modal-pop-wrapper)인지 확인
+    if ($closedModal.hasClass('modal-pop-wrapper')) {
+        
+        // *** 닫힌 모달 요소의 data-url 속성에서 항목 ID를 가져와 파싱합니다 ***
+        const dataUrl = $closedModal.data('url');
+        
+        let proposalNo = null;
+        if (dataUrl) {
+            // data-url 문자열에서 'no' 파라미터 값을 파싱
+            try {
+                // data-url은 '/path?param=value...' 형태일 것으로 예상되므로, 기본 URL 추가
+                const fullUrl = 'http://dummyurl.com' + dataUrl; // 기준 URL 추가 (파싱용)
+                const url = new URL(fullUrl);
+                proposalNo = url.searchParams.get('no');
+                // DataTables data-no는 문자열일 가능성이 높으므로 숫자로 변환은 선택 사항
+                // proposalNo = parseInt(proposalNo, 10);
+            } catch (e) {
+                console.error("Error parsing proposalNo from data-url:", dataUrl, e); // --- 오류 로그 추가 ---
+            }
+        }
+        
+
+        // 파싱한 proposalNo 값이 유효한지 확인
+        if (proposalNo !== null && proposalNo !== undefined) { // null 또는 undefined가 아닌 경우 유효
+             
+            // DataTables 테이블의 해당 row와 cell을 찾아 업데이트 로직 수행
+            const table = $('#ajax-datatables').DataTable(); // DataTables 인스턴스 가져오기
+
+            // data-no 속성을 사용하여 DataTables에서 해당 row(`<tr>` 요소) 찾기
+            const rowNode = table.row(`[data-no="${proposalNo}"]`).node();
+            
+            if (rowNode) {
+                // 해당 rowNode (TR 요소)에서 "관리" 컬럼에 해당하는 셀(`<td>`) 찾기
+                // initializeDataTable 코드 기준 'management' 컬럼은 인덱스 4
+                const managementColumnIndex = 4; // <<< 실제 인덱스 확인!
+
+                // rowNode 내에서 <td> 요소들을 찾고, 인덱스로 특정 셀 선택
+                const managementCell = $(rowNode).find('td').eq(managementColumnIndex);
+                
+                if (managementCell.length > 0) {
+                     // "관리" 컬럼에 들어갈 아이콘 버튼 HTML 문자열 생성
+                     // href와 data-no에 proposalNo 값을 다시 넣어주는 것이 중요
+                     const eyeIconHtml = `
+                        <div class="dropdown d-inline-block">
+                            <a href="/admin/views/col_manage/popup_proposal.html?no=${proposalNo}" type="button" class="modal-open-btn btn btn-soft-danger btn-icon waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="상세" data-no="${proposalNo}">
+                                <span style="color: black;">읽음</span>
+                            </a>
+                        </div>`;
+
+                    // 해당 셀의 HTML 내용을 생성한 아이콘 HTML로 변경
+                    managementCell.html(eyeIconHtml);
+                    
+                    // 새로 추가/변경된 요소에 대해 툴팁 다시 초기화
+                    managementCell.find('[data-bs-toggle="tooltip"]').tooltip();
+                    
+                    // (선택 사항) DataTables 내부 데이터 모델의 view_count 값 업데이트
+                    const rowData = table.row(rowNode).data();
+                    
+                    if (rowData && rowData.view_count === 0) {
+                         rowData.view_count = 1; // '확인했음'을 의미하는 값 (0이 아니게)으로 변경
+                         // table.row(rowNode).data(rowData); // 내부 데이터 업데이트
+                    }
+                } else {                     
+                 }
+            } else { 
+            }
+        } else { // proposalNo 파싱에 실패한 경우
+        }
+    } else {
+    }
+});
 
 /**
  * 상세정보 가져오는 함수
@@ -203,7 +332,7 @@ function countUp(viewNo) {
 
                 // 서버 응답의 statusCode를 확인하여 성공/실패 로직 분기
                 if (statusCode === 200) {
-                    console.log("countUp API 호출 성공:", message, responseData);
+                    //console.log("countUp API 호출 성공:", message, responseData);
                     // 성공적으로 처리되었을 때 필요한 로직 수행
                     // 예: 메뉴의 전체 제안 개수 뱃지를 새로고침
                     updateMenuCounts(adminInfo); // 필요하다면 이 함수를 호출하여 메뉴 개수 업데이트

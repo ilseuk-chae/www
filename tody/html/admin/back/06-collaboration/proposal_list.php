@@ -19,7 +19,7 @@ try {
             a.title,
             a.content,
             DATE_FORMAT(a.reg_date, '%Y-%m-%d') AS reg_date,
-
+            a.view_count,
             b.type_name AS proposal_type
     
         FROM proposal_master AS a

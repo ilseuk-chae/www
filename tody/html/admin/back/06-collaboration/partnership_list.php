@@ -18,7 +18,8 @@ try {
             a.idx AS no,
             a.title,
             a.content,
-            DATE_FORMAT(a.reg_date, '%Y-%m-%d') AS reg_date
+            DATE_FORMAT(a.reg_date, '%Y-%m-%d') AS reg_date,
+            a.view_count
     
         FROM partnership_master AS a
         
