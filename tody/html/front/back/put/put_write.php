@@ -165,9 +165,9 @@ try {
     while ($row = mysqli_fetch_assoc($result2)) {
         $array = [
             'phone' => $row['mobile'],
-            'subject' => "[토디] 내놓습니다 등록 알림",
+            'subject' => "[토디] 팝니다 등록 알림",
             'emtitle' => "",
-            'message' => "[토디] '내놓습니다'  등록 알림\n설정하신 지역의 '내놓습니다' 게시글이 등록되었습니다.\n\n{$detail}",
+            'message' => "[토디] '팝니다'  등록 알림\n설정하신 지역의 '팝니다' 게시글이 등록되었습니다.\n\n{$detail}",
             'button' => ''
         ];
         $paramList[] = $array;
