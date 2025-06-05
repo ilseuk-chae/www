@@ -1778,7 +1778,7 @@ function printDiv(divId) {
     printWindow.document.write(`
         <html>
         <head>
-            <title>원스톱 부동산 종합 플랫폼 서비스 토디</title>
+            <title>토디,원스톱 부동산 종합 플랫폼 서비스,tody</title>
             <style>
                 /* 인쇄될 페이지의 기본 스타일 */
                 body { 

@@ -1,23 +1,38 @@
 // layout 관련 js
 $(function () {
     var currentPage = window.location.pathname;
-    console.log(currentPage);
-
-    // header
+    
+    // 이 호출은 DOMContentLoaded 리스너의 fetch 완료를 대기한 후 실행됩니다.
     loadHeader(`/front/views/00-include/header.html`).done(function () {
-        relatedWebsite();
+        
+        relatedWebsite(); // 헤더 로드 및 초기화 완료 후 relatedWebsite 실행 (기존 위치 유지)
+        
+    }).fail(function(error) {
+        console.error("loadHeader().fail() 실행됨:", error);
+        
     });
 
+    // loadMobile 및 footer 로드는 기존대로 유지
     loadMobile("/front/views/00-include/mobile.html", ".mobile").done(function () {
+        
         if (currentPage === "/front/views/realPrice/realPrice.html" || currentPage === "/front/views/sell/sell.html") {
-            // $(".mobile-footer").remove();
-            $("#mobileSearchOpen").addClass("show");
+             // $(".mobile-footer").remove();
+             // #mobileSearchOpen은 모바일 HTML에 있을 것이므로 해당 스코프에서 찾는 것이 안전
+             const mobileElement = document.querySelector('.mobile');
+             if (mobileElement) {
+                $(mobileElement).find("#mobileSearchOpen").addClass("show");
+             } else {
+                 $("#mobileSearchOpen").addClass("show"); // Fallback
+             }
         }
-        relatedWebsite();
+        
+    }).fail(function(error) {
+         console.error("loadMobile().fail() 실행됨:", error);
     });
 
     // footer
     loadMobile("/front/views/00-include/footer.html", ".footer").done(function () {
+        
         policyTotal();
 
         // 모달 - 이용절차안내 //
@@ -40,7 +55,14 @@ $(function () {
         });
         $("#terms").iziModal("setTop", 70);
         $("#terms").iziModal("setBottom", 70);
-    });
+        
+    }).fail(function(error) {
+        console.error("loadFooter().fail() 실행됨:", error);
+   });
+    
+
+});
+
 
     // 탭 변경 시 해시 업데이트
     // $(document).on("click", "#terms .nav-link", function () {
@@ -52,44 +74,70 @@ $(function () {
     //     }
     // });
     // $("footer").load("/front/views/00-include/footer.html");
-});
 
+const headerBaseHtmlLoadedDeferred = $.Deferred();
 /**
  * header loader 함수
  * @param {*} file
  * @returns
  */
 function loadHeader(file) {
-    var deferred = $.Deferred();
+    //var deferred = $.Deferred();
+    var dynamicContentAndEventsDeferred = $.Deferred();
+    
+    // DOMContentLoaded 리스너가 헤더 기본 HTML 로드 및 삽입을 완료할 때까지 대기합니다.
+    headerBaseHtmlLoadedDeferred.promise().done(function() {
+       
+        // header.innerHTML로 인해 DOM이 업데이트되었으므로, 요소를 다시 찾습니다.
+        const headerElement = document.querySelector('header.header'); // 헤더 요소 다시 선택
+        if (!headerElement) {
+                console.error("loadHeader: header element (header.header)를 찾을 수 없습니다. (기본 HTML 로드 후)");
+                dynamicContentAndEventsDeferred.reject(new Error('Header element not found after base load'));
+                return; // 요소 없으면 여기서 중단
+        }
 
-    $("header").load(file, function () {
+        const $header = $(headerElement); // jQuery 객체로 래핑하여 사용
+        
+        // 로그인 확인 //
+    //$("header").load(file, function () {
+    //    console.log("헤더 로드 콜백 실행됨."); // 콜백 실행 확인
         // 로그인 확인 //
         const userInfoBool = userInfo();
-
+        
         // 상단 내브바 처리 //
-        if (userInfoBool) {
-            $("#login_header").prepend(
-                `<div class="h-myInfo">
-                <a href="javascript:void(0);"><span class="user-name-type">${decodeURIComponent(getCookie("user_name"))}(${getCookie("user_role") == "001" ? "일반회원" : getCookie("user_role") == "002" ? "중개사회원" : "금융회원"})</span> 님 <i class="fa-light fa-chevron-down"></i> </a>
-                <div class="h-my-menu">
-                    <a class="mypage-url" href="/front/views/mypage/mypage.html">
-                        <span>나의정보</span>
-                        <i class="fa-light fa-angle-right"></i>
-                    </a>
-                    <a id="logout_btn" href="/index.html" onclick="logout()">
-                        <span onClick="logout">로그아웃</span>
-                        <i class="fa-light fa-angle-right"></i>
-                    </a>
-                </div>
-            </div>`
-            );
-        } else {
-            $("#login_header").prepend(
-                `<a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
-            <em class="login-before">|</em>
-            <a href="/front/views/member/join_step01.html" class="login-before">회원가입</a>`
-            );
-        }
+        
+        const $loginAreaOrHeader = $("#login_area", $header); // #login_area를 사용한다고 가정
+        
+        if ($loginAreaOrHeader.length) { // 요소가 존재하는 경우에만 처리
+            if (userInfoBool) {
+                $loginAreaOrHeader.html( // .html() 사용: 기존 내용 모두 지우고 새 내용 삽입
+                    `<div class="h-myInfo">
+                        <a href="javascript:void(0);"><span class="user-name-type">${decodeURIComponent(getCookie("user_name"))}(${getCookie("user_role") == "001" ? "일반회원" : getCookie("user_role") == "002" ? "중개사회원" : "금융회원"})</span> 님 <i class="fa-light fa-chevron-down"></i> </a>
+                        <div class="h-my-menu">
+                            <a class="mypage-url" href="/front/views/mypage/mypage.html">
+                                <span>나의정보</span>
+                                <i class="fa-light fa-angle-right"></i>
+                            </a>
+                            <a id="logout_btn" href="/index.html" onclick="logout()">
+                                <span onClick="logout">로그아웃</span>
+                                <i class="fa-light fa-angle-right"></i>
+                            </a>
+                        </div>
+                    </div>`
+                );
+                
+            } else {
+                $loginAreaOrHeader.html( // .html() 사용: 기존 내용 모두 지우고 새 내용 삽입
+                    `<a href="/front/views/00-include/login.html" class="modal-open-btn login-before">로그인</a>
+                    <em class="login-before">|</em>
+                    <a href="/front/views/member/join_step01.html" class="login-before">회원가입</a>`
+                );
+            }
+            
+       } else {
+            console.error("loadHeader: 대상 요소 (#login_area 또는 #login_header) element not found within header after base HTML load. Cannot insert dynamic content.");
+            // 동적 내용 삽입 대상 요소가 없더라도 나머지 작업은 진행될 수 있으므로 reject 대신 resolve 고려
+       }
 
         // 내정보 - 드롭다운 //
         var myinfoChk = 0;
@@ -100,7 +148,7 @@ function loadHeader(file) {
                 $(".h-myInfo > a i").addClass("fa-rotate-180");
                 myinfoChk = 1;
             } else {
-                $(".h-myInfo > div").slideUp(200, "easeOutQuad");
+               $(".h-myInfo > div").slideUp(200, "easeOutQuad");
                 $(".h-myInfo > a i").removeClass("fa-rotate-180");
                 myinfoChk = 0;
             }
@@ -135,7 +183,7 @@ function loadHeader(file) {
                 }
             }
         });
-
+        
         // PC - 검색영역 //
         $("#headerSearchOpen").click(function () {
             $(".h-search").css({ display: "flex" });
@@ -148,19 +196,33 @@ function loadHeader(file) {
             }, 150);
         });
 
-        const isRealtor = getCookie("user_role") == "001" ? true : false;
 
+
+        // 마이페이지 URL 설정 (.mypage-url는 header.html에 있을 것이므로 headerElement 스코프 사용)
+        const isRealtor = getCookie("user_role") == "001" ? true : false;
         if (getCookie("user_role") == "001") {
             $(".mypage-url").attr("href", "/front/views/mypage/mypage.html");
         } else if (getCookie("user_role") == "002") {
             $(".mypage-url").attr("href", "/front/views/mypage/mypage_realtor.html");
         }
+        
+        setActiveMenuByUrl(); // 헤더 DOM이 완전히 준비된 후 호출
 
-        deferred.resolve(); // 로드 완료 시 Deferred 객체를 해결
+        // 동적 내용 삽입 및 이벤트 바인딩 작업 완료 신호
+        dynamicContentAndEventsDeferred.resolve();
+        }).fail(function(error){
+        console.error("loadHeader: 기본 HTML 로드 대기 중 오류 발생:", error);
+        // 기본 HTML 로드 실패 시 loadHeader 함수도 실패 처리
+        dynamicContentAndEventsDeferred.reject(error);
     });
+    
+    return dynamicContentAndEventsDeferred.promise(); 
+};
 
-    return deferred.promise();
-}
+    //});
+
+    //return deferred.promise();
+//}
 
 /**
  * mobile loader 함수

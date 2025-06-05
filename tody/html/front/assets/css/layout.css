@@ -231,10 +231,10 @@
         width: 970px;
     }
     .header > dl > dt:first-child {
-        width: 17%;
+        width: 17%;   /*20 <->17  */
     }
     .header > dl > dt:last-child {
-        width: 40%;
+        width: 40%;   /*45 <->40  */
     }
     .header > dl > dt:last-child > em {
         margin: 0 10px;
@@ -243,7 +243,7 @@
         margin: 0 0 0 38px;
     }
     .header > dl > dd {
-        width: 43%;
+        width: 43%;  /*40 <->43  */
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 20px 15px 0;
@@ -254,16 +254,16 @@
         width: 1180px;
     }
     .header > dl > dt:first-child {
-        width: 17%;
+        width: 17%;   /*20 <->17  */
     }
     .header > dl > dt:last-child {
-        width: 40%;
+        width: 40%;   /*45 <->40  */
     }
     .header > dl > dt:last-child .h-myInfo > div {
         margin: 0 0 0 102px;
     }
     .header > dl > dd {
-        width: 43%;
+        width: 43%;  /*40 <->43  */
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 40px 15px 0;
@@ -1176,4 +1176,9 @@
 #terms ol li {
     list-style: auto;
     color: #212529;
+}
+
+#login_area {
+    /*flex-shrink: 0;  flex 아이템으로서 줄어들지 않도록 설정 */
+    width: auto !important;
 }
