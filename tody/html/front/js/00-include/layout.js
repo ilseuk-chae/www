@@ -6,6 +6,7 @@ $(function () {
     loadHeader(`/front/views/00-include/header.html`).done(function () {
         
         relatedWebsite(); // 헤더 로드 및 초기화 완료 후 relatedWebsite 실행 (기존 위치 유지)
+        toolsWebsite(); // 헤더 로드 및 초기화 완료 후 toolsWebsite 실행 (기존 위치 유지)
         
     }).fail(function(error) {
         console.error("loadHeader().fail() 실행됨:", error);
@@ -87,25 +88,17 @@ function loadHeader(file) {
     
     // DOMContentLoaded 리스너가 헤더 기본 HTML 로드 및 삽입을 완료할 때까지 대기합니다.
     headerBaseHtmlLoadedDeferred.promise().done(function() {
-       
         // header.innerHTML로 인해 DOM이 업데이트되었으므로, 요소를 다시 찾습니다.
         const headerElement = document.querySelector('header.header'); // 헤더 요소 다시 선택
         if (!headerElement) {
-                console.error("loadHeader: header element (header.header)를 찾을 수 없습니다. (기본 HTML 로드 후)");
                 dynamicContentAndEventsDeferred.reject(new Error('Header element not found after base load'));
                 return; // 요소 없으면 여기서 중단
         }
-
         const $header = $(headerElement); // jQuery 객체로 래핑하여 사용
-        
-        // 로그인 확인 //
-    //$("header").load(file, function () {
-    //    console.log("헤더 로드 콜백 실행됨."); // 콜백 실행 확인
         // 로그인 확인 //
         const userInfoBool = userInfo();
         
         // 상단 내브바 처리 //
-        
         const $loginAreaOrHeader = $("#login_area", $header); // #login_area를 사용한다고 가정
         
         if ($loginAreaOrHeader.length) { // 요소가 존재하는 경우에만 처리
@@ -142,6 +135,7 @@ function loadHeader(file) {
         // 내정보 - 드롭다운 //
         var myinfoChk = 0;
         var relatedChk = 0;
+        var toolsChk = 0;
         $(".h-myInfo").click(function () {
             if (myinfoChk == 0) {
                 $(".h-myInfo > div").slideDown(200, "easeOutQuad");
@@ -167,6 +161,20 @@ function loadHeader(file) {
             }
         });
 
+        // 계산기 - 드롭다운 //
+        $(document).on("click", ".h-tools", function () {
+            if (toolsChk == 0) {
+                $(".h-tools > div").slideDown(200, "easeOutQuad");
+                $(".h-tools > a i").addClass("fa-rotate-180");
+                toolsChk = 1;
+            } else {
+                $(".h-tools > div").slideUp(200, "easeOutQuad");
+                $(".h-tools > a i").removeClass("fa-rotate-180");
+                toolsChk = 0;
+            }
+        });
+
+        
         $("body").click(function (e) {
             if ($(".h-myInfo").css("display") == "block") {
                 if (!$(".h-myInfo").has(e.target).length) {
@@ -180,6 +188,13 @@ function loadHeader(file) {
                     $(".h-relatedSite > div").slideUp(200, "easeOutQuad");
                     $(".h-relatedSite > a i").removeClass("fa-rotate-180");
                     relatedChk = 0;
+                }
+            }
+            if ($(".h-tools").css("display") == "block") {
+                if (!$(".h-tools").has(e.target).length) {
+                    $(".h-tools > div").slideUp(200, "easeOutQuad");
+                    $(".h-tools > a i").removeClass("fa-rotate-180");
+                    toolsChk = 0;
                 }
             }
         });
@@ -210,19 +225,17 @@ function loadHeader(file) {
 
         // 동적 내용 삽입 및 이벤트 바인딩 작업 완료 신호
         dynamicContentAndEventsDeferred.resolve();
-        }).fail(function(error){
+    }).fail(function(error){
         console.error("loadHeader: 기본 HTML 로드 대기 중 오류 발생:", error);
         // 기본 HTML 로드 실패 시 loadHeader 함수도 실패 처리
         dynamicContentAndEventsDeferred.reject(error);
     });
     
     return dynamicContentAndEventsDeferred.promise(); 
+   
 };
 
-    //});
-
-    //return deferred.promise();
-//}
+ 
 
 /**
  * mobile loader 함수
@@ -286,7 +299,12 @@ function loadMobile(file, selector) {
                 window.open(url, "_blank");
             }
         });
-
+        $("#selectToolsMobile").on("change", function () {
+            const url = $(this).val();
+            if (url) {
+                window.open(url, "_blank");
+            }
+        });
         deferred.resolve(); // 로드 완료 시 Deferred 객체를 해결
     });
 
@@ -334,6 +352,58 @@ async function relatedWebsite() {
         // 캐시된 데이터를 사용해 DOM 업데이트
         $(".h-relatedSite .h-realted-menu").empty().append(related_website);
         $("#selectSiteMobile").empty().append(mobile_related_website);
+    }
+}
+
+async function toolsWebsite() {
+    // 멀티 - 셀렉션 //
+    // $("#selectTools").multiSelect({ noneText: "관련사이트" });
+    // $("#selectToolsMobile").multiSelect({ noneText: "관련사이트" });
+    const tools_website = sessionStorage.getItem("tools_website");
+    const mobile_tools_website = sessionStorage.getItem("mobile_tools_website");
+
+    // 캐시된 데이터가 없는 경우 API 호출
+    if (!tools_website || !mobile_tools_website) {
+        const result = await callApi("POST", "/front/back/00-include/tools_website.php", {});
+
+        // --- resultHtml 생성 부분 수정 (iziModal 선언적 방식 적용) ---
+        const resultHtml = result.responseData
+            .map(function (data) {
+                const { tools_name, tools_site_url } = data;
+                // iziModal 선언적 속성 추가 및 href, target 수정
+                return `
+                    <a target="_blank" class="tools-site-url" href="${tools_site_url}">
+                        <span>${tools_name}</span>
+                        <i class="fa-light fa-angle-right"></i>
+                    </a>`;
+            })
+            .join("");
+        // ----------------------------------------------------------
+
+        // --- mobileResultHtml 생성 부분 (iziModal 선언적 방식은 option 태그에 직접 적용 불가) ---
+        // 모바일 셀렉트 박스는 별도의 JavaScript change 이벤트 핸들러가 필요합니다.
+        let mobileResultHtml = '<option value="" selected hidden>계산기</option>';
+        mobileResultHtml += result.responseData
+            .map(function (data) {
+                const { tools_name, tools_site_url } = data;
+                // option 태그의 value에 URL 저장
+                return `<option value="${tools_site_url}">${tools_name}</option>`;
+            })
+            .join("\n");
+        // ----------------------------------------------------------------------------------
+
+
+        // 데이터 캐싱
+        sessionStorage.setItem("tools_website", resultHtml);
+        sessionStorage.setItem("mobile_tools_website", mobileResultHtml);
+
+        // DOM 업데이트
+        $(".h-tools .h-tool-menu").empty().append(resultHtml);
+        $("#selectToolsMobile").empty().append(mobileResultHtml);
+    } else {
+        // 캐시된 데이터를 사용해 DOM 업데이트
+        $(".h-tools .h-tool-menu").empty().append(tools_website);
+        $("#selectToolsMobile").empty().append(mobile_tools_website);
     }
 }
 
@@ -395,7 +465,6 @@ async function policyTotal() {
 
 async function policyInfo(no, id) {
     try {
-        console.log(111);
         const term = $(id);
 
         const dataObj = { no };

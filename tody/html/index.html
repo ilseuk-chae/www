@@ -10,8 +10,6 @@
         <!-- <meta name="title" content="토디- 원스톱 부동산 종합 플랫폼 서비스, tody" />  -->
         <meta name="title" content="토디-부동산 종합 플랫폼 서비스, tody" />
         <meta name="description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
-        <!-- 수정 20250205 cis <meta name="keywords" content="" /> -->
-        <!-- 수정 20250205 cis<meta name="keywords" content="토디,부동산,실거래가,토지, 매물, 아파트, 오피스텔,빌라,전세,월세,매매,전월세,임대,부동산실거래가, 부동산정보,Tody,tody,TODY" /> -->
         <meta name="keywords" content="토디,토디부동산,토디플랫폼,tody,tody부동산,tody플랫폼,부동산정보,부동산, 부동산앱, 부동산어플, 상가,건물, 빌딩, 공장, 창고, 토지, 매물,아파트, 주상복합, 오피스텔, 단독, 다가구, 다세대, 빌라,전세, 월세, 매매, 전월세, 임대, 실거래가, 부동산중개, 공인중개사" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://" />
@@ -51,6 +49,8 @@
         <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
         <!-- menu Css -->
         <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
+        <!-- jQuery UI 기본 테마 CSS -->
+        <!-- <link href="/assets/css/jquery-ui.css" rel="stylesheet" > 다운로드한 파일 경로 -->
        
         <style>
             .main-search > div > dl dt span {
@@ -171,7 +171,7 @@
                         <a href="/front/views/support/partnership_proposal_step01.html">
                             <span><img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="" /> 제휴및제안</span>
                             <em><i class="fa-light fa-angle-right"></i></em>
-                        </a>                        
+                        </a>
                     </div>
                     <div class="mmi-support">
                         <a href="/front/views/support/notice_list.html">고객센터</a>
@@ -180,6 +180,11 @@
                         <select name="" id="selectSiteMobile" class="form-select select-box middle">
                             <option value="">사이트</option>
                             <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-tools">
+                        <select name="" id="selectToolsMobile" class="form-select select-box middle">
                             <option value="">사이트</option>
                         </select>
                     </div>
@@ -481,10 +486,9 @@
         </div>
 
         <!-- JAVASCRIPT -->
-        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script> 
         <script src="/front/assets/js/jquery-3.3.1.js"></script>
         <script src="/front/assets/js/jquery-ui.js"></script>
-
         <script src="/front/assets/js/common.js"></script>
         <script src="/front/js/00-include/layout.js"></script>
 
@@ -518,9 +522,37 @@
         <script src="/front/js/00-include/functions.js"></script>
         <script src="/front/js/00-include/common.js"></script>
         <script src="/front/js/00-include/layer_popup.js"></script>
-        <script src="/front/js/main/index.js"></script>
+        <script src="/front/js/main/index.js"></script> 
 
-        <!-- active menu를 위해 추가    -->
-        <script src="/front/assets/js/myscript.js"></script>
+        <!-- active menu를 위해 추가 -->   
+        <script src="/front/assets/js/myscript.js"></script> 
+
+        <!-- iziModal 용
+        <div id="toolModalIzi"></div>
+        -->
+        
+        <!-- 계산기 menu를 위해 추가    -->
+        <div id="toolModal" class="toolmodal">
+            <!-- 오버레이 -->
+            <div class="tool-modal-overlay"></div>
+        
+            <!-- 모달 내용 컨테이너 (드래그 대상) -->
+            <div class="tool-modal-content">
+                <!-- 모달 헤더 (드래그 핸들) -->
+                <div class="tool-modal-header">
+                    <span class="modal-title">계산기</span> <!-- 제목 -->
+                    <button class="tool-close-button">&times;</button> <!-- 닫기 버튼 -->
+                </div>
+        
+                <!-- 모달 본문 (iframe이 삽입될 영역) -->
+                <div class="tool-modal-body">
+                    <!-- 여기에 iframe이 동적으로 삽입됩니다 -->
+                </div>
+        
+                <!-- 푸터가 있다면 추가 -->
+                <!-- <div class="tool-modal-footer">...</div> -->
+            </div>
+        </div>
+    
     </body>
 </html>

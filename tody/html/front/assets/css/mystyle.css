@@ -35,4 +35,95 @@
     margin-bottom: 4px;
   }
   
- 
+  /* Modal main container */
+  .toolmodal {
+    display: none; /* Initially hidden */
+    position: fixed; /* Position relative to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; /* Overlay z-index */
+    overflow: hidden; /* Prevent scrolling on the modal container itself */
+  }
+  
+  /* Overlay */
+  .tool-modal-overlay {
+    position: absolute; /* Position relative to parent (.toolmodal) */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Semi-transparent black background */
+    z-index: 1; /* Below modal content */
+  }
+  
+  /* Modal content container (draggable target) */
+  .tool-modal-content {
+    background-color: #fefefe;
+    border: 1px solid #888;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  
+    /* --- Positioning (top/left set by JavaScript) --- */
+    position: fixed; /* Position relative to the viewport (required for draggable) */
+    /* top: set by JavaScript */
+    /* left: set by JavaScript */
+    z-index: 1001; /* Display above the overlay */
+  
+    width: 70%; /* Modal width */
+    max-width: 800px; /* Maximum width */
+  
+    /* --- Height setting (set by CSS) --- */
+    height: 1100px; /* Example: Fixed height (as confirmed in Computed tab) */
+    /* or */
+    /* max-height: 90vh; /* Example: Max 90% of viewport height */
+    /* ------------------------------------ */
+  
+    display: flex; /* Arrange child elements (header, body, footer) vertically */
+    flex-direction: column;
+    overflow: hidden; /* Hide overflowing content (scrolling handled in body) */
+  }
+  
+  /* Modal header (drag handle) */
+  .tool-modal-header {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    cursor: move; /* Move cursor to indicate draggable */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0; /* Prevent header from shrinking */
+  }
+  
+  .tool-modal-header .modal-title {
+      font-weight: bold;
+  }
+  
+  .tool-modal-header .tool-close-button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 10px;
+  }
+  
+  
+  /* Modal body (area where iframe will be inserted) */
+  .tool-modal-body {
+    padding: 20px; /* Content padding */
+    /* max-height: set by JavaScript */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    flex-grow: 1; /* Allow body to grow and fill available space */
+    display: flex; /* Use flex to make iframe fill the body area */
+  }
+  
+  /* iframe */
+  .tool-modal-body iframe {
+      display: block; /* Prevent bottom margin issues with inline elements */
+      width: 100%;
+      height: 100%; /* Make iframe fill the height of its parent (.tool-modal-body) */
+      border: none;
+  }

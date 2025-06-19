@@ -4,6 +4,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="google-site-verification" content="3KzgnS-sef1UfPZCoMizIWbhgKbAlw3xMH9-3V7otHg" />
         <!-- <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" /> -->
         <meta name="title" content="토디,원스톱 부동산 종합 플랫폼 서비스,tody" />
         <meta name="description" content="간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
@@ -20,7 +21,7 @@
         <meta property="og:url" content="https://tody.co.kr" />
         <!-- <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디, tody" /> -->
         <meta property="og:title" content="토디,원스톱 부동산 종합 플랫폼 서비스,tody" />
-        <meta property="og:description" content="간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
+        <meta property="og:description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
         <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
         <title>토디,원스톱 부동산 종합 플랫폼 서비스,tody</title>
         
@@ -45,6 +46,10 @@
         <link href="/front/assets/css/style.css" rel="stylesheet" />
         <!-- modal Css -->
         <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+        <!-- menu Css -->
+        <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
+        <!-- jQuery UI 기본 테마 CSS -->
+        <link href="/assets/css/jquery-ui.css" rel="stylesheet" > <!-- 다운로드한 파일 경로 -->
 
         <style>
             .main-search > div > dl dt span {
@@ -97,24 +102,28 @@
                 <div class="mobile-footer">
                     <ul>
                         <li onclick="location.href='/front/views/realPrice/realPrice.html';">
-                            <p><img src="/front/assets/image/footer_menu01.svg" alt="" title="실거래가" /></p>
+                            <p><img src="/front/assets/image/footer_menu01.svg" alt="실거래가" title="실거래가" /></p>
                             <div>실거래가</div>
                         </li>
                         <li onclick="location.href='/front/views/sell/sell.html';">
-                            <p><img src="/front/assets/image/footer_menu02.svg" alt="" title="매물정보" /></p>
+                            <p><img src="/front/assets/image/footer_menu02.svg" alt="매물정보" title="매물정보" /></p>
                             <div>매물정보</div>
                         </li>
                         <li onclick="location.href='/front/views/find/find_list.html';">
-                            <p><img src="/front/assets/image/footer_menu03.svg" alt="" title="삽니다" /></p>
+                            <p><img src="/front/assets/image/footer_menu03.svg" alt="삽니다" title="삽니다" /></p>
                             <div>삽니다</div>
                         </li>
                         <li onclick="location.href='/front/views/put/put_list.html';">
-                            <p><img src="/front/assets/image/footer_menu04.svg" alt="" title="팝니다" /></p>
+                            <p><img src="/front/assets/image/footer_menu04.svg" alt="팝니다" title="팝니다" /></p>
                             <div>팝니다</div>
                         </li>
                         <li onclick="location.href='/front/views/finance/finance.html';">
-                            <p><img src="/front/assets/image/footer_menu05.svg" alt="" title="금융지원" /></p>
+                            <p><img src="/front/assets/image/footer_menu05.svg" alt="금융지원" title="금융지원" /></p>
                             <div>금융지원</div>
+                        </li>
+                        <li onclick="location.href='/front/views/support/partnership_proposal_step01.html';">
+                            <p><img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="제휴및제안" /></p>
+                            <div>제휴및제안</div>
                         </li>
                     </ul>
                 </div>
@@ -136,25 +145,29 @@
                     </div>
                     <div class="mmi-menu">
                         <a href="/front/views/realPrice/realPrice.html">
-                            <span><img src="/front/assets/image/footer_menu01.svg" alt="" title="" /> 실거래가</span>
+                            <span><img src="/front/assets/image/footer_menu01.svg" alt="실거래가" title="" /> 실거래가</span>
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/sell/sell.html">
-                            <span><img src="/front/assets/image/footer_menu02.svg" alt="" title="" /> 매물정보</span>
+                            <span><img src="/front/assets/image/footer_menu02.svg" alt="매물정보" title="" /> 매물정보</span>
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/find/find_list.html">
-                            <span><img src="/front/assets/image/footer_menu03.svg" alt="" title="" /> 삽니다</span>
+                            <span><img src="/front/assets/image/footer_menu03.svg" alt="삽니다" title="" /> 삽니다</span>
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/put/put_list.html">
-                            <span><img src="/front/assets/image/footer_menu04.svg" alt="" title="" /> 팝니다</span>
+                            <span><img src="/front/assets/image/footer_menu04.svg" alt="팝니다" title="" /> 팝니다</span>
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/finance/finance.html">
-                            <span><img src="/front/assets/image/footer_menu05.svg" alt="" title="" /> 금융지원</span>
+                            <span><img src="/front/assets/image/footer_menu05.svg" alt="금융지원" title="" /> 금융지원</span>
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
+                        <a href="/front/views/support/partnership_proposal_step01.html">
+                            <span><img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="" /> 제휴및제안</span>
+                            <em><i class="fa-light fa-angle-right"></i></em>
+                        </a>               
                     </div>
                     <div class="mmi-support">
                         <a href="/front/views/support/notice_list.html">고객센터</a>
@@ -163,6 +176,11 @@
                         <select name="" id="selectSiteMobile" class="form-select select-box middle">
                             <option value="">사이트</option>
                             <option value="">사이트</option>
+                            <option value="">사이트</option>
+                        </select>
+                    </div>
+                    <div class="mmi-tools">
+                        <select name="" id="selectToolsMobile" class="form-select select-box middle">
                             <option value="">사이트</option>
                         </select>
                     </div>
@@ -500,5 +518,24 @@
         <script src="/front/js/00-include/common.js"></script>
         <script src="/front/js/00-include/layer_popup.js"></script>
         <script src="/front/js/main/index.js"></script>
+
+        <!-- active menu를 위해 추가    -->
+        <script src="/front/assets/js/myscript.js"></script>
+
+        <!-- 계산기 menu를 위해 추가    -->
+        <div id="toolModal" class="toolmodal" style="display: none;">
+            <div class="tool-modal-overlay"></div>
+            <div class="tool-modal-content"> <!-- <-- 이 요소가 draggable 대상입니다 -->
+                <div class="tool-modal-header"> <!-- <-- 이 요소가 handle로 지정됩니다 (draggable 요소의 자손) -->
+                    <h2></h2> <!--  제목 등 -->
+                    <span class="tool-close-button">&times;</span> <!-- 닫기 버튼 -->
+                </div>
+                <div class="tool-modal-body">
+                    <!-- 여기에 동적으로 iframe이 삽입될 예정 -->
+                </div>
+                <!-- 필요하다면 푸터 등 다른 내용 추가 -->
+            </div>
+        </div>
+
     </body>
 </html>

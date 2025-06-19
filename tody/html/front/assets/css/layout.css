@@ -30,14 +30,14 @@
     transition: all 0.2s ease-in-out;
 }
 .header > dl > dt:first-child {
-    width: 18%;
+    width: 17%;   /*18 <->17  */
 }
 .header > dl > dt:last-child {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     position: relative;
-    width: 30%;
+    width: 38%;   /*30 <->38  */
     text-align: right;
 }
 .header > dl > dt:last-child > a {
@@ -82,6 +82,7 @@
     text-align: left;
 }
 .header > dl > dt:last-child .h-myInfo > a,
+.header > dl > dt:last-child .h-tools > a,
 .header > dl > dt:last-child .h-relatedSite > a {
     display: inline-block;
     font-size: 13px;
@@ -90,9 +91,10 @@
     color: var(--var-color-sub-1);
 }
 .header > dl > dt:last-child .h-myInfo > a i,
+.header > dl > dt:last-child .h-tools > a i,
 .header > dl > dt:last-child .h-relatedSite > a i {
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 3px; /*  10 <-> 3*/
 }
 .header > dl > dt:last-child .h-myInfo > div {
     display: none;
@@ -105,6 +107,7 @@
     background: #fff;
     overflow: hidden;
 }
+.header > dl > dt:last-child .h-tools > div,
 .header > dl > dt:last-child .h-relatedSite > div {
     display: none;
     position: absolute;
@@ -116,6 +119,7 @@
     background: #fff;
     overflow: hidden;
 }
+.header > dl > dt:last-child .h-tools > div a,
 .header > dl > dt:last-child .h-myInfo > div a {
     display: flex;
     justify-content: space-between;
@@ -128,12 +132,25 @@
     letter-spacing: -1px;
     border-bottom: #e9e9e9 1px solid;
 }
+.header > dl > dt:last-child .h-tools > div a{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 185px;
+    height: 37px;
+    padding: 12px 17px;
+    text-align: left;
+    font-size: 12px;
+    line-height: 12px;
+    letter-spacing: -1px;
+    border-bottom: #e9e9e9 1px solid;
+}
 .header > dl > dt:last-child .h-relatedSite > div a {
     display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 185px;
-    height: 50px;
+    height: 45px;       /*  50 <-> 45*/
     padding: 12px 17px;
     text-align: left;
     font-size: 12px;
@@ -142,6 +159,7 @@
     border-bottom: #e9e9e9 1px solid;
 }
 .header > dl > dt:last-child .h-myInfo > div a:hover,
+.header > dl > dt:last-child .h-tools > div a:hover,
 .header > dl > dt:last-child .h-relatedSite > div a:hover {
     background: #fff1ef;
 }
@@ -150,6 +168,7 @@
     width: 100%;
 }
 .header > dl > dt:last-child .h-myInfo > div a:last-child,
+.header > dl > dt:last-child .h-tools > div a:last-child,
 .header > dl > dt:last-child .h-relatedSite > div a:last-child {
     border-bottom: none;
 }
@@ -177,7 +196,7 @@
     background: #f5f5f5;
 }
 .header > dl > dd {
-    width: 58%;
+    width: 45%;  /*58 <->45  */
 }
 .header > dl > dd > ul {
     display: flex;
@@ -234,7 +253,7 @@
         width: 17%;   /*20 <->17  */
     }
     .header > dl > dt:last-child {
-        width: 40%;   /*45 <->40  */
+        width: 38%;   /*40 <->38  */
     }
     .header > dl > dt:last-child > em {
         margin: 0 10px;
@@ -243,7 +262,7 @@
         margin: 0 0 0 38px;
     }
     .header > dl > dd {
-        width: 43%;  /*40 <->43  */
+        width: 45%;  /*40 <->45  */
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 20px 15px 0;
@@ -257,13 +276,13 @@
         width: 17%;   /*20 <->17  */
     }
     .header > dl > dt:last-child {
-        width: 40%;   /*45 <->40  */
+        width: 38%;   /*40 <->38  */
     }
     .header > dl > dt:last-child .h-myInfo > div {
-        margin: 0 0 0 102px;
+        margin: 0 0 0 102px;   /*102 <->82  */
     }
     .header > dl > dd {
-        width: 43%;  /*40 <->43  */
+        width: 45%;  /*40 <->45  */
     }
     .header > dl > dd > ul > li > a {
         padding: 15px 40px 15px 0;
@@ -524,12 +543,15 @@
     height: 18px;
     margin-right: 10px;
 }
+.mobile-menu-info .mmi-tools,
 .mobile-menu-info .mmi-site {
     margin-top: 25px;
 }
+.mobile-menu-info .mmi-tools .multi-select-container,
 .mobile-menu-info .mmi-site .multi-select-container {
     width: 100%;
 }
+.mobile-menu-info .mmi-tools .multi-select-container .multi-select-button,
 .mobile-menu-info .mmi-site .multi-select-container .multi-select-button {
     height: 38px;
     padding-top: 7px;
@@ -537,13 +559,16 @@
     font-size: 12px;
     line-height: 22px;
 }
+.mobile-menu-info .mmi-tools .multi-select-container .multi-select-button::after,
 .mobile-menu-info .mmi-site .multi-select-container .multi-select-button::after {
     top: 17px;
 }
+.mobile-menu-info .mmi-tools .multi-select-container .multi-select-menu,
 .mobile-menu-info .mmi-site .multi-select-container .multi-select-menu {
     top: 42px;
     text-align: left;
 }
+.mobile-menu-info .h-tools > div,
 .mobile-menu-info .h-relatedSite > div {
     display: none;
     position: absolute;
@@ -555,6 +580,7 @@
     background: #fff;
     overflow: hidden;
 }
+.mobile-menu-info .h-tools > div a ,
 .mobile-menu-info .h-relatedSite > div a {
     display: flex;
     justify-content: space-between;
