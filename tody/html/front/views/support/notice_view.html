@@ -295,10 +295,12 @@
         <!-- 계산기 menu를 위해 추가    -->
         <div id="toolModal" class="toolmodal" style="display: none;">
             <div class="tool-modal-overlay"></div>
-            <div class="tool-modal-content"> <!-- <-- 이 요소가 draggable 대상입니다 -->
-                <div class="tool-modal-header"> <!-- <-- 이 요소가 handle로 지정됩니다 (draggable 요소의 자손) -->
-                    <h2></h2> <!--  제목 등 -->
-                    <span class="tool-close-button">&times;</span> <!-- 닫기 버튼 -->
+            <div class="tool-modal-content"> <!-- 요소가 draggable 대상입니다 -->
+                <div class="tool-modal-header">
+                    <div class="modal-title">
+                      <span class="modal-label">계산기</span>
+                      <button class="tool-close-button" aria-label="닫기">X</button>
+                    </div>
                 </div>
                 <div class="tool-modal-body">
                     <!-- 여기에 동적으로 iframe이 삽입될 예정 -->
