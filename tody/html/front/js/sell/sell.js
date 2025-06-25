@@ -570,6 +570,17 @@ async function estateList(searchNo = "", propertyNo = "") {
                             break;
                     }
 
+                    let estateHtml = data.estate_type;
+                    
+                    let addressHtml = "";  //지번 주소
+                    if (data.address_jibun) {
+                        let address_temp = data.address_jibun;
+                        address_temp = cutAfterSuffix(data.address_jibun);  //'리', '동', '길', '로' 이하 삭제 
+                        addressHtml = `<span class="ms-md-auto">${address_temp}</span>`; 
+                    } else {
+                        addressHtml = `<span class="text-end">주소 정보 없음</span>`;
+                    }
+                    
                     let areaHtml = "";
                     switch (data.estate_type) {
                         case "토지":
@@ -599,7 +610,7 @@ async function estateList(searchNo = "", propertyNo = "") {
                     return `
                         <dl class="${estateTypeClass}" data-estate-no="${data.estate_no}">
                             <dt>
-                                <h2 class="d-flex align-items-center gap-1">${sateTypeHtml} ${data.estate_type}</h2>
+                                <h2 class="d-flex align-items-center gap-1">${sateTypeHtml} ${data.estate_type} ${addressHtml}</h2>
                                 <ul>
                                     <li>${priceHtml}</li>
                                     <li class="text-nowrap">${areaHtml}</li>
@@ -721,8 +732,8 @@ async function renderEstateDetail(data) {
 
    
     const detailItems = [
-        { name: "address_jibun", title: "소재지(지번)", value: data.address_jibun || "" },
-        { name: "address_road", title: "소재지(도로명)", value: data.address_road || "" },
+        { name: "address_jibun", title: "소재지(지번)", value: cutAfterSuffix(data.address_jibun) || "" },
+        { name: "address_road", title: "소재지(도로명)", value: cutAfterSuffix(data.address_road) || "" },
         { name: "related_jibun", title: "관련지번", value: data.related_jibun == "Y" ? "관련지번 있음" : "관련지번 없음" },
         { name: "notes", title: "참고사항", value: data.notes || "" },
         { name: "estate_type", title: "매물구분", value: data.estate_type || "" },
@@ -2586,4 +2597,24 @@ async function updateURL(paramsToUpdate) {
 
     // 변경된 URL을 감지하고 estateDetail 함수를 호출
     handleUrlChangeForEstateNo();
+}
+
+function cutAfterSuffix(text) {
+    const suffixes = ['리', '동', '길', '로']; // 기준이 될 접미사 목록
+
+    // 가장 뒤에 나타나는 접미사를 찾기 위해, 접미사 목록을 순회합니다.
+    for (const suffix of suffixes) {
+        const lastIndex = text.lastIndexOf(suffix); // 문자열 내에서 접미사가 마지막으로 나타나는 인덱스
+
+        // 해당 접미사가 문자열 내에 존재한다면 (lastIndex가 -1이 아님)
+        if (lastIndex !== -1) {
+            // 접미사가 시작하는 인덱스에 접미사의 길이를 더하면,
+            // 접미사 바로 다음 문자의 인덱스가 됩니다.
+            // slice(0, endIndex)는 0부터 endIndex-1까지의 문자열을 반환하므로,
+            // lastIndex + suffix.length를 endIndex로 사용하면 접미사까지 포함됩니다.
+            return text.slice(0, lastIndex + suffix.length);
+        }
+    }
+    // 어떤 접미사도 발견되지 않으면 원본 문자열을 그대로 반환합니다.
+    return text;
 }

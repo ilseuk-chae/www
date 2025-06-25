@@ -66,6 +66,8 @@ try {
     $sql = 
         "SELECT 
             el.idx AS estate_no,
+            el.address_jibun,
+            el.address_road,
             el.latitude,
             el.longitude,
             el.sale_price,
@@ -171,6 +173,8 @@ try {
         if (!isset($estateArray[$estate_no])) {
             $estateArray[$estate_no] = array(
                 'estate_no' => $row['estate_no'],
+                'address_jibun' => $row['address_jibun'],
+                'address_road' => $row['address_road'],
                 'totArea' => $row['totArea'],
                 'platArea' => $row['platArea'],
                 'sale_price' => $row['sale_price'],
