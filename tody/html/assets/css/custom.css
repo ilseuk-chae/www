@@ -6,7 +6,7 @@ Contact: support@themesbrand.com
 File: Custom Css File
 */
 
-/* --- CSS 스타일 예시 (.menu-count-badge 클래스) ---*/
+/* --- CSS 스타일 예시 (.menu-count-badge 클래스) 
 
 .menu-count-badge {
     display: inline-block;
@@ -22,6 +22,31 @@ File: Custom Css File
     padding: 0 0.2em;
     box-sizing: border-box;
     vertical-align: middle; 
+}
+---*/
+.menu-count-badge {
+    display: none; /* 숨김을 강제 적용 */
+}
+
+.proposalSpan,
+.partnershipSpan,
+.topLevelSpan,
+.topLevelCollSpan,
+.realtorSpan,
+.topLevelUserSpan {
+    display: inline-block;
+    min-width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    border-radius: 50%;
+    background-color: #dc3545;
+    color: white;
+    text-align: center;
+    font-size: 0.8em;
+    margin-left: 0.5em;
+    padding: 0; /* 원형 형태를 유지하기 위해 패딩 제거 */
+    box-sizing: border-box;
+    vertical-align: middle;
 }
 /* 기본 클래스 ******************************************************** */
 /* 기본 */

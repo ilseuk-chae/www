@@ -222,14 +222,14 @@
         <script src="/admin/js/00-include/common.js"></script>
         <script src="/admin/js/00-include/layer_popup.js"></script>
         <script src="/admin/js/05-support/sup_notice_detail.js"></script>
-        <!-- App js -->
+        <!-- App js ==> common.js의 ready(function () { ... }) 부분으로 이동 
         <script>
             window.addEventListener("load", function () {
                 var script = document.createElement("script");
                 script.src = "/assets/js/app.js?v=" + new Date().getTime();
                 document.body.appendChild(script);
             });
-        </script>
+        </script> -->
         <!-- <script src="/assets/js/app.js"></script> -->
     </body>
 </html>

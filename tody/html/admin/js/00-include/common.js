@@ -1,7 +1,41 @@
-$(function () {
+$(document).ready(function () {
     // waves.js 초기화
     Waves.init();
     Waves.attach(".waves-effect");
+
+    // app.js 동적 로드
+    var script = document.createElement("script");
+    script.src = "/assets/js/app.js?v=" + new Date().getTime();
+    document.body.appendChild(script);
+
+    // 메뉴 카운트 스타일 재적용
+    applyMenuStyles();
+});
+
+$(document).on('click', '.nav-link', function () {
+    applyMenuStyles(); // 메뉴 클릭 후 스타일 재적용
+});
+
+/**
+ * 메뉴 스타일 재적용 함수
+ */
+function applyMenuStyles() {
+    const $menuCountBadges = $('.menu-count-badge');
+    $menuCountBadges.each(function () {
+        const $badge = $(this);
+        const textContent = $badge.text().trim(); // 요소의 텍스트 내용 확인
+        if (textContent !== '') {
+            forceStyleUpdate($badge); // 텍스트가 있는 경우에만 스타일 강제 적용
+        } else {
+            $badge.css({
+                display: 'none', // 텍스트가 없으면 숨김 처리
+            });
+        }
+    });
+}
+
+$(document).on('click', '.nav-link', function () {
+    applyMenuStyles(); // 메뉴 클릭 후 스타일 재적용
 });
 
 /**
@@ -92,7 +126,7 @@ async function getMenuInfo(rcvUserInfo) {
                 //  '제휴/제안 관리' 상위 메뉴 뒤에 span 추가 
                  // 상위 메뉴에 개수 표시 span 추가 (ID 부여)
                  // 상위 메뉴 뒤에 ID가 부여된 span 추가 
-                const topLevelCountSpan = (firstTitle === '제휴/제안 관리') ?
+                const topLevelCountSpan = ((firstTitle === '제휴/제안 관리') || (firstTitle === '회원 관리')) ?
                     `<span class="menu-count-badge" id="count-for-${firstLink}"></span>` : '';
                 html += `
                 <li class="nav-item">
@@ -124,7 +158,7 @@ async function getMenuInfo(rcvUserInfo) {
                      // 하위 메뉴 링크가 유효한 경우에만 HTML 생성
                     if (subLink) { // 링크가 있어야 유효한 메뉴 항목
                        // 하위 메뉴에 개수 표시 span 추가 (ID 부여)
-                       const subMenuCountSpan = ((subTitle === '제휴 관리' && subLink === 'col_partnership') || (subTitle === '제안 관리' && subLink === 'col_proposal')) ?
+                       const subMenuCountSpan = ((subTitle === '제휴 관리' && subLink === 'col_partnership') || (subTitle === '제안 관리' && subLink === 'col_proposal') || (subTitle === '중개사 회원' && subLink === 'realtor')) ?
                             `<span class="menu-count-badge" id="count-for-${subLink}"></span>` : ''; // 링크를 ID의 일부로 사용
 
                        html += `
@@ -165,7 +199,7 @@ async function getMenuInfo(rcvUserInfo) {
                 // 만약 단일 메뉴 항목이 '제휴 관리' 또는 '제안 관리'일 경우 (참고용) 
                 if (singleLink) { // 링크가 있어야 유효한 메뉴 항목
                      // 단일 메뉴에 개수 표시 span 추가 (ID 부여)
-                    const singleMenuCountSpan = ((singleTitle === '제휴 관리' && singleLink === 'col_partnership') || (singleTitle === '제안 관리' && singleLink === 'col_proposal')) ?
+                    const singleMenuCountSpan = ((singleTitle === '제휴 관리' && singleLink === 'col_partnership') || (singleTitle === '제안 관리' && singleLink === 'col_proposal') || (singleTitle === '중개사 회원' && singleLink === 'realtor')) ?
                         `<span class="menu-count-badge" id="count-for-${singleLink}"></span>` : ''; // 링크를 ID의 일부로 사용
                     html += `
                         <li class="nav-item">
@@ -206,10 +240,11 @@ async function updateMenuCounts(rcvUserInfo) {
     const counts = {
         'col_manage': 0, // '제휴/제안 관리' 전체 개수 (필요하다면)
         'col_partnership': 0, // '제휴 관리' 개수
-        'col_proposal': 0 // '제안 관리' 개수
+        'col_proposal': 0, // '제안 관리' 개수
+        'user_manage': 0, // '회원관리' 전체 개수
+        'realtor': 0, // '중개사 회원' 개수
     };
     // 1. 각 메뉴 항목에 해당하는 개수를 서버 등에서 비동기적으로 가져옵니다.
-    //console.log("updateMenuCounts 시작: 메뉴별 개수 가져오기");
     // *** 중요: 서버에 이 경로로 요청을 받아 view_count가 0인 proposal_master 행 수를 세어 JSON 형태로 반환하는 스크립트가 필요합니다. ***
     const apiEndpointForProposalCount = "/admin/back/06-collaboration/proposal_count.php"; 
     
@@ -220,16 +255,13 @@ async function updateMenuCounts(rcvUserInfo) {
         const result = await callApi("POST", apiEndpointForProposalCount, userInfo);
 
         // API 응답 확인 및 데이터 추출
-        //if (result && result.message === 'success' && result.responseData !== undefined) {
         if (result && typeof result === 'object' && result.statusCode === 200 && result.responseData !== undefined) {
             // 서버 응답 형식에 따라 개수 정보를 추출하는 방식을 수정해야 합니다.
             const unseenProposalCount = result.responseData.unseenCount;
 
             if (unseenProposalCount !== undefined && unseenProposalCount !== null) {
-                //console.log(`서버 API로부터 가져온 '제안 관리' (col_proposal) 개수: ${unseenProposalCount}`);
                 counts['col_proposal']= unseenProposalCount;
             } else {
-                 //console.error("API 응답 형식 오류: responseData에 예상된 개수 정보가 없습니다.", result.responseData);
             }
 
         } else {
@@ -240,8 +272,7 @@ async function updateMenuCounts(rcvUserInfo) {
     } catch (error) {
         //console.error("'제안 관리' 개수 API 호출 중 예외 발생:", error);
     }
-    //console.log("updateMenuCounts 시작: 메뉴별 개수 가져오기");
-    // *** 중요: 서버에 이 경로로 요청을 받아 view_count가 0인 proposal_master 행 수를 세어 JSON 형태로 반환하는 스크립트가 필요합니다. ***
+    // *** 중요: 서버에 이 경로로 요청을 받아 view_count가 0인 partnershipl_master 행 수를 세어 JSON 형태로 반환하는 스크립트가 필요합니다. ***
     const apiEndpointForPartnershipCount = "/admin/back/06-collaboration/partnership_count.php"; 
     
     // 서버에 전달할 데이터 (예: 사용자 인증 정보 등, 필요 없다면 빈 객체 {})
@@ -251,14 +282,40 @@ async function updateMenuCounts(rcvUserInfo) {
         const result = await callApi("POST", apiEndpointForPartnershipCount, userInfo);
 
         // API 응답 확인 및 데이터 추출
-        //if (result && result.message === 'success' && result.responseData !== undefined) {
         if (result && typeof result === 'object' && result.statusCode === 200 && result.responseData !== undefined) {
             // 서버 응답 형식에 따라 개수 정보를 추출하는 방식을 수정해야 합니다.
             const unseenPartnershipCount = result.responseData.unseenCount;
 
             if (unseenPartnershipCount !== undefined && unseenPartnershipCount !== null) {
-                //console.log(`서버 API로부터 가져온 '제휴 관리' (col_partnership) 개수: ${unseenPartnershipCount}`);
                 counts['col_partnership']= unseenPartnershipCount;
+            } else {
+                 //console.error("API 응답 형식 오류: responseData에 예상된 개수 정보가 없습니다.", result.responseData);
+            }
+        } else {
+            //console.error("API 호출 실패 또는 응답 상태 오류:", result);
+            //console.error("서버 메시지:", result ? result.message : "응답 메시지 없음");
+        }
+
+    } catch (error) {
+        //console.error("'제휴 관리' 개수 API 호출 중 예외 발생:", error);
+    }
+    // '제휴/제안 관리' 전체 개수 계산 
+    counts['col_manage'] = counts['col_proposal'] + counts['col_partnership']
+     
+    const apiEndpointForRealtorCount = "/admin/back/02-member/member_list_realtor_count.php"; 
+   
+    // 서버에 전달할 데이터 (예: 사용자 인증 정보 등, 필요 없다면 빈 객체 {})
+    requestData = {}; // 서버 스크립트에서 특정 조건이 필요하다면 추가
+    try {
+        // callApi 함수를 사용하여 서버 API 호출
+        const result = await callApi("POST", apiEndpointForRealtorCount, userInfo);
+
+        // API 응답 확인 및 데이터 추출
+        if (result && typeof result === 'object' && result.statusCode === 200 && result.responseData !== undefined) {
+            const waitingReatorCount = result.responseData.waitingCount;
+
+            if (waitingReatorCount !== undefined && waitingReatorCount !== null) {
+                counts['realtor']= waitingReatorCount;
             } else {
                  //console.error("API 응답 형식 오류: responseData에 예상된 개수 정보가 없습니다.", result.responseData);
             }
@@ -269,38 +326,26 @@ async function updateMenuCounts(rcvUserInfo) {
         }
 
     } catch (error) {
-        //console.error("'제휴 관리' 개수 API 호출 중 예외 발생:", error);
+        //console.error("'중개사 승인대기' 개수 API 호출 중 예외 발생:", error);
     }
-    counts['col_manage'] = counts['col_proposal'] + counts['col_partnership']
+    
+    // '회원 관리-중개사승인대기' 전체 개수 계산 (일반,금융회원은 승인 불필요)
+    counts['user_manage'] = counts['realtor'] 
 
     // 2. 가져온 개수를 바탕으로 해당하는 span 요소를 찾아 내용을 업데이트합니다.
-
     // '제휴/제안 관리' 상위 메뉴 개수 업데이트
-    const $topLevelSpan = $('#count-for-col_manage'); // 고유 ID로 선택
-    if ($topLevelSpan.length && counts['col_manage'] !== undefined) {
+    const $topLevelCollSpan = $('#count-for-col_manage'); // 고유 ID로 선택
+    if ($topLevelCollSpan.length && counts['col_manage'] !== undefined) {
          if (counts['col_manage'] > 0) {
-            $topLevelSpan.text(counts['col_manage']);
-            $topLevelSpan.show(); // 개수가 0보다 크면 보이게 함
-            $topLevelSpan[0].offsetHeight; 
-            
-            $topLevelSpan.css({
-                'display': 'inline-block',
-                'min-width': '1.5em',
-                'height': '1.5em',
-                'line-height': '1.5em',
-                'border-radius': '50%',
-                'background-color': '#dc3545', // 실제 CSS 값 사용
-                'color': 'white',
-                'text-align': 'center',
-                'font-size': '0.8em',
-                'margin-left': '0.5em',
-                'padding': '0 0.2em',
-                'box-sizing': 'border-box',
-                'vertical-align': 'middle'
-            });
-            $topLevelSpan.css('display');
+            $topLevelCollSpan.text(counts['col_manage']);
+            $topLevelCollSpan.show(); // 개수가 0보다 크면 보이게 함
+            //$topLevelCollSpan[0].offsetHeight; 
+            //$topLevelCollSpan.css('display');
+            forceStyleUpdate($topLevelCollSpan); // 강제 스타일 업데이트
          } else {
-            $topLevelSpan.hide(); // 개수가 0이면 숨김
+            $topLevelCollSpan.text(''); // 텍스트 제거
+            $topLevelCollSpan.hide(); // 개수가 0이면 숨김
+            $topLevelCollSpan.css('display', 'none'); // 명시적으로 display: none 설정
          }
     }
 
@@ -310,26 +355,13 @@ async function updateMenuCounts(rcvUserInfo) {
          if (counts['col_partnership'] > 0) {
             $partnershipSpan.text(counts['col_partnership']);
             $partnershipSpan.show();
-            $partnershipSpan[0].offsetHeight; 
-            
-            $partnershipSpan.css({
-                'display': 'inline-block',
-                'min-width': '1.5em',
-                'height': '1.5em',
-                'line-height': '1.5em',
-                'border-radius': '50%',
-                'background-color': '#dc3545', // 실제 CSS 값 사용
-                'color': 'white',
-                'text-align': 'center',
-                'font-size': '0.8em',
-                'margin-left': '0.5em',
-                'padding': '0 0.2em',
-                'box-sizing': 'border-box',
-                'vertical-align': 'middle'
-            });
-            $partnershipSpan.css('display');
+            //$partnershipSpan[0].offsetHeight; 
+            //$partnershipSpan.css('display');
+            forceStyleUpdate($partnershipSpan); // 강제 스타일 업데이트
          } else {
+            $partnershipSpan.text(''); // 텍스트 제거
             $partnershipSpan.hide();
+            $partnershipSpan.css('display', 'none'); // 명시적으로 display: none 설정
          }
     }
 
@@ -339,33 +371,85 @@ async function updateMenuCounts(rcvUserInfo) {
          if (counts['col_proposal'] > 0) {
             $proposalSpan.text(counts['col_proposal']);
             $proposalSpan.show();
-            $proposalSpan[0].offsetHeight; 
-            
-            $proposalSpan.css({
-                'display': 'inline-block',
-                'min-width': '1.5em',
-                'height': '1.5em',
-                'line-height': '1.5em',
-                'border-radius': '50%',
-                'background-color': '#dc3545', // 실제 CSS 값 사용
-                'color': 'white',
-                'text-align': 'center',
-                'font-size': '0.8em',
-                'margin-left': '0.5em',
-                'padding': '0 0.2em',
-                'box-sizing': 'border-box',
-                'vertical-align': 'middle'
-            });
-            $proposalSpan.css('display');
+            //$proposalSpan[0].offsetHeight; 
+            //$proposalSpan.css('display');
+            forceStyleUpdate($proposalSpan); // 강제 스타일 업데이트
          } else {
+            $proposalSpan.text(''); // 텍스트 제거
             $proposalSpan.hide();
+            $proposalSpan.css('display', 'none'); // 명시적으로 display: none 설정
          }
     }
+
+    // '회원 관리' 상위 메뉴 개수 업데이트
+    const $topLevelUserSpan = $('#count-for-user_manage'); // 고유 ID로 선택
+    if ($topLevelUserSpan.length && counts['user_manage'] !== undefined) {
+         if (counts['user_manage'] > 0) {
+            $topLevelUserSpan.text(counts['user_manage']);
+            $topLevelUserSpan.show(); // 개수가 0보다 크면 보이게 함
+            //$topLevelUserSpan[0].offsetHeight; 
+            //$topLevelUserSpan.css('display');
+            forceStyleUpdate($topLevelUserSpan); // 강제 스타일 업데이트
+         } else {
+            $topLevelUserSpan.text(''); // 텍스트 제거
+            $topLevelUserSpan.hide(); // 개수가 0이면 숨김
+            $topLevelUserSpan.css('display', 'none'); // 명시적으로 display: none 설정
+         }
+    }
+
+     // '중개사회원' 서브 메뉴 개수 업데이트
+    const $realtorSpan = $('#count-for-realtor'); // 고유 ID로 선택
+     if ($realtorSpan.length && counts['realtor'] !== undefined) {
+         if (counts['realtor'] > 0) {
+            $realtorSpan.text(counts['realtor']);
+            $realtorSpan.show();
+            //$realtorSpan[0].offsetHeight; 
+            //$realtorSpan.css('display');
+            forceStyleUpdate($realtorSpan); // 강제 스타일 업데이트
+         } else {
+            $realtorSpan.text(''); // 텍스트 제거
+            $realtorSpan.hide();
+            $realtorSpan.css('display', 'none'); // 명시적으로 display: none 설정
+         }
+    }
+
+    // 스타일 강제 적용 로직 추가
+//    const $menuCountBadges = $('.menu-count-badge');
+//    $menuCountBadges.each(function () {
+//        forceStyleUpdate($(this)); // 모든 메뉴 카운트 배지에 스타일 강제 적용
+//    });
 
     const activeLink = $("#navbar-nav").find("a.nav-link.active")[0];
     openParentMenus(activeLink)
 }
 
+/**
+ * 강제 스타일 업데이트 함수
+ * @param {jQuery} $element - 스타일을 업데이트할 jQuery 요소
+ */
+function forceStyleUpdate($element) {
+    const textContent = $element.text().trim(); // 요소의 텍스트 내용 확인
+    if ($element.length && textContent !== '') { // 텍스트가 비어있지 않은 경우에만 스타일 적용
+        $element.css({
+            display: 'inline-block',
+            minWidth: '1.5em',
+            height: '1.5em',
+            lineHeight: '1.5em',
+            borderRadius: '50%', // 원형으로 설정
+            backgroundColor: '#dc3545',
+            color: 'white',
+            textAlign: 'center',
+            fontSize: '0.8em',
+            padding: '0', // 원형 형태를 유지하기 위해 패딩 제거
+            boxSizing: 'border-box',
+            verticalAlign: 'middle',
+        });
+    } else {
+        $element.css({
+            display: 'none', // 텍스트가 없으면 숨김 처리
+        });
+    }
+}
 function logout() {
     try {
         deleteCookie("sa_cont_no");
