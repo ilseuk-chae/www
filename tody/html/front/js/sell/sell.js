@@ -181,6 +181,57 @@ function initAction() {
         }
     });
 
+    // 지도 - estate 선택 20250627
+    $(".map-estate-group").on("click", "button", function () {
+        const clickedButton = $(this);
+        const allButtons = $(".map-estate-group button");
+        const allToggleButton = allButtons.eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
+        const nonAllButtons = allButtons.not(allToggleButton); // '전체' 버튼을 제외한 나머지 버튼들
+
+        // 0. 전체 버튼 (첫 번째 버튼) 클릭 시 로직
+        if (clickedButton.is(allToggleButton)) {
+            // 1. 첫 번째 버튼('전체')이 클릭되었을 때
+            if (allToggleButton.hasClass("active")) {
+                // '전체' 버튼이 이미 활성화 상태였다면, 토글하여 비활성화
+                allToggleButton.removeClass("active");
+                nonAllButtons.removeClass("active"); // 나머지 모든 버튼 비활성화
+                //allButtons.eq(1).addClass("active"); // 두 번째 버튼만 활성화 (요구사항 1.2)
+            } else {
+                // '전체' 버튼이 비활성화 상태였다면, 토글하여 활성화
+                allToggleButton.addClass("active");
+                nonAllButtons.addClass("active"); // 나머지 모든 버튼 활성화 (요구사항 1.1)
+            }
+        } else {
+            // '전체' 버튼이 아닌 다른 버튼이 클릭되었을 때
+            clickedButton.toggleClass("active"); // 클릭된 버튼의 active 상태 토글
+
+            // 나머지 버튼들의 상태를 확인하여 '전체' 버튼의 상태를 결정
+            let allOthersAreActive = true;
+            nonAllButtons.each(function() {
+                if (!$(this).hasClass("active")) {
+                    allOthersAreActive = false;
+                    return false; // 하나라도 비활성화된 버튼이 있으면 루프 중단
+                }
+            });
+
+            if (allOthersAreActive) {
+                // 3. '전체' 버튼이 아닌 나머지 버튼들이 모두 활성화되면 '전체' 버튼도 활성화
+                allToggleButton.addClass("active");
+            } else {
+                // 2. '전체' 버튼 이외에 하나라도 비활성화된 버튼이 있으면 '전체' 버튼 비활성화
+                allToggleButton.removeClass("active");
+            }
+        }
+        estateNewList();
+    });
+    // 지도 - sale 선택 20250627
+    $(".map-sale-group button").on("click", function() {
+        // 클릭된 버튼의 active 클래스를 토글합니다.
+        // active 클래스가 없으면 추가하고, 있으면 제거합니다.
+        $(this).toggleClass("active");
+        estateNewList();
+    });
+
     // 지도 - 매물상세 - 열기 //
     $(".mcs-list").on("click", "dl", function (e) {
         // 클릭한 대상이 agency-name이면 중단
@@ -271,18 +322,27 @@ function initSearchEvents() {
             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
                 e.preventDefault(); // 화살표 키가 눌렸을 때 기본 동작을 차단 (커서 이동 방지)
                 e.stopPropagation(); // 이벤트 버블링 방지
+
+                // 커서 위치를 유지 (화살표 키에 의한 커서 이동 차단)
+                const cursorPositionStart = searchInput[0].selectionStart;
+                const cursorPositionEnd = searchInput[0].selectionEnd;
+
                 upDownEvent(e, searchTerm, resultListItems, selectedIndex);
+
+                // 화살표 키 이벤트 후에도 커서 위치를 원래대로 유지
+                searchInput[0].setSelectionRange(cursorPositionStart, cursorPositionEnd);
                 return; // 위아래 방향키 처리 후 종료
             }
 
             // Enter 키가 눌렸을 때
             if (e.key === "Enter") {
                 e.preventDefault(); // Enter 키로 인해 폼이 제출되는 것을 방지
-                enterEvent(e, searchTerm, resultListItems, selectedIndex);
+                // enterEvent(e, searchTerm, resultListItems, selectedIndex);   cis del 200701
+                resultListItems.eq(selectedIndex).click(); // selected된 리스트 항목 클릭 cis add 200701
                 return;
             }
 
-            // Enter 키가 아닌 경우, 키워드 검색 실행
+            // Enter 키가 아닌 경우, 키워드 검색 실행  // realprice.js 와 차이있음(20250701)
             if (/^\d+$/.test(searchTerm)) {
                 searchBox.slideUp(100, "easeOutQuad");
                 searchPlacesExecuted = false; // searchPlaces()가 실행되지 않음
@@ -301,12 +361,13 @@ function initSearchEvents() {
         }
     });
 
-    // 모바일 - 검색바 - 돋보기
+    // 모바일 - 검색바 - 돋보기   // realprice.js 와 차이있음(20250701)
     $(document).on("click", "#search_btn_mobile", function (e) {
         const { resultListItems, searchInput } = getSearchElements();
         const searchTerm = searchInput.val().trim(); // 검색어 입력값
         const selectedIndex = resultListItems.index($(".selected")); // 현재 `selected` 클래스가 적용된 항목 찾기
-        enterEvent(e, searchTerm, resultListItems, selectedIndex);
+        //enterEvent(e, searchTerm, resultListItems, selectedIndex);    cis del 200701
+        resultListItems.eq(selectedIndex).click(); // selected된 리스트 항목 클릭   cis add 200701
     });
 
     // 바디(검색바 제외) - 클릭
@@ -323,6 +384,35 @@ function initSearchEvents() {
             searchBox.slideUp(100, "easeOutQuad");
         }
     });
+
+    // '검색위치로' 버튼 클릭 이벤트    cis add 200701(아래함수 전체추가)
+    $("#search_return_btn").on("click", function () {
+        let places = JSON.parse(sessionStorage.getItem("lastSearchedPlace"));
+
+        if (Object.keys(places).length > 0) {
+            // 필요한 파라미터 및 쿠키를 한 번에 업데이트합니다
+            updateURL({
+                curLat: places.y,
+                curLng: places.x,
+            });
+
+            // URL 변경 후 즉시 파라미터를 체크하고 로그 출력
+            handleUrlChange();
+
+            // 이동할 위도 경도 위치를 생성합니다
+            var moveLatLon = new kakao.maps.LatLng(places.y, places.x);
+
+            // 지도 중심을 이동 시킵니다
+            map.panTo(moveLatLon);
+
+            // 법정동 상세 주소 정보를 요청
+            searchDetailAddrFromCoords(moveLatLon, displayAddressInfo);
+            searchArroundPlaces({ lat: places.y, lng: places.x }); // 주변 시설 정보 가져오기
+        } else {
+            $("#modalAlert").iziModal("open");
+            $("#alert_message").html("<h2>이동할 <span>검색 위치</span>가 없습니다.</h2>");
+        }
+    });
 }
 
 /**
@@ -331,7 +421,8 @@ function initSearchEvents() {
 function initHandleEvents() {
     // 필터 - 적용
     $("#filter_apply_btn").on("click", function () {
-        estateList();
+        //stateList();
+        estateNewList();
     });
 
     // 필터 - 초기화
@@ -449,7 +540,8 @@ function initHandleEvents() {
 function initListEvents() {
     // 매물 리스트 - 더보기
     $("#more_btn").on("click", function () {
-        estateList();
+        //estateList();
+        estateNewList();
     });
 
     // 매물 리스트 - 매물
@@ -467,7 +559,8 @@ function initListEvents() {
 
     $(".mcs-list").on("click", ".agency_name", function () {
         const estateNo = $(this).attr("data-estate-no");
-        estateList("", estateNo);
+        //estateList("", estateNo);
+        estateNewList("", estateNo);        
     });
 
     // 지도 - 매물상세 - 닫기 //
@@ -478,7 +571,8 @@ function initListEvents() {
 
     $("#msv_content").on("click", ".agency_name", function () {
         const estateNo = $("#map_sell_view .msv-info .estate-no").text();
-        estateList("", estateNo);
+        //estateList("", estateNo);
+        estateNewList("", estateNo);
     });
 }
 
@@ -518,6 +612,208 @@ async function estateList(searchNo = "", propertyNo = "") {
             Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
 
             let liHtml = "";
+            if (!Array.isArray(responseData) || responseData.length === 0) {
+                liHtml = `
+                    <div class="no_data_area_inner d-flex flex-column justify-content-center gap-3 text-center position-absolute" style="top:50%; left:50%; transform: translate(-50%, -50%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 512 512">
+                            <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" style="fill: var(--var-color-main-1)"></path>
+                        </svg>
+                        <p>매물이 없습니다.</p>
+                    </div>`;
+            } else {
+                // 리스트 생성 및 렌더링
+                liHtml = responseData.map(function (data, index) {
+                    if (searchNo && index === 0) {
+                        map.panTo(new kakao.maps.LatLng(data.lat, data.lng));
+                    }
+
+                    const zoomLevel = map.getLevel();
+
+                    // 1-1. 클러스터러 생성 또는 가져오기
+                    let clusterer = null;
+                    if (zoomLevel > 5) {
+                        clusterer = createClustererAll("all");
+                    } else {
+                        clusterer = createClusterer(data.estate_type, data.sale_type);
+                    }
+                    // 1-2. 마커 생성
+                    const marker = createClusteredMarker(data);
+                    // 1-3. 클러스터러에 마커 추가
+                    clusterer.addMarker(marker);
+
+                    // 전속 매물 여부에 따른 시각적 구분
+                    const isExclusive = data.exclusive_building === "Y";
+                    let estateTypeClass = isExclusive ? "exclusive" : "non-exclusive";
+
+                    // 2. 리스트 생성
+                    let sateTypeHtml = "";
+                    let priceHtml = "";
+                    switch (data.sale_type) {
+                        case "임대":
+                            sateTypeHtml = `<span class="label-default bg-violet1">임대</span>`;
+                            priceHtml = `<span class="text-nowrap">${formatPrice(data.sale_price, "all", true)}</span> / <span class="text-nowrap">${formatPrice(data.rent_price, "all", true)}</span>`;
+                            break;
+                        case "매매":
+                            sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
+                            priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
+                            break;
+                        case "교환":
+                            sateTypeHtml = `<span class="label-default bg-indigo1">교환</span>`;
+                            priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
+                            break;
+                    }
+
+                    let estateHtml = data.estate_type;
+                    
+                    let addressHtml = "";  //지번 주소
+                    if (data.address_jibun) {
+                        let address_temp = data.address_jibun;
+                        address_temp = cutAfterSuffix(data.address_jibun);  //'리', '동', '길', '로' 이하 삭제 
+                        addressHtml = `<span class="ms-md-auto">${address_temp}</span>`; 
+                    } else {
+                        addressHtml = `<span class="text-end">주소 정보 없음</span>`;
+                    }
+                    
+                    let areaHtml = "";
+                    switch (data.estate_type) {
+                        case "토지":
+                            areaHtml = formatArea(data.platArea);
+                            break;
+                        default:
+                            areaHtml = formatArea(data.totArea);
+                    }
+
+                    let image = "";
+                    if (data.imageArray.length > 0) {
+                        const imageUrl = `/front/back/00-include/image.php?token=${encodeURIComponent(data.imageArray[0].imageToken)}`;
+                        if (data.imageArray[0].fileType === "image") {
+                            image = `<img src="${imageUrl}" alt="" width="100" onerror="this.onerror=null;this.src='/front/assets/image/building_empty.png';">`;
+                        } else if (data.imageArray[0].fileType === "video") {
+                            image = `<video muted width="100%" class="img-fluid mx-auto rounded">
+                                        <source src="${imageUrl}" type="video/mp4" class="h-100">
+                                        Your browser does not support the video tag.
+                                    </video>`;
+                        } else {
+                            image = '<img src="/front/assets/image/building_empty.png" width="100%" alt="" title="" />';
+                        }
+                    } else {
+                        image = '<img src="/front/assets/image/building_empty.png" width="100%" alt="" title="" />';
+                    }
+
+                    return `
+                        <dl class="${estateTypeClass}" data-estate-no="${data.estate_no}">
+                            <dt>
+                                <h2 class="d-flex align-items-center gap-1">${sateTypeHtml} ${data.estate_type} ${addressHtml}</h2>
+                                <ul>
+                                    <li>${priceHtml}</li>
+                                    <li class="text-nowrap">${areaHtml}</li>
+                                </ul>
+                                <div>
+                                    <p class="text-clamp">${data.description ? data.description : "매물설명 없음"}</p>
+                                </div>
+                                <dl>
+                                    <dt class="agency-name" data-estate-no="${data.estate_no}"><button type="button">${data.agency_name}</button></dt>
+                                    <dd>등록일. ${data.reg_date}</dd>
+                                </dl>
+                            </dt>
+                            <dd>${image}</dd>
+                        </dl>`;
+                });
+
+                // if (responseData.length < 100) {
+                //     $("#more_btn").hide();
+                // }
+            }
+
+            // 기존 리스트를 부드럽게 사라지게 처리
+            li.children("dl")
+                .fadeOut(100)
+                .promise()
+                .done(function () {
+                    // 리스트가 완전히 사라진 후 새로운 리스트를 추가
+                    li.empty().append(liHtml);
+
+                    // 새롭게 추가된 리스트를 부드럽게 나타나게 함
+                    li.children("dl")
+                        .hide() // 먼저 숨긴 상태에서
+                        .delay(150) // 항목마다 100ms씩 지연
+                        .fadeIn(400); // 순차적으로 부드럽게 나타나게 설정
+                });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+/**
+ * 매물 리스트 가져오는 함수(멀티필터)
+ * @param {*} searchNo = 매물번호 검색
+ */
+async function estateNewList(searchNo = "", propertyNo = "") {
+    const filterObj = collectMultiFilterParams(); // 필터
+
+    const li = $(".mcs-list");
+
+    const start = li.children("dl").length;
+    const bounds = map.getBounds(); // 지도의 현재 영역을 얻어옵니다
+
+    const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표를 얻어옵니다
+    const neLatLng = bounds.getNorthEast(); // 영역의 북동쪽 좌표를 얻어옵니다
+    const dataObj = {
+        ...filterObj,
+        searchNo: searchNo,
+        propertyNo: propertyNo,
+        swLat: swLatLng.getLat(),
+        swLng: swLatLng.getLng(),
+        neLat: neLatLng.getLat(),
+        neLng: neLatLng.getLng(),
+        // start: start,
+    };
+
+    let liHtml = "";
+
+    // estate_type과 sale_type 값이 비어 있는 경우 요청 중단
+    //추후 enable 결정 estate_type 또는 sale_type 값이 없을때 처리
+//    if (!filterObj.estateType.length || !filterObj.saleType.length) {
+//        console.log("선택된 estate_type 또는 sale_type 값이 없습니다.");
+//        // 모든 클러스터러 초기화
+//        Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
+//        liHtml = `
+//            <div class="no_data_area_inner d-flex flex-column justify-content-center gap-3 text-center position-absolute" style="top:50%; left:50%; transform: translate(-50%, -50%);">
+//                <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 512 512">
+//                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+//                    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" style="fill: var(--var-color-main-1)"></path>
+//                </svg>
+//                <p>매물이 없습니다.</p>
+//            </div>`;
+//        li.children("dl")
+//        .fadeOut(100)
+//        .promise()
+//        .done(function () {
+//            // 리스트가 완전히 사라진 후 새로운 리스트를 추가
+//            li.empty().append(liHtml);
+//
+//            // 새롭게 추가된 리스트를 부드럽게 나타나게 함
+//            li.children("dl")
+//                .hide() // 먼저 숨긴 상태에서
+//                .delay(150) // 항목마다 100ms씩 지연
+//                .fadeIn(400); // 순차적으로 부드럽게 나타나게 설정
+//        });
+//        return; // 요청 중단
+//    }
+
+    callApiAbort("/front/back/sell/estate_multfilter_list.php", "POST", dataObj, "estateList")
+        .then((response) => {
+            if (!response) return;
+
+            const { statusCode, message, responseData } = response;
+            if (statusCode !== 200) return;
+
+            // 모든 클러스터러 초기화
+            Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
+
+            
             if (!Array.isArray(responseData) || responseData.length === 0) {
                 liHtml = `
                     <div class="no_data_area_inner d-flex flex-column justify-content-center gap-3 text-center position-absolute" style="top:50%; left:50%; transform: translate(-50%, -50%);">
@@ -929,6 +1225,122 @@ function collectFilterParams() {
 }
 
 /**
+ * 멀티 필터 파라미터를 수집하는 함수( 추가)
+ * @returns {Object} 필터 파라미터 객체
+ */
+function collectMultiFilterParams() {
+    return {
+        estateType: getEstateListFilterParams(), 
+        saleType: getSaleListFilterParams(),     
+        minPrice: $("#input_price_start").val(),
+        maxPrice: $("#input_price_end").val(),
+    };
+}
+
+function getSaleListFilterParams() {
+    let sale_value = [];
+    $('.map-sale-group button.active').each(function () {
+        const btn_text = $(this).text().trim();
+        sale_value.push(saleTypeToValue(btn_text)); // 버튼의 텍스트 값을 가져와 배열에 추가
+    });
+    return sale_value;
+}
+
+function getEstateListFilterParams() {
+    let estate_value = [];
+    let = btn_text = "";
+    $('.map-estate-group button.active').each(function () {
+        const btn_text = $(this).text().trim();
+        if( btn_text === "전체") {
+            estate_value.push("001"); // 버튼의 텍스트 값을 가져와 배열에 추가
+            estate_value.push("002");
+            estate_value.push("003");
+            estate_value.push("004");
+            estate_value.push("005");
+            estate_value.push("006");
+            estate_value.push("007");
+            estate_value.push("008");
+            estate_value.push("009");
+            estate_value.push("999");
+        }
+        else {
+            estate_value.push(estateTypeToValue(btn_text)); // 버튼의 텍스트 값을 가져와 배열에 추가
+        }
+        
+    });
+    return estate_value;
+    
+}
+
+/**
+ *  sale 타입을 값으로변경하는 함수
+ * @param {string} saleType - sale 타입 
+ */
+function saleTypeToValue(saleType) {
+    let saleValue;
+    switch (saleType) {
+        case "매매":
+            saleValue = "001";
+            break;
+        case "임대":
+            saleValue = "002";
+            break;
+        case "교환":
+            saleValue = "003";
+            break;
+        default:
+            console.error("유효하지 않은 거래종류입니다.");
+            break;
+    }
+    return saleValue;
+}
+/**
+ * estate 타입을 값으로변경하는 함수
+ * @param {string} estateType - estate 타입 타입 
+ */
+function estateTypeToValue(estateType) {
+    let estateValue;
+    switch (estateType) {
+        case "전체":
+            estateValue = "";
+            break;
+        case "상가":
+            estateValue = "001";
+            break;
+        case "사무실":
+            estateValue = "002";
+            break;
+        case "공장/창고":
+            estateValue = "003";
+            break;
+        case "지식산업센터":
+            estateValue = "004";
+            break;
+        case "건물":
+            estateValue = "005";
+            break;
+        case "토지":
+            estateValue = "006";
+            break;
+        case "아파트":
+            estateValue = "007";
+            break;
+        case "오피스텔":
+            estateValue = "008";
+            break;
+        case "빌라/주택":
+            estateValue = "009";
+            break;
+        case "기타":
+            estateValue = "999";
+            break;
+        default:
+            console.error("유효하지 않은 매물유형입니다.");
+            break;
+    }
+    return estateValue;
+}
+/**
  * 필터값 초기화 함수
  */
 function resetFilters() {
@@ -938,7 +1350,8 @@ function resetFilters() {
     var priceSlider = document.getElementById("price_slider");
     priceSlider.noUiSlider.set([0, 2000000]);
 
-    estateList();
+    //estateList();
+    estateNewList();  
 }
 
 /**
@@ -1097,7 +1510,8 @@ function enterEvent(e, searchTerm, resultListItems, selectedIndex) {
     // 빈 값이거나 숫자로만 이루어진 상태에서 Enter 키가 눌리면 estateList 실행
     if (searchTerm === "" || /^\d+$/.test(searchTerm)) {
         searchEstateNo = true; // 매물번호 검색 플래그 변경
-        estateList(searchTerm); // estateList(searchTerm) 실행
+        //estateList(searchTerm); // estateList(searchTerm) 실행
+        estateNewList(searchTerm); // estateList(searchTerm) 실행
         searchBox.slideUp(100, "easeOutQuad");
         searchPlacesExecuted = false; // searchPlaces()가 실행되지 않았음
     }
@@ -1106,7 +1520,8 @@ function enterEvent(e, searchTerm, resultListItems, selectedIndex) {
         searchEstateNo = false; // 매물번호 검색 플래그 변경
         // searchPlaces()가 실행된 후, selected된 항목이 있을 경우 해당 항목 클릭
         resultListItems.eq(selectedIndex).click(); // selected된 리스트 항목 클릭
-        estateList(); // estateList(searchTerm) 실행
+        //estateList(); // estateList(searchTerm) 실행
+        estateNewList(); // estateList(searchTerm) 실행
     }
 }
 
@@ -2601,6 +3016,9 @@ async function updateURL(paramsToUpdate) {
 
 function cutAfterSuffix(text) {
     const suffixes = ['리', '동', '길', '로']; // 기준이 될 접미사 목록
+    if(text === undefined || text === null || text === '') {
+        return ''; // 빈 문자열이나 null, undefined인 경우 빈 문자열 반환
+    }
 
     // 가장 뒤에 나타나는 접미사를 찾기 위해, 접미사 목록을 순회합니다.
     for (const suffix of suffixes) {

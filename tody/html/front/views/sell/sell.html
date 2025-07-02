@@ -197,7 +197,47 @@
                         <button type="button" onclick="setOverlayMapTypeId('use_district', map)">지적편집도</button>
                         <button type="button" id="roadviewControl" onclick="setRoadviewRoad()">로드뷰</button>
                     </div>
+                    
+                    <!-- 좌측 상단 - 매물유형 옆 매물유형  -->
+                        
+                    <div class="map-sale-group">
+                        <button type="button" class="active">매매</button>
+                        <button type="button" class="active">임대</button>
+                        <button type="button" class="active">교환</button>
+                    </div>
+                
+                    <!-- 좌측 상단 - 이력 옆 매물유형  -->
+                    <div class="map-estate-group">
+                        <button type="button" class="active">전체</button>
+                        <button type="button" class="active">상가</button>
+                        <button type="button" class="active">사무실</button>
+                        <button type="button" class="active">공장/창고</button>
+                        <button type="button" class="active">지식산업센터</button>
+                        <button type="button" class="active">건물</button>
+                        <button type="button" class="active">토지</button>
+                        <button type="button" class="active">아파트</button>
+                        <button type="button" class="active">오피스텔</button>
+                        <button type="button" class="active">빌라/주택</button>
+                    </div>
+                  
+                    <div class="map-price-group">
+                        <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown"><i class="fa-light fa-sliders"></i>가격대</button>
+                    </div>
 
+                    <!-- 좌측 상단 - 이력 옆 매물유형
+                    <div class="map-estate-group">
+                        <button type="button" class="active" onclick="changeeEstateMapType('all')">전체</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('store')">상가</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('office')">사무실</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('factory')">공장/창고</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('knowledge')">지식산업센터</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('building')">건물</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('land')">토지</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('apartment')">아파트</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('officetel')">오피스텔</button>
+                        <button type="button" class="active" onclick="changeeEstateMapType('house')">빌라/주택</button>
+                    </div>
+                    -->                
                     <!-- 로드뷰 -->
                     <div id="rvWrapper">
                         <div id="road_bg" class="road-bg"></div>
@@ -232,11 +272,12 @@
 
                     <!-- 우측 옵션 -->
                     <div class="map-option">
+                        <!-- 우측 옵션 열기  검색필터 추가로 삭제 
                         <button type="button" id="mobile_filter_btn" class="bg-main py-2" data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown">
                             <i class="fa-light fa-sliders color-white"></i>
                             <span class="color-white">필터</span>
                         </button>
-
+                        -->
                         <button id="mapOptionToolOpen">
                             <i class="fa-sharp fa-light fa-pencil"></i>
                             <span>도구<br />사용</span>
@@ -385,8 +426,8 @@
 
                         <div class="mc-search">
                             <input type="text" id="search_input" name="" title="" value="" placeholder="" autocomplete="off" />
-                            <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown"><i class="fa-light fa-sliders"></i> 필터</button>
-                            
+                            <!-- <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown"><i class="fa-light fa-sliders"></i> 필터</button> -->
+                            <button type="button" id="search_return_btn" class="btn"><i class="fa-light fa-location-dot"></i> 검색위치로</button>
                             <div id="search_result_box" class="mcs-box">
                                 <ul id="placesList"></ul>
                                 <div id="pagination" class="mcsb-pagination"></div>
@@ -694,8 +735,35 @@
                         </button>
                     </div>
                     <!-- 매물상세 끝 -->
-
                     <!-- 모달 - 필터 -->
+                    <div class="modal-area" id="modalSellFilter">
+                        <dl class="ma-header">
+                            <dt>가격대 필터</dt>
+                            <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+                        </dl>
+                        <div class="ma-input">
+                            <div>
+                                <h2>가격대를 선택하세요.</h2>
+                                <div>
+                                    <div id="price_slider" data-rangeslider data-slider-style="border" data-slider-color="info"></div>
+                                    <p>
+                                        <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_start" />
+                                        <span>만</span>
+                                        <span>~</span>
+                                        <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_end" />
+                                        <span>만</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ma-btn">
+                            <button type="button" id="filter_reset_btn" class="btn-default-m bg-gray w100" data-izimodal-close="">초기화</button>
+                            <button type="button" id="filter_apply_btn" class="btn-default-m bg-main w100" data-izimodal-close="">적용</button>
+                        </div>
+                    </div>
+                    <!-- 모달 - 필터 끝 -->
+
+                    <!-- 모달 - 필터 (원 source)
                     <div class="modal-area" id="modalSellFilter">
                         <dl class="ma-header">
                             <dt>필터</dt>
@@ -724,11 +792,11 @@
                                     <div id="price_slider" data-rangeslider data-slider-style="border" data-slider-color="info"></div>
                                     <p>
                                         <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_start" />
-                                        <!-- <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" />  -->
+                                        // <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" /> 
                                         <span>만</span>
                                         <span>~</span>
                                         <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_end" />
-                                        <!-- <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" />  -->
+                                        // <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" />  
                                         <span>만</span>
                                     </p>
                                 </div>
@@ -739,7 +807,7 @@
                             <button type="button" id="filter_apply_btn" class="btn-default-m bg-main w100" data-izimodal-close="">적용</button>
                         </div>
                     </div>
-                    <!-- 모달 - 필터 끝 -->
+                     모달 - 필터 끝 -->
                 </div>
             </div>
             <!-- 지도 영역 끝 -->

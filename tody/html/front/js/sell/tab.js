@@ -342,6 +342,40 @@ function formatDate(dateString) {
     return `${year}-${month}-${day}`;
 }
 
+/**
+ * 카테고리 검색을 요청하는 함수입니다
+ * @returns
+ */
+async function searchArroundPlaces(coords) {
+    return;
+    // 합필분석 모드에서는 중단
+    if (isMultiSelectMode) return;
 
+    // 지도에 표시되고 있는 마커를 제거합니다
+    removeMarker(placeMarkers);
+    // 커스텀 오버레이를 숨깁니다
+    placeOverlay.setMap(null);
+    // 반경 폴리곤 제거
+    if (placeRangePolygon) placeRangePolygon.setMap(null);
+
+    searchCategory(coords, "SW8");
+    searchCategory(coords, "SC4");
+    searchCategory(coords, "PS3");
+    searchCategory(coords, "AC5");
+    searchCategory(coords, "BK9");
+    searchCategory(coords, "PO3");
+    searchCategory(coords, "PM9");
+    searchCategory(coords, "HP8");
+    searchCategory(coords, "MT1");
+    searchCategory(coords, "CS2");
+    searchCategory(coords, "FD6");
+    searchCategory(coords, "CE7");
+    searchCategory(coords, "CT1");
+    searchCategory(coords, "AT4");
+    searchCategory(coords, "AD5");
+    searchCategory(coords, "PK6");
+    searchCategory(coords, "OL7");
+    searchBusStop(coords);
+}
 
 
