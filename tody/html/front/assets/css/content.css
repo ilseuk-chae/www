@@ -2195,7 +2195,7 @@
     white-space: nowrap; /* 버튼 텍스트가 줄바꿈되지 않도록 합니다. */
 }
 /*    map-history, map-sale-group,map-estate-group,map-select-group*/
-/* 454(40)         504(120)       634(120)         684(40) */
+/* 454(40)         504(120)       624(120)         1084(40) */
 
 
 /* 지도 - 좌측 상단 - 이력, sale,매물 */
@@ -2211,9 +2211,14 @@
     z-index: 1;
     flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
     gap: 2px;
+    /*margin-left: 504px; */
+}
+.map-sale-group{
+    margin-left: 54px;
+}
+.map-sale-group.active {
     margin-left: 504px;
 }
-
 .map-sale-group button {
     display: inline-block;
     height: 32px;
@@ -2245,13 +2250,18 @@
     z-index: 1;
     flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
     gap: 2px;
-    margin-left: 634px;
+    /*margin-left: 634px;*/
 }
-
+.map-estate-group {
+    margin-left: 174px; /* map-sale-group과의 간격을 조정 */
+}
+.map-estate-group.active{
+    margin-left: 624px; /* map-sale-group과의 간격을 조정 */
+}
 .map-estate-group button {
     display: inline-block;
     height: 32px;
-    padding: 6px;
+    padding: 6px 4px;  /* 6px <--> 4px */
     font-size: 12px;
     line-height: 12px;
     letter-spacing: -1px;
@@ -2278,13 +2288,18 @@
     border: 1px solid #ccc; /* 예시 테두리 */
     z-index: 1;
     flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
-    margin-left: 1134px;
-
+    /*margin-left: 1134px;*/
+}
+.map-price-group{
+    margin-left: 634px;
+}
+.map-price-group.active {
+    margin-left: 1084px;
 }
 .map-price-group button {
     display: inline-block;
     height: 32px;
-    padding: 6px;
+    padding: 6px 4px;  /* 6px <--> 4px */
     font-size: 12px;
     line-height: 12px;
     letter-spacing: -1px;
@@ -2294,28 +2309,126 @@
     cursor: pointer;    
     white-space: nowrap; /* 버튼 내용이 한 줄로 표시되도록 */
 }
-/*@media (max-width: 991px) {
-    /* map-history의 위치는 absolute이므로 그대로 유지 
 
-    .map-group {
-        flex-direction: column; /* 자식 요소를 세로로 배치 
-        align-items: flex-start; /* 왼쪽 정렬 
-        gap: 5px; /* 요소 간 간격 
+
+@media all and (max-width: 991px) {
+    .map-history.active {
+        margin-left: 4px;
     }
-
-    .map-history     {
-        flex-direction: row; /* 가로 배치 유지 
-        margin-bottom: 10px; /* map-estate-group과 간격 
+    .map-sale-group {
+        margin-left: 4px;
+        margin-top: 44px;   
     }
-
-    .map-sale-group,
+    .map-sale-group.active {
+        margin-left: 4px;
+        margin-top: 44px;   
+    }
     .map-estate-group {
-        flex-direction: column; /* 세로 배치 
-        gap: 5px; /* 버튼 간 간격 
+        margin-left: 4px;
+        flex-direction: column; 
+        margin-top: 80px !important; 
+        margin-left: 4px !important;        
+    }
+    .map-estate-group.active {
+        margin-left: 4px;
+        flex-direction: column; 
+        margin-top: 80px !important; 
+        margin-left: 4px !important;        
+    }
+    .map-price-group {
+        margin-left: 4px !important;
+        margin-top: 422px !important; 
+    }
+    .map-price-group.active {
+        margin-left: 4px !important;
+        margin-top: 422px !important; 
+    }
+}
+/*
+@media all and (max-width: 991px) {
+    .map-history.active {
+        margin-left: 4px;
+    }
+    .map-sale-group.active {
+        margin-left: 4px;
+        margin-top: 44px;   
+    }
+    .map-sale-group button {
+        padding: 2px;
+        width: 27px;
+        height: 27px;
+        margin-bottom: 5px; 
+    }
+    .map-estate-group.active {
+        margin-left: 4px;
+        flex-direction: column; 
+        margin-top: 80px !important; 
+        margin-left: 4px !important;        
+    }
+    .map-estate-group button {
+        padding: 2px;
+        height: 27px;
+    }
+    .map-price-group.active {
+        margin-left: 4px !important;
+        margin-top: 375px !important; 
+        
+    }
+    .map-price-group button {
+        padding: 2px;
+        height: 27px;
+        width: 66.25px
     }
 }
 */
 
+@media all and (max-width: 1405px) {
+    .map-estate-group {
+        margin-top: 44px;
+        margin-left: 4px;
+        flex-direction: column;   
+    }
+    .map-estate-group.active {
+        margin-top: 44px;
+        margin-left: 454px;
+        flex-direction: column;   
+    }
+    .map-price-group {
+       margin-left: 4px;
+       margin-top: 392px; 
+    }
+    .map-price-group.active {
+        margin-left: 454px;
+        margin-top: 392px; 
+     }
+}
+
+/*   
+@media all and (max-width: 991px) {
+    .map-sale-group.active {
+        margin-left: 54px;
+    }
+    .map-estate-group.active {
+        margin-left: 184px;
+    }
+    .map-price-group.active {
+        margin-left: 684px;
+    }
+}
+*/
+@media all and (max-width: 991px) {
+   
+}
+@media all and (max-width: 479px) {
+}
+@media all and (min-width: 480px) and (max-width: 767px) {
+}
+@media all and (min-width: 992px) and (max-width: 1199px) {
+}
+@media all and (min-width: 1200px) and (max-width: 1399px) {
+}
+@media all and (min-width: 1400px) {
+}
 
 /* 지도 - 우측 옵션 */
 .map-option {
@@ -3126,51 +3239,6 @@
 @media all and (max-width: 991px) {
     .map-history.active {
         margin-left: 4px;
-    }
-    /*.map-sale-group {
-        margin-left: 54px;    
-    }*/
-    .map-sale-group {
-        margin-left: 4px;
-        margin-top: 44px;   
-    }
-    .map-sale-group button {
-        padding: 2px;
-        width: 27px;
-        height: 27px;
-        margin-bottom: 5px; /* 버튼 간 간격 */
-    }
-    .map-estate-group {
-        margin-left: 4px;
-        flex-direction: column; /* 세로 배치 */
-        margin-top: 80px !important; /* 44px + 32 + 4 map-history와 간격 */
-        margin-left: 4px !important;        
-    }
-    .map-estate-group button {
-        padding: 2px;
-        height: 27px;
-    }
-    .map-price-group {
-        margin-left: 4px !important;
-        margin-top: 375px !important; 
-        
-    }
-    .map-price-group button {
-        padding: 2px;
-        height: 27px;
-        width: 66.25px
-    }
-    
-}
-@media all and (max-width: 1460px) {
-    .map-estate-group {
-        margin-top: 44px; /* 44px map-history와 간격 */
-        margin-left: 454px;
-        flex-direction: column; /* 세로 배치 */        
-    }
-    .map-price-group {
-       margin-left: 454px;
-       margin-top: 392px; /* 44px map-history와 간격 */
     }
 }
 @media all and (max-width: 479px) {

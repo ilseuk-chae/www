@@ -22,13 +22,81 @@ $(document).ready(async function () {
         handleUrlChangeForEstateNo();
     });
     //getEstateListToMakeOption(); // 매물 리스트 가져와서 SelectOption list 생성
-    updateCompareApplyButtonState(); // <-- 비ㄴ교버튼 초기화
+    updateCompareApplyButtonState(); // <-- 비교버튼 초기화
 });
 
 // 초기화 함수 호출
 document.addEventListener("DOMContentLoaded", function () {
+    initmodalDetailRow(); // 매물 상세 행 초기화
     initModalDrag();
 });
+
+function initmodalDetailRow(){
+    const modalBodyScrollContent = document.querySelector('.modal-body-scroll-content');
+
+    // 가상의 'aaa DB table'에서 가져온 property-label 목록
+    // 실제로는 fetch() 등을 통해 서버에서 이 목록만 받아올 것입니다.
+    const propertyLabels = [
+        '매물 사진', '소재지(지번)','소재지(도로명)', '관련지번','참고사항',
+        '매물구분', '거래종류', '가격', '토지면적', '건축면적',
+        '총면적', '지목', "용도지역", '용적률', '건폐율',
+        '층수', '구조', '사용승인일', '주차 가능 대수', '주용도',
+        '실제 사용용도', '월 관리비', '융자금', '도로여건', '전기',
+        '용수', '건물층고', '특장점', '상세 설명'
+    ]; // 총 29개 항목
+
+    /**
+     * 하나의 빈 매물 상세 정보 행을 생성하는 함수
+     * property-label만 채우고, value와 compare 영역은 비워둡니다.
+     * @param {string} labelText - property-label에 들어갈 텍스트
+     * @returns {HTMLElement} - 생성된 div.property-detail-row 요소
+     */
+    function createEmptyPropertyDetailRow(labelText) {
+        // 1. 최상위 div.property-detail-row 생성
+        const rowDiv = document.createElement('div');
+        rowDiv.classList.add('property-detail-row');
+
+        // 2. div.property-label.column-left 생성 및 텍스트 설정
+        const labelDiv = document.createElement('div');
+        labelDiv.classList.add('property-label', 'column-left');
+        labelDiv.textContent = labelText; // DB에서 가져온 라벨 텍스트 설정
+
+        // 3. div.property-values.column-center 생성
+        const valuesDiv = document.createElement('div');
+        valuesDiv.classList.add('property-values', 'column-center');
+
+        // 4. div.property-value-item 두 개 생성 (내용은 비워둡니다)
+        const valueItem1 = document.createElement('div');
+        valueItem1.classList.add('property-value-item');
+        // valueItem1.textContent = ''; // 기존 로직에서 채워질 예정이므로 비워둠
+
+        const valueItem2 = document.createElement('div');
+        valueItem2.classList.add('property-value-item');
+        // valueItem2.textContent = ''; // 기존 로직에서 채워질 예정이므로 비워둠
+
+        // property-values에 value-items 추가
+        valuesDiv.appendChild(valueItem1);
+        valuesDiv.appendChild(valueItem2);
+
+        // 5. div.property-compare.column-right 생성 (내용은 비워둡니다)
+        const compareDiv = document.createElement('div');
+        compareDiv.classList.add('property-compare', 'column-right');
+        // compareDiv.textContent = ''; // 기존 로직에서 채워질 예정이므로 비워둠
+
+        // 6. 모든 요소를 rowDiv에 추가
+        rowDiv.appendChild(labelDiv);
+        rowDiv.appendChild(valuesDiv);
+        rowDiv.appendChild(compareDiv);
+
+        return rowDiv; // 완성된 빈 행 요소 반환
+    }
+
+    // property-label 목록을 순회하며 빈 행들을 동적으로 생성하여 추가
+    propertyLabels.forEach(label => {
+        const rowElement = createEmptyPropertyDetailRow(label);
+        modalBodyScrollContent.appendChild(rowElement);
+    });
+}; // 매물 상세 행 초기화
 /**
  * 페이지 로드 시 ModalDrag 초기화 실행
  */
@@ -238,12 +306,18 @@ function initAction() {
         if ($(".map-content").hasClass("active")) {
             $(".map-content").removeClass("active");
             $(".map-history").removeClass("active");
+            $(".map-sale-group").removeClass("active");
+            $(".map-estate-group").removeClass("active");
+            $(".map-price-group").removeClass("active");
             $(".map-bg").addClass("full");
             $("#rvWrapper").addClass("full");
             $(".map-sell-view").removeClass("active");
         } else {
             $(".map-content").addClass("active");
             $(".map-history").addClass("active");
+            $(".map-sale-group").addClass("active");
+            $(".map-estate-group").addClass("active");
+            $(".map-price-group").addClass("active");
             $(".map-bg").removeClass("full");
             $("#rvWrapper").removeClass("full");
             // $(".map-sell-view").addClass("active");
@@ -3005,6 +3079,9 @@ function initClusterEvent(clusterer) {
 
             $(".map-content").addClass("active");
             $(".map-history").addClass("active");
+            $(".map-sale-group").addClass("active");
+            $(".map-estate-group").addClass("active");
+            $(".map-price-group").addClass("active");
             $(".map-bg").removeClass("full");
             $("#rvWrapper").removeClass("full");
             // $(".map-sell-view").addClass("active");
