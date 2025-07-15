@@ -433,13 +433,29 @@
                                 <div id="pagination" class="mcsb-pagination"></div>
                             </div>
                         </div>
-                        
-                        <div class="mc-tab-menu2">
-                            <dl>
-                                <dd>
-                                    <button id="toggle_unit_btn"><span id="unit_pyeong">평</span> <i class="fa-light fa-arrows-repeat"></i> <span id="unit_m2" class="active">㎡</span></button>
-                                </dd>
-                            </dl>
+                       
+                        <div class="mc-tab-menu3">
+                            <div class="comparison-area-content"> <!-- 새로운 Flexbox 컨테이너 -->
+                                <div class="comparison-left-group" id="comparison_Button_Group">
+                                    <button type="button" id="compare_open_btn" class="button">
+                                        <i class="fa-light fa-sliders"></i> 매물비교
+                                    </button>
+                                    <div id="comparedItemsDisplay" class="compared-items-list">
+                                        <!-- 여기에 비교매물1, 비교매물2 등이 JavaScript로 동적으로 추가될 예정입니다. -->
+                                        <!-- 예시: -->
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <button type="button" id="compare_clear_btn" class="button">
+                                        <i class="fa-light"></i> 비교매물 삭제
+                                    </button>
+                                </div>
+                                <div class="unit-toggle-group">
+                                    <button id="toggle_unit_btn">
+                                        <span id="unit_pyeong">평</span> <i class="fa-light fa-arrows-repeat"></i> <span id="unit_m2" class="active">㎡</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mc-sell">
@@ -763,51 +779,6 @@
                     </div>
                     <!-- 모달 - 필터 끝 -->
 
-                    <!-- 모달 - 필터 (원 source)
-                    <div class="modal-area" id="modalSellFilter">
-                        <dl class="ma-header">
-                            <dt>필터</dt>
-                            <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
-                        </dl>
-                        <div class="ma-input">
-                            <div>
-                                <h2>매물종류를 선택하세요.</h2>
-                                <p>
-                                    <select id="estate_type_filter" name="" class="form-select select-box middle w100p">
-                                        <option value="">매물유형 선택</option>
-                                    </select>
-                                </p>
-                            </div>
-                            <div>
-                                <h2>거래방식을 선택하세요.</h2>
-                                <p>
-                                    <select id="sale_type_filter" name="" class="form-select select-box middle w100p">
-                                        <option value="">거래방식 선택</option>
-                                    </select>
-                                </p>
-                            </div>
-                            <div>
-                                <h2>가격대를 선택하세요.</h2>
-                                <div>
-                                    <div id="price_slider" data-rangeslider data-slider-style="border" data-slider-color="info"></div>
-                                    <p>
-                                        <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_start" />
-                                        // <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" /> 
-                                        <span>만</span>
-                                        <span>~</span>
-                                        <input type="number" class="form-control form-control-sm shadow-none" min="0" max="100000000" step="1000" id="input_price_end" />
-                                        // <input type="text" name="" title="" value="" placeholder="" class="input-box middle w45p" />  
-                                        <span>만</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="ma-btn">
-                            <button type="button" id="filter_reset_btn" class="btn-default-m bg-gray w100" data-izimodal-close="">초기화</button>
-                            <button type="button" id="filter_apply_btn" class="btn-default-m bg-main w100" data-izimodal-close="">적용</button>
-                        </div>
-                    </div>
-                     모달 - 필터 끝 -->
                 </div>
             </div>
             <!-- 지도 영역 끝 -->
@@ -906,6 +877,294 @@
                 <!-- 필요하다면 푸터 등 다른 내용 추가 -->
             </div>
         </div>
+
+        <!-- 모달 - 매물비교 -->
+        <div id="compareModal" class="comparemodal" style="display: none;">
+            <div class="compare-modal-overlay"></div>
+            <div class="compare-modal-content" > <!-- 요소가 draggable 대상입니다 -->
+                <div class="compare-modal-header">
+                    <div class="compare-header-placeholder"></div> <!-- 새로 추가될 빈 요소 -->
+                    <h2 class="compare-title">매물비교</h2>
+                    <button class="compare-close-button">X</button>
+                </div>
+                
+                <div class="compare-modal-body">
+                    <div class="modal-body-header">
+                        <div class="column-left">선택 매물</div>
+                        <div class="column-center">
+                            <div class="center-left-half">
+                                <div class="property-values column-center">
+                                    <div class="property-item-left" id="compare_item1"></div>
+                                </div>
+                            </div>
+                            <div class="center-right-half">
+                                <div class="property-values column-center">
+                                    <div class="property-item-right" id="compare_item2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column-right">매물1 대비</div>
+                    </div>
+                    <div class="modal-body-scroll-content">
+                        <!-- 중간 스크롤 가능한 영역 내용 (예: 실제 매물 목록, 데이터 테이블) -->
+                        <!-- 매물 상세 정보 행들 -->
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">매물 사진</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">소재지(지번)</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">소재지(도로명)</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">관련지번</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">참고사항</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">매물구분</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">거래종류</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">가격</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">토지면적</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">건축면적</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">총면적</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">지목</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">용도지역</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">용적률</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">건폐율</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">층수</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">구조</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">사용승인일</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">주차 가능 대수</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">주용도</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">실제 사용용도</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">월 관리비</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">융자금</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">도로여건</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">전기</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">용수</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">건물층고</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">특장점</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right"></div>
+                        </div>
+                        <div class="property-detail-row">
+                            <div class="property-label column-left">상세 설명</div>
+                            <div class="property-values column-center">
+                                <div class="property-value-item"></div>
+                                <div class="property-value-item"></div>
+                            </div>
+                            <div class="property-compare column-right">??</div>
+                        </div>
+                    </div>
+                    <div class="modal-body-footer">
+                        <div class="column-left">평 단가</div>
+                        <div class="column-center">
+                            <div class="center-left-half">
+                                <div class="property-values column-center">
+                                    <div class="property-item-left" id="compare_unit1"></div>
+                                </div>
+                            </div>
+                            <div class="center-right-half">
+                                <div class="property-values column-center">
+                                    <div class="property-item-right" id="compare_unit2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column-right">단가비교</div>
+                    </div>
+                </div>
+                
+                <!-- 필요하다면 푸터 등 다른 내용 추가 -->
+            </div>
+         </div>
+         
+        <!-- 모달 - 매물비교 끝 -->
 
         <script>
             // range - 가격대 //

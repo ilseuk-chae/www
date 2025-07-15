@@ -1,6 +1,11 @@
 let searchPlacesExecuted = false; // searchPlaces() 함수가 실행되었는지 추적
 let searchEstateNo = false; // 매물번호로 검색했는지 플래그
 let isKeyDown = false; // 이벤트 중복 방지 플래그
+// 전역 변수로 compareList 객체를 선언합니다.
+// 이 객체는 페이지의 어느 스크립트에서든 접근하고 수정할 수 있습니다.
+let compareList = {
+    data: [] // 비교 대상 매물의 상세 정보를 저장할 배열 (data 구조체 역할)
+};
 
 $(document).ready(async function () {
     initAction(); // 액션 이벤트 초기화
@@ -16,7 +21,160 @@ $(document).ready(async function () {
     window.addEventListener("popstate", function (e) {
         handleUrlChangeForEstateNo();
     });
+    //getEstateListToMakeOption(); // 매물 리스트 가져와서 SelectOption list 생성
+    updateCompareApplyButtonState(); // <-- 비ㄴ교버튼 초기화
 });
+
+// 초기화 함수 호출
+document.addEventListener("DOMContentLoaded", function () {
+    initModalDrag();
+});
+/**
+ * 페이지 로드 시 ModalDrag 초기화 실행
+ */
+function initModalDrag() {
+    const modal = document.querySelector("#compareModal .compare-modal-content");
+    const header = document.querySelector("#compareModal .compare-modal-header");
+
+    let isDragging = false;
+    let initialMouseX, initialMouseY; // 마우스 클릭 시점의 좌표
+    let initialModalX, initialModalY; // 모달의 현재 transform X, Y 값
+    let currentTranslateX = 0; // 모달의 현재 transform X 값
+    let currentTranslateY = 0; // 모달의 현재 transform Y 값
+
+    // 모달의 초기 transform 값을 파싱하는 함수 (CSS에서 설정된 -50%, -50%를 가져옴)
+    function getTranslateValues(element) {
+        const style = window.getComputedStyle(element);
+        const matrix = new DOMMatrixReadOnly(style.transform);
+        return {
+            x: matrix.m41,
+            y: matrix.m42
+        };
+    }
+
+    // 모달의 초기 위치를 설정 (CSS의 translate(-50%, -50%)를 기준으로)
+    // 이 부분은 모달이 처음 열릴 때 한 번만 호출되거나,
+    // 모달이 닫혔다가 다시 열릴 때 초기화되어야 합니다.
+    const initialTransform = getTranslateValues(modal);
+    currentTranslateX = initialTransform.x;
+    currentTranslateY = initialTransform.y;
+
+
+    header.addEventListener("mousedown", function (e) {
+        isDragging = true;
+        initialMouseX = e.clientX;
+        initialMouseY = e.clientY;
+
+        // 드래그 시작 시점의 모달의 현재 transform 값을 가져옴
+        const currentTransform = getTranslateValues(modal);
+        initialModalX = currentTransform.x;
+        initialModalY = currentTransform.y;
+
+        modal.style.transition = "none"; // 드래그 중에는 애니메이션 제거
+        modal.style.cursor = "grabbing"; // 드래그 중 커서 변경
+    });
+
+    document.addEventListener("mousemove", function (e) {
+        if (isDragging) {
+            // 마우스 이동량 계산
+            const dx = e.clientX - initialMouseX;
+            const dy = e.clientY - initialMouseY;
+
+            // 새로운 translate 값 계산
+            let newTranslateX = initialModalX + dx;
+            let newTranslateY = initialModalY + dy;
+
+            // 화면 크기 및 모달 크기 계산
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const modalWidth = modal.offsetWidth;
+            const modalHeight = modal.offsetHeight;
+
+            // 모달의 왼쪽 상단 좌표 (top: 50%, left: 50% 기준)
+            const modalLeft = windowWidth / 2;
+            const modalTop = windowHeight / 2;
+
+            // 모달의 실제 왼쪽 상단 모서리 좌표
+            const currentModalAbsoluteX = modalLeft + newTranslateX;
+            const currentModalAbsoluteY = modalTop + newTranslateY;
+
+            // 모달의 경계 제한 (화면 밖으로 나가지 않도록)
+            // left boundary
+            if (currentModalAbsoluteX < 0) {
+                newTranslateX -= currentModalAbsoluteX;
+            }
+            // top boundary
+            if (currentModalAbsoluteY < 0) {
+                newTranslateY -= currentModalAbsoluteY;
+            }
+            // right boundary
+            if (currentModalAbsoluteX + modalWidth > windowWidth) {
+                newTranslateX -= (currentModalAbsoluteX + modalWidth - windowWidth);
+            }
+            // bottom boundary
+            if (currentModalAbsoluteY + modalHeight > windowHeight) {
+                newTranslateY -= (currentModalAbsoluteY + modalHeight - windowHeight);
+            }
+
+            // 새로운 translate 값 적용
+            modal.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px)`;
+
+            // 현재 translate 값 업데이트 (다음 드래그 시작 시 사용)
+            currentTranslateX = newTranslateX;
+            currentTranslateY = newTranslateY;
+        }
+    });
+
+    document.addEventListener("mouseup", function () {
+        isDragging = false;
+        modal.style.transition = ""; // 드래그가 끝나면 애니메이션 복원
+        modal.style.cursor = "grab"; // 커서 원래대로
+    });
+
+    // .form-select2 클래스를 가진 모든 select 요소에 change 이벤트 리스너를 추가합니다.
+    $(".form-select2").on("change", function() {
+        // 선택된 select 요소의 ID를 가져옵니다 (예: estate_type_filter_1)
+        const selectId = $(this).attr("id");
+        // 선택된 option의 value 값을 가져옵니다.
+        const selectedValue = $(this).val();
+
+        // 선택된 값으로 매물 리스트를 가져오는 함수 호출
+        fetchPropertyList(selectId, selectedValue);
+    });
+
+    /**
+     * 매물 리스트를 서버에서 가져오는 함수 (예시)
+     * @param {string} selectId - 변경된 select 요소의 ID (예: 'estate_type_filter_1')
+     * @param {string} estateType - 선택된 매물 종류 값 (예: '아파트', '오피스텔' 등)
+     */
+    function fetchPropertyList(selectId, estateType) {
+        // 여기에 실제 서버와 통신하여 매물 리스트를 가져오는 AJAX 코드를 작성합니다.
+        // 예시: jQuery.ajax 또는 jQuery.get
+        $.ajax({
+            url: "/api/get_property_list", // 매물 리스트를 가져올 서버 API 엔드포인트
+            method: "GET", // 또는 "POST"
+            data: {
+                select_id: selectId, // 어떤 select 박스에서 변경이 일어났는지 구분할 수 있도록 ID 전달
+                estate_type: estateType // 선택된 매물 종류 값 전달
+            },
+            dataType: "json", // 서버 응답 데이터 형식 (JSON으로 예상)
+            success: function(response) {
+                //console.log(`[${selectId}] 매물 리스트 가져오기 성공:`, response);
+                // 여기에 가져온 매물 리스트 데이터를 화면에 표시하는 로직을 작성합니다.
+                // 예를 들어, 특정 div에 데이터를 채워 넣거나, iframe의 src를 변경할 수 있습니다.
+                // if (selectId === "estate_type_filter_1") {
+                //     $("#property_list_for_1").html(response.html_content);
+                // } else if (selectId === "estate_type_filter_2") {
+                //     $("#property_list_for_2").html(response.html_content);
+                // }
+            },
+            error: function(xhr, status, error) {
+                console.error(`[${selectId}] 매물 리스트 가져오기 실패:`, status, error);
+                // 오류 처리 로직
+            }
+        });
+    }
+}
 
 /**
  * 페이지 로드 시에도 URL 파라미터를 감지하고 estateDetail을 실행
@@ -39,6 +197,7 @@ function handleUrlChangeForEstateNo() {
 function initAction() {
     if ($(window).width() <= 991) {
         $(".map-content").toggleClass("active");
+        $("#comparison_Button_Group").hide();
     }
 
     // 지도 - 옵션 - 도구사용 //
@@ -297,6 +456,89 @@ function initAction() {
     $("#detail_top_btn").on("click", function () {
         $("#msv_content").animate({ scrollTop: 0 }, "slow"); // 부드러운 스크롤
     });
+    
+    // 모달이 열릴 때 스크롤바 너비를 계산하여 적용하는 함수
+    function adjustScrollbarWidth() {
+        const scrollContent = document.querySelector(".modal-body-scroll-content");
+        const header = document.querySelector(".modal-body-header");
+        const footer = document.querySelector(".modal-body-footer");
+
+        if (scrollContent && header && footer) {
+            // 스크롤바 너비 계산
+            // 요소의 실제 너비 (패딩, 스크롤바 포함) - 요소의 클라이언트 너비 (패딩 포함, 스크롤바 제외)
+            const scrollbarWidth = scrollContent.offsetWidth - scrollContent.clientWidth;
+
+            // 계산된 스크롤바 너비만큼 margin-right 적용
+            header.style.marginRight = `${scrollbarWidth}px`;
+            footer.style.marginRight = `${scrollbarWidth}px`;
+        }
+    }
+    //==================매물비교
+    // '매물비교' 버튼 클릭 시 모달 표시
+    $("#compare_open_btn").on("click", function () {
+        $("#compareModal").fadeIn(function() { // fadeIn 애니메이션 완료 후 실행
+            // ... 기존 모달 위치 조정 코드 ...
+            // 스크롤바 너비 조정 함수 호출
+            adjustScrollbarWidth();
+            // (선택 사항) 윈도우 크기 변경 시에도 스크롤바 너비 조정
+            // 모달이 열려 있는 동안만 이벤트 리스너를 추가하고, 닫힐 때 제거하는 것이 효율적입니다.
+            $(window).on('resize.modalScrollbar', adjustScrollbarWidth);
+
+            // 2. 모달의 HTML 구조가 완전히 로드되고 표시된 후에 make_compareList 호출
+            make_compareList(compareList); // 비교 목록 가져와 작성하기
+        });
+        
+    });
+
+    // '비교매물 삭제' 버튼 클릭 시 
+    $("#compare_clear_btn").on("click", function () {
+        // 1. 현재 compareList에 있는 모든 매물에 대해 하이라이트 및 체크박스 해제
+        compareList.data.forEach(item => {
+            const estateNo = item.estateNo;
+            // 해당 DL 요소를 찾아서 하이라이트 클래스 제거
+            $(`.mcs-list dl[data-estate-no="${estateNo}"]`).removeClass('dl-highlight-border');
+            // 해당 매물의 체크박스도 'checked' 상태 해제
+            $(`.mcs-list dl[data-estate-no="${estateNo}"] .check-box-orange-s input[type="checkbox"]`).prop('checked', false);
+        });
+
+        // 2. compareList 데이터 초기화
+        compareList.data = [];
+
+        // 3. 비교 목록 UI 업데이트 (비어있는 상태로)
+        displayCompareList();
+
+    });
+    
+    // '닫기' 버튼 클릭 시 모달 숨기기
+    $(".compare-close-button").on("click", function () {
+        //$("#compareModal").fadeOut(); // 모달을 서서히 사라지게 함
+        $("#compareModal").fadeOut(function() {
+            // 모달이 닫힐 때 resize 이벤트 리스너 제거
+            $(window).off('resize.modalScrollbar');
+            // 적용했던 margin-right 초기화 (선택 사항, 다음 열릴 때 다시 계산되므로)
+            $(".modal-body-header, .modal-body-footer").css('margin-right', '');
+        });
+    });
+
+    // '비교하기' 버튼 클릭 시 추가 로직 실행
+    $("#compare_apply_btn").on("click", function () {
+        console.log("비교하기 버튼 클릭됨");
+        // 여기에 비교 로직을 추가하세요
+        //$("#compareModal").fadeOut(); // 모달 닫기
+    });
+
+    // 모달 오버레이 클릭 시 모달 숨기기
+    $(".compare-modal-overlay").on("click", function () {
+        //$("#compareModal").fadeOut(); // 모달을 서서히 사라지게 함
+        $("#compareModal").fadeOut(function() {
+            // 모달이 닫힐 때 resize 이벤트 리스너 제거
+            $(window).off('resize.modalScrollbar');
+            // 적용했던 margin-right 초기화 (선택 사항, 다음 열릴 때 다시 계산되므로)
+            $(".modal-body-header, .modal-body-footer").css('margin-right', '');
+        });
+    });
+
+    
 }
 
 
@@ -563,6 +805,94 @@ function initListEvents() {
         estateNewList("", estateNo);        
     });
 
+    $('.mcs-list').on('click', '.check-box-orange-s', function(e) {
+        e.stopPropagation(); // 클릭 이벤트가 <dl>로 버블링되는 것을 막습니다.
+        // 이 핸들러에서는 이것만 하면 됩니다.
+        // 체크박스 상태 변경 로직은 아래의 'change' 핸들러에서 처리됩니다.
+    });
+
+    $('.mcs-list').on('change', '.check-box-orange-s input[type="checkbox"]', function(e) {
+        if($(window).width() <= 991) {
+            return; // 모바일에서는 체크박스 클릭 이벤트를 무시합니다.
+        }
+        // 가장 먼저 이벤트 전파를 중단합니다.
+        e.stopPropagation(); 
+        // 'this'는 실제로 변경된 체크박스 요소를 가리킵니다.
+        const parentDl = $(this).closest('dl'); // jQuery의 closest()를 사용하여 가장 가까운 상위 <dl> 요소를 찾습니다.
+    
+        if (parentDl.length) {
+            // --- 여기에 상세정보 표시 닫기 로직 추가 ---
+            // 1. 만약 상세정보를 담는 div가 id="map_sell_view" 라면:
+            // 상세정보 표시 닫기 로직
+            $(".map-sell-view").removeClass("active");
+
+            const estateNo = Number(parentDl.data('estate-no')); // <-- 여기를 Number()로 감쌉니다.
+            // 매물 유형과 주소 정보 추출
+            const saleType = parentDl.find('h2 .label-default').text().trim(); // 매물 유형 (예: 매매, 임대, 전세)
+            // estateType (예: 상가, 건물, 토지)을 추출하는 새로운 로직
+            // h2 내부의 첫 번째 div (d-flex align-items-center gap-1)를 찾고
+            // 그 div의 contents 중에서 span.label-default 다음의 텍스트 노드를 찾습니다.
+            const estateCategoryDiv = parentDl.find('h2 > div.d-flex.align-items-center.gap-1');
+            let estateType = '';
+            if (estateCategoryDiv.length) {
+                // div 내부의 모든 자식 노드를 순회하며 텍스트 노드를 찾습니다.
+                // label-default 다음의 텍스트 노드가 우리가 찾는 estate_type 입니다.
+                estateCategoryDiv.contents().each(function() {
+                    if (this.nodeType === 3) { // 텍스트 노드인 경우
+                        const textContent = $(this).text().trim();
+                        if (textContent.length > 0) {
+                            // 첫 번째 유효한 텍스트 노드를 estateType으로 간주
+                            // 이 로직은 sateTypeHtml 다음에 바로 data.estate_type 텍스트가 올 때 유효합니다.
+                            estateType = textContent;
+                            return false; // each 루프 종료
+                        }
+                    } else if ($(this).hasClass('label-default')) {
+                        // label-default를 만나면 다음 텍스트 노드를 찾기 위해 계속 진행
+                    }
+                });
+            }
+
+            // 주소는 기존처럼 ms-md-auto 클래스에서 추출
+            const address = parentDl.find('h2 .ms-md-auto').text().trim(); // 주소
+
+            if (this.checked) {
+                if(compareList.data.length >= 2) {
+                    // 이미 비교 매물이 2개 이상인 경우, 체크박스 상태를 원래대로 되돌립니다.
+                    $(this).prop('checked', false);
+                    alert("비교 매물은 최대 2개까지 선택할 수 있습니다.");
+                    parentDl.removeClass('dl-highlight-border');
+                    return;
+                }
+                else if (compareList.data.length === 1) {
+                    // 이미 1개의 매물이 선택되어 있다면, 매물 유형(estateType)이 동일한지 확인
+                    const existingEstateType = compareList.data[0].estateType;
+                    if (existingEstateType !== estateType) {
+                        $(this).prop('checked', false); // 체크박스 체크 해제
+                        alert("매물 비교는 동일한 매물구분(유형)만 비교할 수 있습니다.");
+                        // 하이라이트도 제거
+                        parentDl.removeClass('dl-highlight-border');
+                        return; // 함수 종료
+                    }
+                }
+                if (!compareList.data.some(item => item.estateNo === estateNo)) { // 중복 추가 방지
+                    compareList.data.push({
+                        estateNo: estateNo,
+                        estateType: estateType, // '매매 type(예: 상가, 건물,토지...)
+                        saleType: saleType,     // 매물 유형 (예: 매매, 임대, 전세)
+                        address: address
+                    });
+                }
+                parentDl.addClass('dl-highlight-border');
+    
+            } else {
+                parentDl.removeClass('dl-highlight-border');
+                // 목록에서 제거
+                compareList.data = compareList.data.filter(item => item.estateNo !== estateNo);
+            }
+            displayCompareList();           
+        }
+    });
+
     // 지도 - 매물상세 - 닫기 //
     $(".msv-close").click(function () {
         updateURL({ estateNo: "" });
@@ -576,6 +906,50 @@ function initListEvents() {
     });
 }
 
+// displayCompareList 함수 정의
+function displayCompareList() {
+    
+    const $comparedItemsDisplay = $('#comparedItemsDisplay'); // 비교매물 목록을 표시할 컨테이너
+    $comparedItemsDisplay.empty(); // 기존 내용 모두 지우기
+
+    if (compareList.data.length === 0) {
+        // 비교매물이 없으면 아무것도 표시하지 않거나, "비교매물 없음" 같은 메시지 표시
+        $("#compare_clear_btn").hide(); // 비교매물삭제 버튼 삭제
+        
+    } else {
+        compareList.data.forEach(item => {
+            const itemText = `비교 매물번호: ${item.estateNo},  ${item.estateType}`;
+            const $span = $('<span>').text(itemText);
+            $comparedItemsDisplay.append($span);
+        });
+        $("#compare_clear_btn").show(); // 비교매물삭제 버튼 추가
+        
+    }
+    updateCompareApplyButtonState();
+}
+
+/**
+ * compare_apply_btn 버튼의 활성화/비활성화 상태를 업데이트합니다.
+ * compareList.data.length가 2일 때만 버튼을 활성화합니다.
+ */
+function updateCompareApplyButtonState() {
+    const $compareApplyBtn = $('#compare_open_btn'); // 버튼의 ID가 compare_apply_btn이라고 가정합니다.
+
+    if ($compareApplyBtn.length === 0) {
+        // 버튼이 존재하지 않으면 아무것도 하지 않습니다. (초기 HTML에 버튼이 없는 경우 대비)
+        return;
+    }
+    
+    if (compareList.data.length === 2) {
+        $compareApplyBtn.prop('disabled', false); // 버튼 활성화
+        // $compareApplyBtn.removeClass('disabled-style'); // 필요시 비활성화 스타일 제거
+        $compareApplyBtn.removeClass('disabled-style'); // 필요시 비활성화 스타일 제거
+    } else {
+        $compareApplyBtn.prop('disabled', true); // 버튼 비활성화
+        // $compareApplyBtn.addClass('disabled-style'); // 필요시 비활성화 스타일 추가
+        $compareApplyBtn.addClass('disabled-style'); // 필요시 비활성화 스타일 추가
+    }
+}
 /**
  * 매물 리스트 가져오는 함수
  * @param {*} searchNo = 매물번호 검색
@@ -621,8 +995,10 @@ async function estateList(searchNo = "", propertyNo = "") {
                         </svg>
                         <p>매물이 없습니다.</p>
                     </div>`;
+                    $("#compare_open_btn").hide(); // 매물이 없을 때 비교하기 버튼 숨김
             } else {
                 // 리스트 생성 및 렌더링
+                $("#compare_open_btn").show(); // 매물이 있을 때 비교하기 버튼 보임
                 liHtml = responseData.map(function (data, index) {
                     if (searchNo && index === 0) {
                         map.panTo(new kakao.maps.LatLng(data.lat, data.lng));
@@ -768,42 +1144,11 @@ async function estateNewList(searchNo = "", propertyNo = "") {
         swLng: swLatLng.getLng(),
         neLat: neLatLng.getLat(),
         neLng: neLatLng.getLng(),
-        // start: start,
     };
 
     let liHtml = "";
 
-    // estate_type과 sale_type 값이 비어 있는 경우 요청 중단
-    //추후 enable 결정 estate_type 또는 sale_type 값이 없을때 처리
-//    if (!filterObj.estateType.length || !filterObj.saleType.length) {
-//        console.log("선택된 estate_type 또는 sale_type 값이 없습니다.");
-//        // 모든 클러스터러 초기화
-//        Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
-//        liHtml = `
-//            <div class="no_data_area_inner d-flex flex-column justify-content-center gap-3 text-center position-absolute" style="top:50%; left:50%; transform: translate(-50%, -50%);">
-//                <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 512 512">
-//                    <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-//                    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" style="fill: var(--var-color-main-1)"></path>
-//                </svg>
-//                <p>매물이 없습니다.</p>
-//            </div>`;
-//        li.children("dl")
-//        .fadeOut(100)
-//        .promise()
-//        .done(function () {
-//            // 리스트가 완전히 사라진 후 새로운 리스트를 추가
-//            li.empty().append(liHtml);
-//
-//            // 새롭게 추가된 리스트를 부드럽게 나타나게 함
-//            li.children("dl")
-//                .hide() // 먼저 숨긴 상태에서
-//                .delay(150) // 항목마다 100ms씩 지연
-//                .fadeIn(400); // 순차적으로 부드럽게 나타나게 설정
-//        });
-//        return; // 요청 중단
-//    }
-
-    callApiAbort("/front/back/sell/estate_multfilter_list.php", "POST", dataObj, "estateList")
+    callApiAbort("/front/back/sell/estate_multfilter_list.php", "POST", dataObj, "estateNewList")
         .then((response) => {
             if (!response) return;
 
@@ -823,8 +1168,16 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                         </svg>
                         <p>매물이 없습니다.</p>
                     </div>`;
+                    //$("#compare_open_btn").hide();
+                    $("#comparison_Button_Group").hide();
             } else {
                 // 리스트 생성 및 렌더링
+                //$("#compare_open_btn").show();
+                if($(window).width() <= 991) {
+                    $("#comparison_Button_Group").hide();
+                } else {
+                    $("#comparison_Button_Group").show();
+                };
                 liHtml = responseData.map(function (data, index) {
                     if (searchNo && index === 0) {
                         map.panTo(new kakao.maps.LatLng(data.lat, data.lng));
@@ -849,6 +1202,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                     let estateTypeClass = isExclusive ? "exclusive" : "non-exclusive";
 
                     // 2. 리스트 생성
+                    let compareCheckbox = "";
                     let sateTypeHtml = "";
                     let priceHtml = "";
                     switch (data.sale_type) {
@@ -902,11 +1256,22 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                     } else {
                         image = '<img src="/front/assets/image/building_empty.png" width="100%" alt="" title="" />';
                     }
-
+                    compareCheckbox = `<div class="check-box-orange-s"><input type="checkbox" id="compareCheckbox_${data.estate_no}"><label for="compareCheckbox_${data.estate_no}">비교</label></div>`;
+                    let estateNoHtml=  `<label>매물번호:${data.estate_no}</label>`;
+                    //<h2 class="d-flex align-items-center gap-1">${compareCheckbox} ${sateTypeHtml} ${data.estate_type} ${addressHtml}</h2>
                     return `
                         <dl class="${estateTypeClass}" data-estate-no="${data.estate_no}">
                             <dt>
-                                <h2 class="d-flex align-items-center gap-1">${sateTypeHtml} ${data.estate_type} ${addressHtml}</h2>
+                                
+                                <h2 class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-1">
+                                        ${compareCheckbox}
+                                        ${sateTypeHtml}
+                                        ${data.estate_type}
+                                    </div>
+                                    ${estateNoHtml}
+                                </h2>
+                                <h2 class="d-flex align-items-center gap-1">${addressHtml}</h2>
                                 <ul>
                                     <li>${priceHtml}</li>
                                     <li class="text-nowrap">${areaHtml}</li>
@@ -941,11 +1306,56 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                         .hide() // 먼저 숨긴 상태에서
                         .delay(150) // 항목마다 100ms씩 지연
                         .fadeIn(400); // 순차적으로 부드럽게 나타나게 설정
+                    // --- 여기가 updateCompareList()를 호출할 정확한 위치입니다. ---
+                    // DOM 업데이트가 완료되고 새로운 dl 요소들이 화면에 추가된 직후입니다.
+                    updateCompareList();
+                    // -----------------------------------------------------------
                 });
         })
         .catch((error) => {
             console.log(error);
         });
+    // 매물 리스트가 업데이트된 후 비교 목록을 갱신합니다.
+    //updateCompareList();
+}
+
+function updateCompareList(){
+    // 1. 현재 화면에 표시된 매물들의 estateNo를 수집합니다.
+    const currentDisplayedEstateNos = new Set();
+    $('.mcs-list dl').each(function() {
+        const estateNo = Number($(this).data('estate-no'));
+        if (!isNaN(estateNo)) { // 유효한 숫자인 경우에만 추가
+            currentDisplayedEstateNos.add(estateNo);
+        }
+    });
+    // 2. compareList.data를 재구성합니다.
+    //    - 화면에 없는 매물은 제거하고
+    //    - 화면에 있는 매물은 하이라이트를 다시 적용합니다.
+    const updatedCompareListData = [];
+    compareList.data.forEach(compareItem => {
+        const estateNo = compareItem.estateNo;
+        if (currentDisplayedEstateNos.has(estateNo)) {
+            // 현재 화면에 매물이 있다면, updatedCompareListData에 포함하고 하이라이트 적용
+            updatedCompareListData.push(compareItem);
+            // 해당 DL 요소를 찾아서 하이라이트 클래스 다시 추가
+            $(`.mcs-list dl[data-estate-no="${estateNo}"]`).addClass('dl-highlight-border');
+
+            // 또한, 해당 매물의 체크박스도 'checked' 상태로 설정해야 합니다.
+            // (이전 상태가 유지되지 않을 수 있으므로)
+            $(`.mcs-list dl[data-estate-no="${estateNo}"] .check-box-orange-s input[type="checkbox"]`).prop('checked', true);
+
+        } else {
+            // 화면에 없는 매물은 compareList에서 제거됨 (updatedCompareListData에 추가되지 않음)
+            // 이 경우 해당 매물의 체크박스가 혹시라도 체크되어 있다면 해제해야 하지만,
+            // 어차피 화면에 없으므로 DOM 조작은 필요 없습니다.
+        }
+    });
+
+    // 3. compareList.data를 업데이트된 데이터로 교체합니다.
+    compareList.data = updatedCompareListData;
+
+    // 4. compareList.data.length를 사용하여 비교 목록 UI를 갱신합니다.
+    displayCompareList();
 }
 
 /**
@@ -1121,6 +1531,490 @@ async function renderEstateDetail(data) {
     // var moveLatLon = new kakao.maps.LatLng(data.lat, data.lng);
     // map.setLevel(3);
     // map.panTo(moveLatLon);
+}
+
+// make_compareList 함수 정의
+async function make_compareList(compareList) {
+    if (compareList.data.length !== 2) {
+        alert("비교할 매물은 정확히 2개여야 합니다.");
+        $('#compareModal').hide();
+        return;
+    }
+
+    // make_compareList가 fadeIn 콜백 내부에서 호출되므로,
+    // 여기서 다시 $('#compareModal').show(); 를 호출할 필요가 없습니다.
+    // $('#compareModal').show(); // 이 줄은 제거하거나 주석 처리해도 됩니다.
+
+    // 비교 테이블의 `property-value-item`과 `property-compare` 초기화
+    $('#compareModal .property-value-item').empty();
+    $('#compareModal .property-compare').empty();
+    //$('#compareModal .modal-body-footer .column-center div').empty(); // 푸터의 값 초기화
+    $('#compareModal .modal-body-footer .column-right').empty(); // 푸터의 비교 결과 초기화
+
+
+    const estateDetailApiUrl = "/front/back/sell/estate_detail.php";
+
+    
+     // Promise.all을 사용하여 두 매물의 상세 정보를 동시에 가져옵니다.
+    
+    try {
+        const [response1, response2] = await Promise.all([
+            callApiAbort(estateDetailApiUrl, "POST", { estate_no: compareList.data[0].estateNo }, "estateDetail_${compareList.data[0].estateNo}"),
+            callApiAbort(estateDetailApiUrl, "POST", { estate_no: compareList.data[1].estateNo }, "estateDetail_${compareList.data[1].estateNo}")
+        ]);
+
+        let data1 = null;
+        let data2 = null;
+
+        if (response1 && response1.statusCode === 200 && response1.message === "SUCCESS") {
+            data1 = response1.responseData;
+        } else {
+            console.error("첫 번째 매물 상세 정보 로드 실패:", response1);
+            alert("첫 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.");
+            $('#compareModal').hide();
+            return;
+        }
+
+        if (response2 && response2.statusCode === 200 && response2.message === "SUCCESS") {
+            data2 = response2.responseData;
+        } else {
+            console.error("두 번째 매물 상세 정보 로드 실패:", response2);
+            alert("두 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.");
+            $('#compareModal').hide();
+            return;
+        }
+
+        // 두 매물의 상세 데이터를 가져왔으므로, 이제 비교 테이블을 채웁니다.
+        
+        renderComparisonTable(data1, data2);
+        adjustComparisonModalHeight(); 
+
+    } catch (error) {
+        console.error("매물 상세 정보 로드 중 오류 발생:", error);
+        alert("매물 상세 정보를 불러오는 중 오류가 발생했습니다.");
+        $('#compareModal').hide();
+    }
+}
+
+/**
+ * 두 매물의 상세 데이터를 비교 테이블에 렌더링합니다.
+ * @param {Object} data1 - 첫 번째 매물의 상세 데이터.
+ * @param {Object} data2 - 두 번째 매물의 상세 데이터.
+ */
+function renderComparisonTable(data1, data2) {
+    // 매물별 값과 비교 결과를 표시할 항목들을 정의합니다.
+    // label: HTML에 표시된 라벨 텍스트
+    // prop: responseData 내의 해당 속성명
+    // formatter: 값을 포맷팅할 함수 (선택 사항)
+    // compareType: 'text', 'number', 'image' 등 비교 방식
+    const comparisonFields = [
+        { label: "매물 사진", prop: "imageArray", type: "image", compare: "N", formatter: (imageArray, data) => imageArray && imageArray.length > 0 ? `/front/back/00-include/image.php?token=${encodeURIComponent(imageArray[0].imageToken)}` : '/front/assets/image/building_empty.png'},
+        { label: "소재지(지번)", prop: "address_jibun", type: "text", compare: "N", formatter: (val) => cutAfterSuffix(val) || ""},
+        { label: "소재지(도로명)", prop: "address_road", type: "text", compare: "N", formatter: (val) => cutAfterSuffix(val) || ""},
+        { label: "관련지번", prop: "related_jibun", type: "text", compare: "N", formatter: (val) => val == "Y" ? "관련지번 있음" : "관련지번 없음"},
+        { label: "참고사항", prop: "notes", type: "text", compare: "N", formatter: (val) => val || ""},
+        { label: "매물구분", prop: "estate_type", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "거래종류", prop: "sale_type", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "가격", prop: "sale_price", type: "number", compare: "Y", formatter: (salePrice, data) => data.sale_type == "매매" || data.sale_type == "교환" ? `${formatPrice(salePrice, "all", true)}` : `${formatPrice(salePrice, "all", true)} / ${formatPrice(data.rent_price, "all", true)}`},
+        { label: "토지면적", prop: "platArea", type: "number", compare: "Y", formatter: (val) => val ? formatArea(val) : "" },
+        { label: "건축면적", prop: "archArea", type: "number", compare: "Y", formatter: (val) => val ? formatArea(val) : "" },
+        { label: "총면적", prop: "totArea", type: "number", compare: "Y", formatter: (val) => val ? formatArea(val) : "" },
+        { label: "지목", prop: "lndcgrCodeNm", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "용도지역", prop: "prposAreaNm", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "용적률", prop: "vlRat", type: "number", compare: "Y", formatter: (val) => val ? parseFloat(val).toFixed(2) + "%" : "" },
+        { label: "건폐율", prop: "bcRat", type: "number", compare: "Y", formatter: (val) => val ? parseFloat(val).toFixed(2) + "%" : "" },
+        { label: "층수", prop: "grndFlrCnt", type: "text", compare: "N", formatter: (grndFlrCnt, data) => `지상 ${grndFlrCnt || 1} / 지하 ${data.ugrndFlrCnt || 0}`},
+        { label: "구조", prop: "strctCdNm", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "사용승인일", prop: "useAprDay", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "주차 가능 대수", prop: "car_parking", type: "number", compare: "Y", formatter: (val) => val ? val + "대" : "" },
+        { label: "주용도", prop: "mainPurpsCdNm", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "실제 사용용도", prop: "realPurpsNm", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "월 관리비", prop: "maintenance_price", type: "number", compare: "Y", formatter: (val) => formatPrice(val, "all", true) || "" },
+        { label: "융자금", prop: "loan_price", type: "number", compare: "Y", formatter: (val) => formatPrice(val, "all", true) || "" },
+        { label: "도로여건", prop: "road_conditions", type: "number", compare: "N", formatter: (val) => val ? val + "m 도로 접속" : "" },
+        { label: "전기", prop: "power", type: "number", compare: "N", formatter: (val) => val ? val + "Kw 이하" : "" },
+        { label: "용수", prop: "water", type: "text", compare: "N",formatter: (val) => val ? (val === "waterworks" ? "상수도" : val === "underground" ? "지하수" : "") : ""},
+        { label: "건물층고", prop: "floor_height", type: "number", compare: "N", formatter: (val) => val ? val + "m" : "" },
+        { label: "특장점", prop: "feature", type: "text", compare: "N", formatter: (val) => val || "" },
+        { label: "상세 설명", prop: "description", type: "text", compare: "N", formatter: (val) => val || "정보 없음" },
+      ];
+
+    // comparisonFields 배열은 이 함수 외부 또는 함수 내부에 정의되어 있어야 합니다.
+    // (위에서 제시된 comparisonFields 배열을 여기에 붙여넣거나, 전역 변수로 선언)
+
+    let sateTypeHtml1 = "";
+    let sateTypeHtml2 = "";
+    switch (data1.sale_type) {
+        case "임대":
+            sateTypeHtml1 = `<span class="label-default bg-violet1">임대</span>`;
+            break;
+        case "매매":
+            sateTypeHtml1 = `<span class="label-default bg-green1">매매</span>`;
+            break;
+        case "교환":
+            sateTypeHtml1 = `<span class="label-default bg-indigo1">교환</span>`;
+            break;
+    }
+    switch (data2.sale_type) {
+        case "임대":
+            sateTypeHtml2 = `<span class="label-default bg-violet1">임대</span>`;
+            break;
+        case "매매":
+            sateTypeHtml2 = `<span class="label-default bg-green1">매매</span>`;
+            break;
+        case "교환":
+            sateTypeHtml2 = `<span class="label-default bg-indigo1">교환</span>`;
+            break;
+    }
+    $("#compare_item1").html(`${sateTypeHtml1} ${data1.estate_type} (매물번호 : ${data1.estate_no})`);
+    $("#compare_item2").html(`${sateTypeHtml2} ${data2.estate_type} (매물번호 : ${data2.estate_no})`);
+
+    $('#compareModal .modal-body-scroll-content .property-detail-row').each(function() {
+        const $row = $(this);
+        const labelText = $row.find('.property-label').text().trim(); // HTML의 라벨 텍스트
+    
+        // comparisonFields에서 현재 라벨에 해당하는 필드 정의를 찾습니다.
+        const field = comparisonFields.find(f => f.label === labelText);
+    
+        if (field) {
+            // --- 1. property-value-item에 표시될 값은 'compare' 속성과 상관없이 항상 계산하고 표시합니다. ---
+            let rawValue1 = data1[field.prop];
+            let rawValue2 = data2[field.prop];
+    
+            // 포맷터를 사용하여 화면에 표시될 값을 생성합니다.
+            const displayValue1 = field.formatter ? field.formatter(rawValue1, data1) : (rawValue1 || '-');
+            const displayValue2 = field.formatter ? field.formatter(rawValue2, data2) : (rawValue2 || '-');
+    
+            // property-value-item에 값 표시 (항상 표시)
+            const $item1 = $row.find('.property-value-item:eq(0)'); // 첫 번째 아이템 (xx)
+            const $item2 = $row.find('.property-value-item:eq(1)'); // 두 번째 아이템 (yy)
+            
+            let bgColor1= `#f7e8c4`;
+            let bgColor2= `#f7efdb`;
+            $item1.css('background-color', bgColor1);
+            $item2.css('background-color', bgColor2);
+            
+            if (field.type === "image") {
+                $item1.html(`<img src="${displayValue1}" alt="${labelText}" style="max-width:100px; height:auto;">`);
+                $item2.html(`<img src="${displayValue2}" alt="${labelText}" style="max-width:100px; height:auto;">`);
+            } else {
+                $item1.text(displayValue1);
+                $item2.text(displayValue2);
+            }
+    
+            // --- 2. property-compare (비교 결과)는 'compare' 속성에 따라 조건부 처리합니다. ---
+            const $compareResultColumn = $row.find('.property-compare');
+            let resultText = ''; // 기본값은 빈 문자열
+            let isDifferent = false;
+    
+            // 이전에 적용된 색상 클래스들을 먼저 제거합니다.
+            $compareResultColumn.removeClass('compare-up compare-down');
+    
+            // 'compare' 속성을 확인하여 해당 필드가 비교 대상인지 결정합니다.
+            // 'compare' 속성이 없거나 "Y"인 경우 비교 대상으로 간주합니다.
+            const isComparable = field.compare !== "N";
+    
+            if (isComparable) { // 비교 대상인 필드일 경우에만 비교 로직 수행
+                // 비교 로직은 원본 값을 사용해야 합니다.
+                let currentRawValue1 = data1[field.prop]; // 최신 값으로 다시 가져옴
+                let currentRawValue2 = data2[field.prop]; // 최신 값으로 다시 가져옴
+    
+                if (field.type === "number") {
+                    const num1 = Number(currentRawValue1);
+                    const num2 = Number(currentRawValue2);
+    
+                    if (isNaN(num1) || isNaN(num2) || currentRawValue1 === null || currentRawValue2 === null) {
+                        resultText = '-';
+                    } else if (num1 === num2) {
+                        resultText = '동일';
+                        isDifferent = false;
+                    } else {
+                        isDifferent = true;
+                        const difference = Math.abs(num1 - num2);
+                        let formattedDifference;
+    
+                        // 필드 prop에 따라 차이 값 포맷팅을 다르게 적용
+                        if (field.prop.includes('price')) { // 가격 관련 필드
+                            formattedDifference = formatPrice(difference, "all", true);
+                        } else if (field.prop.includes('Area')) { // 면적 관련 필드
+                            formattedDifference = formatArea(difference);
+                        } else if (field.prop === "vlRat" || field.prop === "bcRat") { // 용적률, 건폐율
+                            formattedDifference = difference.toFixed(2) + "%";
+                        } else if (field.prop === "car_parking") { // 주차 대수
+                            formattedDifference = difference + "대";
+                        } else if (field.prop === "power") { // 전기
+                            formattedDifference = difference + "Kw"; // 차이값이므로 "이하"는 제거
+                        } else if (field.prop === "floor_height") { // 건물 층고
+                            formattedDifference = difference + "m";
+                        } else { // 그 외 숫자 필드
+                            formattedDifference = difference;
+                        }
+    
+                        if (num1 < num2) {
+                            resultText = `▲ (${formattedDifference})`;
+                            $compareResultColumn.addClass('compare-up');
+                        } else { // num1 > num2
+                            resultText = `▼ (${formattedDifference})`;
+                            $compareResultColumn.addClass('compare-down');
+                        }
+                    }
+                } else if (field.type === "image") {
+                    // 이미지의 경우, 포맷팅된 URL을 비교하는 것이 더 정확할 수 있습니다.
+                    if (displayValue1 === displayValue2) {
+                        resultText = '동일';
+                    } else {
+                        resultText = '다름';
+                        isDifferent = true;
+                    }
+                } else { // text 타입 비교
+                    if (currentRawValue1 === currentRawValue2) {
+                        resultText = '동일';
+                    } else {
+                        resultText = '다름';
+                        isDifferent = true;
+                    }
+                }
+            }
+            // isComparable이 false인 경우, resultText는 초기값인 '' (빈 문자열)로 유지됩니다.
+            
+            $compareResultColumn.text(resultText);
+            // isDifferent는 isComparable이 true일 때만 true가 될 수 있으므로, 별도의 isComparable 조건이 필요 없습니다.
+            if (isDifferent) {
+                $compareResultColumn.addClass('highlight-difference');
+            } else {
+                $compareResultColumn.removeClass('highlight-difference');
+            }
+        }
+    });
+    
+    // 푸터의 '평 단가' 처리
+    const $footer = $('#compareModal .modal-body-footer');
+    const $footerCompareResult = $footer.find('.column-right');
+
+    // 푸터 비교 결과도 화살표/색상 로직을 적용하려면 아래와 같이 수정합니다.
+    // 푸터도 비교 결과 표시 전에 이전 색상 클래스들을 제거
+    $footerCompareResult.removeClass('compare-up compare-down');
+
+    // --- '평 단가' 계산 로직 변경 시작 ---
+    let pricePerArea1 = 0;
+    let pricePerArea2 = 0;
+    const PY_CONVERSION_FACTOR = 0.3025; // ㎡를 평으로 변환하는 계수 (1㎡ = 0.3025평)
+
+    // 첫 번째 매물 평 단가 계산
+    let denominator1 = 0;
+    if (data1.estate_type === "토지") {
+        // 매물 구분이 '토지'인 경우 토지면적(platArea) 사용
+        denominator1 = data1.platArea * PY_CONVERSION_FACTOR;
+    } else {
+        // 그 외의 경우 총면적(totArea) 사용
+        denominator1 = data1.totArea * PY_CONVERSION_FACTOR;
+    }
+    pricePerArea1 = denominator1 > 0 ? data1.sale_price / denominator1 : 0;
+
+    // 두 번째 매물 평 단가 계산
+    let denominator2 = 0;
+    if (data2.estate_type === "토지") {
+        // 매물 구분이 '토지'인 경우 토지면적(platArea) 사용
+        denominator2 = data2.platArea * PY_CONVERSION_FACTOR;
+    } else {
+        // 그 외의 경우 총면적(totArea) 사용
+        denominator2 = data2.totArea * PY_CONVERSION_FACTOR;
+    }
+    pricePerArea2 = denominator2 > 0 ? data2.sale_price / denominator2 : 0;
+    // --- '평 단가' 계산 로직 변경 끝 ---
+
+    let unitpriceText1 = formatPrice(pricePerArea1, "all", true) + '/평' ; // 단위 변경
+    let unitpriceText2 = formatPrice(pricePerArea2, "all", true) + '/평' ; // 단위 변경
+
+    let unitpriceTextHtml1 = `<span class="label-default bg-green1">${unitpriceText1}</span>`;
+    let unitpriceTextHtml2 = `<span class="label-default bg-green1">${unitpriceText2}</span>`;
+
+    $("#compare_unit1").html(`${unitpriceTextHtml1}`);
+    $("#compare_unit2").html(`${unitpriceTextHtml2}`);
+
+    let footerResultText = '';
+    let footerIsDifferent = false;
+
+    if (pricePerArea1 === pricePerArea2) {
+        footerResultText = '동일';
+        footerIsDifferent = false;
+    } else {
+        footerIsDifferent = true;
+        const difference = Math.abs(pricePerArea1 - pricePerArea2);
+        const formattedDifference = formatPrice(difference, "all", true); // 평 단가도 가격 포맷 사용
+
+        if (pricePerArea1 < pricePerArea2) {
+            footerResultText = `▲ (${formattedDifference})`;
+            $footerCompareResult.addClass('compare-up');
+        } else { // pricePerArea1 > pricePerArea2
+            footerResultText = `▼ (${formattedDifference})`;
+            $footerCompareResult.addClass('compare-down');
+        }
+    }
+    $footerCompareResult.text(footerResultText);
+    if (footerIsDifferent) {
+        $footerCompareResult.addClass('highlight-difference');
+    } else {
+        $footerCompareResult.removeClass('highlight-difference');
+    }
+    
+}
+
+// ResizeObserver 인스턴스 (한 번만 생성)
+let modalHeightObserver = null;
+
+/**
+ * 매물 비교 모달의 높이를 내용에 맞춰 동적으로 조절합니다.
+ * .modal-body-scroll-content의 내용이 모두 표시된 후 호출되어야 합니다.
+ * 이 함수는 .compare-modal-content의 max-height와 min-height 제약을 존중합니다.
+ */
+function adjustComparisonModalHeight() {
+    const modalContent = document.querySelector('.compare-modal-content');
+    const header = document.querySelector('.compare-modal-header');
+    const modalBody = document.querySelector('.compare-modal-body');
+    const bodyHeader = document.querySelector('.modal-body-header');
+    const scrollContent = document.querySelector('.modal-body-scroll-content');
+    const bodyFooter = document.querySelector('.modal-body-footer');
+
+    if (!modalContent || !header || !modalBody || !bodyHeader || !scrollContent) {
+        console.warn("매물 비교 모달의 높이 조절에 필요한 요소 중 일부가 없습니다.");
+        return;
+    }
+
+    // --- 모든 관련 요소의 인라인 스타일을 완벽하게 초기화 ---
+    // 모달을 닫았다 열 때 잔여 스타일로 인한 오차를 방지합니다.
+    modalContent.style.cssText = '';
+    scrollContent.style.cssText = '';
+    modalBody.style.cssText = '';
+    // ----------------------------------------------------
+
+    // 1. .modal-body-scroll-content의 flex 속성들을 정확한 scrollHeight 측정 준비 상태로 설정
+    scrollContent.style.flexGrow = '0';
+    scrollContent.style.height = 'auto';
+    scrollContent.style.minHeight = 'auto';
+    scrollContent.style.flexShrink = '0';
+
+    // .compare-modal-body의 flex 속성도 정확한 계산 준비 상태로 설정
+    modalBody.style.flexGrow = '0';
+    modalBody.style.height = 'auto';
+
+    // requestAnimationFrame은 DOM 업데이트가 처리된 후 측정을 보장합니다.
+    requestAnimationFrame(() => {
+        // 2. .modal-body-scroll-content의 실제 내용 높이를 측정하고, 그 높이로 강제 설정합니다.
+        // Math.ceil을 사용하여 소수점 픽셀로 인한 공간 부족을 방지합니다.
+        const scrollContentActualHeight = Math.ceil(scrollContent.scrollHeight);
+        const scrollContentHeightWithBuffer = scrollContentActualHeight + 1; // 1px의 미세한 여유 공간
+
+        scrollContent.style.height = `${scrollContentHeightWithBuffer}px`; // 핵심: 높이를 scrollHeight + 여유 공간으로 명시적 설정
+
+        // 3. 각 고정된 요소들의 높이를 측정합니다.
+        const headerHeight = Math.ceil(header.offsetHeight);
+        const bodyHeaderHeight = Math.ceil(bodyHeader.offsetHeight);
+        const bodyFooterHeight = bodyFooter ? Math.ceil(bodyFooter.offsetHeight) : 0;
+
+        // 4. .compare-modal-body의 자체 패딩/보더를 계산합니다.
+        const modalBodyComputedStyle = getComputedStyle(modalBody);
+        const modalBodyPaddingTop = parseFloat(modalBodyComputedStyle.paddingTop);
+        const modalBodyPaddingBottom = parseFloat(modalBodyComputedStyle.paddingBottom);
+        const modalBodyBorderTop = parseFloat(modalBodyComputedStyle.borderTopWidth);
+        const modalBodyBorderBottom = parseFloat(modalBodyComputedStyle.borderBottomWidth);
+        const modalBodyVerticalSpace = Math.ceil(modalBodyPaddingTop + modalBodyPaddingBottom + modalBodyBorderTop + modalBodyBorderBottom);
+
+        // 5. .compare-modal-body의 '이상적인' 높이를 직접 계산합니다.
+        const modalBodyGap = parseFloat(modalBodyComputedStyle.gap || 0);
+
+        let idealModalBodyHeightCalculated = Math.ceil(
+            bodyHeaderHeight +
+            scrollContentHeightWithBuffer + // scrollContent.offsetHeight 대신 scrollContentHeightWithBuffer 사용
+            bodyFooterHeight +
+            modalBodyVerticalSpace +
+            modalBodyGap
+        );
+
+        // .compare-modal-body의 min-height도 고려합니다.
+        const modalBodyMinHeight = parseFloat(modalBodyComputedStyle.minHeight);
+        if (idealModalBodyHeightCalculated < modalBodyMinHeight) {
+            idealModalBodyHeightCalculated = Math.ceil(modalBodyMinHeight);
+        }
+        
+        // 6. .compare-modal-body의 높이를 계산된 값으로 명시적으로 설정합니다.
+        modalBody.style.height = `${idealModalBodyHeightCalculated}px`;
+
+        // 7. .compare-modal-content의 '이상적인' 총 높이를 계산합니다.
+        let idealModalContentHeight = Math.ceil(headerHeight + modalBody.offsetHeight);
+
+        // 8. .compare-modal-content에 설정된 max-height와 min-height 제약을 가져옵니다.
+        const computedModalContentStyle = getComputedStyle(modalContent);
+        const maxModalHeight = parseFloat(computedModalContentStyle.maxHeight);
+        const minModalHeight = parseFloat(computedModalContentStyle.minHeight);
+
+        // 9. 최종 모달 높이를 결정하고, .modal-body-scroll-content 및 .compare-modal-body의 flex 속성을 조정합니다.
+        let finalModalHeight = idealModalContentHeight;
+        let setScrollContentFlexGrow = '0';
+        let setScrollContentMinHeight = `${scrollContentHeightWithBuffer}px`;
+        let setScrollContentFlexShrink = '0';
+        let setModalBodyFlexGrow = '0';
+        let setModalBodyHeightValue = `${idealModalBodyHeightCalculated}px`;
+
+        if (idealModalContentHeight > maxModalHeight) {
+            finalModalHeight = Math.ceil(maxModalHeight);
+            setScrollContentFlexGrow = '1';
+            setScrollContentMinHeight = 'auto';
+            setScrollContentFlexShrink = '1';
+            setModalBodyFlexGrow = '1';
+            setModalBodyHeightValue = 'auto';
+        } else if (idealModalContentHeight < minModalHeight) {
+            finalModalHeight = Math.ceil(minModalHeight);
+            setScrollContentFlexGrow = '1';
+            setScrollContentMinHeight = 'auto';
+            setScrollContentFlexShrink = '1';
+            setModalBodyFlexGrow = '1';
+            setModalBodyHeightValue = 'auto';
+        }
+
+        // 10. .compare-modal-content의 높이를 조정합니다.
+        modalContent.style.height = `${finalModalHeight}px`;
+
+        // 11. .modal-body-scroll-content의 flex-grow, min-height, flex-shrink 속성을 최종 결정된 값으로 설정합니다.
+        scrollContent.style.flexGrow = setScrollContentFlexGrow;
+        scrollContent.style.minHeight = setScrollContentMinHeight;
+        if (setScrollContentFlexGrow === '1') {
+            scrollContent.style.height = 'auto';
+        } else {
+            // flex-grow가 0일 때는 명시적 높이 유지 (이미 위에서 scrollContentHeightWithBuffer로 설정됨)
+        }
+        scrollContent.style.flexShrink = setScrollContentFlexShrink;
+
+        // 12. .compare-modal-body의 flex-grow 및 height 속성을 최종 결정된 값으로 설정합니다.
+        modalBody.style.flexGrow = setModalBodyFlexGrow;
+        modalBody.style.height = setModalBodyHeightValue;
+
+        
+    });
+}
+
+// ResizeObserver를 사용하여 .modal-body-scroll-content의 크기 변화를 감지하고 높이 재조정
+// 이 옵저버는 페이지 로드 시 한 번만 설정하면 됩니다.
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollContent = document.querySelector('.modal-body-scroll-content');
+    if (scrollContent && typeof ResizeObserver !== 'undefined') {
+        if (modalHeightObserver) {
+            modalHeightObserver.disconnect();
+        }
+        modalHeightObserver = new ResizeObserver(entries => {
+            // 모든 크기 변화에 대해 adjustComparisonModalHeight를 호출
+            adjustComparisonModalHeight();
+        });
+        modalHeightObserver.observe(scrollContent);
+    }
+});
+
+// 모달이 닫힐 때 옵저버 연결 해제 (메모리 누수 방지)
+function disconnectModalHeightObserver() {
+    if (modalHeightObserver) {
+        modalHeightObserver.disconnect();
+        // modalHeightObserver = null; // 필요에 따라 null로 설정
+    }
 }
 
 /**
