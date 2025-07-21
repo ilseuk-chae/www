@@ -172,7 +172,9 @@
 
 .compare-modal-header {
   height: 60px;
-  background-color: #f8f8f8;
+  /*background-color: #f8f8f8;*/
+  background-color: #FFFFF0;
+  
   border-bottom: 1px solid #ccc;
   cursor: move;
   flex-shrink: 0;
@@ -522,3 +524,59 @@
 .compare-down {
   color: red;
 }
+#mapOptionTooltip.active {
+  /*background-color: #ef8779; /* 활성화된 상태의 배경색 */
+  border: 1px solid #ef8779; /* 활성화된 상태의 테두리 */
+}
+
+#mapOptionTooltip.tooltip-target.active i,
+#mapOptionTooltip.tooltip-target.active span {
+    color: #ef8779 !important;
+}
+
+/* 기본 툴팁 컨테이너  bootstrap용 */
+.tooltip-inner {
+  background-color: #333; /* 어두운 배경 */
+  color: #fff; /* 흰색 글자 */
+  border-radius: 8px; /* 둥근 모서리 */
+  padding: 10px 15px; /* 내부 여백 */
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 250px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  opacity: 0.8;
+}
+
+/* 툴팁 화살표 (꼬리) */
+.tooltip-arrow::before {
+  border-color: transparent; /* 기본 Bootstrap 화살표 테두리 제거 */
+  background-color: #333; /* 배경색과 동일한 색상 */
+}
+
+/* 툴팁 위치별 화살표 회전 조정 (필요시) */
+/* Bootstrap 5는 placement에 따라 arrow 위치를 자동으로 조정합니다. */
+/* 추가적인 미세 조정이 필요할 때만 사용 */
+.bs-tooltip-top .tooltip-arrow {
+  bottom: 0;
+  margin-left: -0.5rem; /* 중앙 정렬 조정 */
+}
+.bs-tooltip-top .tooltip-arrow::before {
+  content: "";
+  transform: rotate(45deg); /* 마름모 회전 */
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  position: absolute;
+  bottom: -8px; /* 실제 화살표 위치 조정 */
+  left: 50%;
+  transform-origin: center;
+  margin-left: -8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Bootstrap 툴팁은 자체적으로 화살표를 생성하므로,
+ 기존 `::before` 가상 요소를 `tooltip-arrow::before`에 통합해야 합니다.
+ 위 예시는 단순화된 것이며, 실제로는 Bootstrap의 `.tooltip-arrow` 클래스에 맞춰 조정해야 합니다.
+ 가장 좋은 방법은 개발자 도구에서 Bootstrap 툴팁의 기본 HTML/CSS 구조를 확인하고,
+ 거기에 맞게 커스텀 CSS를 오버라이드하는 것입니다.
+*/

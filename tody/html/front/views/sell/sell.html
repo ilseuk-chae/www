@@ -38,6 +38,7 @@
         <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
         <!-- jQuery UI 기본 테마 CSS -->
         <link href="/assets/css/jquery-ui.css" rel="stylesheet" > <!-- 다운로드한 파일 경로 -->
+        
         <style>
             .text-clamp {
                 display: -webkit-box;
@@ -49,7 +50,7 @@
             }
         </style>
     </head>
-    <body>
+    <body data-screen-type="sell"> <!-- 현재 화면 종류를 body 태그에 설정 -->
         <div class="wrap">
             <!-- 전체모션 -->
             <div class="visual-bg">
@@ -191,23 +192,23 @@
                 <div>
                     <!-- 우측 상단 - 지도 선택 -->
                     <div class="map-select-group">
-                        <button type="button" class="active" onclick="changeBaseMapType('roadmap', map)">일반</button>
-                        <button type="button" onclick="changeBaseMapType('skyview', map)">위성</button>
-                        <button type="button" class="" onclick="changeBaseMapType('hybrid', map)">일반+위성</button>
-                        <button type="button" onclick="setOverlayMapTypeId('use_district', map)">지적편집도</button>
-                        <button type="button" id="roadviewControl" onclick="setRoadviewRoad()">로드뷰</button>
+                        <button id="generalMode" type="button" class="tooltip-target active" onclick="changeBaseMapType('roadmap', map)">일반</button>
+                        <button id="satellitelMode" type="button" class="tooltip-target" onclick="changeBaseMapType('skyview', map)">위성</button>
+                        <button id="hybridMode" type="button" class="tooltip-target" onclick="changeBaseMapType('hybrid', map)">일반+위성</button>
+                        <button id="cadastralMap" type="button" class="tooltip-target" onclick="setOverlayMapTypeId('use_district', map)">지적편집도</button>
+                        <button type="button" id="roadviewControl" class="tooltip-target" onclick="setRoadviewRoad()">로드뷰</button>
                     </div>
                     
                     <!-- 좌측 상단 - 매물유형 옆 매물유형  -->
                         
-                    <div class="map-sale-group active">
+                    <div id="mapSaleGroup" class="map-sale-group tooltip-target active">
                         <button type="button" class="active">매매</button>
                         <button type="button" class="active">임대</button>
                         <button type="button" class="active">교환</button>
                     </div>
                 
                     <!-- 좌측 상단 - 이력 옆 매물유형  -->
-                    <div class="map-estate-group active">
+                    <div id="mapEstateGroup" class="map-estate-group tooltip-target active">
                         <button type="button" class="active">전체</button>
                         <button type="button" class="active">상가</button>
                         <button type="button" class="active">사무실</button>
@@ -220,7 +221,7 @@
                         <button type="button" class="active">빌라/주택</button>
                     </div>
                   
-                    <div class="map-price-group active">
+                    <div id="mapPriceGroup" class="map-price-group tooltip-target active">
                         <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown"><i class="fa-light fa-sliders"></i>가격대</button>
                     </div>
 
@@ -278,7 +279,11 @@
                             <span class="color-white">필터</span>
                         </button>
                         -->
-                        <button id="mapOptionToolOpen">
+                        <button id="mapOptionTooltip" class="tooltip-target">
+                            <i class="fa-sharp fa-light fa-hire-a-helper "></i>
+                            <span>도움<br />툴팁</span>
+                        </button>
+                        <button id="mapOptionToolOpen" class="tooltip-target">
                             <i class="fa-sharp fa-light fa-pencil"></i>
                             <span>도구<br />사용</span>
                         </button>
@@ -330,7 +335,7 @@
                             </p>
                         </div> -->
 
-                        <button type="button" id="mapOptionMemoOpen">
+                        <button type="button" id="mapOptionMemoOpen" class="tooltip-target">
                             <i class="mdi mdi-notebook-edit-outline"></i>
                             <span>메모<br />관리</span>
                         </button>
@@ -340,7 +345,7 @@
                     <!-- 이력관리 -->
                     <div class="map-history active">
                         <div class="mh-button">
-                            <button id="mapHistoryOpen"><i class="fa-regular fa-clock-rotate-left"></i></button>
+                            <button id="mapHistoryOpen" class="tooltip-target"><i class="fa-regular fa-clock-rotate-left"></i></button>
                         </div>
                         <div class="mh-list">
                             <dl>
@@ -811,9 +816,10 @@
             </div>
         </div>
 
-        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="/front/assets/js/jquery-3.3.1.js"></script>
         <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        
         <script src="/front/assets/js/easing.js"></script>
 
         <script src="/front/assets/js/gsap.min.js"></script>
@@ -853,9 +859,10 @@
         <script src="/front/js/realPrice/polygonDrawer.js"></script>
         <script src="/front/js/realPrice/textDrawer.js"></script>
         <script src="/front/js/realPrice/roadView.js"></script>
+        <script src="/front/js/sell/sell.js"></script>
         <script src="/front/js/memo/memo.js"></script>
         <script src="/front/js/sell/map.js"></script>
-        <script src="/front/js/sell/sell.js"></script>
+        
         <!-- 단위변환을 위해 추가    -->
         <script src="/front/js/sell/tab.js"></script>
         <!-- active menu를 위해 추가    -->

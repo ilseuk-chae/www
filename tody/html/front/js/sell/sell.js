@@ -6,6 +6,8 @@ let isKeyDown = false; // 이벤트 중복 방지 플래그
 let compareList = {
     data: [] // 비교 대상 매물의 상세 정보를 저장할 배열 (data 구조체 역할)
 };
+let activeBootstrapTooltips = new Map(); // Map<HTMLElement, bootstrap.Tooltip>
+let globalTooltipContents = {};   
 
 $(document).ready(async function () {
     initAction(); // 액션 이벤트 초기화
@@ -23,6 +25,7 @@ $(document).ready(async function () {
     });
     //getEstateListToMakeOption(); // 매물 리스트 가져와서 SelectOption list 생성
     updateCompareApplyButtonState(); // <-- 비교버튼 초기화
+    initTooltip(); // 툴팁 초기화    
 });
 
 // 초기화 함수 호출
@@ -244,6 +247,154 @@ function initModalDrag() {
     }
 }
 
+/**
+ * 페이지 로드 시 tooltip 초기화 실행
+ */
+async function initTooltip(){
+    let isHelpActive = false;
+    let tooltipData = {}; // DB에서 가져온 툴팁 데이터를 저장할 객체
+    //const activeBootstrapTooltips = new Map(); // Map<HTMLElement, bootstrap.Tooltip>
+    // 현재 화면 종류를 가져오는 함수 (body 태그의 data-screen-type 속성 사용)
+    
+    function getCurrentScreenType() {
+        return $('body').data('screen-type');
+    }
+
+    // 서버에서 툴팁 데이터를 가져오는 함수
+    function fetchTooltipContent(screenType, callback) {
+        // 실제 환경에서는 AJAX 요청을 사용합니다.
+        return new Promise((resolve, reject) => {
+            $.getJSON("/front/back/00-include/get_tooltips.php", { screen: screenType })
+                .done(function(data) {
+                    globalTooltipContents = data.responseData || {}; // 전역 변수에 데이터 할당
+                    //console.log("fetchTooltipContent: globalTooltipContents에 데이터 할당 완료.", globalTooltipContents);
+                    resolve();
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("툴팁 데이터 로드 실패:", textStatus, errorThrown);
+                    globalTooltipContents = {}; // 실패 시 비어있는 객체로 초기화
+                    reject(errorThrown);
+                });
+        });
+    }
+
+    // 툴팁 활성화/비활성화 및 내용 업데이트 함수
+    async function updateTooltips() { // 함수 자체를 async로 정의
+        //console.log("updateTooltips 함수 실행. isHelpActive:", isHelpActive);
+        //console.log("updateTooltips 시작 시 .tooltip-target 요소 개수:", $('.tooltip-target').length);
+
+        // [중요 수정] 모든 툴팁 인스턴스를 dispose하고 맵에서 제거, 속성/이벤트 제거를 일괄적으로 수행.
+        // 이는 함수가 호출될 때마다 깨끗한 상태에서 다시 시작하도록 합니다.
+        $('.tooltip-target').each(function() {
+            let existingTooltipInstance = activeBootstrapTooltips.get(this);
+            if (existingTooltipInstance) {
+                existingTooltipInstance.dispose();
+                activeBootstrapTooltips.delete(this); // [활성화] 맵에서 인스턴스 제거
+            }
+            $(this).removeAttr('data-bs-title data-bs-toggle'); // data 속성 제거
+            $(this).off('click.tooltipHide'); // 이전에 붙였던 click 이벤트 제거
+        });
+        //console.log("기존 툴팁 정리 루프 완료.");
+
+        if (isHelpActive) {
+            // 도움말 모드 활성화 시
+
+            // fetchTooltipContent가 Promise를 반환하므로 직접 await합니다.
+            try {
+                await fetchTooltipContent(getCurrentScreenType());
+            } catch (error) {
+                console.error("fetchTooltipContent 호출 중 오류 발생:", error);
+                // 에러 발생 시 더 이상 진행하지 않음
+                return Promise.reject(error);
+            }
+
+            // fetchTooltipContent에서 globalTooltipContents가 채워졌음을 확인
+            //console.log("fetchTooltipContent 완료. globalTooltipContents 설정됨.");
+            //console.log("툴팁 생성 시작. .tooltip-target 개수:", $('.tooltip-target').length);
+
+            if ($('.tooltip-target').length > 0) {
+                $('.tooltip-target').each(function() {
+                    const elementId = $(this).attr('id');
+                    const tooltipContent = globalTooltipContents[elementId]; // 전역 변수에서 내용 가져옴
+
+                    // 툴팁 내용을 찾은 경우
+                    if (tooltipContent) {
+                        // [중요 수정] 기존 인스턴스 있다면 dispose하고 맵에서 제거 (갱신 전 명확한 정리)
+                        let existingTooltipInstance = activeBootstrapTooltips.get(this);
+                        if (existingTooltipInstance) {
+                            existingTooltipInstance.dispose();
+                            activeBootstrapTooltips.delete(this); // [활성화] 맵에서 인스턴스 제거
+                        }
+
+                        // 2. 툴팁 콘텐츠를 data-bs-title 속성에 할당
+                        $(this).attr('data-bs-title', tooltipContent);
+                        // 3. 툴팁 토글 속성 추가 (Bootstrap 툴팁이 활성화될 수 있도록)
+                        $(this).attr('data-bs-toggle', 'tooltip');
+
+                        // 4. Bootstrap Tooltip 인스턴스 생성
+                        const newTooltipInstance = new bootstrap.Tooltip(this, {
+                            placement: 'auto', // 원하는 위치 (top, bottom, left, right)
+                            html: true,       // 툴팁 내용에 HTML 태그가 포함될 수 있다면 true로 설정
+                            animation: false, // 툴팁의 나타나고 사라지는 애니메이션 자체를 끕니다.
+                            delay: { show: 0, hide: 0 }, // 나타나고 사라지는 딜레이를 0으로 설정.
+                            trigger: 'hover', // [추가] 툴팁 트리거를 명시적으로 'hover'로 설정
+                        });
+                        // 맵에 인스턴스 저장 (나중에 비활성화할 때 사용하기 위함)
+                        activeBootstrapTooltips.set(this, newTooltipInstance);
+
+                        // ===== [클릭 이벤트 로직 추가 - 여기에 위치] =====
+                        // 요소 클릭 시 툴팁 숨김 및 비활성화 로직
+                        $(this).on('click.tooltipHide', function() {
+                            const clickedElementId = $(this).attr('id');
+                            const clickedTooltipInstance = activeBootstrapTooltips.get(this);
+
+                            if (clickedTooltipInstance) {
+                                clickedTooltipInstance.hide(); // 툴팁 숨기기
+                                //clickedTooltipInstance.disable(); // 툴팁 자동 재활성화 방지 (매우 중요!)
+                                $(this).blur(); // 요소의 포커스를 제거 (클릭 후 포커스가 남을 때 유용)
+                                //console.log(`요소 ID '${clickedElementId}' 클릭: 툴팁 숨김 및 비활성화 처리.`);
+                            } else {
+                                //console.warn(`클릭된 요소 '${clickedElementId}'에 대한 툴팁 인스턴스를 찾을 수 없습니다.`);
+                            }
+                        });
+                        // ===== [클릭 이벤트 로직 추가 끝] =====
+                        //console.log(`요소 ID '${elementId}'에 Bootstrap 툴팁 설정 완료.`);
+                    } else {
+                        // 툴팁 내용이 없는 경우 (DB에 없는 경우)
+                        // 기존 정리 로직은 함수 시작 부분에서 이미 처리되었으므로 여기서는 추가 작업 불필요.
+                        //console.log(`요소 ID '${elementId}'에 대한 툴팁 내용이 없어 Bootstrap 툴팁을 설정하지 않습니다.`);
+                    }
+                }); // .each() 끝
+                // updateTooltips 함수가 Promise를 반환하도록 최종적으로 Resolve
+                return Promise.resolve();
+            } else {
+                console.warn("툴팁을 생성할 .tooltip-target 요소가 없습니다.");
+                return Promise.resolve(); // Promise는 해결
+            }
+        } else {
+            // 도움말 모드 비활성화 시 (초기 공통 처리 부분에서 이미 모든 툴팁 제거됨)
+            //console.log("도움말 모드 비활성화 완료.");
+            return Promise.resolve();
+        }
+    }
+
+    $('#mapOptionTooltip').on('click', async function() { // 클릭 핸들러 함수를 async로 변경
+        isHelpActive = !isHelpActive; // 상태 토글
+        $(this).toggleClass('active', isHelpActive); // 버튼 CSS 클래스 토글
+
+        // updateTooltips가 Promise를 반환하도록 변경했으므로, 여기서 await로 기다립니다.
+        await updateTooltips();
+        //console.log("updateTooltips 호출 완료.");
+    });
+
+    
+    $('.tooltip-target').each(function() {
+        if (bootstrap.Tooltip.getInstance(this)) { // 이미 툴팁 인스턴스가 있다면
+            bootstrap.Tooltip.getInstance(this).dispose();
+        }
+        $(this).removeAttr('data-bs-title data-bs-toggle');
+    });
+}
 /**
  * 페이지 로드 시에도 URL 파라미터를 감지하고 estateDetail을 실행
  */
@@ -596,7 +747,6 @@ function initAction() {
 
     // '비교하기' 버튼 클릭 시 추가 로직 실행
     $("#compare_apply_btn").on("click", function () {
-        console.log("비교하기 버튼 클릭됨");
         // 여기에 비교 로직을 추가하세요
         //$("#compareModal").fadeOut(); // 모달 닫기
     });
