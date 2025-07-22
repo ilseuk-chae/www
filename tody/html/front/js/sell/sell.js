@@ -2022,36 +2022,47 @@ function renderComparisonTable(data1, data2) {
     // --- '평 단가' 계산 로직 변경 시작 ---
     let pricePerArea1 = 0;
     let pricePerArea2 = 0;
+    let pricePersquareArea1 = 0;
+    let pricePersquareArea2 = 0;
     const PY_CONVERSION_FACTOR = 0.3025; // ㎡를 평으로 변환하는 계수 (1㎡ = 0.3025평)
 
     // 첫 번째 매물 평 단가 계산
     let denominator1 = 0;
+    let denominator11 = 0;
     if (data1.estate_type === "토지") {
         // 매물 구분이 '토지'인 경우 토지면적(platArea) 사용
         denominator1 = data1.platArea * PY_CONVERSION_FACTOR;
+        denominator11 = data1.platArea;
     } else {
         // 그 외의 경우 총면적(totArea) 사용
         denominator1 = data1.totArea * PY_CONVERSION_FACTOR;
+        denominator11 = data1.totArea;
     }
     pricePerArea1 = denominator1 > 0 ? data1.sale_price / denominator1 : 0;
-
+    pricePersquareArea1 = denominator11 > 0 ? data1.sale_price / denominator11 : 0;
     // 두 번째 매물 평 단가 계산
     let denominator2 = 0;
+    let denominator21 = 0;
     if (data2.estate_type === "토지") {
         // 매물 구분이 '토지'인 경우 토지면적(platArea) 사용
         denominator2 = data2.platArea * PY_CONVERSION_FACTOR;
+        denominator21 = data2.platArea;
     } else {
         // 그 외의 경우 총면적(totArea) 사용
         denominator2 = data2.totArea * PY_CONVERSION_FACTOR;
+        denominator21 = data1.totArea;
     }
     pricePerArea2 = denominator2 > 0 ? data2.sale_price / denominator2 : 0;
+    pricePersquareArea2 = denominator11 > 0 ? data2.sale_price / denominator21 : 0;
     // --- '평 단가' 계산 로직 변경 끝 ---
 
     let unitpriceText1 = formatPrice(pricePerArea1, "all", true) + '/평' ; // 단위 변경
     let unitpriceText2 = formatPrice(pricePerArea2, "all", true) + '/평' ; // 단위 변경
+    let unitpriceText11 = formatPrice(pricePersquareArea1, "all", true) + '/㎡' ; // 단위 변경
+    let unitpriceText21 = formatPrice(pricePersquareArea2, "all", true) + '/㎡' ; // 단위 변경
 
-    let unitpriceTextHtml1 = `<span class="label-default bg-green1">${unitpriceText1}</span>`;
-    let unitpriceTextHtml2 = `<span class="label-default bg-green1">${unitpriceText2}</span>`;
+    let unitpriceTextHtml1 = `<span class="label-default bg-green1">${unitpriceText1}</span> <span class="label-default bg-aqua1">${unitpriceText11}</span>`;
+    let unitpriceTextHtml2 = `<span class="label-default bg-green1">${unitpriceText2}</span> <span class="label-default bg-aqua1">${unitpriceText21}</span>`;
 
     $("#compare_unit1").html(`${unitpriceTextHtml1}`);
     $("#compare_unit2").html(`${unitpriceTextHtml2}`);
@@ -2065,13 +2076,15 @@ function renderComparisonTable(data1, data2) {
     } else {
         footerIsDifferent = true;
         const difference = Math.abs(pricePerArea1 - pricePerArea2);
+        const difference2 = Math.abs(pricePersquareArea1 - pricePersquareArea2);
         const formattedDifference = formatPrice(difference, "all", true); // 평 단가도 가격 포맷 사용
+        const formattedDifference2 = formatPrice(difference2, "all", true); // 평 단가도 가격 포맷 사용
 
         if (pricePerArea1 < pricePerArea2) {
-            footerResultText = `▲ (${formattedDifference})`;
+            footerResultText = `▲ (${formattedDifference}, ${formattedDifference2})`;
             $footerCompareResult.addClass('compare-up');
         } else { // pricePerArea1 > pricePerArea2
-            footerResultText = `▼ (${formattedDifference})`;
+            footerResultText = `▼ (${formattedDifference}, ${formattedDifference2})`;
             $footerCompareResult.addClass('compare-down');
         }
     }
@@ -2094,126 +2107,43 @@ let modalHeightObserver = null;
  */
 function adjustComparisonModalHeight() {
     const modalContent = document.querySelector('.compare-modal-content');
-    const header = document.querySelector('.compare-modal-header');
-    const modalBody = document.querySelector('.compare-modal-body');
-    const bodyHeader = document.querySelector('.modal-body-header');
-    const scrollContent = document.querySelector('.modal-body-scroll-content');
-    const bodyFooter = document.querySelector('.modal-body-footer');
+    const modalBody = document.querySelector('.compare-modal-body'); // 이 요소의 Flexbox는 CSS에서만 제어하도록 합니다.
+    const scrollContent = document.querySelector('.modal-body-scroll-content'); // 이 요소도 CSS에서만 제어하도록 합니다.
 
-    if (!modalContent || !header || !modalBody || !bodyHeader || !scrollContent) {
+    if (!modalContent || !modalBody || !scrollContent) {
         console.warn("매물 비교 모달의 높이 조절에 필요한 요소 중 일부가 없습니다.");
         return;
     }
 
-    // --- 모든 관련 요소의 인라인 스타일을 완벽하게 초기화 ---
-    // 모달을 닫았다 열 때 잔여 스타일로 인한 오차를 방지합니다.
-    modalContent.style.cssText = '';
-    scrollContent.style.cssText = '';
-    modalBody.style.cssText = '';
-    // ----------------------------------------------------
+    // --- 가장 중요한 부분: JavaScript가 설정할 수 있는 불필요한 인라인 스타일 초기화 ---
+    // CSS에서 지정한 높이와 Flexbox 속성이 정확히 적용되도록 함.
+    modalContent.style.height = ''; 
+    modalContent.style.maxHeight = ''; 
+    modalContent.style.minHeight = ''; 
+    
+    // modalBody와 scrollContent에 강제적으로 높이나 flex 속성을 부여하던 부분을 모두 비웁니다.
+    // 이는 이 요소들의 높이와 flex 동작이 CSS에 전적으로 위임되도록 하기 위함입니다.
+    modalBody.style.height = ''; 
+    modalBody.style.flexGrow = ''; 
+    modalBody.style.flexShrink = ''; 
 
-    // 1. .modal-body-scroll-content의 flex 속성들을 정확한 scrollHeight 측정 준비 상태로 설정
-    scrollContent.style.flexGrow = '0';
-    scrollContent.style.height = 'auto';
-    scrollContent.style.minHeight = 'auto';
-    scrollContent.style.flexShrink = '0';
+    scrollContent.style.height = '';
+    scrollContent.style.flexGrow = '';
+    scrollContent.style.minHeight = '';
+    scrollContent.style.flexShrink = '';
+    scrollContent.style.overflowY = ''; // CSS가 auto로 처리하도록
+    // ----------------------------------------------------------------------------------
 
-    // .compare-modal-body의 flex 속성도 정확한 계산 준비 상태로 설정
-    modalBody.style.flexGrow = '0';
-    modalBody.style.height = 'auto';
-
-    // requestAnimationFrame은 DOM 업데이트가 처리된 후 측정을 보장합니다.
     requestAnimationFrame(() => {
-        // 2. .modal-body-scroll-content의 실제 내용 높이를 측정하고, 그 높이로 강제 설정합니다.
-        // Math.ceil을 사용하여 소수점 픽셀로 인한 공간 부족을 방지합니다.
-        const scrollContentActualHeight = Math.ceil(scrollContent.scrollHeight);
-        const scrollContentHeightWithBuffer = scrollContentActualHeight + 1; // 1px의 미세한 여유 공간
+        // 이제 이 함수는 주로 모달의 최상위 컨테이너(modalContent)의 높이를 최적화하는 데 사용됩니다.
+        // 예를 들어, 뷰포트 높이에 따라 모달의 최대 높이를 동적으로 제한할 수 있습니다.
+        const viewportHeight = window.innerHeight;
+        // 예시: 모달이 뷰포트 높이의 80%를 넘지 않도록 설정 (상단/하단에 10% 여백 둠)
+        // 만약 CSS에서 이미 modalContent에 height: calc(100vh - XXpx) 같은 걸 쓰고 있다면 이 부분은 불필요할 수 있습니다.
+        modalContent.style.maxHeight = `${viewportHeight * 0.8}px`; 
+        modalContent.style.minHeight = `400px`; // 최소 높이도 지정 (선택 사항)
 
-        scrollContent.style.height = `${scrollContentHeightWithBuffer}px`; // 핵심: 높이를 scrollHeight + 여유 공간으로 명시적 설정
-
-        // 3. 각 고정된 요소들의 높이를 측정합니다.
-        const headerHeight = Math.ceil(header.offsetHeight);
-        const bodyHeaderHeight = Math.ceil(bodyHeader.offsetHeight);
-        const bodyFooterHeight = bodyFooter ? Math.ceil(bodyFooter.offsetHeight) : 0;
-
-        // 4. .compare-modal-body의 자체 패딩/보더를 계산합니다.
-        const modalBodyComputedStyle = getComputedStyle(modalBody);
-        const modalBodyPaddingTop = parseFloat(modalBodyComputedStyle.paddingTop);
-        const modalBodyPaddingBottom = parseFloat(modalBodyComputedStyle.paddingBottom);
-        const modalBodyBorderTop = parseFloat(modalBodyComputedStyle.borderTopWidth);
-        const modalBodyBorderBottom = parseFloat(modalBodyComputedStyle.borderBottomWidth);
-        const modalBodyVerticalSpace = Math.ceil(modalBodyPaddingTop + modalBodyPaddingBottom + modalBodyBorderTop + modalBodyBorderBottom);
-
-        // 5. .compare-modal-body의 '이상적인' 높이를 직접 계산합니다.
-        const modalBodyGap = parseFloat(modalBodyComputedStyle.gap || 0);
-
-        let idealModalBodyHeightCalculated = Math.ceil(
-            bodyHeaderHeight +
-            scrollContentHeightWithBuffer + // scrollContent.offsetHeight 대신 scrollContentHeightWithBuffer 사용
-            bodyFooterHeight +
-            modalBodyVerticalSpace +
-            modalBodyGap
-        );
-
-        // .compare-modal-body의 min-height도 고려합니다.
-        const modalBodyMinHeight = parseFloat(modalBodyComputedStyle.minHeight);
-        if (idealModalBodyHeightCalculated < modalBodyMinHeight) {
-            idealModalBodyHeightCalculated = Math.ceil(modalBodyMinHeight);
-        }
-        
-        // 6. .compare-modal-body의 높이를 계산된 값으로 명시적으로 설정합니다.
-        modalBody.style.height = `${idealModalBodyHeightCalculated}px`;
-
-        // 7. .compare-modal-content의 '이상적인' 총 높이를 계산합니다.
-        let idealModalContentHeight = Math.ceil(headerHeight + modalBody.offsetHeight);
-
-        // 8. .compare-modal-content에 설정된 max-height와 min-height 제약을 가져옵니다.
-        const computedModalContentStyle = getComputedStyle(modalContent);
-        const maxModalHeight = parseFloat(computedModalContentStyle.maxHeight);
-        const minModalHeight = parseFloat(computedModalContentStyle.minHeight);
-
-        // 9. 최종 모달 높이를 결정하고, .modal-body-scroll-content 및 .compare-modal-body의 flex 속성을 조정합니다.
-        let finalModalHeight = idealModalContentHeight;
-        let setScrollContentFlexGrow = '0';
-        let setScrollContentMinHeight = `${scrollContentHeightWithBuffer}px`;
-        let setScrollContentFlexShrink = '0';
-        let setModalBodyFlexGrow = '0';
-        let setModalBodyHeightValue = `${idealModalBodyHeightCalculated}px`;
-
-        if (idealModalContentHeight > maxModalHeight) {
-            finalModalHeight = Math.ceil(maxModalHeight);
-            setScrollContentFlexGrow = '1';
-            setScrollContentMinHeight = 'auto';
-            setScrollContentFlexShrink = '1';
-            setModalBodyFlexGrow = '1';
-            setModalBodyHeightValue = 'auto';
-        } else if (idealModalContentHeight < minModalHeight) {
-            finalModalHeight = Math.ceil(minModalHeight);
-            setScrollContentFlexGrow = '1';
-            setScrollContentMinHeight = 'auto';
-            setScrollContentFlexShrink = '1';
-            setModalBodyFlexGrow = '1';
-            setModalBodyHeightValue = 'auto';
-        }
-
-        // 10. .compare-modal-content의 높이를 조정합니다.
-        modalContent.style.height = `${finalModalHeight}px`;
-
-        // 11. .modal-body-scroll-content의 flex-grow, min-height, flex-shrink 속성을 최종 결정된 값으로 설정합니다.
-        scrollContent.style.flexGrow = setScrollContentFlexGrow;
-        scrollContent.style.minHeight = setScrollContentMinHeight;
-        if (setScrollContentFlexGrow === '1') {
-            scrollContent.style.height = 'auto';
-        } else {
-            // flex-grow가 0일 때는 명시적 높이 유지 (이미 위에서 scrollContentHeightWithBuffer로 설정됨)
-        }
-        scrollContent.style.flexShrink = setScrollContentFlexShrink;
-
-        // 12. .compare-modal-body의 flex-grow 및 height 속성을 최종 결정된 값으로 설정합니다.
-        modalBody.style.flexGrow = setModalBodyFlexGrow;
-        modalBody.style.height = setModalBodyHeightValue;
-
-        
+        // 이 외의 복잡한 높이 계산 로직은 모두 CSS Flexbox에 맡깁니다.
     });
 }
 
