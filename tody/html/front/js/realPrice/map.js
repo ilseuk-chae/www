@@ -1,1810 +1,2806 @@
-const a39_0x363e4a = a39_0x57f5;
-(function (_0xcfca19, _0x58517f) {
-    const _0x20204a = a39_0x57f5,
-        _0x4b6d1d = _0xcfca19();
-    while (!![]) {
-        try {
-            const _0x14f903 =
-                (-parseInt(_0x20204a(0x210)) / 0x1) * (-parseInt(_0x20204a(0x28d)) / 0x2) +
-                (parseInt(_0x20204a(0x2b5)) / 0x3) * (-parseInt(_0x20204a(0x19c)) / 0x4) +
-                parseInt(_0x20204a(0x1da)) / 0x5 +
-                -parseInt(_0x20204a(0x282)) / 0x6 +
-                (parseInt(_0x20204a(0x1d6)) / 0x7) * (-parseInt(_0x20204a(0x261)) / 0x8) +
-                (parseInt(_0x20204a(0x169)) / 0x9) * (-parseInt(_0x20204a(0x231)) / 0xa) +
-                (parseInt(_0x20204a(0x23d)) / 0xb) * (parseInt(_0x20204a(0x228)) / 0xc);
-            if (_0x14f903 === _0x58517f) break;
-            else _0x4b6d1d["push"](_0x4b6d1d["shift"]());
-        } catch (_0x1bd613) {
-            _0x4b6d1d["push"](_0x4b6d1d["shift"]());
-        }
-    }
-})(a39_0x4e67, 0x64379);
-const mapContainer = document[a39_0x363e4a(0x1c3)](a39_0x363e4a(0x229));
-let geocoder = new kakao["maps"][a39_0x363e4a(0x1e6)]["Geocoder"](),
-    ps = new kakao["maps"][a39_0x363e4a(0x1e6)][a39_0x363e4a(0x2ba)](),
-    map,
-    infowindow,
-    clusterer,
-    contentsMarkers = [],
-    marker = new kakao["maps"][a39_0x363e4a(0x1db)](),
-    markers = [],
-    realPriceMarkers = [],
-    historyMarkers = [],
-    currentUnit = "m2",
-    previousLat = new URLSearchParams(window["location"][a39_0x363e4a(0x28c)])[a39_0x363e4a(0x27f)]("curLat"),
-    previousLng = new URLSearchParams(window[a39_0x363e4a(0x22a)]["search"])[a39_0x363e4a(0x27f)](a39_0x363e4a(0x1f7)),
-    isMultiSelectMode = ![],
-    selectedPolygons = [],
-    buildingPolygons = [],
-    landPolygons = [],
-    landPolygonsMiniMap = [],
-    analysisPolygonArray = [],
-    landWFSArrays = [],
-    isLoading = ![],
-    manager = null,
-    circleDrawer = null,
-    lineDrawer = null,
-    polygonDrawer = null;
-var textModule = null,
-    currentOverlay = null;
-let existingBounds = [],
-    currentOverlays = [],
-    isMapClickable = !![],
-    textModuleControl = null,
-    realPriceOverlays = [];
-$(document)[a39_0x363e4a(0x2be)](function () {
-    const _0x2523a3 = a39_0x363e4a;
-    initProj4(),
-        initializeMap(),
-        handleMapEvents(),
-        window["addEventListener"](_0x2523a3(0x1a2), function (_0x265f95) {
-            handleUrlChange();
-        }),
-        $(_0x2523a3(0x260))["on"](_0x2523a3(0x272), function () {
-            return;
-            const _0xf492f5 = map["getCenter"]();
-            searchAddrFromCoords(_0xf492f5, async function (_0x385800, _0x48aab3) {
-                const _0x3b635c = a39_0x57f5;
-                if (_0x48aab3 === kakao[_0x3b635c(0x170)][_0x3b635c(0x1e6)][_0x3b635c(0x239)]["OK"]) {
-                    const _0x39ae86 = _0x3b635c(0x20f),
-                        _0x8a1811 = _0x3b635c(0x2bc);
-                    for (var _0x21e79f = 0x0; _0x21e79f < _0x385800[_0x3b635c(0x2a9)]; _0x21e79f++) {
-                        console[_0x3b635c(0x1e9)](_0x385800);
-                        if (_0x385800[_0x21e79f][_0x3b635c(0x194)] == "B") {
-                            let _0x3ca487 = _0x385800[_0x21e79f][_0x3b635c(0x2b3)];
-                            _0x3ca487 = _0x3ca487[_0x3b635c(0x2aa)](0x0, 0x5);
-                            const _0x50c971 = await callApi("POST", _0x39ae86, { lawd_cd: _0x3ca487, deal_ymd: _0x8a1811 });
-                            if (_0x50c971["success"] && _0x50c971[_0x3b635c(0x201)]) {
-                                const _0x27c976 = document[_0x3b635c(0x241)]("a");
-                                (_0x27c976[_0x3b635c(0x220)] = _0x50c971["file_path"]), (_0x27c976[_0x3b635c(0x288)] = "land_trade_data.csv"), document[_0x3b635c(0x1d7)][_0x3b635c(0x1d9)](_0x27c976), _0x27c976[_0x3b635c(0x272)](), document[_0x3b635c(0x1d7)][_0x3b635c(0x2a6)](_0x27c976);
-                            } else console["error"]("파일\x20생성에\x20실패했습니다.");
-                            return;
-                            if (_0x50c971[_0x3b635c(0x2b6)][_0x3b635c(0x2bd)] && _0x50c971[_0x3b635c(0x2b6)][_0x3b635c(0x2bd)] === "OK") {
-                                const _0x2eed1b = _0x50c971[_0x3b635c(0x1d7)][_0x3b635c(0x18d)][_0x3b635c(0x164)];
-                            }
-                            break;
+const mapContainer = document.getElementById("map_bg"); // 지도를 표시할 div
+let geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체를 생성합니다
+let ps = new kakao.maps.services.Places(); // 장소 검색 객체를 생성합니다
+let map; // 맵
+let infowindow; // 인포윈도우
+let clusterer; // 클러스터
+let contentsMarkers = []; // 컨텐츠 마커 배열 정의
+let marker = new kakao.maps.Marker(); // 클릭한 위치를 표시할 마커입니다
+let markers = []; // 클릭, 선택된 마커 배열 정의
+let realPriceMarkers = []; // 클릭, 선택된 마커 배열 정의
+let historyMarkers = []; // 최근 이력 마커 배열 정의
+let currentUnit = "m2"; // 현재 단위를 추적
+let previousLat = new URLSearchParams(window.location.search).get("curLat");
+let previousLng = new URLSearchParams(window.location.search).get("curLng");
+let isMultiSelectMode = false; // 다중 선택 모드 여부를 추적
+let selectedPolygons = []; // 선택된 폴리곤 배열 (사용 X)
+let buildingPolygons = []; // 건물 폴리곤 배열
+let landPolygons = []; // 지적도 폴리곤 배열
+let landPolygonsMiniMap = []; // 지적도 폴리곤 배열(미니맵)
+let analysisPolygonArray = []; // 분석주제도 폴리곤 배열
+let landWFSArrays = []; // 합필분석 지적도WFS 배열
+let isLoading = false; // 현재 비동기 작업이 진행 중인지 추적하기 위한 플래그
+let manager = null; // Drawing manager
+let circleDrawer = null; // 원 반경 모듈
+let lineDrawer = null; // 직선 거리 모듈
+let polygonDrawer = null; // 다각형 거리 모듈
+var textModule = null; // 텍스트 입력 모듈 상태를 저장하는 변수
+var currentOverlay = null; // 지도 오버레이(ex. 생태자연도)
+let existingBounds = []; // 기존 오버레이의 경계들을 추적
+let currentOverlays = []; // 현재 오버레이 목록을 저장
+let isMapClickable = true; // 지도 클릭 가능 여부
+let textModuleControl = null; // 텍스트 모듈
+let realPriceOverlays = []; // 실거래가 오버래이 저장 배열
+
+$(document).ready(function () {
+    initProj4();
+    initializeMap(); // 지도 초기화
+    handleMapEvents(); // 지도 이벤트
+
+    // URL 변경 감지 이벤트
+    window.addEventListener("popstate", function (e) {
+        handleUrlChange();
+    });
+
+    // 테스트용 코드 (현재는 동작하지 않음)
+    $("#mapHistoryOpen").on("click", function () {
+        return;
+        const center = map.getCenter();
+        searchAddrFromCoords(center, async function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                const url = "/front/back/realPrice/test.php";
+                const deal_ymd = "202407";
+
+                for (var i = 0; i < result.length; i++) {
+                    // // 행정동의 region_type 값은 'H' 이므로
+                    // if (result[i].region_type === "H") {
+                    //     let lawd_cd = result[i].code;
+                    //     lawd_cd = lawd_cd.substring(0, 5);
+                    //     const result = await callApi("POST", url, { lawd_cd, deal_ymd });
+                    //     break;
+                    // }
+                    console.log(result);
+
+                    // 행정동의 region_type 값은 'H' 이므로
+                    if (result[i].region_type == "B") {
+                        let lawd_cd = result[i].code;
+
+                        lawd_cd = lawd_cd.substring(0, 5);
+                        const response = await callApi("POST", url, { lawd_cd, deal_ymd });
+
+                        if (response.success && response.file_path) {
+                            // 파일을 다운로드할 링크를 생성
+                            const downloadLink = document.createElement("a");
+                            downloadLink.href = response.file_path;
+                            downloadLink.download = "land_trade_data.csv";
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+                        } else {
+                            console.error("파일 생성에 실패했습니다.");
                         }
+                        return;
+
+                        if (response.header.resultMsg && response.header.resultMsg === "OK") {
+                            const item = response.body.items.item;
+                        }
+                        break;
                     }
                 }
-            });
-        }),
-        $("#printBtn")["on"](_0x2523a3(0x272), function () {
-            const _0x1591fc = _0x2523a3;
-            return;
-            const _0x2ec83d = map[_0x1591fc(0x1b5)]();
-            searchAddrFromCoords(_0x2ec83d, async function (_0x86c78a, _0x30f9bb) {
-                const _0x5f031e = _0x1591fc;
-                if (_0x30f9bb === kakao[_0x5f031e(0x170)][_0x5f031e(0x1e6)]["Status"]["OK"]) {
-                    const _0x415c43 = _0x5f031e(0x196),
-                        _0x476820 = _0x5f031e(0x2bc);
-                    for (var _0x40ea60 = 0x0; _0x40ea60 < _0x86c78a[_0x5f031e(0x2a9)]; _0x40ea60++) {
-                        console["log"](_0x86c78a);
-                        if (_0x86c78a[_0x40ea60][_0x5f031e(0x194)] == "B") {
-                            let _0x24912d = _0x86c78a[_0x40ea60]["code"];
-                            _0x24912d = _0x24912d[_0x5f031e(0x2aa)](0x0, 0x5);
-                            const _0x3762da = await callApi(_0x5f031e(0x167), _0x415c43, { lawd_cd: _0x24912d, deal_ymd: _0x476820 });
-                            if (_0x3762da[_0x5f031e(0x2c8)] && _0x3762da["file_path"]) {
-                                const _0x5f4d80 = document["createElement"]("a");
-                                (_0x5f4d80[_0x5f031e(0x220)] = _0x3762da[_0x5f031e(0x201)]), (_0x5f4d80[_0x5f031e(0x288)] = _0x5f031e(0x189)), document["body"][_0x5f031e(0x1d9)](_0x5f4d80), _0x5f4d80[_0x5f031e(0x272)](), document[_0x5f031e(0x1d7)][_0x5f031e(0x2a6)](_0x5f4d80);
-                            } else console["error"](_0x5f031e(0x1b2));
-                            return;
-                            if (_0x3762da["header"]["resultMsg"] && _0x3762da[_0x5f031e(0x2b6)][_0x5f031e(0x2bd)] === "OK") {
-                                const _0x59c1c4 = _0x3762da[_0x5f031e(0x1d7)]["items"]["item"];
-                            }
-                            break;
-                        }
-                    }
-                }
-            });
+            }
         });
+    });
+
+    // 지도 출력 버튼 클릭 시 실행되는 테스트용 코드 (현재는 동작하지 않음)
+    $("#printBtn").on("click", function () {
+        return;
+        const center = map.getCenter();
+        searchAddrFromCoords(center, async function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                const url = "/front/back/realPrice/download_realPrice_apartment.php";
+                const deal_ymd = "202407";
+
+                for (var i = 0; i < result.length; i++) {
+                    // // 행정동의 region_type 값은 'H' 이므로
+                    // if (result[i].region_type === "H") {
+                    //     let lawd_cd = result[i].code;
+                    //     lawd_cd = lawd_cd.substring(0, 5);
+                    //     const result = await callApi("POST", url, { lawd_cd, deal_ymd });
+                    //     break;
+                    // }
+                    console.log(result);
+
+                    // 행정동의 region_type 값은 'H' 이므로
+                    if (result[i].region_type == "B") {
+                        let lawd_cd = result[i].code;
+
+                        lawd_cd = lawd_cd.substring(0, 5);
+                        const response = await callApi("POST", url, { lawd_cd, deal_ymd });
+
+                        if (response.success && response.file_path) {
+                            // 파일을 다운로드할 링크를 생성
+                            const downloadLink = document.createElement("a");
+                            downloadLink.href = response.file_path;
+                            downloadLink.download = "land_trade_data.csv";
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+                        } else {
+                            console.error("파일 생성에 실패했습니다.");
+                        }
+                        return;
+
+                        if (response.header.resultMsg && response.header.resultMsg === "OK") {
+                            const item = response.body.items.item;
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+    });
 });
+
 function initProj4() {
-    const _0x3bd16c = a39_0x363e4a;
-    proj4[_0x3bd16c(0x2c9)]("EPSG:5186", "+proj=tmerc\x20+lat_0=38\x20+lon_0=127\x20+k=1\x20+x_0=200000\x20+y_0=600000\x20+ellps=GRS80\x20+units=m\x20+no_defs"),
-        proj4[_0x3bd16c(0x2c9)]("EPSG:5179", _0x3bd16c(0x223)),
-        proj4[_0x3bd16c(0x2c9)](_0x3bd16c(0x24f), "+proj=tmerc\x20+lat_0=38\x20+lon_0=127\x20+k=1\x20+x_0=600000\x20+y_0=200000\x20+ellps=GRS80\x20+units=m\x20+no_defs"),
-        proj4["defs"](_0x3bd16c(0x2c3), _0x3bd16c(0x2c1)),
-        proj4[_0x3bd16c(0x2c9)]("EPSG:3857", _0x3bd16c(0x27e));
+    proj4.defs("EPSG:5186", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs");
+    proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
+    // proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +towgs84=0,0,0 +no_defs");
+    proj4.defs("EPSG:5178", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=600000 +y_0=200000 +ellps=GRS80 +units=m +no_defs");
+    proj4.defs("EPSG:5176", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
+    // proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
+    proj4.defs("EPSG:3857", "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
 }
+
+/**
+ * 지도 이벤트를 처리하는 함수
+ */
 function handleMapEvents() {
-    const _0x52791a = a39_0x363e4a;
-    kakao["maps"]["event"][_0x52791a(0x277)](map, _0x52791a(0x287), async function () {
-        const _0x23e95c = _0x52791a,
-            _0x9fb711 = map[_0x23e95c(0x1ed)]();
-        let _0x395eb8 = 0x0;
-        if (_0x9fb711 > 0x5) return;
-        if (_0x9fb711 == 0x5) _0x395eb8 = 0x9c4;
-        else {
-            if (_0x9fb711 == 0x4) _0x395eb8 = 0x514;
-            else {
-                if (_0x9fb711 == 0x3) _0x395eb8 = 0x2bc;
-                else {
-                    if (_0x9fb711 == 0x2) _0x395eb8 = 0x12c;
-                    else {
-                        if (_0x9fb711 == 0x1) _0x395eb8 = 0xa0;
-                    }
-                }
-            }
+    // [EVENT] 지도가 줌인 줌아웃 후 이벤트 처리
+    kakao.maps.event.addListener(map, "dragend", async function () {
+        const level = map.getLevel();
+
+        let buffer = 0;
+        if (level > 5) return;
+
+        // 줌 레벨에 따른 버퍼 설정
+        if (level == 5) buffer = 2500;
+        else if (level == 4) buffer = 1300;
+        else if (level == 3) buffer = 700;
+        else if (level == 2) buffer = 300;
+        else if (level == 1) buffer = 160;
+
+        const center = map.getCenter();
+        const lat = center.getLat();
+        const lng = center.getLng();
+        updateURL({ curLat: lat, curLng: lng }); // url 파라미터 및 쿠키 변경
+        let point = `POINT(${lng} ${lat})`;
+
+        // 지도 바운드
+        // var bounds = map.getBounds();
+        // var sw = bounds.getSouthWest(); // 남서쪽 좌표
+        // var ne = bounds.getNorthEast(); // 북동쪽 좌표
+        // var boxString = `BOX(${sw.getLng()},${sw.getLat()},${ne.getLng()},${ne.getLat()})`; // BOX 형식으로 변환
+        // console.log(boxString);
+        // const geomFilter = point;
+        // const realPriceApart = await showRealPrice(geomFilter, buffer); // 실거래가 가져오는 함수
+    });
+
+    // [EVENT] 지도가 드래그된 후 이벤트 처리
+    kakao.maps.event.addListener(map, "zoom_changed", async function () {
+        // 기존 오버레이 제거
+        realPriceOverlays.forEach((overlay) => overlay.setMap(null));
+        realPriceOverlays = []; // 배열 초기화
+
+        // 모든 클러스터러 초기화
+        Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
+
+        const center = map.getCenter();
+        const level = map.getLevel();
+        console.log("줌 레벨: ", level);
+
+        updateURL({ curZoom: level });
+
+        // geocoder.coord2RegionCode(center.getLng(), center.getLat(), function (result, status) {
+        //     if (status === kakao.maps.services.Status.OK) {
+        //         let sggCd = result[0].code.substring(0, 10);
+        //         if (level <= "3") {
+        //         } else if (level == "4") {
+        //             sggCd = result[0].code.substring(0, 7);
+        //         } else if (level == "5") {
+        //             sggCd = result[0].code.substring(0, 6);
+        //         } else if (level > "5") {
+        //             sggCd = result[0].code.substring(0, 5);
+        //         }
+        //         console.log(sggCd);
+
+        //         realPriceApt(sggCd);
+        //     }
+        // });
+
+        // if (level > 5) {
+        //     realPriceOverlays.forEach((overlay) => overlay.setVisible(false));
+        // } else {
+        //     // realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
+        // }
+    });
+
+    kakao.maps.event.addListener(map, "dblclick", async function (mouseEvent) {});
+
+    // [EVENT] 지도가 클릭 이벤트 처리
+    kakao.maps.event.addListener(map, "click", async function (mouseEvent) {
+        // 클릭 차단
+        // if (!isMapClickable) return;
+        if ($(".mo-tool-option button").hasClass("active")) return;
+        if ($("#draw_toolbox a").hasClass("active")) return;
+
+        // 좌표
+        const lat = mouseEvent.latLng.Ma;
+        const lng = mouseEvent.latLng.La;
+        const coords = { lat: lat, lng: lng };
+        updateURL({ curLat: lat, curLng: lng }); // url 파라미터 및 쿠키 변경
+
+        const level = map.getLevel();
+        if (level < 6) {
+            // 건물 및 토지 정보를 동시에 가져오기
+            handleMapClick(coords);
+
+            // 주변 시설 정보 가져오기
+            searchArroundPlaces(coords);
         }
-        const _0x4643b3 = map[_0x23e95c(0x1b5)](),
-            _0x3f1c90 = _0x4643b3[_0x23e95c(0x206)](),
-            _0x5aa638 = _0x4643b3["getLng"]();
-        updateURL({ curLat: _0x3f1c90, curLng: _0x5aa638 });
-        let _0x4c87a7 = _0x23e95c(0x29f) + _0x5aa638 + "\x20" + _0x3f1c90 + ")";
-    }),
-        kakao[_0x52791a(0x170)]["event"][_0x52791a(0x277)](map, _0x52791a(0x286), async function () {
-            const _0x4a9f3d = _0x52791a;
-            realPriceOverlays[_0x4a9f3d(0x278)]((_0x9e84e7) => _0x9e84e7[_0x4a9f3d(0x1c4)](null)), (realPriceOverlays = []), Object[_0x4a9f3d(0x25a)](clusterersByType)[_0x4a9f3d(0x278)]((_0x4917bf) => _0x4917bf[_0x4a9f3d(0x255)]());
-            const _0xb072cc = map["getCenter"](),
-                _0x27c511 = map[_0x4a9f3d(0x1ed)]();
-            console["log"](_0x4a9f3d(0x1df), _0x27c511), updateURL({ curZoom: _0x27c511 });
-        }),
-        kakao[_0x52791a(0x170)][_0x52791a(0x1cf)]["addListener"](map, _0x52791a(0x2a2), async function (_0x141dd6) {}),
-        kakao[_0x52791a(0x170)]["event"][_0x52791a(0x277)](map, _0x52791a(0x272), async function (_0x31238f) {
-            const _0x52e1ad = _0x52791a;
-            if ($(_0x52e1ad(0x26f))[_0x52e1ad(0x299)](_0x52e1ad(0x197))) return;
-            if ($(_0x52e1ad(0x1c8))[_0x52e1ad(0x299)](_0x52e1ad(0x197))) return;
-            const _0x110680 = _0x31238f[_0x52e1ad(0x1c5)]["Ma"],
-                _0x50fa86 = _0x31238f[_0x52e1ad(0x1c5)]["La"],
-                _0x1c37a7 = { lat: _0x110680, lng: _0x50fa86 };
-            updateURL({ curLat: _0x110680, curLng: _0x50fa86 });
-            const _0x1af837 = map["getLevel"]();
-            _0x1af837 < 0x6 && (handleMapClick(_0x1c37a7), searchArroundPlaces(_0x1c37a7)),
-                searchDetailAddrFromCoords(_0x31238f[_0x52e1ad(0x1c5)], function (_0x10dd8f, _0x3e0d38) {
-                    const _0x1fd8dd = _0x52e1ad;
-                    if (_0x3e0d38 === kakao["maps"][_0x1fd8dd(0x1e6)]["Status"]["OK"]) {
-                        const _0x12cc6c = _0x10dd8f[0x0][_0x1fd8dd(0x1fa)];
-                        realPriceDetailLand(_0x1fd8dd(0x214), _0x12cc6c);
-                    }
-                    displayAddressInfo(_0x10dd8f, _0x3e0d38);
-                });
-        }),
-        kakao["maps"][_0x52791a(0x1cf)]["addListener"](map, _0x52791a(0x26c), async function () {
-            const _0x58e051 = _0x52791a,
-                _0x48cd91 = map["getCenter"](),
-                _0x652b1f = map[_0x58e051(0x1ed)]();
-            if (_0x652b1f > 0x6) return;
-            geocoder["coord2RegionCode"](_0x48cd91[_0x58e051(0x19b)](), _0x48cd91[_0x58e051(0x206)](), function (_0x177729, _0x271c1e) {
-                const _0x32d219 = _0x58e051;
-                if (_0x271c1e === kakao[_0x32d219(0x170)][_0x32d219(0x1e6)][_0x32d219(0x239)]["OK"]) {
-                    let _0x2fcf9f = _0x177729[0x0][_0x32d219(0x2b3)][_0x32d219(0x2aa)](0x0, 0xa);
-                    if (_0x652b1f <= "3") {
-                    } else {
-                        if (_0x652b1f == "4") _0x2fcf9f = _0x177729[0x0][_0x32d219(0x2b3)][_0x32d219(0x2aa)](0x0, 0xa);
-                        else {
-                            if (_0x652b1f == "5") _0x2fcf9f = _0x177729[0x0]["code"][_0x32d219(0x2aa)](0x0, 0xa);
-                            else {
-                                if (_0x652b1f == "6") _0x2fcf9f = _0x177729[0x0][_0x32d219(0x2b3)][_0x32d219(0x2aa)](0x0, 0x8);
-                                else {
-                                    if (_0x652b1f > "6" && _0x652b1f < "9") _0x2fcf9f = _0x177729[0x0][_0x32d219(0x2b3)][_0x32d219(0x2aa)](0x0, 0x5);
-                                    else _0x652b1f >= "9" && (_0x2fcf9f = _0x177729[0x0][_0x32d219(0x2b3)][_0x32d219(0x2aa)](0x0, 0x2));
-                                }
-                            }
-                        }
-                    }
-                    realPriceApt(_0x2fcf9f);
-                }
-            });
+
+        // 주소 요청
+        searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                const addressData = result[0].address;
+                // 토지 실거래가 조회 및 바인딩
+                realPriceDetailLand("land", addressData);
+            }
+
+            // 지도 주소 정보 바인딩
+            displayAddressInfo(result, status);
         });
+
+        // searchAddrFromCoords(mouseEvent.latLng, function (result, status) {
+        //     let miniMapCoords = null;
+        //     if (status === kakao.maps.services.Status.OK) {
+        //         for (var i = 0; i < result.length; i++) {
+        //             // 법정동의 region_type 값은 'B' 이므로
+        //             if (result[i].region_type == "B") {
+        //                 console.log(result);
+        //                 miniMapCoords = new kakao.maps.LatLng(result[i].y, result[i].x);
+        //             }
+        //         }
+        //     } else {
+        //         miniMapCoords = mouseEvent.latLng;
+        //     }
+
+        //     miniMap.setCenter(miniMapCoords); // 미니맵 위치 변경
+        // });
+    });
+
+    // 지도에서 idle 이벤트가 발생할 때마다 오버레이를 갱신
+    kakao.maps.event.addListener(map, "tilesloaded", async function () {
+
+        // 맵 타일이 로드될 때도 기존처럼 호출
+        fetchRealPriceAptBasedOnMapCenter();
+
+        /*
+        const center = map.getCenter();
+        const level = map.getLevel();
+        if (level > 6) return;
+
+        geocoder.coord2RegionCode(center.getLng(), center.getLat(), function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                let sggCd = result[0].code.substring(0, 10);
+                if (level <= "3") {
+                } else if (level == "4") {
+                    sggCd = result[0].code.substring(0, 10);
+                } else if (level == "5") {
+                    sggCd = result[0].code.substring(0, 10);
+                } else if (level == "6") {
+                    sggCd = result[0].code.substring(0, 8);
+                } else if (level > "6" && level < "9") {
+                    sggCd = result[0].code.substring(0, 5);
+                } else if (level >= "9") {
+                    sggCd = result[0].code.substring(0, 2);
+                }
+                realPriceApt(sggCd);
+            }
+        });
+        */
+    });
 }
+
+// 지도 중심 좌표와 레벨을 기반으로 sggCd를 계산하고 realPriceApt를 호출하는 함수
+function fetchRealPriceAptBasedOnMapCenter() {
+    const center = map.getCenter();
+    const level = map.getLevel();
+
+    // 현재 레벨이 6을 초과하면 리턴 (기존 로직 유지)
+    if (level > 6) return;
+
+    // geocoder를 사용하여 좌표로부터 지역 코드를 얻어옴
+    geocoder.coord2RegionCode(center.getLng(), center.getLat(), function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            let sggCd = result[0].code; // 초기 sggCd는 전체 코드
+
+            // 레벨에 따라 sggCd 길이 조정 (기존 로직 유지)
+            if (level <= 3) {
+                sggCd = result[0].code.substring(0, 10); // 10자리 (시군구+법정동 전체)
+            } else if (level === 4 || level === 5) { // 4-5레벨 시군구+법정동
+                sggCd = result[0].code.substring(0, 10);
+            } else if (level === 6) { // 6레벨 시군구
+                sggCd = result[0].code.substring(0, 8); // 8자리 (시군구)
+            } else if (level > 6 && level < 9) { // 7-8레벨 광역 시도 (prefix 5자리)
+                sggCd = result[0].code.substring(0, 5);
+            } else if (level >= 9) { // 9레벨 이상 시도 (prefix 2자리)
+                sggCd = result[0].code.substring(0, 2);
+            }
+
+            // 최종 sggCd로 realPriceApt 호출
+            realPriceApt(sggCd);
+        } else {
+            console.error("Geocoding failed:", status);
+            // 오류 처리 로직 추가
+        }
+    });
+}
+
 function groundOverlayFunc() {
-    const _0x137041 = a39_0x363e4a;
-    function _0xcfaa84(_0x595d3f, _0x4f5d06) {
-        const _0x57681f = a39_0x57f5;
-        this[_0x57681f(0x1d5)] = _0x595d3f;
-        var _0x585fee = (this["node"] = document[_0x57681f(0x241)]("div"));
-        (_0x585fee[_0x57681f(0x172)][_0x57681f(0x1bb)] = _0x57681f(0x16a)), (_0x585fee[_0x57681f(0x172)][_0x57681f(0x1e8)] = _0x57681f(0x1a5)), (_0x585fee[_0x57681f(0x172)]["zIndex"] = "10");
-        var _0x2de154 = (this[_0x57681f(0x21e)] = document[_0x57681f(0x241)](_0x57681f(0x21e)));
-        (_0x2de154[_0x57681f(0x250)] = _0x57681f(0x246)), (_0x2de154["src"] = _0x4f5d06), (_0x2de154["style"][_0x57681f(0x1c2)] = _0x57681f(0x24c)), (_0x2de154[_0x57681f(0x172)]["height"] = _0x57681f(0x24c)), (_0x2de154["style"][_0x57681f(0x208)] = "10"), _0x585fee["appendChild"](_0x2de154);
+    function GroundOverlay(bounds, imgSrc) {
+        this.bounds = bounds;
+        var node = (this.node = document.createElement("div"));
+        node.style.position = "absolute";
+        node.style.pointerEvents = "none"; // 이벤트를 지도에 전달
+        node.style.zIndex = "10"; // 오버레이가 지도 위에 나타나도록 z-index 설정
+
+        var img = (this.img = document.createElement("img"));
+        img.className = "overlay-image"; // 스타일 적용을 위한 클래스명 지정
+        img.src = imgSrc;
+        img.style.width = "100%"; // 이미지가 오버레이 영역을 채우도록 설정
+        img.style.height = "100%"; // 이미지가 오버레이 영역을 채우도록 설정
+        img.style.zIndex = "10"; // 이미지의 z-index도 설정
+
+        node.appendChild(img);
     }
-    (_0xcfaa84["prototype"] = Object[_0x137041(0x275)](kakao[_0x137041(0x170)][_0x137041(0x17c)][_0x137041(0x165)])),
-        (_0xcfaa84[_0x137041(0x165)][_0x137041(0x171)] = _0xcfaa84),
-        (_0xcfaa84[_0x137041(0x165)][_0x137041(0x19d)] = function () {
-            const _0x183e00 = _0x137041;
-            var _0x189228 = this[_0x183e00(0x1ba)]()[_0x183e00(0x1e7)];
-            _0x189228[_0x183e00(0x1d9)](this[_0x183e00(0x233)]);
-        }),
-        (_0xcfaa84[_0x137041(0x165)][_0x137041(0x237)] = function () {
-            const _0x113076 = _0x137041;
-            var _0x46ae76 = this["getProjection"](),
-                _0x4cd40d = _0x46ae76[_0x113076(0x1d2)](this[_0x113076(0x1d5)]["getNorthEast"]()),
-                _0x212a25 = _0x46ae76[_0x113076(0x1d2)](this[_0x113076(0x1d5)]["getSouthWest"]()),
-                _0x60398c = Math[_0x113076(0x2c4)](_0x212a25["x"], _0x4cd40d["x"]),
-                _0x5c5c96 = Math["min"](_0x212a25["y"], _0x4cd40d["y"]),
-                _0x530815 = Math[_0x113076(0x24b)](_0x212a25["x"], _0x4cd40d["x"]),
-                _0x44a08e = Math[_0x113076(0x24b)](_0x212a25["y"], _0x4cd40d["y"]),
-                _0x4e627b = _0x4cd40d["x"] - _0x212a25["x"],
-                _0x4b5ba6 = _0x212a25["y"] - _0x4cd40d["y"];
-            (this[_0x113076(0x233)]["style"]["left"] = _0x60398c + "px"), (this["node"][_0x113076(0x172)][_0x113076(0x176)] = _0x5c5c96 + "px"), (this["node"][_0x113076(0x172)][_0x113076(0x1c2)] = _0x4e627b + "px"), (this[_0x113076(0x233)][_0x113076(0x172)][_0x113076(0x1d3)] = _0x4b5ba6 + "px");
-        }),
-        (_0xcfaa84[_0x137041(0x165)][_0x137041(0x16b)] = function () {
-            const _0xb6d465 = _0x137041;
-            this["node"][_0xb6d465(0x23b)] && this[_0xb6d465(0x233)][_0xb6d465(0x23b)][_0xb6d465(0x2a6)](this[_0xb6d465(0x233)]);
-        });
+
+    // 프로토타입 상속 설정 (수정된 부분)
+    GroundOverlay.prototype = Object.create(kakao.maps.AbstractOverlay.prototype);
+    GroundOverlay.prototype.constructor = GroundOverlay;
+
+    GroundOverlay.prototype.onAdd = function () {
+        var panel = this.getPanels().overlayLayer; // 오버레이 레이어에 추가
+        panel.appendChild(this.node);
+    };
+
+    GroundOverlay.prototype.draw = function () {
+        var projection = this.getProjection();
+
+        // 남서쪽과 북동쪽 좌표를 화면 좌표로 변환
+        var ne = projection.pointFromCoords(this.bounds.getNorthEast());
+        var sw = projection.pointFromCoords(this.bounds.getSouthWest());
+
+        // 위치 및 크기 계산
+        var left = Math.min(sw.x, ne.x);
+        var top = Math.min(sw.y, ne.y);
+        var right = Math.max(sw.x, ne.x);
+        var bottom = Math.max(sw.y, ne.y);
+
+        var width = ne.x - sw.x;
+        var height = sw.y - ne.y;
+
+        // 오버레이 위치 및 크기 설정
+        this.node.style.left = left + "px";
+        this.node.style.top = top + "px";
+        this.node.style.width = width + "px";
+        this.node.style.height = height + "px";
+        // this.node.style.width = "100%";
+        // this.node.style.height = "100%";
+
+        // console.log("sw:", sw.x, sw.y);
+        // console.log("ne:", ne.x, ne.y);
+        // console.log("width:", width, "height:", height);
+    };
+
+    GroundOverlay.prototype.onRemove = function () {
+        if (this.node.parentNode) {
+            this.node.parentNode.removeChild(this.node);
+        }
+    };
 }
-function getNonOverlappingBounds(_0x2def64, _0x4ea059) {
-    const _0xd676cc = a39_0x363e4a;
-    console[_0xd676cc(0x1e9)](_0x2def64), console["log"](_0x4ea059);
-    const _0x1795ff = [],
-        _0x5def82 = { lat: _0x2def64["qa"], lng: _0x2def64["ha"] },
-        _0x374117 = { lat: _0x2def64["pa"], lng: _0x2def64["oa"] },
-        _0x138f71 = { lat: _0x4ea059["qa"], lng: _0x4ea059["ha"] },
-        _0x33a058 = { lat: _0x4ea059["pa"], lng: _0x4ea059["oa"] };
-    console[_0xd676cc(0x1e9)](_0xd676cc(0x1c6), _0x5def82[_0xd676cc(0x1fe)], _0x5def82[_0xd676cc(0x25d)]),
-        console[_0xd676cc(0x1e9)](_0xd676cc(0x253), _0x374117["lat"], _0x374117[_0xd676cc(0x25d)]),
-        console[_0xd676cc(0x1e9)](_0xd676cc(0x245), _0x138f71[_0xd676cc(0x1fe)], _0x138f71[_0xd676cc(0x25d)]),
-        console[_0xd676cc(0x1e9)]("boundsB\x20NorthEast:", _0x33a058[_0xd676cc(0x1fe)], _0x33a058[_0xd676cc(0x25d)]);
-    if (_0x138f71[_0xd676cc(0x1fe)] > _0x5def82[_0xd676cc(0x1fe)]) {
-        const _0x39f38e = new kakao["maps"][_0xd676cc(0x1cb)](new kakao[_0xd676cc(0x170)][_0xd676cc(0x16c)](_0x5def82[_0xd676cc(0x1fe)], _0x5def82[_0xd676cc(0x25d)]), new kakao[_0xd676cc(0x170)][_0xd676cc(0x16c)](_0x138f71[_0xd676cc(0x1fe)], _0x374117[_0xd676cc(0x25d)]));
-        _0x1795ff["push"](_0x39f38e);
+
+/**
+ * 두 경계가 겹치는 경우, 겹치지 않는 부분을 계산하여 반환하는 함수
+ * @param {LatLngBounds} boundsA 기존 오버레이 경계
+ * @param {LatLngBounds} boundsB 새로운 오버레이 경계
+ * @returns {Array} 중복되지 않는 경계 영역 배열
+ */
+function getNonOverlappingBounds(boundsA, boundsB) {
+    console.log(boundsA);
+    console.log(boundsB);
+
+    const nonOverlappingBounds = [];
+    const swA = {
+        lat: boundsA.qa, // boundsA의 남서쪽 위도
+        lng: boundsA.ha, // boundsA의 남서쪽 경도
+    };
+    const neA = {
+        lat: boundsA.pa, // boundsA의 북동쪽 위도
+        lng: boundsA.oa, // boundsA의 북동쪽 경도
+    };
+
+    const swB = {
+        lat: boundsB.qa, // boundsB의 남서쪽 위도
+        lng: boundsB.ha, // boundsB의 남서쪽 경도
+    };
+    const neB = {
+        lat: boundsB.pa, // boundsB의 북동쪽 위도
+        lng: boundsB.oa, // boundsB의 북동쪽 경도
+    };
+
+    // 로그로 각 좌표 확인
+    console.log("boundsA SouthWest:", swA.lat, swA.lng);
+    console.log("boundsA NorthEast:", neA.lat, neA.lng);
+    console.log("boundsB SouthWest:", swB.lat, swB.lng);
+    console.log("boundsB NorthEast:", neB.lat, neB.lng);
+
+    // 하단 (boundsA의 남서쪽, boundsB의 남서쪽)
+    if (swB.lat > swA.lat) {
+        const lowerBounds = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(swA.lat, swA.lng), new kakao.maps.LatLng(swB.lat, neA.lng));
+        nonOverlappingBounds.push(lowerBounds);
     }
-    if (_0x33a058["lat"] < _0x374117[_0xd676cc(0x1fe)]) {
-        const _0x580cac = new kakao[_0xd676cc(0x170)][_0xd676cc(0x1cb)](new kakao["maps"][_0xd676cc(0x16c)](_0x33a058["lat"], _0x5def82[_0xd676cc(0x25d)]), new kakao["maps"][_0xd676cc(0x16c)](_0x374117[_0xd676cc(0x1fe)], _0x374117[_0xd676cc(0x25d)]));
-        _0x1795ff[_0xd676cc(0x200)](_0x580cac);
+
+    // 상단 (boundsA의 북동쪽, boundsB의 북동쪽)
+    if (neB.lat < neA.lat) {
+        const upperBounds = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(neB.lat, swA.lng), new kakao.maps.LatLng(neA.lat, neA.lng));
+        nonOverlappingBounds.push(upperBounds);
     }
-    if (_0x138f71[_0xd676cc(0x25d)] > _0x5def82["lng"]) {
-        const _0x3c89e9 = new kakao["maps"][_0xd676cc(0x1cb)](new kakao["maps"][_0xd676cc(0x16c)](_0x5def82[_0xd676cc(0x1fe)], _0x5def82["lng"]), new kakao[_0xd676cc(0x170)][_0xd676cc(0x16c)](_0x374117[_0xd676cc(0x1fe)], _0x138f71[_0xd676cc(0x25d)]));
-        _0x1795ff[_0xd676cc(0x200)](_0x3c89e9);
+
+    // 좌측 (boundsA의 남서쪽, boundsB의 남서쪽)
+    if (swB.lng > swA.lng) {
+        const leftBounds = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(swA.lat, swA.lng), new kakao.maps.LatLng(neA.lat, swB.lng));
+        nonOverlappingBounds.push(leftBounds);
     }
-    if (_0x33a058[_0xd676cc(0x25d)] < _0x374117[_0xd676cc(0x25d)]) {
-        const _0x1022d1 = new kakao["maps"][_0xd676cc(0x1cb)](new kakao[_0xd676cc(0x170)]["LatLng"](_0x5def82[_0xd676cc(0x1fe)], _0x33a058[_0xd676cc(0x25d)]), new kakao["maps"][_0xd676cc(0x16c)](_0x374117[_0xd676cc(0x1fe)], _0x374117[_0xd676cc(0x25d)]));
-        _0x1795ff["push"](_0x1022d1);
+
+    // 우측 (boundsA의 북동쪽, boundsB의 북동쪽)
+    if (neB.lng < neA.lng) {
+        const rightBounds = new kakao.maps.LatLngBounds(new kakao.maps.LatLng(swA.lat, neB.lng), new kakao.maps.LatLng(neA.lat, neA.lng));
+        nonOverlappingBounds.push(rightBounds);
     }
-    return _0x1795ff;
+
+    return nonOverlappingBounds;
 }
-function boundsIntersects(_0x3ca8d0, _0x5e95c5) {
-    const _0x2a8981 = a39_0x363e4a,
-        _0x385614 = !(
-            _0x3ca8d0[_0x2a8981(0x2ab)]()[_0x2a8981(0x206)]() < _0x5e95c5[_0x2a8981(0x1f1)]()[_0x2a8981(0x206)]() ||
-            _0x3ca8d0[_0x2a8981(0x1f1)]()[_0x2a8981(0x206)]() > _0x5e95c5["getNorthEast"]()["getLat"]() ||
-            _0x3ca8d0[_0x2a8981(0x2ab)]()[_0x2a8981(0x19b)]() < _0x5e95c5["getSouthWest"]()["getLng"]() ||
-            _0x3ca8d0[_0x2a8981(0x1f1)]()["getLng"]() > _0x5e95c5[_0x2a8981(0x2ab)]()["getLng"]()
-        );
-    return console[_0x2a8981(0x1e9)](_0x2a8981(0x243), _0x385614), _0x385614;
+
+/**
+ * 두 경계가 중복되는지 확인하는 함수
+ * @param {LatLngBounds} boundsA 기존 오버레이 경계
+ * @param {LatLngBounds} boundsB 새로운 오버레이 경계
+ * @returns {boolean} 중복 여부
+ */
+function boundsIntersects(boundsA, boundsB) {
+    const intersecting = !(
+        boundsA.getNorthEast().getLat() < boundsB.getSouthWest().getLat() ||
+        boundsA.getSouthWest().getLat() > boundsB.getNorthEast().getLat() ||
+        boundsA.getNorthEast().getLng() < boundsB.getSouthWest().getLng() ||
+        boundsA.getSouthWest().getLng() > boundsB.getNorthEast().getLng()
+    );
+
+    console.log("Bounds intersect:", intersecting);
+    return intersecting;
 }
+
 function updateOverlay() {
-    const _0x387e47 = a39_0x363e4a;
-    function _0x375964(_0x1e513c, _0x12c97c) {
-        const _0x473d64 = a39_0x57f5;
-        this[_0x473d64(0x1d5)] = _0x1e513c;
-        var _0x1fcdbb = (this["node"] = document["createElement"]("div"));
-        (_0x1fcdbb[_0x473d64(0x172)][_0x473d64(0x1bb)] = "absolute"), (_0x1fcdbb["style"][_0x473d64(0x1e8)] = "none"), (_0x1fcdbb[_0x473d64(0x172)]["zIndex"] = "10");
-        var _0x10ddf3 = (this[_0x473d64(0x21e)] = document["createElement"](_0x473d64(0x21e)));
-        (_0x10ddf3[_0x473d64(0x250)] = _0x473d64(0x246)),
-            (_0x10ddf3["src"] = _0x12c97c),
-            (_0x10ddf3[_0x473d64(0x172)][_0x473d64(0x1c2)] = _0x473d64(0x24c)),
-            (_0x10ddf3["style"][_0x473d64(0x1d3)] = _0x473d64(0x24c)),
-            (_0x10ddf3[_0x473d64(0x172)][_0x473d64(0x208)] = "10"),
-            _0x1fcdbb["appendChild"](_0x10ddf3);
+    function GroundOverlay(bounds, imgSrc) {
+        this.bounds = bounds;
+        var node = (this.node = document.createElement("div"));
+        node.style.position = "absolute";
+        node.style.pointerEvents = "none"; // 이벤트를 지도에 전달
+        node.style.zIndex = "10"; // 오버레이가 지도 위에 나타나도록 z-index 설정
+
+        var img = (this.img = document.createElement("img"));
+        img.className = "overlay-image"; // 스타일 적용을 위한 클래스명 지정
+        img.src = imgSrc;
+        img.style.width = "100%"; // 이미지가 오버레이 영역을 채우도록 설정
+        img.style.height = "100%"; // 이미지가 오버레이 영역을 채우도록 설정
+        img.style.zIndex = "10"; // 이미지의 z-index도 설정
+
+        node.appendChild(img);
     }
-    (_0x375964[_0x387e47(0x165)] = Object[_0x387e47(0x275)](kakao["maps"][_0x387e47(0x17c)][_0x387e47(0x165)])),
-        (_0x375964[_0x387e47(0x165)]["constructor"] = _0x375964),
-        (_0x375964[_0x387e47(0x165)][_0x387e47(0x19d)] = function () {
-            const _0x227f35 = _0x387e47;
-            var _0x5a9814 = this[_0x227f35(0x1ba)]()[_0x227f35(0x1e7)];
-            _0x5a9814[_0x227f35(0x1d9)](this[_0x227f35(0x233)]);
-        }),
-        (_0x375964[_0x387e47(0x165)][_0x387e47(0x237)] = function () {
-            const _0x580b10 = _0x387e47;
-            var _0x319585 = this[_0x580b10(0x219)](),
-                _0x3a1c89 = _0x319585[_0x580b10(0x1d2)](this[_0x580b10(0x1d5)]["getNorthEast"]()),
-                _0x19a78c = _0x319585[_0x580b10(0x1d2)](this[_0x580b10(0x1d5)][_0x580b10(0x1f1)]()),
-                _0x3eadca = Math[_0x580b10(0x2c4)](_0x19a78c["x"], _0x3a1c89["x"]),
-                _0x38fc25 = Math[_0x580b10(0x2c4)](_0x19a78c["y"], _0x3a1c89["y"]),
-                _0x138218 = Math["max"](_0x19a78c["x"], _0x3a1c89["x"]),
-                _0x47e38d = Math["max"](_0x19a78c["y"], _0x3a1c89["y"]),
-                _0x10a09f = _0x3a1c89["x"] - _0x19a78c["x"],
-                _0x228d4d = _0x19a78c["y"] - _0x3a1c89["y"];
-            (this[_0x580b10(0x233)][_0x580b10(0x172)][_0x580b10(0x22d)] = _0x3eadca + "px"), (this["node"][_0x580b10(0x172)][_0x580b10(0x176)] = _0x38fc25 + "px"), (this["node"][_0x580b10(0x172)]["width"] = _0x10a09f + "px"), (this["node"]["style"][_0x580b10(0x1d3)] = _0x228d4d + "px");
-        }),
-        (_0x375964[_0x387e47(0x165)][_0x387e47(0x16b)] = function () {
-            const _0x450873 = _0x387e47;
-            this[_0x450873(0x233)]["parentNode"] && this[_0x450873(0x233)]["parentNode"][_0x450873(0x2a6)](this[_0x450873(0x233)]);
-        });
-    var _0x5599a3 = map["getBounds"](),
-        _0xe85bc2 = _0x5599a3[_0x387e47(0x1f1)](),
-        _0x4658bd = _0x5599a3[_0x387e47(0x2ab)]();
-    const _0x593943 = proj4(_0x387e47(0x1fb), _0x387e47(0x199), [_0xe85bc2[_0x387e47(0x19b)](), _0xe85bc2[_0x387e47(0x206)]()]),
-        _0x6c4d2 = proj4(_0x387e47(0x1fb), _0x387e47(0x199), [_0x4658bd[_0x387e47(0x19b)](), _0x4658bd[_0x387e47(0x206)]()]),
-        _0x5c079d = [_0x593943[0x0], _0x593943[0x1], _0x6c4d2[0x0], _0x6c4d2[0x1]],
-        _0x12d7a8 = document["getElementById"](_0x387e47(0x229)),
-        _0x2e0917 = _0x12d7a8[_0x387e47(0x244)],
-        _0x3f6008 = _0x12d7a8[_0x387e47(0x20e)],
-        _0x5d06a2 = _0x387e47(0x26e),
-        _0x2d8b40 = { bbox: JSON["stringify"](_0x5c079d), width: _0x2e0917, height: _0x3f6008 };
-    function _0x208283(_0xfd953d, _0x1335b8) {
-        const _0x55249c = _0x387e47,
-            _0x17fcd8 = _0xfd953d[_0x55249c(0x1f1)](),
-            _0x257c9c = _0xfd953d["getNorthEast"](),
-            _0x2a1fc6 = _0x1335b8[_0x55249c(0x1f1)](),
-            _0x1bf1db = _0x1335b8[_0x55249c(0x2ab)](),
-            _0x195ceb = new kakao[_0x55249c(0x170)][_0x55249c(0x16c)](Math[_0x55249c(0x2c4)](_0x17fcd8[_0x55249c(0x206)](), _0x2a1fc6[_0x55249c(0x206)]()), Math[_0x55249c(0x2c4)](_0x17fcd8[_0x55249c(0x19b)](), _0x2a1fc6["getLng"]())),
-            _0x1e8651 = new kakao["maps"]["LatLng"](Math[_0x55249c(0x24b)](_0x257c9c[_0x55249c(0x206)](), _0x1bf1db[_0x55249c(0x206)]()), Math[_0x55249c(0x24b)](_0x257c9c[_0x55249c(0x19b)](), _0x1bf1db[_0x55249c(0x19b)]()));
-        return new kakao["maps"][_0x55249c(0x1cb)](_0x195ceb, _0x1e8651);
+
+    // 프로토타입 상속 설정 (수정된 부분)
+    GroundOverlay.prototype = Object.create(kakao.maps.AbstractOverlay.prototype);
+    GroundOverlay.prototype.constructor = GroundOverlay;
+
+    GroundOverlay.prototype.onAdd = function () {
+        var panel = this.getPanels().overlayLayer; // 오버레이 레이어에 추가
+        panel.appendChild(this.node);
+    };
+
+    GroundOverlay.prototype.draw = function () {
+        var projection = this.getProjection();
+
+        // 남서쪽과 북동쪽 좌표를 화면 좌표로 변환
+        var ne = projection.pointFromCoords(this.bounds.getNorthEast());
+        var sw = projection.pointFromCoords(this.bounds.getSouthWest());
+
+        // 위치 및 크기 계산
+        var left = Math.min(sw.x, ne.x);
+        var top = Math.min(sw.y, ne.y);
+        var right = Math.max(sw.x, ne.x);
+        var bottom = Math.max(sw.y, ne.y);
+
+        var width = ne.x - sw.x;
+        var height = sw.y - ne.y;
+
+        // 오버레이 위치 및 크기 설정
+        this.node.style.left = left + "px";
+        this.node.style.top = top + "px";
+        this.node.style.width = width + "px";
+        this.node.style.height = height + "px";
+        // this.node.style.width = "100%";
+        // this.node.style.height = "100%";
+
+        // console.log("sw:", sw.x, sw.y);
+        // console.log("ne:", ne.x, ne.y);
+        // console.log("width:", width, "height:", height);
+    };
+
+    GroundOverlay.prototype.onRemove = function () {
+        if (this.node.parentNode) {
+            this.node.parentNode.removeChild(this.node);
+        }
+    };
+
+    var mapBounds = map.getBounds();
+    var mapSw = mapBounds.getSouthWest(); // 남서쪽 좌표
+    var mapNe = mapBounds.getNorthEast(); // 북동쪽 좌표
+
+    // 남서쪽(SW) 좌표 및 북동쪽(NE) 좌표를 EPSG:5186으로 변환
+    const lowerLeft = proj4("EPSG:4326", "EPSG:5186", [mapSw.getLng(), mapSw.getLat()]); // 좌하단 좌표 변환
+    const upperRight = proj4("EPSG:4326", "EPSG:5186", [mapNe.getLng(), mapNe.getLat()]); // 우상단 좌표 변환
+
+    // 변환된 bbox 값 (하단 좌표, 상단 좌표 형식 유지)
+    const bbox = [
+        lowerLeft[0],
+        lowerLeft[1], // 변환된 하단 좌표
+        upperRight[0],
+        upperRight[1], // 변환된 상단 좌표
+    ];
+
+    // #map_bg 요소의 크기를 가져옴
+    const mapBg = document.getElementById("map_bg");
+    const width = mapBg.offsetWidth;
+    const height = mapBg.offsetHeight;
+
+    // 비동기적으로 WMS 이미지를 로드하는 부분
+    const url = "/front/back/realPrice/echologyWMS.php";
+    const dataObj = {
+        bbox: JSON.stringify(bbox), // JSON 문자열로 변환하여 전송
+        width: width,
+        height: height,
+    };
+
+    // 경계 확장 함수: 기존 경계와 새로운 경계를 병합하여 확장된 경계를 반환
+    function mergeBounds(boundsA, boundsB) {
+        const swA = boundsA.getSouthWest();
+        const neA = boundsA.getNorthEast();
+
+        const swB = boundsB.getSouthWest();
+        const neB = boundsB.getNorthEast();
+
+        const mergedSW = new kakao.maps.LatLng(
+            Math.min(swA.getLat(), swB.getLat()), // 더 남쪽인 위도를 선택
+            Math.min(swA.getLng(), swB.getLng()) // 더 서쪽인 경도를 선택
+        );
+        const mergedNE = new kakao.maps.LatLng(
+            Math.max(neA.getLat(), neB.getLat()), // 더 북쪽인 위도를 선택
+            Math.max(neA.getLng(), neB.getLng()) // 더 동쪽인 경도를 선택
+        );
+
+        return new kakao.maps.LatLngBounds(mergedSW, mergedNE);
     }
-    callApiBlob(_0x387e47(0x167), _0x5d06a2, _0x2d8b40)
-        [_0x387e47(0x269)]((_0x5973be) => {
-            const _0x25afe9 = _0x387e47;
-            if (_0x5973be) {
-                const _0x422db7 = URL[_0x25afe9(0x2ad)](_0x5973be),
-                    _0x2be945 = new kakao[_0x25afe9(0x170)][_0x25afe9(0x16c)](_0xe85bc2[_0x25afe9(0x206)](), _0xe85bc2[_0x25afe9(0x19b)]()),
-                    _0x1befe4 = new kakao[_0x25afe9(0x170)][_0x25afe9(0x16c)](_0x4658bd["getLat"](), _0x4658bd[_0x25afe9(0x19b)]()),
-                    _0x2144c5 = new kakao[_0x25afe9(0x170)][_0x25afe9(0x1cb)](_0x2be945, _0x1befe4);
-                currentOverlay && currentOverlay[_0x25afe9(0x1c4)](null),
-                    (currentOverlay = new _0x375964(_0x2144c5, _0x422db7)),
-                    currentOverlay[_0x25afe9(0x1c4)](map),
-                    _0x12d7a8[_0x25afe9(0x249)]("load", () => {
-                        const _0x586371 = _0x25afe9;
-                        URL[_0x586371(0x175)](_0x422db7);
-                    });
-            } else console["error"](_0x25afe9(0x212));
+
+    // 비동기적으로 이미지 로드
+    callApiBlob("POST", url, dataObj)
+        .then((blobResponse) => {
+            if (blobResponse) {
+                const imageUrl = URL.createObjectURL(blobResponse); // Blob 데이터를 URL로 변환
+                const sw = new kakao.maps.LatLng(mapSw.getLat(), mapSw.getLng()); // GroundOverlay의 이미지를 교체하기 위한 코드
+                const ne = new kakao.maps.LatLng(mapNe.getLat(), mapNe.getLng());
+                const bounds = new kakao.maps.LatLngBounds(sw, ne); // LatLngBounds 객체 생성
+
+                // 이전 오버레이 제거
+                if (currentOverlay) {
+                    currentOverlay.setMap(null); // 기존 오버레이 제거
+                }
+
+                // GroundOverlay 인스턴스 생성 및 지도에 추가
+                currentOverlay = new GroundOverlay(bounds, imageUrl);
+                currentOverlay.setMap(map);
+
+                // 기존 오버레이가 있으면 확장, 없으면 새로 추가
+                // if (currentOverlays.length > 0) {
+                //     currentOverlays.forEach((overlay) => {
+                //         const mergedBounds = mergeBounds(overlay.bounds, bounds);
+                //         overlay.setMap(null); // 기존 오버레이 제거
+                //         const newOverlay = new GroundOverlay(mergedBounds, imageUrl);
+                //         newOverlay.setMap(map); // 병합된 오버레이 추가
+                //         currentOverlays.push(newOverlay);
+                //     });
+                // } else {
+                //     const newOverlay = new GroundOverlay(bounds, imageUrl);
+                //     newOverlay.setMap(map);
+                //     currentOverlays.push(newOverlay); // 첫 오버레이 추가
+                // }
+
+                // 메모리 누수를 방지하기 위해 이미지 로드 후 객체 URL 해제
+                mapBg.addEventListener("load", () => {
+                    URL.revokeObjectURL(imageUrl);
+                });
+            } else {
+                console.error("WMS 이미지가 로드되지 않았습니다.");
+            }
         })
-        [_0x387e47(0x173)]((_0xf04113) => {
-            console["error"]("API\x20요청\x20중\x20오류\x20발생:", _0xf04113);
+        .catch((error) => {
+            console.error("API 요청 중 오류 발생:", error);
         });
 }
+
 async function getEcologyWMSTileLayer() {
-    const _0x55fe76 = a39_0x363e4a;
-    let _0x4567d1 = [],
-        _0x5a12f6 = ![];
-    function _0x5e6949(_0x2df0eb, _0x1d5a6e, _0xc3bf0b) {
-        return new Promise((_0x5482ba, _0x390aa4) => {
-            const _0x28c792 = a39_0x57f5;
-            $[_0x28c792(0x18e)]({
-                type: _0x2df0eb,
-                url: _0x1d5a6e,
-                data: _0xc3bf0b,
-                xhrFields: { responseType: _0x28c792(0x1b3) },
-                success: function (_0x4b693a) {
-                    _0x5482ba(_0x4b693a);
+    // 타일 요청 큐를 관리하기 위한 배열과 상태 변수
+    let tileRequestQueue = [];
+    let isRequestInProgress = false;
+
+    // API 요청 함수 (Ajax)
+    function callApiBlob(method, url, data) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                type: method,
+                url: url,
+                data: data,
+                xhrFields: {
+                    responseType: "blob", // Blob 데이터를 수신
                 },
-                error: function (_0x4b96bb, _0x2d8b32, _0x470b0e) {
-                    const _0x3c1224 = _0x28c792;
-                    console[_0x3c1224(0x1bd)]("API\x20호출\x20중\x20오류\x20발생:", _0x470b0e), _0x390aa4(_0x470b0e);
+                success: function (response) {
+                    resolve(response); // Blob 데이터를 반환
+                },
+                error: function (xhr, status, error) {
+                    console.error("API 호출 중 오류 발생:", error);
+                    reject(error);
                 },
             });
         });
     }
-    async function _0x25dfc3() {
-        const _0x1d7839 = a39_0x57f5;
-        if (!_0x5a12f6 && _0x4567d1[_0x1d7839(0x2a9)] > 0x0) {
-            _0x5a12f6 = !![];
-            const { x: _0x390b12, y: _0x19f1ae, z: _0x341049, bbox: _0x23a33b, div: _0x2aba1d } = _0x4567d1["shift"]();
+    // 타일 요청을 순차적으로 처리하는 함수
+    async function processTileQueue() {
+        // 현재 요청이 진행 중이 아니고, 큐에 요청이 있으면 처리
+        if (!isRequestInProgress && tileRequestQueue.length > 0) {
+            isRequestInProgress = true;
+
+            // 큐에서 첫 번째 요청을 가져옴
+            const { x, y, z, bbox, div } = tileRequestQueue.shift();
+
             try {
-                const _0x14b8cb = _0x1d7839(0x26e),
-                    _0x303e80 = { bbox: JSON[_0x1d7839(0x1e4)](_0x23a33b), width: _0x1d7839(0x263), height: "256" },
-                    _0x42d03c = await _0x5e6949("POST", _0x14b8cb, _0x303e80);
-                if (_0x42d03c) {
-                    const _0x3a2b51 = URL["createObjectURL"](_0x42d03c);
-                    (_0x2aba1d["style"][_0x1d7839(0x2a8)] = _0x1d7839(0x1f5) + _0x3a2b51 + ")"),
-                        (_0x2aba1d[_0x1d7839(0x172)][_0x1d7839(0x26d)] = _0x1d7839(0x29e)),
-                        (_0x2aba1d[_0x1d7839(0x172)][_0x1d7839(0x16e)] = _0x1d7839(0x20a)),
-                        (_0x2aba1d[_0x1d7839(0x172)][_0x1d7839(0x27b)] = "1px\x20dashed\x20#ff5050"),
-                        _0x2aba1d[_0x1d7839(0x249)](_0x1d7839(0x205), () => {
-                            URL["revokeObjectURL"](_0x3a2b51);
-                        });
-                } else console[_0x1d7839(0x1bd)](_0x1d7839(0x212));
-            } catch (_0x215d61) {
-                console[_0x1d7839(0x1bd)](_0x1d7839(0x1e2), _0x215d61);
+                // 비동기적으로 API 요청 처리
+                const url = "/front/back/realPrice/echologyWMS.php";
+                const dataObj = {
+                    bbox: JSON.stringify(bbox),
+                    width: "256",
+                    height: "256",
+                };
+                const blobResponse = await callApiBlob("POST", url, dataObj);
+
+                if (blobResponse) {
+                    // Blob 데이터를 URL로 변환하여 타일 배경 이미지로 설정
+                    const imageUrl = URL.createObjectURL(blobResponse);
+                    div.style.backgroundImage = `url(${imageUrl})`;
+                    div.style.lineHeight = "256px";
+                    div.style.textAlign = "center";
+                    div.style.border = "1px dashed #ff5050";
+
+                    // 메모리 누수를 방지하기 위해 이미지 로드 후 객체 URL 해제
+                    div.addEventListener("load", () => {
+                        URL.revokeObjectURL(imageUrl);
+                    });
+                } else {
+                    console.error("WMS 이미지가 로드되지 않았습니다.");
+                }
+            } catch (error) {
+                console.error("API 요청 중 오류 발생:", error);
             } finally {
-                (_0x5a12f6 = ![]), _0x25dfc3();
+                // 요청이 완료된 후 다음 요청을 처리
+                isRequestInProgress = false;
+                processTileQueue(); // 큐에 다음 요청이 있는 경우 처리
             }
         }
     }
-    var _0x2ff172 = 0x100,
-        _0x10279e = 0x100;
-    kakao[_0x55fe76(0x170)][_0x55fe76(0x19a)]["add"](
-        _0x55fe76(0x1e0),
-        new kakao[_0x55fe76(0x170)][_0x55fe76(0x19a)]({
-            width: _0x2ff172,
-            height: _0x10279e,
-            getTile: function (_0x45f568, _0x5cb213, _0x4aaa96) {
-                const _0x83deae = _0x55fe76;
-                let _0x493f78 = document[_0x83deae(0x241)]("img");
-                const _0x900ab7 = map[_0x83deae(0x1ed)]();
-                if (_0x900ab7 >= 0xa) return _0x493f78;
-                var _0x415fd8 = Math[_0x83deae(0x298)](0x2, _0x4aaa96 - 0x3),
-                    _0x452024 = _0x45f568 * _0x415fd8 * _0x2ff172 - 0x7530,
-                    _0x5da026 = (_0x5cb213 + 0x1) * _0x415fd8 * _0x10279e - 0xea60,
-                    _0x3719e7 = (_0x45f568 + 0x1) * _0x415fd8 * _0x2ff172 - 0x7530,
-                    _0x580ac0 = _0x5cb213 * _0x415fd8 * _0x10279e - 0xea60,
-                    _0x39d739 = proj4(_0x83deae(0x271), _0x83deae(0x199), [_0x452024, _0x5da026]),
-                    _0x5f14a5 = proj4(_0x83deae(0x271), _0x83deae(0x1fb), [_0x452024, _0x5da026]),
-                    _0x15abc4 = proj4(_0x83deae(0x1fb), _0x83deae(0x199), [_0x5f14a5[0x0], _0x5f14a5[0x1]]),
-                    _0x373702 = proj4("EPSG:5179", _0x83deae(0x199), [_0x3719e7, _0x580ac0]),
-                    _0x24b15f = _0x39d739[0x0],
-                    _0x4f4f18 = Math[_0x83deae(0x2c4)](_0x39d739[0x1], _0x373702[0x1]),
-                    _0x5db6f9 = _0x373702[0x0],
-                    _0x52dd07 = Math["max"](_0x39d739[0x1], _0x373702[0x1]);
-                const _0x56fa5a = [_0x24b15f, _0x4f4f18, _0x5db6f9, _0x52dd07],
-                    _0x2197ed =
-                        "https://www.nie-ecobank.kr/ecoapi/EcologyzmpService/wms/getEcologyzmpWMS?serviceKey=mrknXy75DM9ok9NXMGZaqQBEBGUSqN9nJJ2d/zbUbR0VpNYgkDCTE6f2QpDxRSyS3bcMRkfdEZ+rOrJoDP7XrA==&layers=tbl_opn_eczm&srs=EPSG%3A5186&bbox=" +
-                        encodeURIComponent(_0x56fa5a) +
-                        _0x83deae(0x274) +
-                        _0x2ff172 +
-                        "&height=" +
-                        _0x10279e +
-                        _0x83deae(0x24d);
-                _0x493f78[_0x83deae(0x1ac)] = _0x2197ed;
-                return _0x493f78;
-                const _0x13dacc = _0x83deae(0x26e),
-                    _0x45240b = { bbox: JSON[_0x83deae(0x1e4)](_0x56fa5a), width: _0x83deae(0x263), height: _0x83deae(0x263) };
-                return _0x4567d1[_0x83deae(0x200)]({ x: _0x45f568, y: _0x5cb213, z: _0x4aaa96, bbox: _0x56fa5a, div: _0x493f78 }), _0x25dfc3(), _0x493f78;
+
+    // 타일 크기 변수 정의
+    var tileWidth = 256;
+    var tileHeight = 256;
+
+    // Tileset을 생성하고 지도 오버레이로 추가합니다
+    kakao.maps.Tileset.add(
+        "TILE_NUMBER",
+        new kakao.maps.Tileset({
+            width: tileWidth,
+            height: tileHeight,
+            getTile: function (x, y, z) {
+                // console.log("x: " + x + " y: " + y + " z: " + z);
+
+                // div 생성
+                let div = document.createElement("img");
+                // div.style.width = tileWidth + "px";
+                // div.style.height = tileHeight + "px";
+                // div.style.border = "0px dashed #ff5050";
+
+                // const anaysisMap = $("#analysis_select").val();
+                // if (anaysisMap !== "ecology") return div;
+
+                // 줌 레벨
+                const level = map.getLevel();
+                if (level >= 10) return div;
+
+                // 스케일 계산
+                var scale = Math.pow(2, z - 3);
+
+                // WTM 좌표 계산 (타일의 우하단 좌표)
+                var wtm_x1 = x * scale * tileWidth - 30000;
+                var wtm_y1 = (y + 1) * scale * tileHeight - 60000;
+                // WTM 좌표 계산 (타일의 우상단 좌표)
+                var wtm_x2 = (x + 1) * scale * tileWidth - 30000;
+                var wtm_y2 = y * scale * tileHeight - 60000;
+
+                var coordsA = proj4("EPSG:5179", "EPSG:5186", [wtm_x1, wtm_y1]);
+                var coordsA1 = proj4("EPSG:5179", "EPSG:4326", [wtm_x1, wtm_y1]);
+                var coordsA2 = proj4("EPSG:4326", "EPSG:5186", [coordsA1[0], coordsA1[1]]);
+                var coordsB = proj4("EPSG:5179", "EPSG:5186", [wtm_x2, wtm_y2]);
+                // console.log(wtm_x1, wtm_y1);
+                // console.log("pro4j5186:" + coordsA);
+                // console.log("pro4j4326:" + coordsA1);
+                // console.log(coordsA2);
+
+                // BBOX 생성 (좌하단의 minX, minY와 우상단의 maxX, maxY를 올바르게 설정)
+                var minX = coordsA[0];
+                var minY = Math.min(coordsA[1], coordsB[1]); // minY와 maxY를 비교해 올바른 값을 설정
+                var maxX = coordsB[0];
+                var maxY = Math.max(coordsA[1], coordsB[1]); // minY와 maxY를 비교해 올바른 값을 설정
+
+                const bbox = [
+                    minX,
+                    minY, // 변환된 하단 좌표
+                    maxX,
+                    maxY, // 변환된 상단 좌표
+                ];
+
+                const imageUrl = `https://www.nie-ecobank.kr/ecoapi/EcologyzmpService/wms/getEcologyzmpWMS?serviceKey=mrknXy75DM9ok9NXMGZaqQBEBGUSqN9nJJ2d/zbUbR0VpNYgkDCTE6f2QpDxRSyS3bcMRkfdEZ+rOrJoDP7XrA==&layers=tbl_opn_eczm&srs=EPSG%3A5186&bbox=${encodeURIComponent(
+                    bbox
+                )}&width=${tileWidth}&height=${tileHeight}&format=png&transparent=true&exceptions=BLANK&SG_APIM=2ug8Dm9qNBfD32JLZGPN64f3EoTlkpD8kSOHWfXpyrY`;
+                div.src = imageUrl;
+
+                return div;
             },
         })
-    ),
-        map[_0x55fe76(0x1b7)](kakao[_0x55fe76(0x170)]["MapTypeId"][_0x55fe76(0x1e0)]);
-    return;
-    var _0x254162 = map["getBounds"](),
-        _0x1834e9 = _0x254162[_0x55fe76(0x1f1)](),
-        _0x414315 = _0x254162[_0x55fe76(0x2ab)]();
-    console[_0x55fe76(0x1e9)](_0x1834e9), console[_0x55fe76(0x1e9)](_0x414315);
-    function _0x39a388(_0x477d82, _0x338132) {
-        const _0x259a46 = _0x55fe76;
-        this["bounds"] = _0x477d82;
-        var _0x25c747 = (this["node"] = document[_0x259a46(0x241)](_0x259a46(0x2a1)));
-        (_0x25c747["style"][_0x259a46(0x1bb)] = "absolute"), (_0x25c747[_0x259a46(0x172)][_0x259a46(0x1e8)] = "none"), (_0x25c747[_0x259a46(0x172)][_0x259a46(0x208)] = "10");
-        var _0x64c181 = (this[_0x259a46(0x21e)] = document["createElement"](_0x259a46(0x21e)));
-        (_0x64c181[_0x259a46(0x250)] = _0x259a46(0x246)),
-            (_0x64c181[_0x259a46(0x1ac)] = _0x338132),
-            (_0x64c181[_0x259a46(0x172)][_0x259a46(0x1c2)] = _0x259a46(0x24c)),
-            (_0x64c181[_0x259a46(0x172)][_0x259a46(0x1d3)] = "100%"),
-            (_0x64c181["style"][_0x259a46(0x208)] = "10"),
-            _0x25c747[_0x259a46(0x1d9)](_0x64c181);
-    }
-    (_0x39a388[_0x55fe76(0x165)] = Object[_0x55fe76(0x275)](kakao[_0x55fe76(0x170)][_0x55fe76(0x17c)][_0x55fe76(0x165)])),
-        (_0x39a388[_0x55fe76(0x165)][_0x55fe76(0x171)] = _0x39a388),
-        (_0x39a388[_0x55fe76(0x165)][_0x55fe76(0x19d)] = function () {
-            const _0x1220ee = _0x55fe76;
-            var _0x358a50 = this["getPanels"]()[_0x1220ee(0x1e7)];
-            _0x358a50[_0x1220ee(0x1d9)](this[_0x1220ee(0x233)]);
-        }),
-        (_0x39a388[_0x55fe76(0x165)][_0x55fe76(0x237)] = function () {
-            const _0x5dac79 = _0x55fe76;
-            var _0x7220bf = this[_0x5dac79(0x219)](),
-                _0x1ead29 = _0x7220bf[_0x5dac79(0x1d2)](this[_0x5dac79(0x1d5)][_0x5dac79(0x2ab)]()),
-                _0x10a590 = _0x7220bf[_0x5dac79(0x1d2)](this[_0x5dac79(0x1d5)][_0x5dac79(0x1f1)]()),
-                _0x12b4cc = Math[_0x5dac79(0x2c4)](_0x10a590["x"], _0x1ead29["x"]),
-                _0x4c8b23 = Math[_0x5dac79(0x2c4)](_0x10a590["y"], _0x1ead29["y"]),
-                _0x21797f = Math[_0x5dac79(0x24b)](_0x10a590["x"], _0x1ead29["x"]),
-                _0xc95218 = Math["max"](_0x10a590["y"], _0x1ead29["y"]),
-                _0x9aac55 = _0x1ead29["x"] - _0x10a590["x"],
-                _0x5b6e42 = _0x10a590["y"] - _0x1ead29["y"];
-            (this[_0x5dac79(0x233)][_0x5dac79(0x172)][_0x5dac79(0x22d)] = _0x12b4cc + "px"),
-                (this[_0x5dac79(0x233)][_0x5dac79(0x172)][_0x5dac79(0x176)] = _0x4c8b23 + "px"),
-                (this["node"]["style"]["width"] = _0x9aac55 + "px"),
-                (this[_0x5dac79(0x233)][_0x5dac79(0x172)]["height"] = _0x5b6e42 + "px"),
-                console[_0x5dac79(0x1e9)]("sw:", _0x10a590["x"], _0x10a590["y"]),
-                console[_0x5dac79(0x1e9)](_0x5dac79(0x266), _0x1ead29["x"], _0x1ead29["y"]),
-                console["log"](_0x5dac79(0x2bf), _0x9aac55, _0x5dac79(0x258), _0x5b6e42);
-        }),
-        (_0x39a388["prototype"][_0x55fe76(0x16b)] = function () {
-            const _0x27f992 = _0x55fe76;
-            this[_0x27f992(0x233)]["parentNode"] && this[_0x27f992(0x233)][_0x27f992(0x23b)][_0x27f992(0x2a6)](this[_0x27f992(0x233)]);
-        });
-    const _0x3b8354 = proj4(_0x55fe76(0x1fb), "EPSG:5186", [_0x1834e9[_0x55fe76(0x19b)](), _0x1834e9[_0x55fe76(0x206)]()]),
-        _0x3cc625 = proj4(_0x55fe76(0x1fb), "EPSG:5186", [_0x414315["getLng"](), _0x414315[_0x55fe76(0x206)]()]),
-        _0x4b6807 = [_0x3b8354[0x0], _0x3b8354[0x1], _0x3cc625[0x0], _0x3cc625[0x1]];
-    console[_0x55fe76(0x1e9)](_0x4b6807);
-    const _0x3d4c1f = document[_0x55fe76(0x1c3)]("map_bg"),
-        _0x150bbe = _0x3d4c1f[_0x55fe76(0x244)],
-        _0x4cb3d9 = _0x3d4c1f[_0x55fe76(0x20e)],
-        _0x49f01a = _0x55fe76(0x26e),
-        _0x5146a0 = { bbox: JSON[_0x55fe76(0x1e4)](_0x4b6807), width: _0x150bbe, height: _0x4cb3d9 };
-    _0x5e6949(_0x55fe76(0x167), _0x49f01a, _0x5146a0)
-        [_0x55fe76(0x269)]((_0x5bb468) => {
-            const _0x399e3b = _0x55fe76;
-            if (_0x5bb468) {
-                console["log"](_0x399e3b(0x25e), _0x5bb468);
-                const _0x51ffed = URL[_0x399e3b(0x2ad)](_0x5bb468);
-                console[_0x399e3b(0x1e9)](_0x51ffed);
-                const _0x194831 = new kakao[_0x399e3b(0x170)][_0x399e3b(0x16c)](_0x1834e9[_0x399e3b(0x206)](), _0x1834e9[_0x399e3b(0x19b)]()),
-                    _0x4ffcd8 = new kakao[_0x399e3b(0x170)][_0x399e3b(0x16c)](_0x414315[_0x399e3b(0x206)](), _0x414315[_0x399e3b(0x19b)]()),
-                    _0x1ddce4 = new kakao[_0x399e3b(0x170)]["LatLngBounds"](_0x194831, _0x4ffcd8);
-                console["log"](_0x1ddce4);
-                const _0x16fa88 = new _0x39a388(_0x1ddce4, _0x51ffed);
-                console[_0x399e3b(0x1e9)](_0x16fa88), _0x16fa88[_0x399e3b(0x1c4)](map);
-                var _0x2d1ab9 = new kakao[_0x399e3b(0x170)][_0x399e3b(0x1db)]({ position: _0x194831, map: map }),
-                    _0x4d1889 = new kakao[_0x399e3b(0x170)][_0x399e3b(0x1db)]({ position: _0x4ffcd8, map: map });
-                _0x3d4c1f[_0x399e3b(0x249)]("load", () => {
-                    URL["revokeObjectURL"](_0x51ffed);
-                });
-            } else console["error"](_0x399e3b(0x212));
-        })
-        [_0x55fe76(0x173)]((_0x596b90) => {
-            const _0x390c68 = _0x55fe76;
-            console[_0x390c68(0x1bd)](_0x390c68(0x1e2), _0x596b90);
-        });
-    return;
-    var _0x6a4c0d = new kakao[_0x55fe76(0x170)][_0x55fe76(0x17b)]({ map: map, content: _0x55fe76(0x276) + imageUrl + "\x22\x20style=\x22opacity:0.7;\x22>", position: sw, xAnchor: 0x0, yAnchor: 0x0 });
-    function _0x2178f8(_0xfe1ea3) {
-        const _0x281a87 = _0x55fe76,
-            [_0x30541e, _0x407c9a, _0x3a0b46, _0x561f49] = _0xfe1ea3,
-            _0x3281f0 = proj4("EPSG:3857", "EPSG:4326", [_0x30541e, _0x407c9a]),
-            _0x20931f = proj4("EPSG:3857", _0x281a87(0x1fb), [_0x3a0b46, _0x561f49]);
-        return [_0x3281f0[0x0], _0x3281f0[0x1], _0x20931f[0x0], _0x20931f[0x1]];
-    }
-    function _0xd7262d() {
-        const _0x4cb48c = _0x55fe76;
-        var _0x218300 = map[_0x4cb48c(0x219)](),
-            _0x5ce7d1 = _0x218300["pointFromCoords"](sw),
-            _0x2706e4 = _0x218300["pointFromCoords"](ne),
-            _0x55faa8 = _0x2706e4["x"] - _0x5ce7d1["x"],
-            _0xc7aa70 = _0x5ce7d1["y"] - _0x2706e4["y"],
-            _0x4236ce = _0x6a4c0d[_0x4cb48c(0x2bb)]();
-        console[_0x4cb48c(0x1e9)](_0x4236ce);
-        return;
-        (_0x4236ce["style"]["position"] = "absolute"),
-            (_0x4236ce[_0x4cb48c(0x172)]["left"] = _0x5ce7d1["x"] + "px"),
-            (_0x4236ce[_0x4cb48c(0x172)]["top"] = _0x2706e4["y"] + "px"),
-            (_0x4236ce[_0x4cb48c(0x172)][_0x4cb48c(0x1c2)] = _0x55faa8 + "px"),
-            (_0x4236ce["style"][_0x4cb48c(0x1d3)] = _0xc7aa70 + "px"),
-            (_0x4236ce[_0x4cb48c(0x172)][_0x4cb48c(0x1e8)] = _0x4cb48c(0x1a5));
-    }
-    _0xd7262d();
-}
-function removeEcologyWMSTileLayer() {
-    const _0x22fa52 = a39_0x363e4a;
-    map[_0x22fa52(0x222)](kakao[_0x22fa52(0x170)][_0x22fa52(0x1f8)][_0x22fa52(0x1e0)]);
-}
-async function ecologyMap(_0x17e1b0, _0x52ade0, _0x4cf988) {
-    const _0x2cebca = a39_0x363e4a;
-    !isMultiSelectMode && (analysisPolygonArray[_0x2cebca(0x278)]((_0x5e2fff) => _0x5e2fff[_0x2cebca(0x1c4)](null)), (analysisPolygonArray = []));
-    $(_0x2cebca(0x1a9))["empty"](), $(_0x2cebca(0x26b))[_0x2cebca(0x1ab)](), $(_0x2cebca(0x29d))[_0x2cebca(0x1ab)](), $(_0x2cebca(0x235))[_0x2cebca(0x1ab)]();
-    const _0x2a7f8e = _0x2cebca(0x28f),
-        _0x14833a = { pnu: _0x17e1b0, bbox: _0x52ade0 },
-        _0x3a1515 = await callApi(_0x2cebca(0x167), _0x2a7f8e, _0x14833a, _0x2cebca(0x280)),
-        _0x20b437 = [];
-    let _0x1268f7 = {},
-        _0x37aca = null;
-    return (
-        $[_0x2cebca(0x2c6)](_0x3a1515, function (_0x22f8e8, _0x414c02) {
-            const _0x5532b0 = _0x2cebca;
-            if (_0x414c02[_0x5532b0(0x1bd)]) return $("#modalAlert")["iziModal"](_0x5532b0(0x2b2)), $(_0x5532b0(0x279))[_0x5532b0(0x16f)](_0x5532b0(0x28a)), ![];
-            let _0x20f3fd = _0x414c02[_0x5532b0(0x217)];
-            if (!_0x20f3fd) return;
-            _0x20f3fd = Array[_0x5532b0(0x296)](_0x20f3fd) ? _0x20f3fd : [_0x20f3fd];
-            let _0x175160 = [];
-            _0x20f3fd["forEach"]((_0x324f67) => {
-                const _0x4be383 = _0x5532b0;
-                if (!_0x324f67[_0x4be383(0x21c)] || !_0x324f67["tbl_opn_eczm"][_0x4be383(0x23f)] || !_0x324f67["tbl_opn_eczm"][_0x4be383(0x23f)]["MultiPolygon"]) return;
-                const _0x292ee9 = _0x324f67["tbl_opn_eczm"]["geom"][_0x4be383(0x186)][_0x4be383(0x22e)][_0x4be383(0x22c)][_0x4be383(0x226)]["LinearRing"][_0x4be383(0x1ec)][_0x4be383(0x27c)],
-                    _0x42df51 = _0x292ee9[_0x4be383(0x18a)]("\x20")["map"]((_0x3cad9d) => {
-                        const _0x560fb4 = _0x4be383,
-                            _0x9a87dc = _0x3cad9d[_0x560fb4(0x18a)](",")[_0x560fb4(0x23c)](Number);
-                        return proj4("EPSG:5186", "EPSG:4326", _0x9a87dc);
-                    });
-                let _0x4e8f9d = [],
-                    _0x3b5333 = [_0x42df51],
-                    _0x85715d = _0x324f67[_0x4be383(0x21c)][_0x4be383(0x23f)]["MultiPolygon"][_0x4be383(0x22e)][_0x4be383(0x22c)][_0x4be383(0x25c)];
-                _0x85715d &&
-                    ((_0x4e8f9d = Array[_0x4be383(0x296)](_0x85715d)
-                        ? _0x85715d[_0x4be383(0x23c)]((_0x479cfb) => {
-                              const _0x5751d8 = _0x4be383,
-                                  _0x2e1162 = _0x479cfb[_0x5751d8(0x23e)][_0x5751d8(0x1ec)][_0x5751d8(0x27c)];
-                              return _0x2e1162[_0x5751d8(0x18a)]("\x20")[_0x5751d8(0x23c)]((_0x2866ea) => {
-                                  const _0x272156 = _0x5751d8,
-                                      _0x158071 = _0x2866ea[_0x272156(0x18a)](",")[_0x272156(0x23c)](Number);
-                                  return proj4(_0x272156(0x199), _0x272156(0x1fb), _0x158071);
-                              });
-                          })
-                        : [
-                              _0x85715d[_0x4be383(0x23e)][_0x4be383(0x1ec)]["@text"][_0x4be383(0x18a)]("\x20")[_0x4be383(0x23c)]((_0x3c954a) => {
-                                  const _0x5de466 = _0x4be383,
-                                      _0x3fc28c = _0x3c954a[_0x5de466(0x18a)](",")[_0x5de466(0x23c)](Number);
-                                  return proj4(_0x5de466(0x199), _0x5de466(0x1fb), _0x3fc28c);
-                              }),
-                          ]),
-                    (_0x3b5333 = [_0x42df51, ..._0x4e8f9d]));
-                const _0x12fd71 = turf[_0x4be383(0x1cc)](_0x3b5333);
-                isValidPolygon(_0x12fd71) && _0x175160[_0x4be383(0x200)](_0x12fd71);
-                if (!$(this)["is"](_0x4be383(0x2b7))) {
-                    const _0x2c07e7 = _0x42df51[_0x4be383(0x23c)]((_0x406594) => new kakao[_0x4be383(0x170)][_0x4be383(0x16c)](_0x406594[0x1], _0x406594[0x0]));
-                    let _0x218529 = [];
-                    _0x85715d &&
-                        (_0x218529 = _0x4e8f9d[_0x4be383(0x23c)]((_0x329b16) => {
-                            const _0xf0892a = _0x4be383;
-                            return _0x329b16[_0xf0892a(0x23c)]((_0x48cef8) => new kakao[_0xf0892a(0x170)][_0xf0892a(0x16c)](_0x48cef8[0x1], _0x48cef8[0x0]));
-                        }));
-                    const _0x49e5d3 = new kakao[_0x4be383(0x170)][_0x4be383(0x22c)]({
-                        path: [_0x2c07e7, ..._0x218529],
-                        strokeWeight: 0x1,
-                        strokeColor: "" + (_0x22f8e8 == _0x4be383(0x188) ? "#16a800" : _0x22f8e8 == _0x4be383(0x216) ? _0x4be383(0x2a0) : _0x4be383(0x252)),
-                        strokeOpacity: 0x1,
-                        strokeStyle: _0x4be383(0x213),
-                        fillColor: "" + (_0x22f8e8 == _0x4be383(0x188) ? "#16a800" : _0x22f8e8 == _0x4be383(0x216) ? _0x4be383(0x2a0) : "#e9e8d6"),
-                        fillOpacity: 0x1,
-                        zIndex: 0x5,
-                    });
-                    analysisPolygonArray[_0x4be383(0x200)](_0x49e5d3);
-                }
-            }),
-                (_0x1268f7[_0x22f8e8] = _0x175160);
-        }),
-        analysisPolygonArray[_0x2cebca(0x278)]((_0x348d09) => _0x348d09[_0x2cebca(0x1c4)](map)),
-        calculateOverlap(_0x4cf988, _0x1268f7),
-        _0x37aca && map[_0x2cebca(0x234)](_0x37aca),
-        _0x1268f7
     );
+
+    map.addOverlayMapTypeId(kakao.maps.MapTypeId.TILE_NUMBER);
 }
-function isValidPolygon(_0x54323f) {
-    const _0x50e4a2 = a39_0x363e4a;
-    if (!_0x54323f || _0x54323f["type"] !== _0x50e4a2(0x28e) || !_0x54323f[_0x50e4a2(0x1c7)] || _0x54323f[_0x50e4a2(0x1c7)][_0x50e4a2(0x1e3)] !== "Polygon") return ![];
-    const _0x5e2560 = _0x54323f[_0x50e4a2(0x1c7)]["coordinates"][0x0];
-    if (_0x5e2560[_0x50e4a2(0x2a9)] < 0x4) return ![];
-    const _0x93d8c = _0x5e2560[0x0],
-        _0x59ec77 = _0x5e2560[_0x5e2560[_0x50e4a2(0x2a9)] - 0x1];
-    return _0x93d8c[0x0] === _0x59ec77[0x0] && _0x93d8c[0x1] === _0x59ec77[0x1];
+
+/**
+ * 타일 레이어를 제거하는 함수
+ */
+function removeEcologyWMSTileLayer() {
+    // 오버레이 타일을 제거
+    map.removeOverlayMapTypeId(kakao.maps.MapTypeId.TILE_NUMBER);
 }
-function calculateOverlap(_0x2c2b52, _0x373415) {
-    const _0x223926 = a39_0x363e4a;
-    !Array["isArray"](_0x2c2b52) && (_0x2c2b52 = [_0x2c2b52]);
-    let _0x415207 = {};
-    _0x2c2b52[_0x223926(0x278)]((_0x18cd3b) => {
-        const _0x19ce07 = _0x223926;
-        if (!isValidPolygon(_0x18cd3b)) {
-            console["error"](_0x19ce07(0x1a6));
+
+/**
+ * 생태자연도 폴리곤 값 가져오는 함수
+ * @param {*} pnu
+ * @param {*} bbox
+ * @returns
+ */
+async function ecologyMap(pnu, bbox, geojsonPolygon) {
+    // 합필분석 모드 아닐 때, 분석도 폴리곤 초기화
+    if (!isMultiSelectMode) {
+        analysisPolygonArray.forEach((polygon) => polygon.setMap(null)); //폴리곤을 지도에서 제거
+        analysisPolygonArray = []; // 폴리곤 배열 초기화
+    }
+
+    $("#analysis_info_table tbody").empty(); // 분석 - 테이블 초기화
+    $("#analysis_total_area").empty(); // 분석 - 면적 초기화
+    $("#land_analysis_info_table tbody").empty(); // 합필분석 - 테이블 초기화
+    $("#land_analysis_total_area").empty(); // 합필분석 - 면적 초기화
+
+    // const urlWMS = "/front/back/realPrice/echologyWMS.php";
+    // const dataObjWMS = {
+    //     pnu: pnu,
+    //     bbox: bbox,
+    // };
+    // const resultWMS = await callApi("POST", urlWMS, dataObjWMS);
+    // console.log(resultWMS);
+
+    // 생태자연도 가져오기
+    const url = "/front/back/realPrice/echology.php";
+    const dataObj = {
+        pnu: pnu,
+        bbox: bbox,
+    };
+    const result = await callApi("POST", url, dataObj, "loading");
+
+    const polygonArray = [];
+    let ecologyPolygons = {}; // turf.js를 사용하기위한 폴리곤 배열 객체
+
+    // 첫 번째 폴리곤의 첫 번째 좌표를 담을 변수
+    let firstPolygonCenter = null;
+
+    $.each(result, function (index, value) {
+        if (value.error) {
+            $("#modalAlert").iziModal("open");
+            $("#alert_message").html("<h2>분석 중 <span>문제</span>가 발생했습니다. 다시 시도해주세요.</h2>");
+            return false;
+        }
+        let featureMember = value.featureMember;
+
+        // featureMember가 객체일 수 있으므로 배열인지 확인하고 처리
+        if (!featureMember) {
+            return; // featureMember가 없으면 무시하고 다음 index로 넘어감
+        }
+
+        // featureMember가 배열이 아니라 객체라면, 객체를 배열로 변환하여 처리
+        featureMember = Array.isArray(featureMember) ? featureMember : [featureMember];
+
+        // turf.js로 계산하기 위해 폴리곤을 GeoJSON 형식으로 저장
+        let turfEcologyPolygons = [];
+
+        featureMember.forEach((feature) => {
+            // feature에 tbl_opn_eczm이 있는지 확인
+            if (!feature.tbl_opn_eczm || !feature.tbl_opn_eczm.geom || !feature.tbl_opn_eczm.geom.MultiPolygon) {
+                return; // 유효하지 않은 feature는 건너뜀
+            }
+
+            // 좌표 문자열에서 좌표 변환 (외부 경계)
+            const coordString = feature.tbl_opn_eczm.geom.MultiPolygon.polygonMember.Polygon.outerBoundaryIs.LinearRing.coordinates["@text"];
+
+            // EPSG:5186에서 EPSG:4326으로 좌표 변환 (proj4 사용)
+            const transformedCoordinates = coordString.split(" ").map((pair) => {
+                const coords = pair.split(",").map(Number);
+                return proj4("EPSG:5186", "EPSG:4326", coords);
+            });
+
+            // 구멍 처리
+            let holeTransformedCoordinates = [];
+            let geoJsonCoordinates = [transformedCoordinates]; // 외부 경계 포함
+            let holeCoordinatesArray = feature.tbl_opn_eczm.geom.MultiPolygon.polygonMember.Polygon.innerBoundaryIs;
+
+            if (holeCoordinatesArray) {
+                // 구멍이 여러 개일 경우 처리
+                holeTransformedCoordinates = Array.isArray(holeCoordinatesArray)
+                    ? holeCoordinatesArray.map((hole) => {
+                          const holeCoordString = hole.LinearRing.coordinates["@text"];
+                          return holeCoordString.split(" ").map((pair) => {
+                              const coords = pair.split(",").map(Number);
+                              return proj4("EPSG:5186", "EPSG:4326", coords);
+                          });
+                      })
+                    : [
+                          holeCoordinatesArray.LinearRing.coordinates["@text"].split(" ").map((pair) => {
+                              const coords = pair.split(",").map(Number);
+                              return proj4("EPSG:5186", "EPSG:4326", coords);
+                          }),
+                      ];
+
+                // 외부 경계와 내부 경계(여러 구멍이 있는 경우 처리)
+                geoJsonCoordinates = [transformedCoordinates, ...holeTransformedCoordinates];
+            }
+
+            // turf.js를 사용하여 다중 폴리곤으로 변환
+            const ecologyPolygon = turf.polygon(geoJsonCoordinates);
+
+            // 유효성 검사 후 저장 (turf.js를 위해)
+            if (isValidPolygon(ecologyPolygon)) {
+                turfEcologyPolygons.push(ecologyPolygon);
+            }
+
+            // 첫 번째 폴리곤의 첫 번째 좌표로 지도 중심 설정 (디버깅 용)
+            // if (!firstPolygonCenter) {
+            //     firstPolygonCenter = polygonPath[0]; // 첫 좌표 설정
+            // }
+
+            // #########################################################################
+            if (!$(this).is(":checked")) {
+                // 하위 주석 해제 시, 지도에 생태자연도 폴리곤 생성
+                // 카카오맵 폴리곤 경로 생성
+                const polygonPath = transformedCoordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                let holePolygonPath = [];
+
+                if (holeCoordinatesArray) {
+                    holePolygonPath = holeTransformedCoordinates.map((hole) => {
+                        return hole.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                    });
+                }
+
+                // 폴리곤 객체 생성
+                const polygon = new kakao.maps.Polygon({
+                    path: [polygonPath, ...holePolygonPath], // 외부 경계와 구멍을 포함한 경로
+                    strokeWeight: 1,
+                    strokeColor: `${index == "ecologyzmpWFS_1" ? "#16a800" : index == "ecologyzmpWFS_2" ? "#9ad37f" : "#e9e8d6"}`,
+                    strokeOpacity: 1,
+                    strokeStyle: "solid",
+                    fillColor: `${index == "ecologyzmpWFS_1" ? "#16a800" : index == "ecologyzmpWFS_2" ? "#9ad37f" : "#e9e8d6"}`,
+                    fillOpacity: 1,
+                    zIndex: 5, // 폴리곤을 건물 아래에 표시
+                });
+                analysisPolygonArray.push(polygon);
+            }
+            // #########################################################################
+        });
+
+        // 폴리곤 배열을 담는다. (turf.js를 위해)
+        ecologyPolygons[index] = turfEcologyPolygons;
+    });
+
+    // 폴리곤을 지도에 표시
+    // if (!isMultiSelectMode) {
+    analysisPolygonArray.forEach((polygon) => polygon.setMap(map));
+    // }
+
+    // 필지와 생체자연도의 폴리곤 교집합 계산 (분석 탭)
+    calculateOverlap(geojsonPolygon, ecologyPolygons);
+
+    // 지도 중심을 첫 번째 폴리곤의 첫 좌표로 설정
+    if (firstPolygonCenter) {
+        map.setCenter(firstPolygonCenter);
+    }
+
+    // polygonArray.forEach((polygon) => polygon.setMap(map));
+
+    return ecologyPolygons;
+}
+
+function isValidPolygon(polygon) {
+    // 폴리곤이 Feature 객체이고, geometry.type이 Polygon인지 확인
+    if (!polygon || polygon.type !== "Feature" || !polygon.geometry || polygon.geometry.type !== "Polygon") {
+        return false;
+    }
+    // 첫 좌표와 마지막 좌표가 동일한지 확인 (폴리곤의 닫힘 확인)
+    const coordinates = polygon.geometry.coordinates[0];
+    if (coordinates.length < 4) {
+        return false; // 유효한 폴리곤이 되려면 최소 4개의 좌표가 필요
+    }
+    const firstCoord = coordinates[0];
+    const lastCoord = coordinates[coordinates.length - 1];
+    return firstCoord[0] === lastCoord[0] && firstCoord[1] === lastCoord[1];
+}
+
+/**
+ * 필지와 생체자연도의 폴리곤 교집합 계산하는 함수
+ * @param {*} landPolygon = 필지 폴리곤
+ * @param {*} ecologyPolygonsObject = 생태자연도 폴리곤
+ * @returns
+ */
+
+function calculateOverlap(landPolygons, ecologyPolygonsObject) {
+    // landPolygons이 배열이 아닌 경우 배열로 변환
+    if (!Array.isArray(landPolygons)) {
+        landPolygons = [landPolygons];
+    }
+
+    let intersectArea = {}; // 교차 면적 객체
+
+    // 각 landPolygon에 대해 처리
+    landPolygons.forEach((landPolygon) => {
+        // landPolygon이 유효한지 확인
+        if (!isValidPolygon(landPolygon)) {
+            console.error("유효하지 않은 landPolygon입니다.");
             return;
         }
-        $[_0x19ce07(0x2c6)](_0x373415, function (_0x51209e, _0x1be0ea) {
-            const _0x5c1f16 = _0x19ce07;
-            let _0x57876f = 0x0;
-            !_0x415207[_0x51209e] && (_0x415207[_0x51209e] = 0x0),
-                _0x1be0ea[_0x5c1f16(0x278)]((_0x5c1c4a) => {
-                    const _0x108883 = _0x5c1f16;
-                    if (!isValidPolygon(_0x5c1c4a)) {
-                        console["warn"](_0x108883(0x283));
-                        return;
+
+        $.each(ecologyPolygonsObject, function (index, ecologyPolygons) {
+            let totalIntersectionArea = 0; // 총 교차 면적
+            // intersectArea[index]가 이미 있는 경우에는 기존 값에 누적
+            if (!intersectArea[index]) {
+                intersectArea[index] = 0; // 없으면 초기화
+            }
+
+            ecologyPolygons.forEach((ecologyPolygon) => {
+                // 각 ecologyPolygon이 유효한지 확인
+                if (!isValidPolygon(ecologyPolygon)) {
+                    console.warn("유효하지 않은 ecologyPolygon이 있습니다. 건너뜁니다.");
+                    return;
+                }
+
+                try {
+                    // 두 개의 폴리곤을 featureCollection으로 묶어서 교차 구하기
+                    const intersection = turf.intersect(turf.featureCollection([landPolygon, ecologyPolygon]));
+
+                    if (intersection) {
+                        const intersectionArea = turf.area(intersection); // 겹친 부분의 면적 계산
+                        // totalIntersectionArea += intersectionArea;
+                        intersectArea[index] += intersectionArea; // 면적을 누적
                     }
-                    try {
-                        const _0x1c57a1 = turf[_0x108883(0x230)](turf[_0x108883(0x1f6)]([_0x18cd3b, _0x5c1c4a]));
-                        if (_0x1c57a1) {
-                            const _0x3c886d = turf[_0x108883(0x16d)](_0x1c57a1);
-                            _0x415207[_0x51209e] += _0x3c886d;
-                        }
-                    } catch (_0x3a2b7f) {
-                        console[_0x108883(0x1bd)](_0x108883(0x1eb), _0x3a2b7f[_0x108883(0x191)]);
-                    }
-                });
+                } catch (error) {
+                    console.error("폴리곤 비교 중 오류 발생:", error.message);
+                }
+            });
+            // console.log("등급별 겹치는 면적:", totalIntersectionArea, "평방미터");
+            // intersectArea[index] = totalIntersectionArea;
+            // console.log(intersectArea);
         });
     });
-    const _0x10e568 = _0x2c2b52[_0x223926(0x1bf)]((_0x168947, _0x502be3) => _0x168947 + turf[_0x223926(0x16d)](_0x502be3), 0x0);
-    let _0x19b419 = $(_0x223926(0x1ee));
-    isMultiSelectMode ? ((_0x19b419 = $(_0x223926(0x248))), $(_0x223926(0x235))[_0x223926(0x1a0)](formatArea(_0x10e568[_0x223926(0x2b0)](0x2)))) : $(_0x223926(0x26b))[_0x223926(0x1a0)](formatArea(_0x10e568[_0x223926(0x2b0)](0x2))),
-        $[_0x223926(0x2c6)](_0x415207, function (_0x37f83a, _0x30e2d3) {
-            const _0x550c54 = _0x223926;
-            gradeValue = _0x37f83a == "ecologyzmpWFS_1" ? 0x1 : _0x37f83a == _0x550c54(0x216) ? 0x2 : _0x37f83a == "ecologyzmpWFS_3" ? 0x3 : "별도관리지역";
-            let _0x2533ea = "";
-            if (gradeValue == 0x1) _0x2533ea = "#16a800";
-            else {
-                if (gradeValue == 0x2) _0x2533ea = _0x550c54(0x2a0);
-                else gradeValue == 0x3 && (_0x2533ea = _0x550c54(0x252));
-            }
-            const _0x2990a4 = ((_0x30e2d3 / _0x10e568) * 0x64)["toFixed"](0x3);
-            _0x2990a4 > 0x0 &&
-                _0x19b419[_0x550c54(0x21f)](_0x550c54(0x291))[_0x550c54(0x20b)](
-                    _0x550c54(0x273) + _0x2533ea + _0x550c54(0x1ca) + gradeValue + "등급</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-center\x22>" + formatArea(_0x30e2d3[_0x550c54(0x2b0)](0x2)) + _0x550c54(0x218) + _0x2990a4 + _0x550c54(0x221)
-                );
-        });
-}
-async function nationalEnvMap(_0x31804c) {
-    const _0x4288bb = a39_0x363e4a,
-        _0x29d314 = _0x4288bb(0x2a7),
-        _0x1a604e = { pnu: _0x31804c },
-        _0x1e33b4 = await callApi(_0x4288bb(0x167), _0x29d314, _0x1a604e);
-    console[_0x4288bb(0x1e9)](_0x1e33b4);
-}
-async function handleMapClick(_0x5ab26d) {
-    const _0x277fca = a39_0x363e4a;
-    if (isLoading) return;
-    try {
-        (isLoading = !![]), clearAllPolygons();
-        let _0x393b81 = [],
-            _0x162739 = [];
-        const _0x28bd1e = await getLandBuildingPolygon(_0x5ab26d),
-            { buildingPolygon: _0x14c7e4, buildingPolygon2: _0x5f22af, landPolygon: _0x286015 } = _0x28bd1e;
-        ([_0x393b81, _0x162739] = await Promise[_0x277fca(0x1c9)]([getBuilindInfo({ buildingPolygon: _0x14c7e4, buildingPolygon2: _0x5f22af }), getLandInfo(_0x286015)])), addPolygonsToMap(buildingPolygons, landPolygons);
-    } catch (_0x41c54d) {
-        console[_0x277fca(0x1bd)](_0x277fca(0x270), _0x41c54d);
-    } finally {
-        isLoading = ![];
+
+    // const langArea = globalLandCharacter[0].lndpclAr;
+    // const langArea = turf.area(landPolygon);
+    const combinedLangArea = landPolygons.reduce((totalArea, polygon) => totalArea + turf.area(polygon), 0); // 전체 landPolygons의 면적
+
+    let table = $("#analysis_info_table");
+
+    if (isMultiSelectMode) {
+        table = $("#land_analysis_info_table");
+        $("#land_analysis_total_area").text(formatArea(combinedLangArea.toFixed(2)));
+    } else {
+        $("#analysis_total_area").text(formatArea(combinedLangArea.toFixed(2)));
     }
-}
-function addPolygonsToMap(_0x300fd3 = [], _0x872d44 = []) {
-    const _0x399823 = a39_0x363e4a;
-    _0x300fd3[_0x399823(0x2a9)] > 0x0 && _0x300fd3[_0x399823(0x278)]((_0x13e610) => _0x13e610[_0x399823(0x1c4)](map)),
-        _0x872d44["length"] > 0x0 && (_0x872d44[_0x399823(0x278)]((_0x3a0fab) => _0x3a0fab[_0x399823(0x1c4)](map)), landPolygonsMiniMap["forEach"]((_0x4c0aa7) => _0x4c0aa7[_0x399823(0x1c4)](miniMap)));
-}
-function clearAllPolygons() {
-    const _0xee4739 = a39_0x363e4a;
-    if (isMultiSelectMode) return;
-    buildingPolygons[_0xee4739(0x278)]((_0x262de6) => _0x262de6[_0xee4739(0x1c4)](null)),
-        landPolygons[_0xee4739(0x278)]((_0x215e98) => _0x215e98["setMap"](null)),
-        landPolygonsMiniMap[_0xee4739(0x278)]((_0x5a41ee) => _0x5a41ee[_0xee4739(0x1c4)](null)),
-        analysisPolygonArray[_0xee4739(0x278)]((_0x35612c) => _0x35612c[_0xee4739(0x1c4)](null)),
-        (buildingPolygons = []),
-        (landPolygons = []),
-        (landPolygonsMiniMap = []),
-        (analysisPolygonArray = []);
-}
-async function initializeMap() {
-    const _0x5774c5 = a39_0x363e4a;
-    let _0x331e9f = getCookie(_0x5774c5(0x251)) || 0x5;
-    if (_0x331e9f > 0x5) _0x331e9f = 0x5;
-    const _0x5429cb = new URLSearchParams(window[_0x5774c5(0x22a)]["search"]);
-    let _0x4823c0 = _0x5429cb[_0x5774c5(0x27f)](_0x5774c5(0x22b)),
-        _0x4fe87a = _0x5429cb["get"](_0x5774c5(0x1f7));
-    !areValidCoordinatesInKorea(parseFloat(_0x4823c0), parseFloat(_0x4fe87a)) && ((_0x4823c0 = _0x5774c5(0x2ae)), (_0x4fe87a = _0x5774c5(0x264)));
-    setCookie("curLat", _0x4823c0, 0x1), setCookie("curLng", _0x4fe87a, 0x1), console[_0x5774c5(0x1e9)](_0x4823c0, ",\x20", _0x4fe87a);
-    const _0x21a65c = new kakao["maps"][_0x5774c5(0x16c)](_0x4823c0, _0x4fe87a);
-    var _0x1d6170 = { center: _0x21a65c, level: _0x331e9f, minLevel: 0x0, maxLevel: 0xd, disableDoubleClickZoom: !![] };
-    (map = new kakao[_0x5774c5(0x170)]["Map"](mapContainer, _0x1d6170)),
-        (infowindow = new kakao[_0x5774c5(0x170)][_0x5774c5(0x1a8)]({ zIndex: 0x1 })),
-        (clusterer = new kakao["maps"][_0x5774c5(0x2c2)]({
-            map: map,
-            averageCenter: !![],
-            minLevel: 0x5,
-            gridSize: 0x3c,
-            minClusterSize: 0x1,
-            styles: [
-                { width: "50px", height: _0x5774c5(0x24e), backgroundColor: "#f48356", color: _0x5774c5(0x256), fontSize: _0x5774c5(0x2af), textAlign: _0x5774c5(0x20a), lineHeight: _0x5774c5(0x24e), borderRadius: "50%" },
-                { width: "60px", height: _0x5774c5(0x225), backgroundColor: "#f48356", color: _0x5774c5(0x256), fontSize: _0x5774c5(0x295), textAlign: _0x5774c5(0x20a), lineHeight: _0x5774c5(0x225), borderRadius: "50%" },
-                { width: _0x5774c5(0x166), height: _0x5774c5(0x166), backgroundColor: "#f48356", color: "#fff", fontSize: "18px", textAlign: _0x5774c5(0x20a), lineHeight: _0x5774c5(0x166), borderRadius: _0x5774c5(0x1b1) },
-                { width: _0x5774c5(0x180), height: _0x5774c5(0x180), backgroundColor: _0x5774c5(0x211), color: "#fff", fontSize: _0x5774c5(0x257), textAlign: _0x5774c5(0x20a), lineHeight: _0x5774c5(0x180), borderRadius: _0x5774c5(0x1b1) },
-            ],
-            calculator: [0x1, 0xa, 0x1e, 0x32],
-            disableClickZoom: ![],
-            clickable: !![],
-            hoverable: !![],
-        })),
-        toolbox(),
-        (lineDrawer = createLineDrawer(map)),
-        (circleDrawer = createCircleDrawer(map)),
-        (polygonDrawer = createPolygonDrawer(map)),
-        searchDetailAddrFromCoords(_0x21a65c, function (_0x499f66, _0xa8cf33) {
-            const _0xb36759 = _0x5774c5;
-            if (_0xa8cf33 === kakao[_0xb36759(0x170)]["services"][_0xb36759(0x239)]["OK"]) {
-                const _0x51757c = _0x499f66[0x0][_0xb36759(0x1fa)];
-                realPriceDetailLand(_0xb36759(0x214), _0x51757c);
-            }
-            displayAddressInfo(_0x499f66, _0xa8cf33);
-        });
-    let _0x394ecb = { lat: _0x4823c0, lng: _0x4fe87a };
-    handleMapClick(_0x394ecb), searchArroundPlaces(_0x394ecb), (textModuleControl = addTextToMap(map)), initRoadView();
-    return;
-    const _0x1b0bb8 = [
-            [
-                [127.02412746223159, 37.4929645928441],
-                [127.02429674560604, 37.49261019704831],
-                [127.02455936894816, 37.49206026581284],
-                [127.02479667590796, 37.491563407841404],
-                [127.02365382860127, 37.49122007613731],
-                [127.02306639969028, 37.49278819515432],
-                [127.02406677745752, 37.493091555328974],
-                [127.02412746223159, 37.4929645928441],
-            ],
-        ],
-        _0x347e50 = [
-            [
-                [126.99556484762846, 37.507935286584306],
-                [126.99819272463009, 37.50909236971659],
-                [126.99820435230036, 37.509075611490665],
-                [126.99869949620722, 37.50836194421412],
-                [126.99908054045544, 37.50852912377377],
-                [126.9991706316024, 37.508345772596314],
-                [126.99925714807887, 37.508170295995015],
-                [126.99944219203749, 37.50778513191741],
-                [127.00009335017914, 37.506337039937655],
-                [127.00042467092756, 37.50560481145891],
-                [127.00056056072414, 37.50532660247273],
-                [127.00063407526129, 37.50518643478012],
-                [127.00054336301314, 37.50499513415802],
-                [127.00034072942603, 37.504933864444205],
-                [127.00012977428486, 37.50537656754941],
-                [126.99864704685052, 37.504928168159054],
-                [126.99861135080067, 37.50500314834691],
-                [126.99777165768197, 37.504749187404904],
-                [126.99556484762846, 37.507935286584306],
-            ],
-        ],
-        _0x1af989 = [
-            [
-                [127.00035132738928, 37.500507567005045],
-                [127.00050558776078, 37.50003751739384],
-                [127.00085706838594, 37.49995138439665],
-                [127.00112474796789, 37.500182581866824],
-                [127.00100136652969, 37.5003808912112],
-                [127.00105269762446, 37.50040171350381],
-                [127.00110914067761, 37.500368818249264],
-                [127.00130308938013, 37.50015032656872],
-                [127.00142307719898, 37.4997774934347],
-                [127.00094132202281, 37.49961134789164],
-                [127.00091893065799, 37.49960098629407],
-                [127.00084791103984, 37.49963351197094],
-                [127.00080041359227, 37.49967793093419],
-                [127.00081059074172, 37.49976190408399],
-                [127.00032170542167, 37.50003841667617],
-                [127.00022851991514, 37.500059769367525],
-                [127.00017525480955, 37.50007562635287],
-                [127.00012606114362, 37.50007724758192],
-                [127.00004588198078, 37.500035890768366],
-                [126.99998571893798, 37.50002724041613],
-                [126.9999707894819, 37.500111753904534],
-                [126.99993075556385, 37.5001333773438],
-                [126.99991435780156, 37.500127340431014],
-                [126.99988832494404, 37.50011783453838],
-                [126.99987200512119, 37.50016787578231],
-                [126.9998695834662, 37.50023852305899],
-                [126.9999007149991, 37.50032608254421],
-                [126.99985034357573, 37.50039340446788],
-                [127.00011282251602, 37.500463865975874],
-                [127.00035132738928, 37.500507567005045],
-            ],
-        ],
-        _0x14995e = [
-            [
-                [127.0009667570799, 37.50094455581656],
-                [127.00122187670034, 37.50104655878059],
-                [127.001402154345, 37.50076697021016],
-                [127.00154621954134, 37.50082402149551],
-                [127.0020532145192, 37.50102478980221],
-                [127.0021432105684, 37.50088467506445],
-                [127.00127300648758, 37.50053162916422],
-                [127.00121883656352, 37.50054442322143],
-                [127.0009667570799, 37.50094455581656],
-            ],
-        ];
-    drawPolygon(_0x14995e);
-    const _0x4fe4e2 = getPolygonCenter(_0x14995e),
-        _0x32dbb4 = getPolygonCentroid(_0x14995e),
-        _0xf18bae = 126.99556484762846,
-        _0x43ba99 = 37.504749187404904,
-        _0x228e60 = 127.02306639969028,
-        _0x3e155e = 37.49122007613731;
-    var _0x24760c = new kakao[_0x5774c5(0x170)][_0x5774c5(0x16c)](_0x4fe4e2[0x1], _0x4fe4e2[0x0]);
-    searchDetailAddrFromCoords(_0x24760c, displayAddressInfo);
-    const _0x24ecc7 = new kakao[_0x5774c5(0x170)][_0x5774c5(0x1db)]({ map: map, position: new kakao["maps"][_0x5774c5(0x16c)](_0x32dbb4[0x1], _0x32dbb4[0x0]) });
-    markers[_0x5774c5(0x278)]((_0x585513) => _0x585513[_0x5774c5(0x1c4)](null)), markers[_0x5774c5(0x200)](marker);
-    return;
-    const _0x41440a = new URL(window[_0x5774c5(0x22a)]["href"]),
-        _0x5044bc = _0x41440a[_0x5774c5(0x1be)][_0x5774c5(0x27f)](_0x5774c5(0x1fa)),
-        _0x1a874c = _0x41440a[_0x5774c5(0x1be)][_0x5774c5(0x27f)](_0x5774c5(0x1fe)),
-        _0x2b1b4e = _0x41440a[_0x5774c5(0x1be)][_0x5774c5(0x27f)](_0x5774c5(0x25d));
-    _0x1a874c && _0x2b1b4e && ((_0x4823c0 = _0x1a874c), (_0x4fe87a = _0x2b1b4e), setCookie(_0x5774c5(0x22b), _0x4823c0), setCookie(_0x5774c5(0x1f7), _0x4fe87a), map[_0x5774c5(0x234)](new kakao[_0x5774c5(0x170)][_0x5774c5(0x16c)](_0x4823c0, _0x4fe87a)));
-    return;
-    try {
-        const _0x41a19d = await updateAddressInfo();
-        buildingDetail(_0x41a19d), await renderInformation(0x1, $(_0x5774c5(0x22f))[_0x5774c5(0x203)]()), infiniteScroll();
-    } catch (_0x47f82b) {
-        console[_0x5774c5(0x1bd)](_0x5774c5(0x202), _0x47f82b);
-    }
-}
-async function updateAddressInfo() {
-    return new Promise(async (_0x3a1028, _0x568007) => {
-        const _0x160185 = a39_0x57f5;
-        setCookie("beforeKeyword", getCookie(_0x160185(0x2ca)));
-        const _0x355ae4 = map[_0x160185(0x1b5)](),
-            _0x37603d = _0x355ae4[_0x160185(0x206)](),
-            _0x3afc13 = _0x355ae4[_0x160185(0x19b)]();
-        setCookie("curLat", _0x37603d, 0x1), setCookie(_0x160185(0x1f7), _0x3afc13, 0x1);
-        return;
-        try {
-            const _0x21ef2d = await searchDetailAddrFromCoords(_0x355ae4),
-                _0x39b9a0 = await searchAddrFromCoords(_0x355ae4);
-            if (_0x21ef2d && _0x21ef2d[_0x160185(0x2a9)] > 0x0) {
-                const _0xeb6da6 = _0x21ef2d[0x0][_0x160185(0x1fa)]["address_name"],
-                    _0x6e3e83 = _0x39b9a0[_0x160185(0x236)]((_0xfbd4ca) => _0xfbd4ca[_0x160185(0x194)] === "B"),
-                    { code: _0x575164 } = _0x6e3e83[0x0],
-                    _0x484214 = _0x39b9a0[_0x160185(0x236)]((_0x9adcc1) => _0x9adcc1[_0x160185(0x194)] === "H"),
-                    { address_name: _0x17e476 } = _0x484214[0x0];
-                setCookie(_0x160185(0x2ca), _0x17e476), $(_0x160185(0x22f))[_0x160185(0x203)](_0x17e476), _0x3a1028({ bjdCd: _0x575164, address_first: _0xeb6da6 });
-            } else _0x568007(_0x160185(0x18c));
-        } catch (_0x45a97f) {
-            _0x568007(_0x160185(0x18c));
+
+    // table.find("tbody").empty(); // 테이블 초기화
+    // $("#analysis_total_area").text(formatArea(langArea.toFixed(2)));
+    // $("#land_analysis_total_area").text(formatArea(combinedLangArea.toFixed(2)));
+
+    // console.log(intersectArea);
+
+    // intersectArea를 순회하며 테이블에 등급과 면적 추가
+    $.each(intersectArea, function (index, area) {
+        gradeValue = index == "ecologyzmpWFS_1" ? 1 : index == "ecologyzmpWFS_2" ? 2 : index == "ecologyzmpWFS_3" ? 3 : "별도관리지역";
+
+        let color = "";
+        if (gradeValue == 1) {
+            color = "#16a800";
+        } else if (gradeValue == 2) {
+            color = "#9ad37f";
+        } else if (gradeValue == 3) {
+            color = "#e9e8d6";
+        }
+
+        // const areaPercentage = ((area / langArea) * 100).toFixed(3); // 소수점 둘째 자리까지 비율 계산
+        const areaPercentage = ((area / combinedLangArea) * 100).toFixed(3); // 소수점 둘째 자리까지 비율 계산
+
+        // areaPercentage가 0이 아닌 경우에만 append
+        if (areaPercentage > 0) {
+            table.find("tbody").append(
+                `<tr>
+                <td class="text-center" style="color:${color}">◼︎</td>
+                <td class="text-center">${gradeValue}등급</td>
+                <td class="text-center">${formatArea(area.toFixed(2))}</td>
+                <td class="text-center">${areaPercentage}</td>
+            </tr>`
+            );
         }
     });
 }
-function searchAddrFromCoords(_0x3a4a9c, _0x25865e) {
-    const _0x5c3956 = a39_0x363e4a;
-    geocoder[_0x5c3956(0x192)](_0x3a4a9c[_0x5c3956(0x19b)](), _0x3a4a9c[_0x5c3956(0x206)](), _0x25865e);
+
+async function nationalEnvMap(pnu) {
+    const url = "/front/back/realPrice/test2.php";
+    const dataObj = {
+        pnu: pnu,
+    };
+    const result = await callApi("POST", url, dataObj);
+    console.log(result);
 }
-function searchDetailAddrFromCoords(_0x2486b0, _0x1da817) {
-    const _0xa6f8bb = a39_0x363e4a;
-    geocoder["coord2Address"](_0x2486b0[_0xa6f8bb(0x19b)](), _0x2486b0[_0xa6f8bb(0x206)](), _0x1da817);
-}
-function displayAddressInfo(_0x22f5ee, _0x36ad9c) {
-    const _0x227f8c = a39_0x363e4a;
-    if (_0x36ad9c === kakao[_0x227f8c(0x170)][_0x227f8c(0x1e6)][_0x227f8c(0x239)]["OK"]) {
-        var _0x2255e9 = document[_0x227f8c(0x182)](".road-address"),
-            _0x511fca = document[_0x227f8c(0x182)](".jibun-address"),
-            _0xcdf6b = _0x22f5ee[0x0][_0x227f8c(0x1a4)] ? _0x22f5ee[0x0][_0x227f8c(0x1a4)][_0x227f8c(0x1f9)] : "",
-            _0x513b15 = _0x22f5ee[0x0][_0x227f8c(0x1fa)][_0x227f8c(0x1f9)];
-        !_0x22f5ee[0x0][_0x227f8c(0x1a4)]
-            ? _0x2255e9[_0x227f8c(0x278)](function (_0x5fb631) {
-                  const _0x578a33 = _0x227f8c;
-                  _0x5fb631[_0x578a33(0x172)][_0x578a33(0x1d8)] = _0x578a33(0x1a5);
-              })
-            : _0x2255e9[_0x227f8c(0x278)](function (_0x4b3d3d) {
-                  const _0x4788a9 = _0x227f8c;
-                  _0x4b3d3d[_0x4788a9(0x172)][_0x4788a9(0x1d8)] = _0x4788a9(0x2c7);
-              }),
-            _0x2255e9["forEach"](function (_0x534aab) {
-                const _0x424581 = _0x227f8c;
-                (_0x534aab[_0x424581(0x193)] = _0xcdf6b), _0x534aab[_0x424581(0x2b8)] === _0x424581(0x17f) && (_0x534aab[_0x424581(0x1dc)] = _0xcdf6b);
-            }),
-            _0x511fca[_0x227f8c(0x278)](function (_0x4452a4) {
-                const _0xd87d5a = _0x227f8c;
-                (_0x4452a4[_0xd87d5a(0x193)] = _0x513b15), _0x4452a4[_0xd87d5a(0x2b8)] === "INPUT" && (_0x4452a4["value"] = _0x513b15);
-            }),
-            recentVisit(_0x513b15);
+
+/**
+ * 지도 클릭 시 건물과 토지 정보를 동시에 가져오는 함수
+ */
+async function handleMapClick(coords) {
+    if (isLoading) return; // 이전 작업이 완료되지 않았으면 새로운 작업을 시작하지 않음
+
+    try {
+        isLoading = true; // 작업 시작 플래그 설정
+        clearAllPolygons(); // 기존 폴리곤을 모두 지움
+        let returnBuildingPolygons = [];
+        let returnLandPolygons = [];
+
+        // 폴리곤 정보 가져오기
+        const polygons = await getLandBuildingPolygon(coords);
+        const { buildingPolygon, buildingPolygon2, landPolygon } = polygons;
+
+        // 건물 정보와 토지 정보를 동시에 가져옴
+        [returnBuildingPolygons, returnLandPolygons] = await Promise.all([
+            getBuilindInfo({ buildingPolygon, buildingPolygon2 }), // 건물 정보 가져오기
+            getLandInfo(landPolygon), // 토지 정보 가져오기
+        ]);
+
+        // 두 작업이 완료된 후 폴리곤을 한 번에 지도에 추가
+        // addPolygonsToMap(returnBuildingPolygons, returnLandPolygons);
+        addPolygonsToMap(buildingPolygons, landPolygons);
+    } catch (error) {
+        console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
+    } finally {
+        isLoading = false; // 작업 완료 플래그 해제
     }
 }
-function addMarker(_0x250ce8, _0x36a610, _0xf15b02) {
-    const _0x4b5baf = a39_0x363e4a;
-    var _0x2a77a5 = _0x4b5baf(0x1b4),
-        _0x13393b = new kakao[_0x4b5baf(0x170)][_0x4b5baf(0x1bc)](0x24, 0x25),
-        _0x2d7ff7 = { spriteSize: new kakao["maps"]["Size"](0x24, 0x2b3), spriteOrigin: new kakao[_0x4b5baf(0x170)]["Point"](0x0, _0x36a610 * 0x2e + 0xa), offset: new kakao[_0x4b5baf(0x170)][_0x4b5baf(0x168)](0xd, 0x25) },
-        _0x469bf2 = new kakao["maps"][_0x4b5baf(0x1c1)](_0x2a77a5, _0x13393b, _0x2d7ff7),
-        _0x575c73 = new kakao["maps"][_0x4b5baf(0x1db)]({ position: _0x250ce8, image: _0x469bf2 });
-    return markers[_0x4b5baf(0x200)](_0x575c73), _0x575c73;
-}
-function removeMarker(_0x432a20) {
-    const _0x1c12f0 = a39_0x363e4a;
-    for (var _0x5b0c6c = 0x0; _0x5b0c6c < _0x432a20[_0x1c12f0(0x2a9)]; _0x5b0c6c++) {
-        _0x432a20[_0x5b0c6c][_0x1c12f0(0x1c4)](null);
+
+/**
+ * 건물 폴리곤과 토지 폴리곤을 지도에 동시에 추가하는 함수
+ * @param {Array} buildingPolygonPaths - 건물 폴리곤 경로 배열
+ * @param {Array} landPolygonPaths - 토지 폴리곤 경로 배열
+ */
+function addPolygonsToMap(buildingPolygonPaths = [], landPolygonPaths = []) {
+    // 건물 폴리곤 추가
+    if (buildingPolygonPaths.length > 0) {
+        buildingPolygonPaths.forEach((polygon) => polygon.setMap(map));
     }
-    _0x432a20 = [];
-}
-function displayPagination(_0x46983a) {
-    const _0x48b3ae = a39_0x363e4a;
-    var _0x522054 = document[_0x48b3ae(0x1c3)](_0x48b3ae(0x25f)),
-        _0x1cdba9 = document[_0x48b3ae(0x185)](),
-        _0x1c6bd6;
-    while (_0x522054[_0x48b3ae(0x1d1)]()) {
-        _0x522054["removeChild"](_0x522054[_0x48b3ae(0x238)]);
-    }
-    for (_0x1c6bd6 = 0x1; _0x1c6bd6 <= _0x46983a[_0x48b3ae(0x227)]; _0x1c6bd6++) {
-        var _0x4c9ce9 = document[_0x48b3ae(0x241)]("a");
-        (_0x4c9ce9[_0x48b3ae(0x220)] = "#"),
-            (_0x4c9ce9["innerHTML"] = _0x1c6bd6),
-            _0x1c6bd6 === _0x46983a["current"]
-                ? (_0x4c9ce9[_0x48b3ae(0x250)] = "on")
-                : (_0x4c9ce9[_0x48b3ae(0x179)] = (function (_0x3d023e) {
-                      return function () {
-                          const _0x3f069a = a39_0x57f5;
-                          _0x46983a[_0x3f069a(0x28b)](_0x3d023e);
-                      };
-                  })(_0x1c6bd6)),
-            _0x1cdba9["appendChild"](_0x4c9ce9);
-    }
-    _0x522054[_0x48b3ae(0x1d9)](_0x1cdba9);
-}
-function displayInfowindow(_0x2593ec, _0xe9cd21) {
-    const _0x2a2ad5 = a39_0x363e4a;
-    var _0x37cccc = _0x2a2ad5(0x2b4) + _0xe9cd21 + _0x2a2ad5(0x17e);
-    infowindow[_0x2a2ad5(0x177)](_0x37cccc), infowindow["open"](map, _0x2593ec);
-}
-function removeAllChildNods(_0x547a25) {
-    const _0x2cf9fd = a39_0x363e4a;
-    while (_0x547a25[_0x2cf9fd(0x1d1)]()) {
-        _0x547a25[_0x2cf9fd(0x2a6)](_0x547a25[_0x2cf9fd(0x238)]);
+
+    // 토지 폴리곤을 map과 miniMap 모두에 추가
+    if (landPolygonPaths.length > 0) {
+        // 메인 지도에 토지 폴리곤 추가
+        landPolygonPaths.forEach((polygon) => polygon.setMap(map));
+        // 미니 지도에 토지 폴리곤 추가
+        landPolygonsMiniMap.forEach((polygon) => polygon.setMap(miniMap));
     }
 }
-function areValidCoordinatesInKorea(_0x31f58a, _0x3f6b20) {
-    const _0xc43b3 = isValidCoordinate(_0x31f58a) && _0x31f58a >= 0x21 && _0x31f58a <= 0x2b,
-        _0x3547a4 = isValidCoordinate(_0x3f6b20) && _0x3f6b20 >= 0x7c && _0x3f6b20 <= 0x84;
-    return _0xc43b3 && _0x3547a4;
+
+/**
+ * 모든 폴리곤을 제거하는 함수 (싱글 모드에서 호출)
+ */
+function clearAllPolygons() {
+    // 합필분석 모드일 때 제거 중단
+    if (isMultiSelectMode) return;
+
+    // 모든 건물 폴리곤과 지적도 폴리곤을 지도에서 제거
+    buildingPolygons.forEach((polygon) => polygon.setMap(null));
+    landPolygons.forEach((polygon) => polygon.setMap(null));
+    landPolygonsMiniMap.forEach((polygon) => polygon.setMap(null));
+    analysisPolygonArray.forEach((polygon) => polygon.setMap(null));
+
+    // 폴리곤 배열 초기화
+    buildingPolygons = [];
+    landPolygons = [];
+    landPolygonsMiniMap = [];
+    analysisPolygonArray = [];
 }
-function isValidCoordinate(_0x27056d) {
-    return _0x27056d !== null && _0x27056d !== undefined && _0x27056d !== "" && !isNaN(_0x27056d);
-}
-async function updateURL(_0x25703d) {
-    const _0x418740 = a39_0x363e4a,
-        _0x791d4a = new URL(window["location"][_0x418740(0x220)]),
-        _0x57e17e = new URLSearchParams(_0x791d4a["search"]);
-    for (const [_0x736515, _0x3cbfb5] of Object[_0x418740(0x289)](_0x25703d)) {
-        _0x57e17e[_0x418740(0x29b)](_0x736515, _0x3cbfb5), setCookie(_0x736515, _0x3cbfb5);
+
+/**
+ * 카카오맵 적용 함수
+ */
+async function initializeMap() {
+    let zoomLevel = getCookie("curZoom") || 5;
+    if (zoomLevel > 5) zoomLevel = 5;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let lat = urlParams.get("curLat");
+    let lng = urlParams.get("curLng");
+
+    // 유효한 중심 좌표가 없는 경우 기본 좌표로 설정.
+    if (!areValidCoordinatesInKorea(parseFloat(lat), parseFloat(lng))) {
+        lat = "37.199537203472"; // 기본 좌표 (화성시청)
+        lng = "126.831477350333";
     }
-    (_0x791d4a[_0x418740(0x28c)] = _0x57e17e[_0x418740(0x2b9)]()), window[_0x418740(0x20c)][_0x418740(0x2a3)]({}, "", _0x791d4a);
+
+    setCookie("curLat", lat, 1);
+    setCookie("curLng", lng, 1);
+    console.log(lat, ", ", lng);
+
+    const kakaoCoords = new kakao.maps.LatLng(lat, lng);
+    var mapOption = {
+        center: kakaoCoords, // 지도의 중심좌표
+        level: zoomLevel, // 지도의 확대 레벨,
+        minLevel: 0,
+        maxLevel: 13,
+        disableDoubleClickZoom: true,
+    };
+
+    map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+    infowindow = new kakao.maps.InfoWindow({ zIndex: 1 }); // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+
+    // 마커 클러스터러를 생성합니다
+    clusterer = new kakao.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+        minLevel: 5, // 클러스터 할 최소 지도 레벨. 지정한 숫자에 해당하는 레벨 미만에서는 클러스터링 하지 않는다 (default : 0)
+        gridSize: 60, // Number : 클러스터의 격자 크기. 화면 픽셀 단위이며 해당 격자 영역 안에 마커가 포함되면 클러스터에 포함시킨다 (default : 60)
+        minClusterSize: 1, //  Number : 클러스터링 할 최소 마커 수 (default: 2)
+        styles: [
+            {
+                width: "50px",
+                height: "50px",
+                backgroundColor: "#f48356",
+                color: "#fff",
+                fontSize: "14px",
+                textAlign: "center",
+                lineHeight: "50px", // lineHeight를 height와 동일하게 설정하여 텍스트를 수직 중앙에 위치시킵니다
+                borderRadius: "50%", // 원형으로 만들기 위해 border-radius를 50%로 설정합니다
+            },
+            {
+                width: "60px",
+                height: "60px",
+                backgroundColor: "#f48356",
+                color: "#fff",
+                fontSize: "16px",
+                textAlign: "center",
+                lineHeight: "60px", // lineHeight를 height와 동일하게 설정하여 텍스트를 수직 중앙에 위치시킵니다
+                borderRadius: "50%", // 원형으로 만들기 위해 border-radius를 50%로 설정합니다
+            },
+            {
+                width: "70px",
+                height: "70px",
+                backgroundColor: "#f48356",
+                color: "#fff",
+                fontSize: "18px",
+                textAlign: "center",
+                lineHeight: "70px", // lineHeight를 height와 동일하게 설정하여 텍스트를 수직 중앙에 위치시킵니다
+                borderRadius: "50%", // 원형으로 만들기 위해 border-radius를 50%로 설정합니다
+            },
+            {
+                width: "80px",
+                height: "80px",
+                backgroundColor: "#f48356",
+                color: "#fff",
+                fontSize: "20px",
+                textAlign: "center",
+                lineHeight: "80px", // lineHeight를 height와 동일하게 설정하여 텍스트를 수직 중앙에 위치시킵니다
+                borderRadius: "50%", // 원형으로 만들기 위해 border-radius를 50%로 설정합니다
+            },
+        ], // Array.< Object > : 클러스터의 스타일. 여러개를 선언하면 calculator 로 구분된 사이즈 구간마다 서로 다른 스타일을 적용시킬 수 있다
+        calculator: [1, 10, 30, 50], // Array.< Number > | Function : 클러스터 크기를 구분하는 값을 가진 배열 또는 구분값 생성함수 (default : [10, 100, 1000, 10000])
+        disableClickZoom: false, // Boolean : 클러스터 클릭 시 지도 확대 여부. true로 설정하면 클러스터 클릭 시 확대 되지 않는다 (default: false)
+        clickable: true, // Boolean : 클러스터 클릭 가능 여부 지정 옵션. false일 경우 클러스터의 clusterclick, clusterdblclick, clusterrightclick 이벤트가 발생하지 않으며, 커서가 변경되지 않는다. (default: true)
+        hoverable: true, // Boolean : 클러스터에 마우스 over/out 가능 여부 지정 옵션. false일 경우 클러스터의 clusterover, clusterout 이벤트가 발생하지 않는다. (default: true)
+    });
+
+    // 툴박스
+    toolbox();
+
+    // 직선 거리 계산
+    lineDrawer = createLineDrawer(map);
+    // 원 반경 계산
+    circleDrawer = createCircleDrawer(map);
+    // 다각형 면적 계산
+    polygonDrawer = createPolygonDrawer(map);
+
+    // 법정동 상세 주소 정보를 요청
+    searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            const addressData = result[0].address;
+            // 토지 실거래가 조회 및 바인딩
+            realPriceDetailLand("land", addressData);
+        }
+        displayAddressInfo(result, status);
+    });
+
+    let coords = { lat: lat, lng: lng };
+    // 건물 및 토지 정보를 동시에 가져오기
+    handleMapClick(coords);
+    // 주변 시설 정보 가져오기
+    searchArroundPlaces(coords);
+
+    // 텍스트 모듈과 selectOverlay 함수 결합
+    textModuleControl = addTextToMap(map); // 지도에 텍스트 모듈을 연결
+
+    initRoadView();
+
+    // geocoder.coord2RegionCode(lng, lat, function (result, status) {
+    //     if (status === kakao.maps.services.Status.OK) {
+    //         let sggCd = result[0].code.substring(0, 7);
+    //         // if (level <= "3") {
+    //         // } else if (level == "4") {
+    //         //     sggCd = result[0].code.substring(0, 8);
+    //         // } else if (level == "5") {
+    //         //     sggCd = result[0].code.substring(0, 8);
+    //         // } else if (level == "6") {
+    //         //     sggCd = result[0].code.substring(0, 7);
+    //         // } else if (level > "6" && level < "9") {
+    //         //     sggCd = result[0].code.substring(0, 5);
+    //         // } else if (level >= "9") {
+    //         //     sggCd = result[0].code.substring(0, 2);
+    //         // }
+    //         realPriceApt(sggCd);
+    //     }
+    // });
+
+    return;
+
+    // =================================================================
+    // url에 좌표 값이 있을 때
+    // =================================================================
+    // 필요한 파라미터 및 쿠키를 한 번에 업데이트합니다
+
+    // 이동할 위도 경도 위치를 생성합니다
+    // var coords = new kakao.maps.LatLng(lat, lng);
+
+    // 법정동 상세 주소 정보를 요청
+    // searchDetailAddrFromCoords(coords, displayAddressInfo);
+
+    // =================================================================
+    // 폴리곤 테스트
+    // =================================================================
+
+    const polygonArray = [
+        [
+            [127.02412746223159, 37.492964592844103],
+            [127.024296745606037, 37.492610197048307],
+            [127.024559368948161, 37.492060265812839],
+            [127.024796675907965, 37.491563407841404],
+            [127.023653828601269, 37.49122007613731],
+            [127.023066399690279, 37.492788195154318],
+            [127.02406677745752, 37.493091555328974],
+            [127.02412746223159, 37.492964592844103],
+        ],
+    ];
+
+    const polygonArray2 = [
+        [
+            [126.995564847628458, 37.507935286584306],
+            [126.998192724630087, 37.509092369716591],
+            [126.998204352300363, 37.509075611490665],
+            [126.998699496207223, 37.508361944214123],
+            [126.999080540455438, 37.508529123773769],
+            [126.999170631602396, 37.508345772596314],
+            [126.999257148078868, 37.508170295995015],
+            [126.999442192037492, 37.507785131917409],
+            [127.000093350179142, 37.506337039937655],
+            [127.000424670927558, 37.505604811458909],
+            [127.000560560724139, 37.505326602472728],
+            [127.000634075261289, 37.505186434780121],
+            [127.000543363013136, 37.504995134158023],
+            [127.000340729426028, 37.504933864444205],
+            [127.000129774284858, 37.505376567549412],
+            [126.998647046850522, 37.504928168159054],
+            [126.998611350800672, 37.505003148346908],
+            [126.997771657681966, 37.504749187404904],
+            [126.995564847628458, 37.507935286584306],
+        ],
+    ];
+
+    const polygonArray3 = [
+        [
+            [127.00035132738928, 37.500507567005045],
+            [127.00050558776078, 37.50003751739384],
+            [127.00085706838594, 37.49995138439665],
+            [127.00112474796789, 37.500182581866824],
+            [127.00100136652969, 37.5003808912112],
+            [127.00105269762446, 37.50040171350381],
+            [127.00110914067761, 37.500368818249264],
+            [127.00130308938013, 37.50015032656872],
+            [127.00142307719898, 37.4997774934347],
+            [127.00094132202281, 37.49961134789164],
+            [127.00091893065799, 37.49960098629407],
+            [127.00084791103984, 37.49963351197094],
+            [127.00080041359227, 37.49967793093419],
+            [127.00081059074172, 37.49976190408399],
+            [127.00032170542167, 37.50003841667617],
+            [127.00022851991514, 37.500059769367525],
+            [127.00017525480955, 37.50007562635287],
+            [127.00012606114362, 37.50007724758192],
+            [127.00004588198078, 37.500035890768366],
+            [126.99998571893798, 37.50002724041613],
+            [126.9999707894819, 37.500111753904534],
+            [126.99993075556385, 37.5001333773438],
+            [126.99991435780156, 37.500127340431014],
+            [126.99988832494404, 37.50011783453838],
+            [126.99987200512119, 37.50016787578231],
+            [126.9998695834662, 37.50023852305899],
+            [126.9999007149991, 37.50032608254421],
+            [126.99985034357573, 37.50039340446788],
+            [127.00011282251602, 37.500463865975874],
+            [127.00035132738928, 37.500507567005045],
+        ],
+    ];
+
+    const polygonArray4 = [
+        [
+            [127.0009667570799, 37.50094455581656],
+            [127.00122187670034, 37.50104655878059],
+            [127.001402154345, 37.50076697021016],
+            [127.00154621954134, 37.50082402149551],
+            [127.0020532145192, 37.50102478980221],
+            [127.0021432105684, 37.50088467506445],
+            [127.00127300648758, 37.50053162916422],
+            [127.00121883656352, 37.50054442322143],
+            [127.0009667570799, 37.50094455581656],
+        ],
+    ];
+
+    drawPolygon(polygonArray4);
+    const testCoords = getPolygonCenter(polygonArray4);
+    const testCoords2 = getPolygonCentroid(polygonArray4);
+
+    const testLng = 126.99556484762846;
+    const testLat = 37.504749187404904;
+    const testLng2 = 127.02306639969028;
+    const testLat2 = 37.49122007613731;
+
+    // 이동할 위도 경도 위치를 생성합니다
+    var testCoordsKakao = new kakao.maps.LatLng(testCoords[1], testCoords[0]);
+
+    // 법정동 상세 주소 정보를 요청
+    searchDetailAddrFromCoords(testCoordsKakao, displayAddressInfo);
+
+    // // 이동된 중심에 마커를 생성하고 지도에 표시한다.
+    // const marker1 = new kakao.maps.Marker({
+    //     map: map,
+    //     position: new kakao.maps.LatLng(testCoords[1], testCoords[0]),
+    // });
+
+    // 이동된 중심에 마커를 생성하고 지도에 표시한다.
+    const marker2 = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(testCoords2[1], testCoords2[0]),
+    });
+
+    // 클릭된 마커
+    markers.forEach((marker) => marker.setMap(null)); // 기존 마커를 모두 제거한다.
+    markers.push(marker); // 새로운 마커를 마커 배열에 추가한다.
+
+    // geocoder.coord2RegionCode(wtmX, wtmY, callback, {
+    //     input_coord: kakao.maps.services.Coords.TM,
+    //     output_coord: kakao.maps.services.Coords.WGS84,
+    // });
+
+    // // WTM 좌표를 WGS84 좌표계의 좌표로 변환합니다
+    // geocoder.transCoord(wtmX, wtmY, transCoordCB, {
+    //     input_coord: kakao.maps.services.Coords.TM, // 변환을 위해 입력한 좌표계 입니다
+    //     output_coord: kakao.maps.services.Coords.WGS84, // 변환 결과로 받을 좌표계 입니다
+    // });
+
+    // updateURL({
+    //     curLat: lat,
+    //     curLng: lng,
+    // });
+
+    // URL에서 좌표 값이 있을 경우 지도 중심 설정
+    // handleUrlChange();
+    return;
+
+    // URL에서 좌표 및 주소를 가져와 지도를 설정합니다.
+    const url = new URL(window.location.href);
+    const addressText = url.searchParams.get("address");
+    const latText = url.searchParams.get("lat");
+    const lngText = url.searchParams.get("lng");
+
+    // URL에서 좌표 쿼리 파라미터가 있다면 지도 중심 좌표로 설정한다.
+    if (latText && lngText) {
+        lat = latText;
+        lng = lngText;
+
+        setCookie("curLat", lat);
+        setCookie("curLng", lng);
+
+        map.setCenter(new kakao.maps.LatLng(lat, lng));
+    }
+
+    // // 이동된 중심에 마커를 생성하고 지도에 표시한다.
+    // const marker = new kakao.maps.Marker({
+    //     map: map,
+    //     position: new kakao.maps.LatLng(lat, lng),
+    // });
+
+    // // 클릭된 마커
+    // markers.forEach((marker) => marker.setMap(null)); // 기존 마커를 모두 제거한다.
+    // markers.push(marker); // 새로운 마커를 마커 배열에 추가한다.
+
+    return;
+    try {
+        // 지도 중심 좌표 업데이트
+        const addressInfo = await updateAddressInfo();
+
+        // 건물, 토지 정보 업데이트
+        buildingDetail(addressInfo);
+
+        // 정보탭 랜더링
+        await renderInformation(1, $("#mapSearchInput").val());
+
+        // 무한 스크롤
+        infiniteScroll();
+    } catch (error) {
+        console.error("Error updating address information:", error);
+    }
 }
-function handleUrlChange() {
-    const _0x166e3c = a39_0x363e4a,
-        _0x2db574 = new URLSearchParams(window[_0x166e3c(0x22a)][_0x166e3c(0x28c)]),
-        _0x521fbb = parseFloat(_0x2db574[_0x166e3c(0x27f)](_0x166e3c(0x22b))),
-        _0x5d2533 = parseFloat(_0x2db574["get"]("curLng"));
-    if (!_0x521fbb || !_0x5d2533) return;
-    const _0x52ecbc = new kakao[_0x166e3c(0x170)][_0x166e3c(0x16c)](_0x521fbb, _0x5d2533),
-        _0x556082 = { lat: _0x521fbb, lng: _0x5d2533 };
-    map[_0x166e3c(0x1e5)](_0x52ecbc),
-        searchDetailAddrFromCoords(_0x52ecbc, function (_0xd6bdbb, _0x3bd8f9) {
-            const _0x5cb7f3 = _0x166e3c;
-            _0x3bd8f9 === kakao[_0x5cb7f3(0x170)]["services"][_0x5cb7f3(0x239)]["OK"] && handleMapClick(_0x556082), displayAddressInfo(_0xd6bdbb, _0x3bd8f9);
+
+/**
+ * 지도 중심 좌표의 주소 정보를 업데이트하는 함수
+ */
+async function updateAddressInfo() {
+    return new Promise(async (resolve, reject) => {
+        setCookie("beforeKeyword", getCookie("afterKeyword"));
+
+        const center = map.getCenter();
+        const lat = center.getLat();
+        const lng = center.getLng();
+        setCookie("curLat", lat, 1);
+        setCookie("curLng", lng, 1);
+
+        return;
+        try {
+            const bjdAddressInfo = await searchDetailAddrFromCoords(center);
+            const hjdAddressInfo = await searchAddrFromCoords(center);
+
+            if (bjdAddressInfo && bjdAddressInfo.length > 0) {
+                // 지번 주소
+                const bjdAddressName = bjdAddressInfo[0].address.address_name;
+
+                // 법정동 코드 (리 까지)
+                const hjdResult = hjdAddressInfo.filter((item) => item.region_type === "B");
+                const { code: bjdCode } = hjdResult[0];
+
+                // 행정동 주소 (읍면동 까지)
+                const hjdResult2 = hjdAddressInfo.filter((item) => item.region_type === "H");
+                const { address_name: hjdAddressName2 } = hjdResult2[0];
+
+                setCookie("afterKeyword", hjdAddressName2);
+                $("#mapSearchInput").val(hjdAddressName2);
+
+                // // 건물, 토지 정보 업데이트
+                // buildingDetail({ bjdCd: bjdCode, address_first: bjdAddressName });
+
+                resolve({ bjdCd: bjdCode, address_first: bjdAddressName });
+            } else {
+                reject("Failed to get address information");
+            }
+        } catch (error) {
+            reject("Failed to get address information");
+        }
+    });
+}
+
+/**
+ * 좌표를 이용해 행정동 주소 정보를 요청하는 함수
+ *
+ * @param {kakao.maps.LatLng} coords - 검색할 위치의 좌표 객체 (위도와 경도 포함)
+ * @param {function} callback - 주소 정보를 반환받을 콜백 함수. 요청 결과와 상태를 인자로 받습니다.
+ */
+function searchAddrFromCoords(coords, callback) {
+    geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+}
+
+/**
+ * 좌표를 이용해 법정동 상세 주소 정보를 요청하는 함수
+ *
+ * @param {kakao.maps.LatLng} coords - 검색할 위치의 좌표 객체 (위도와 경도 포함)
+ * @param {function} callback - 상세 주소 정보를 반환받을 콜백 함수. 요청 결과와 상태를 인자로 받습니다.
+ */
+function searchDetailAddrFromCoords(coords, callback) {
+    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+}
+
+/**
+ * 지도 좌측상단에 지도 중심좌표에 대한 주소정보를 표출하는 함수입니다
+ * @param {*} result
+ * @param {*} status
+ */
+function displayAddressInfo(result, status) {
+    if (status === kakao.maps.services.Status.OK) {
+        var roadDivs = document.querySelectorAll(".road-address");
+        var jibunDivs = document.querySelectorAll(".jibun-address");
+
+        var roadAddress = result[0].road_address ? result[0].road_address.address_name : "";
+        var jibunAddress = result[0].address.address_name;
+
+        // 도로명 주소가 없으면 도로명 주소 숨기기
+        if (!result[0].road_address) {
+            roadDivs.forEach(function (roadDiv) {
+                roadDiv.style.display = "none";
+            });
+        } else {
+            roadDivs.forEach(function (roadDiv) {
+                roadDiv.style.display = "block";
+            });
+        }
+
+        // roadDivs의 각 요소에 대해 roadAddress 설정
+        roadDivs.forEach(function (roadDiv) {
+            roadDiv.innerHTML = roadAddress;
+            if (roadDiv.tagName === "INPUT") {
+                roadDiv.value = roadAddress; // input 요소의 value 속성에 값 설정
+            }
         });
+
+        // jibunDivs의 각 요소에 대해 jibunAddress 설정
+        jibunDivs.forEach(function (jibunDiv) {
+            jibunDiv.innerHTML = jibunAddress;
+            if (jibunDiv.tagName === "INPUT") {
+                jibunDiv.value = jibunAddress; // input 요소의 value 속성에 값 설정
+            }
+        });
+
+        recentVisit(jibunAddress); // 최근 방문
+    }
 }
-async function getLandBuildingPolygon(_0x2737e5) {
-    const _0x41a794 = a39_0x363e4a,
-        _0x3f2470 = "/front/back/realPrice/building_info.php",
-        _0x5ce1a3 = { geomFilter: _0x41a794(0x29f) + _0x2737e5["lng"] + "\x20" + _0x2737e5[_0x41a794(0x1fe)] + ")", geometry: !![], attribute: !![] },
-        _0x72f32d = await callApi("POST", _0x3f2470, _0x5ce1a3);
-    return _0x72f32d;
+
+/**
+ * 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+ * @param {*} position
+ * @param {*} idx
+ * @param {*} title
+ * @returns
+ */
+function addMarker(position, idx, title) {
+    var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png", // 마커 이미지 url, 스프라이트 이미지를 씁니다
+        imageSize = new kakao.maps.Size(36, 37), // 마커 이미지의 크기
+        imgOptions = {
+            spriteSize: new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+            spriteOrigin: new kakao.maps.Point(0, idx * 46 + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+            offset: new kakao.maps.Point(13, 37), // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+        },
+        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+        marker = new kakao.maps.Marker({
+            position: position, // 마커의 위치
+            image: markerImage,
+        });
+
+    // marker.setMap(map); // 지도 위에 마커를 표출합니다
+    markers.push(marker); // 배열에 생성된 마커를 추가합니다
+
+    return marker;
 }
-async function getBuilindInfo(_0x3b8000) {
-    const _0x4537aa = a39_0x363e4a;
-    let _0x511002 = [];
-    if (isMultiSelectMode) return _0x511002;
-    let _0xba154c = new Map();
-    function _0x59af41(_0x3273f8) {
-        const _0x40ab69 = a39_0x57f5,
-            _0x288f23 = _0x3273f8[_0x40ab69(0x1f2)];
-        _0x288f23 &&
-            _0x288f23[_0x40ab69(0x2a9)] > 0x0 &&
-            _0x288f23["forEach"](function (_0x2cdd41) {
-                const _0x17dd57 = _0x40ab69,
-                    _0x333cbd = _0x2cdd41["properties"]["gis_idntfc_no"];
-                if (!_0xba154c["has"](_0x333cbd)) {
-                    _0xba154c[_0x17dd57(0x29b)](_0x333cbd, _0x2cdd41);
-                    const _0x355df5 = _0x2cdd41[_0x17dd57(0x1c7)]["coordinates"][0x0][0x0],
-                        _0x76e3cd = _0x355df5[_0x17dd57(0x23c)]((_0x185201) => new kakao[_0x17dd57(0x170)][_0x17dd57(0x16c)](_0x185201[0x1], _0x185201[0x0])),
-                        _0x407dd7 = new kakao["maps"][_0x17dd57(0x22c)]({ path: _0x76e3cd, strokeWeight: 0x2, strokeColor: _0x17dd57(0x29c), strokeOpacity: 0x1, strokeStyle: _0x17dd57(0x267), fillColor: "#FFAAAA", fillOpacity: 0x0, zIndex: 0xa });
-                    _0x511002[_0x17dd57(0x200)](_0x407dd7);
+
+/**
+ * 지도 위에 표시되고 있는 마커를 모두 제거합니다
+ */
+function removeMarker(markerGroup) {
+    for (var i = 0; i < markerGroup.length; i++) {
+        markerGroup[i].setMap(null);
+    }
+    markerGroup = [];
+}
+
+/**
+ * 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
+ * @param {*} pagination
+ */
+function displayPagination(pagination) {
+    var paginationEl = document.getElementById("pagination"),
+        fragment = document.createDocumentFragment(),
+        i;
+
+    // 기존에 추가된 페이지번호를 삭제합니다
+    while (paginationEl.hasChildNodes()) {
+        paginationEl.removeChild(paginationEl.lastChild);
+    }
+
+    for (i = 1; i <= pagination.last; i++) {
+        var el = document.createElement("a");
+        el.href = "#";
+        el.innerHTML = i;
+
+        if (i === pagination.current) {
+            el.className = "on";
+        } else {
+            el.onclick = (function (i) {
+                return function () {
+                    pagination.gotoPage(i);
+                };
+            })(i);
+        }
+
+        fragment.appendChild(el);
+    }
+    paginationEl.appendChild(fragment);
+}
+
+/**
+ * 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
+ * 인포윈도우에 장소명을 표시합니다
+ * @param {*} marker
+ * @param {*} title
+ */
+function displayInfowindow(marker, title) {
+    var content = '<div style="padding:5px;z-index:1;">' + title + "</div>";
+
+    infowindow.setContent(content);
+    infowindow.open(map, marker);
+}
+
+/**
+ * 검색결과 목록의 자식 Element를 제거하는 함수입니다
+ * @param {*} el
+ */
+function removeAllChildNods(el) {
+    while (el.hasChildNodes()) {
+        el.removeChild(el.lastChild);
+    }
+}
+
+/**
+ * 좌표가 대한민국 내의 유효한 좌표인지 확인하는 함수
+ * @param {string|number} lat - 위도
+ * @param {string|number} lng - 경도
+ * @returns {boolean}
+ */
+function areValidCoordinatesInKorea(lat, lng) {
+    const isLatValid = isValidCoordinate(lat) && lat >= 33.0 && lat <= 43.0;
+    const isLngValid = isValidCoordinate(lng) && lng >= 124.0 && lng <= 132.0;
+    return isLatValid && isLngValid;
+}
+
+/**
+ * 좌표가 유효한지 확인하는 함수
+ * @param {*} value
+ * @returns
+ */
+function isValidCoordinate(value) {
+    return value !== null && value !== undefined && value !== "" && !isNaN(value);
+}
+
+/**
+ * url 파라미터 변경 함수
+ * @param {*} paramsToUpdate = object
+ */
+async function updateURL(paramsToUpdate) {
+    // 현재 URL을 가져옵니다
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    // 여러 파라미터를 업데이트합니다
+    for (const [key, value] of Object.entries(paramsToUpdate)) {
+        params.set(key, value);
+        setCookie(key, value); // 쿠키 업데이트
+    }
+
+    // 새로 수정된 query string을 URL에 반영합니다
+    url.search = params.toString();
+
+    // 변경된 URL을 브라우저 히스토리에 반영합니다
+    window.history.pushState({}, "", url); // URL을 변경하지만 페이지를 새로고침하지 않음
+}
+
+/**
+ * URL 변경 후 즉시 파라미터를 체크하고 좌표 변경하는 함수
+ */
+function handleUrlChange() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentLat = parseFloat(urlParams.get("curLat")); // 숫자로 변환
+    const currentLng = parseFloat(urlParams.get("curLng")); // 숫자로 변환
+    if (!currentLat || !currentLng) return;
+
+    const kakaoCoords = new kakao.maps.LatLng(currentLat, currentLng);
+    const coords = { lat: currentLat, lng: currentLng };
+
+    map.panTo(kakaoCoords);
+
+    // 주소 요청
+    searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            handleMapClick(coords); // 건물 및 토지 정보를 동시에 가져오기
+            // searchArroundPlaces(coords); // 주변 시설 정보 가져오기
+        }
+        displayAddressInfo(result, status); // 지도 주소 정보 바인딩
+    });
+
+    // // 좌표가 변경되었을 때만 지도 중심을 업데이트
+    // if (currentLat !== previousLat || currentLng !== previousLng) {
+    //     console.log(`Latitude changed to: ${currentLat} from ${previousLat}`);
+    //     console.log(`Longitude changed to: ${currentLng} from ${previousLng}`);
+
+    //     // 지도 중심을 새 좌표로 이동
+    //     const newCenter = new kakao.maps.LatLng(currentLat, currentLng);
+    //     map.setCenter(newCenter);
+
+    //     // 이전 값을 현재 값으로 업데이트
+    //     previousLat = currentLat;
+    //     previousLng = currentLng;
+    // }
+}
+
+async function getLandBuildingPolygon(coords) {
+    const url = "/front/back/realPrice/building_info.php";
+    const dataObj = {
+        geomFilter: `POINT(${coords.lng} ${coords.lat})`, // 좌표
+        geometry: true, // 폴리곤 정보를 포함
+        attribute: true, // 속성 정보를 포함
+    };
+    const result = await callApi("POST", url, dataObj);
+
+    return result;
+}
+
+/**
+ * 건축물정보 가져오는 함수
+ * @param {*} buildingInfos
+ */
+async function getBuilindInfo(buildingInfos) {
+    // returnPolygons 초기화
+    let returnPolygons = [];
+
+    // 합필분석 모드시 빈값 반환
+    if (isMultiSelectMode) return returnPolygons;
+
+    // 중복을 제거하기 위한 Map
+    let uniqueFeaturesMap = new Map();
+
+    // buildingPolygon과 buildingPolygon2의 features 처리 함수
+    function processPolygon(polygonData) {
+        const features = polygonData.features;
+
+        // features가 비어있지 않으면 처리
+        if (features && features.length > 0) {
+            features.forEach(function (feature) {
+                const gisIdntfcNo = feature.properties.gis_idntfc_no;
+
+                // 중복되지 않은 경우에만 처리
+                if (!uniqueFeaturesMap.has(gisIdntfcNo)) {
+                    uniqueFeaturesMap.set(gisIdntfcNo, feature);
+
+                    const coordinates = feature.geometry.coordinates[0][0];
+                    const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                    const polygon = new kakao.maps.Polygon({
+                        path: polygonPath,
+                        strokeWeight: 2,
+                        strokeColor: "#FF0000",
+                        strokeOpacity: 1,
+                        strokeStyle: "shortdot",
+                        fillColor: "#FFAAAA",
+                        fillOpacity: 0,
+                        zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
+                    });
+                    returnPolygons.push(polygon);
                 }
             });
+        }
     }
-    return _0x59af41(_0x3b8000[_0x4537aa(0x1de)]), _0x59af41(_0x3b8000[_0x4537aa(0x174)]), buildingPolygons[_0x4537aa(0x200)](..._0x511002), _0x511002;
+
+    // buildingPolygon 처리
+    processPolygon(buildingInfos.buildingPolygon);
+
+    // buildingPolygon2 처리
+    processPolygon(buildingInfos.buildingPolygon2);
+
+    // const features = result.features;
+
+    // features.forEach(function (feature) {
+    //     const coordinates = feature.geometry.coordinates[0][0];
+    //     const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+    //     const polygon = new kakao.maps.Polygon({
+    //         path: polygonPath,
+    //         strokeWeight: 2,
+    //         strokeColor: "#FF0000",
+    //         strokeOpacity: 1,
+    //         strokeStyle: "shortdot",
+    //         fillColor: "#FFAAAA",
+    //         fillOpacity: 0,
+    //         zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
+    //     });
+    //     returnPolygons.push(polygon);
+    // });
+
+    // // 성공적으로 데이터가 반환된 경우
+    // if (result.response.status && result.response.status === "OK") {
+    //     const features = result.response.result.featureCollection.features;
+
+    //     if (features.length > 50) return;
+
+    //     // returnPolygons 초기화
+    //     let returnPolygons = [];
+
+    //     // 받은 건물 정보를 바탕으로 returnPolygons에 실제 Polygon 객체를 저장
+    //     features.forEach(function (feature) {
+    //         const coordinates = feature.geometry.coordinates[0][0];
+    //         const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+    //         const polygon = new kakao.maps.Polygon({
+    //             path: polygonPath,
+    //             strokeWeight: 2,
+    //             strokeColor: "#FF0000",
+    //             strokeOpacity: 1,
+    //             strokeStyle: "shortdot",
+    //             fillColor: "#FFAAAA",
+    //             fillOpacity: 0,
+    //             zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
+    //         });
+    //         returnPolygons.push(polygon);
+    //     });
+
+    // 전역 변수 buildingPolygons returnPolygons의 값들을 추가
+    buildingPolygons.push(...returnPolygons);
+
+    return returnPolygons;
+
+    //     // polygonPaths.forEach(addBuildingPolygon);
+
+    //     // features.forEach(function (feature) {
+    //     //     const properties = feature.properties;
+    //     //     const coordinates = feature.geometry.coordinates[0][0];
+
+    //     //     // 좌표를 카카오 맵의 LatLng 객체로 변환
+    //     //     const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+
+    //     //     addBuildingPolygon(polygonPath);
+    //     // });
+
+    //     // return bbox;
+    // }
 }
-function drawBBoxOnMap(_0x2edcb2) {
-    const _0xf3918b = a39_0x363e4a,
-        _0x387a2a = _0x2edcb2[0x0],
-        _0x20c7bc = _0x2edcb2[0x1],
-        _0x383b90 = _0x2edcb2[0x2],
-        _0x3cb392 = _0x2edcb2[0x3],
-        _0x45675d = [new kakao["maps"][_0xf3918b(0x16c)](_0x20c7bc, _0x387a2a), new kakao["maps"][_0xf3918b(0x16c)](_0x3cb392, _0x387a2a), new kakao[_0xf3918b(0x170)]["LatLng"](_0x3cb392, _0x383b90), new kakao[_0xf3918b(0x170)][_0xf3918b(0x16c)](_0x20c7bc, _0x383b90)],
-        _0x1ddb4d = new kakao[_0xf3918b(0x170)][_0xf3918b(0x22c)]({ path: _0x45675d, strokeWeight: 0x1, strokeColor: _0xf3918b(0x29c), strokeOpacity: 0.8, strokeStyle: _0xf3918b(0x213), fillColor: _0xf3918b(0x187), fillOpacity: 0x0, zIndex: 0x1 });
-    _0x1ddb4d[_0xf3918b(0x1c4)](map);
+// bbox를 받아서 카카오맵에 폴리곤을 그리는 함수
+function drawBBoxOnMap(bbox) {
+    // bbox 배열은 [minLon, minLat, maxLon, maxLat] 형식일 것임
+    const minLon = bbox[0]; // 좌하단 경도
+    const minLat = bbox[1]; // 좌하단 위도
+    const maxLon = bbox[2]; // 우상단 경도
+    const maxLat = bbox[3]; // 우상단 위도
+
+    // 직사각형의 네 꼭짓점을 정의
+    const polygonPath = [
+        new kakao.maps.LatLng(minLat, minLon), // 좌하단
+        new kakao.maps.LatLng(maxLat, minLon), // 좌상단
+        new kakao.maps.LatLng(maxLat, maxLon), // 우상단
+        new kakao.maps.LatLng(minLat, maxLon), // 우하단
+    ];
+
+    // 카카오맵에 폴리곤을 그리기 위한 객체 생성
+    const polygon = new kakao.maps.Polygon({
+        path: polygonPath, // 폴리곤 경로 설정
+        strokeWeight: 1, // 선 두께
+        strokeColor: "#FF0000", // 선 색상
+        strokeOpacity: 0.8, // 선 불투명도
+        strokeStyle: "solid", // 선 스타일
+        fillColor: "#FFAAAA", // 채우기 색상
+        fillOpacity: 0, // 채우기 불투명도
+        zIndex: 1, // 폴리곤 우선순위
+    });
+
+    // 생성한 폴리곤을 지도에 표시
+    polygon.setMap(map);
 }
-async function getLandInfo(_0x959d29) {
-    const _0x543a02 = a39_0x363e4a;
-    if (_0x959d29[_0x543a02(0x1ae)][_0x543a02(0x2c5)] && _0x959d29[_0x543a02(0x1ae)][_0x543a02(0x2c5)] === "OK") {
-        const _0x12a71f = _0x959d29[_0x543a02(0x1ae)][_0x543a02(0x1d0)][_0x543a02(0x1f6)][_0x543a02(0x1f2)],
-            _0x1b2009 = _0x959d29[_0x543a02(0x1ae)]["result"][_0x543a02(0x1f6)]["bbox"],
-            _0x163f4d = proj4("EPSG:4326", _0x543a02(0x199), [_0x1b2009[0x0], _0x1b2009[0x1]]),
-            _0x30f4db = proj4(_0x543a02(0x1fb), _0x543a02(0x199), [_0x1b2009[0x2], _0x1b2009[0x3]]),
-            _0x2b77f7 = [_0x163f4d[0x0], _0x163f4d[0x1], _0x30f4db[0x0], _0x30f4db[0x1]];
-        let _0x50e99e = [],
-            _0x481200 = [],
-            _0x1b4ec8 = null,
-            _0x109eaa = _0x543a02(0x240),
-            _0x2aa939 = _0x543a02(0x29a);
-        isMultiSelectMode && ((_0x109eaa = $(_0x543a02(0x247))["val"]()), (_0x2aa939 = $(_0x543a02(0x247))["val"]()));
-        _0x12a71f[_0x543a02(0x278)](function (_0x3cf68f) {
-            const _0x2197d9 = _0x543a02,
-                _0x43dd66 = _0x3cf68f["geometry"][_0x2197d9(0x1ec)][0x0][0x0],
-                _0x5b7793 = _0x43dd66[_0x2197d9(0x23c)]((_0x2948ce) => new kakao[_0x2197d9(0x170)]["LatLng"](_0x2948ce[0x1], _0x2948ce[0x0])),
-                _0x2a5f8d = new kakao[_0x2197d9(0x170)][_0x2197d9(0x22c)]({ path: _0x5b7793, strokeWeight: 0x1, strokeColor: _0x109eaa, strokeOpacity: 0x1, strokeStyle: _0x2197d9(0x213), fillColor: _0x2aa939, fillOpacity: 0.5, zIndex: 0x6 }),
-                _0x35bbf2 = new kakao[_0x2197d9(0x170)]["Polygon"]({ path: _0x5b7793, strokeWeight: 0x1, strokeColor: _0x2197d9(0x240), strokeOpacity: 0x1, strokeStyle: "solid", fillColor: "#AAAAFF", fillOpacity: 0.5, zIndex: 0x5 });
-            (_0x1b4ec8 = turf[_0x2197d9(0x1cc)]([_0x43dd66])), _0x50e99e["push"](_0x2a5f8d), landPolygons[_0x2197d9(0x200)](_0x2a5f8d), landPolygonsMiniMap[_0x2197d9(0x200)](_0x35bbf2);
-            const _0x2de013 = new kakao["maps"][_0x2197d9(0x1cb)]();
-            _0x43dd66[_0x2197d9(0x278)]((_0x42ccd4) => {
-                const _0x4f104a = _0x2197d9,
-                    _0xcc0f6a = new kakao[_0x4f104a(0x170)]["LatLng"](_0x42ccd4[0x1], _0x42ccd4[0x0]);
-                _0x2de013[_0x4f104a(0x1a1)](_0xcc0f6a);
+
+/**
+ * 토지정보 가져오는 함수
+ * @param {*} coords
+ */
+async function getLandInfo(result) {
+    // 토지만 따로 가져오기
+    // async function getLandInfo(coords) {
+    // const geomFilter = `POINT(${coords.lng} ${coords.lat})`;
+    // const url = "/front/back/realPrice/land_info.php";
+    // const dataObj = {
+    //     geomFilter: geomFilter,
+    //     geometry: true, // 폴리곤 정보를 포함
+    //     attribute: true, // 속성 정보를 포함
+    // };
+    // const result = await callApi("POST", url, dataObj);
+
+    // 성공적으로 데이터가 반환된 경우
+    if (result.response.status && result.response.status === "OK") {
+        const features = result.response.result.featureCollection.features;
+        const bbox = result.response.result.featureCollection.bbox;
+        // drawBBoxOnMap(bbox);
+        // bbox 좌표 변환
+        // 좌하단 좌표와 우상단 좌표 각각 변환
+        const lowerLeft = proj4("EPSG:4326", "EPSG:5186", [bbox[0], bbox[1]]); // 좌하단 좌표 (lc1, lc2)
+        const upperRight = proj4("EPSG:4326", "EPSG:5186", [bbox[2], bbox[3]]); // 우상단 좌표 (uc1, uc2)
+
+        // 변환된 bbox 값 (하단좌표, 상단좌표 형식 유지)
+        const transformedBbox = [
+            lowerLeft[0],
+            lowerLeft[1], // 변환된 하단 좌표
+            upperRight[0],
+            upperRight[1], // 변환된 상단 좌표
+        ];
+
+        // console.log("Original BBox:", bbox);
+        // console.log("Transformed BBox:", transformedBbox);
+
+        // returnPolygons 초기화
+        let returnPolygons = [];
+        let turfLandPolygons = []; // Turf.js로 사용할 폴리곤 리스트
+        let geojsonPolygon = null; // Turf.js로 사용할 토지 폴리곤
+
+        let strokeColor = "#0000FF";
+        let fillColor = "#AAAAFF";
+
+        // 합필분석 모드일 때, 선택된 색으로 변경
+        if (isMultiSelectMode) {
+            strokeColor = $(".mo-land input[type=radio]:checked").val();
+            fillColor = $(".mo-land input[type=radio]:checked").val();
+        }
+
+        // 받은 지적도 정보를 바탕으로 returnPolygons에 실제 Polygon 객체를 저장
+        features.forEach(function (feature) {
+            const coordinates = feature.geometry.coordinates[0][0];
+            // const testCoords2 = getPolygonCentroid(coordinates);
+            // console.log(testCoords2);
+            // const centerCoords = new kakao.maps.LatLng(testCoords2[1], testCoords2[0]);
+
+            const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+            const polygon = new kakao.maps.Polygon({
+                path: polygonPath,
+                strokeWeight: 1,
+                strokeColor: strokeColor,
+                strokeOpacity: 1,
+                strokeStyle: "solid",
+                fillColor: fillColor,
+                fillOpacity: 0.5,
+                zIndex: 6, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
             });
-            const _0x6856c4 = getPolygonCentroid(_0x3cf68f[_0x2197d9(0x1c7)][_0x2197d9(0x1ec)][0x0][0x0]);
-            miniMap["setCenter"](new kakao["maps"][_0x2197d9(0x16c)](_0x6856c4[_0x2197d9(0x1fe)], _0x6856c4[_0x2197d9(0x25d)])), miniMap[_0x2197d9(0x21a)](_0x2de013);
+
+            const miniMapPolygon = new kakao.maps.Polygon({
+                path: polygonPath,
+                strokeWeight: 1,
+                strokeColor: "#0000FF",
+                strokeOpacity: 1,
+                strokeStyle: "solid",
+                fillColor: "#AAAAFF",
+                fillOpacity: 0.5,
+                zIndex: 5, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
+            });
+
+            geojsonPolygon = turf.polygon([coordinates]); // GeoJSON 형식으로 변환
+
+            returnPolygons.push(polygon);
+
+            // 전역 변수 landPolygons에 지적도 폴리곤 값들을 추가
+            landPolygons.push(polygon);
+            landPolygonsMiniMap.push(miniMapPolygon);
+
+            // =================================================
+            // 미니맵 관련 로직
+            // =================================================
+            // 폴리곤의 좌표 배열에서 LatLngBounds 생성
+            const bounds = new kakao.maps.LatLngBounds();
+
+            // 이중 배열을 풀어서 폴리곤의 모든 좌표를 bounds에 추가
+            coordinates.forEach((coord) => {
+                const latLng = new kakao.maps.LatLng(coord[1], coord[0]); // 좌표를 kakao.maps.LatLng 객체로 변환
+                bounds.extend(latLng); // LatLngBounds에 좌표를 추가하여 범위를 확장
+
+                // 최소/최대 경도 및 위도 계산
+                // if (coord[0] < minLon) minLon = coord[0];
+                // if (coord[1] < minLat) minLat = coord[1];
+                // if (coord[0] > maxLon) maxLon = coord[0];
+                // if (coord[1] > maxLat) maxLat = coord[1];
+            });
+
+            // 폴리곤의 중심 좌표 계산
+            const centerCoords = getPolygonCentroid(feature.geometry.coordinates[0][0]);
+            miniMap.setCenter(new kakao.maps.LatLng(centerCoords.lat, centerCoords.lng)); // 미니맵에 중심 좌표 설정
+            miniMap.setBounds(bounds); // 폴리곤이 표시될 수 있도록 지도 레벨을 자동 조정
         });
-        const _0xe9b036 = _0x12a71f[0x0][_0x543a02(0x284)]["pnu"];
-        return BuildingDetail(_0xe9b036), landDetail(_0xe9b036), getRequestHistory(_0xe9b036), !isMultiSelectMode && (landWFSArrays = []), landWFSArrays[_0x543a02(0x200)]({ pnu: _0xe9b036, bbox: _0x2b77f7, landGeoJson: _0x1b4ec8 }), _0x50e99e;
+
+        // bbox 생성
+        // const newBbox = [minLon, minLat, maxLon, maxLat];
+        // console.log("Calculated BBox:", newBbox);
+
+        const pnu = features[0].properties.pnu;
+        BuildingDetail(pnu); // 건축물대장조회
+        landDetail(pnu); // 토지특성속성조회
+        getRequestHistory(pnu); // 금융 신청일 가져오기
+
+        // 합필분석 모드가 아닐 때, 토지 폴리곤 초기화
+        if (!isMultiSelectMode) {
+            landWFSArrays = [];
+        }
+        // 분석탭을 위한 토지 폴리곤 저장
+        landWFSArrays.push({ pnu, bbox: transformedBbox, landGeoJson: geojsonPolygon });
+
+        return returnPolygons;
+
+        // features.forEach(function (feature) {
+        //     const properties = feature.properties;
+        //     const coordinates = feature.geometry.coordinates[0][0];
+
+        //     // 좌표를 카카오 맵의 LatLng 객체로 변환
+        //     const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+
+        //     addLandPolygon(polygonPath);
+        // });
+        // miniMap.setCenter(miniMapCoords); // 미니맵 위치 변경
     }
 }
-function addBuildingPolygon(_0x1e46af) {
-    const _0x41804a = a39_0x363e4a,
-        _0x416399 = new kakao[_0x41804a(0x170)]["Polygon"]({ path: _0x1e46af, strokeWeight: 0x2, strokeColor: _0x41804a(0x29c), strokeOpacity: 0x1, strokeStyle: _0x41804a(0x267), fillColor: "#FFAAAA", fillOpacity: 0x0, zIndex: 0xa });
-    _0x416399[_0x41804a(0x1c4)](map), buildingPolygons["push"](_0x416399);
+
+/**
+ * 건물 폴리곤을 추가하는 함수
+ * @param {Array} polygonPath
+ */
+function addBuildingPolygon(polygonPath) {
+    const polygon = new kakao.maps.Polygon({
+        path: polygonPath,
+        strokeWeight: 2,
+        strokeColor: "#FF0000",
+        strokeOpacity: 1,
+        strokeStyle: "shortdot",
+        fillColor: "#FFAAAA",
+        fillOpacity: 0,
+        zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
+    });
+
+    polygon.setMap(map);
+    buildingPolygons.push(polygon);
 }
-function addLandPolygon(_0x39822f) {
-    const _0x4ebe15 = a39_0x363e4a,
-        _0x1a8c10 = new kakao[_0x4ebe15(0x170)][_0x4ebe15(0x22c)]({ path: _0x39822f, strokeWeight: 0x1, strokeColor: "#0000FF", strokeOpacity: 0x1, strokeStyle: _0x4ebe15(0x213), fillColor: "#AAAAFF", fillOpacity: 0.5, zIndex: 0x5 });
-    _0x1a8c10[_0x4ebe15(0x1c4)](map), landPolygons[_0x4ebe15(0x200)](_0x1a8c10);
+
+/**
+ * 토지 폴리곤을 추가하는 함수
+ * @param {Array} polygonPath
+ */
+function addLandPolygon(polygonPath) {
+    const polygon = new kakao.maps.Polygon({
+        path: polygonPath,
+        strokeWeight: 1,
+        strokeColor: "#0000FF",
+        strokeOpacity: 1,
+        strokeStyle: "solid",
+        fillColor: "#AAAAFF",
+        fillOpacity: 0.5,
+        zIndex: 5, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
+    });
+
+    polygon.setMap(map);
+    landPolygons.push(polygon);
 }
-function addPolygon(_0x2e9a29, _0x4a729d) {
-    const _0x52be4d = a39_0x363e4a;
-    let _0x13596c, _0x3ec0e5, _0x310c0c;
-    const _0x455975 = new kakao[_0x52be4d(0x170)]["Polygon"]({ path: _0x2e9a29, strokeWeight: 0x3, strokeColor: _0x13596c, strokeOpacity: 0x1, strokeStyle: _0x310c0c, fillColor: _0x3ec0e5, fillOpacity: 0.5 });
-    _0x455975[_0x52be4d(0x1c4)](map), selectedPolygons["push"](_0x455975);
+
+/**
+ * 다중 선택 모드에서 새로 선택된 영역을 추가
+ * 사용 X
+ * @param {*} polygonPath
+ * @param {*} type
+ */
+function addPolygon(polygonPath, type) {
+    let strokeColor, fillColor, strokeStyle;
+
+    const polygon = new kakao.maps.Polygon({
+        path: polygonPath,
+        strokeWeight: 3,
+        strokeColor: strokeColor,
+        strokeOpacity: 1,
+        strokeStyle: strokeStyle,
+        fillColor: fillColor,
+        fillOpacity: 0.5,
+    });
+
+    polygon.setMap(map);
+    selectedPolygons.push(polygon);
 }
-function addPolyline(_0x4cba30) {
-    const _0x5ccf59 = a39_0x363e4a,
-        _0x4b673b = new kakao[_0x5ccf59(0x170)][_0x5ccf59(0x242)]({ path: _0x4cba30, strokeWeight: 0x5, strokeColor: _0x5ccf59(0x29c), strokeOpacity: 0.7, strokeStyle: _0x5ccf59(0x213) });
-    _0x4b673b[_0x5ccf59(0x1c4)](map);
+
+/**
+ * 폴리라인 그리는 함수
+ * @param {*} path
+ */
+function addPolyline(path) {
+    const polyline = new kakao.maps.Polyline({
+        path: path,
+        strokeWeight: 5,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.7,
+        strokeStyle: "solid",
+    });
+
+    polyline.setMap(map);
 }
-async function getRealPrice(_0xbee8a4, _0x9cbf27) {
-    const _0x3a409e = a39_0x363e4a;
-    if (_0x9cbf27 === kakao["maps"]["services"]["Status"]["OK"]) {
-        const _0x4da6d8 = "/front/back/realPrice/test.php",
-            _0x2ecbda = _0x3a409e(0x20d);
-        for (var _0x195f37 = 0x0; _0x195f37 < _0xbee8a4[_0x3a409e(0x2a9)]; _0x195f37++) {
-            if (_0xbee8a4[_0x195f37][_0x3a409e(0x194)] === "B") {
-                let _0x9723ff = _0xe8aa19[_0x195f37][_0x3a409e(0x2b3)];
-                _0x9723ff = _0x9723ff[_0x3a409e(0x2aa)](0x0, 0x5);
-                const _0xe8aa19 = await callApi(_0x3a409e(0x167), _0x4da6d8, { lawd_cd: _0x9723ff, deal_ymd: _0x2ecbda });
+
+/**
+ * 실거래가 가져오는 함수
+ * @param {*} result
+ * @param {*} status
+ */
+async function getRealPrice(result, status) {
+    if (status === kakao.maps.services.Status.OK) {
+        const url = "/front/back/realPrice/test.php";
+        const deal_ymd = "20240701";
+
+        for (var i = 0; i < result.length; i++) {
+            // // 행정동의 region_type 값은 'H' 이므로
+            // if (result[i].region_type === "H") {
+            //     let lawd_cd = result[i].code;
+            //     lawd_cd = lawd_cd.substring(0, 5);
+            //     const result = await callApi("POST", url, { lawd_cd, deal_ymd });
+            //     break;
+            // }
+
+            // 행정동의 region_type 값은 'H' 이므로
+            if (result[i].region_type === "B") {
+                let lawd_cd = result[i].code;
+                lawd_cd = lawd_cd.substring(0, 5);
+                const result = await callApi("POST", url, { lawd_cd, deal_ymd });
                 break;
             }
         }
     }
 }
-async function showRealPrice(_0x485e5c, _0x3f12c7) {
-    const _0x6451c3 = a39_0x363e4a,
-        _0x4460f6 = _0x6451c3(0x21b),
-        _0x21124e = { geomFilter: _0x485e5c, geometry: ![], attribute: !![], buffer: _0x3f12c7 },
-        _0x4e2b6b = await callApi("POST", _0x4460f6, _0x21124e);
-    (markers = []),
-        $[_0x6451c3(0x2c6)](_0x4e2b6b, function (_0x52d3b0, _0x36d28a) {
-            const _0x3189c3 = _0x6451c3,
-                _0x35d851 = _0x36d28a[_0x3189c3(0x17a)],
-                _0x1aca56 = _0x36d28a[_0x3189c3(0x18b)],
-                _0x19addf = _0x36d28a[_0x3189c3(0x224)],
-                _0x2f3c5c = new kakao[_0x3189c3(0x170)][_0x3189c3(0x16c)](_0x1aca56, _0x19addf),
-                _0x2e0cc7 = { title: _0x35d851, latlng: _0x2f3c5c };
-            markers[_0x3189c3(0x200)](_0x2e0cc7);
-            var _0x2a6750 = _0x3189c3(0x183) + _0x36d28a[_0x3189c3(0x1b0)] + _0x3189c3(0x293) + _0x36d28a[_0x3189c3(0x254)] + _0x3189c3(0x1a7);
-            let _0x1dc421 = new kakao[_0x3189c3(0x170)][_0x3189c3(0x16c)](_0x1aca56, _0x19addf),
-                _0x13513e = ![];
-            var _0x41c477 = new kakao[_0x3189c3(0x170)][_0x3189c3(0x17b)]({ clickable: !![], content: _0x2a6750, map: map, position: _0x1dc421, xAnchor: 0.5, yAnchor: 0.5, zIndex: 0x1 });
-            _0x41c477[_0x3189c3(0x1c4)](map);
-        });
-    for (var _0x3e5948 = 0x0; _0x3e5948 < markers[_0x6451c3(0x2a9)]; _0x3e5948++) {}
-    return _0x4e2b6b;
-}
-function transCoordCB(_0x51a978, _0x4dc61d) {
-    const _0x4836df = a39_0x363e4a;
-    if (_0x4dc61d === kakao[_0x4836df(0x170)][_0x4836df(0x1e6)][_0x4836df(0x239)]["OK"]) {
-        console[_0x4836df(0x1e9)](_0x51a978),
-            searchAddrFromCoords(new kakao[_0x4836df(0x170)][_0x4836df(0x16c)](_0x51a978[0x0]["y"], _0x51a978[0x0]["x"]), function () {
-                const _0x317d6d = _0x4836df;
-                console[_0x317d6d(0x1e9)](_0x51a978[0x0]["y"], _0x51a978[0x0]["x"]);
-            });
-        return;
-        var _0x428269 = new kakao[_0x4836df(0x170)]["Marker"]({ position: new kakao[_0x4836df(0x170)]["LatLng"](_0x51a978[0x0]["y"], _0x51a978[0x0]["x"]), map: map });
-    }
-}
-function drawPolygon(_0xde26e8) {
-    const _0x3b32b2 = a39_0x363e4a,
-        _0x34d005 = _0xde26e8[0x0][_0x3b32b2(0x23c)]((_0x461cfc) => new kakao[_0x3b32b2(0x170)][_0x3b32b2(0x16c)](_0x461cfc[0x1], _0x461cfc[0x0])),
-        _0x690d97 = new kakao[_0x3b32b2(0x170)]["Polygon"]({ map: map, path: _0x34d005, strokeWeight: 0x3, strokeColor: "#FF0000", strokeOpacity: 0.8, strokeStyle: _0x3b32b2(0x213), fillColor: "#FF0000", fillOpacity: 0.5 });
-    map[_0x3b32b2(0x234)](_0x34d005[0x0]);
-}
-function getPolygonCentroid(_0x390da5) {
-    const _0x59ea5c = a39_0x363e4a;
-    let _0x4d72b3 = _0x390da5[_0x59ea5c(0x2a9)],
-        _0x3f079f = 0x0,
-        _0x2fc1dd = 0x0,
-        _0x361c32 = 0x0;
-    _0x390da5[_0x59ea5c(0x278)]((_0x5b234e) => {
-        const _0x2e2e22 = _0x59ea5c;
-        let _0x2d110b = (_0x5b234e[0x1] * Math["PI"]) / 0xb4,
-            _0x5d5bc1 = (_0x5b234e[0x0] * Math["PI"]) / 0xb4,
-            _0x30ecab = Math[_0x2e2e22(0x204)](_0x2d110b) * Math["cos"](_0x5d5bc1),
-            _0xb75a7f = Math["cos"](_0x2d110b) * Math[_0x2e2e22(0x1ad)](_0x5d5bc1),
-            _0x12a0cd = Math[_0x2e2e22(0x1ad)](_0x2d110b);
-        (_0x3f079f += _0x30ecab), (_0x2fc1dd += _0xb75a7f), (_0x361c32 += _0x12a0cd);
-    }),
-        (_0x3f079f /= _0x4d72b3),
-        (_0x2fc1dd /= _0x4d72b3),
-        (_0x361c32 /= _0x4d72b3);
-    let _0x3ae0e8 = Math[_0x59ea5c(0x1ff)](_0x2fc1dd, _0x3f079f),
-        _0x58732a = Math[_0x59ea5c(0x1f0)](_0x3f079f * _0x3f079f + _0x2fc1dd * _0x2fc1dd),
-        _0x25d7c6 = Math["atan2"](_0x361c32, _0x58732a),
-        _0x2bf883 = { lat: (_0x25d7c6 * 0xb4) / Math["PI"], lng: (_0x3ae0e8 * 0xb4) / Math["PI"] };
-    if (isPointInPolygon([_0x2bf883[_0x59ea5c(0x25d)], _0x2bf883[_0x59ea5c(0x1fe)]], _0x390da5)) return _0x2bf883;
-    else {
-        let _0x5994df = findClosestPointOnPolygon([_0x2bf883[_0x59ea5c(0x25d)], _0x2bf883["lat"]], _0x390da5);
-        return { lat: _0x5994df[0x1], lng: _0x5994df[0x0] };
-    }
-}
-function isPointInPolygon(_0x1b2f82, _0x51cde4) {
-    const _0x5de278 = a39_0x363e4a;
-    let [_0x33d91b, _0x27f2ec] = _0x1b2f82,
-        _0x11aedf = ![];
-    for (let _0x13ed1f = 0x0, _0x21aed0 = _0x51cde4["length"] - 0x1; _0x13ed1f < _0x51cde4[_0x5de278(0x2a9)]; _0x21aed0 = _0x13ed1f++) {
-        let _0x41e8dd = _0x51cde4[_0x13ed1f][0x0],
-            _0x5dd1e1 = _0x51cde4[_0x13ed1f][0x1],
-            _0x2847e2 = _0x51cde4[_0x21aed0][0x0],
-            _0x182f81 = _0x51cde4[_0x21aed0][0x1],
-            _0x26cccd = _0x5dd1e1 > _0x27f2ec != _0x182f81 > _0x27f2ec && _0x33d91b < ((_0x2847e2 - _0x41e8dd) * (_0x27f2ec - _0x5dd1e1)) / (_0x182f81 - _0x5dd1e1) + _0x41e8dd;
-        if (_0x26cccd) _0x11aedf = !_0x11aedf;
-    }
-    return _0x11aedf;
-}
-function findClosestPointOnPolygon(_0xe65e90, _0x5f2748) {
-    const _0x5f5c0f = a39_0x363e4a;
-    let _0x481c3a = null,
-        _0x4c27f0 = Infinity;
-    for (let _0xb225d1 = 0x0; _0xb225d1 < _0x5f2748[_0x5f5c0f(0x2a9)]; _0xb225d1++) {
-        let _0x4808b2 = _0x5f2748[_0xb225d1],
-            _0x244bbf = _0x5f2748[(_0xb225d1 + 0x1) % _0x5f2748[_0x5f5c0f(0x2a9)]],
-            _0x35f770 = getClosestPointOnSegment(_0xe65e90, _0x4808b2, _0x244bbf),
-            _0xe40071 = distanceBetweenPoints(_0xe65e90, _0x35f770);
-        _0xe40071 < _0x4c27f0 && ((_0x4c27f0 = _0xe40071), (_0x481c3a = _0x35f770));
-    }
-    return _0x481c3a;
-}
-function getClosestPointOnSegment(_0x443ac2, _0x486d95, _0x1b5dae) {
-    let _0x150aa6 = _0x443ac2[0x0],
-        _0x3e194e = _0x443ac2[0x1],
-        _0x1418cf = _0x486d95[0x0],
-        _0x4b9a82 = _0x486d95[0x1],
-        _0x28ed51 = _0x1b5dae[0x0],
-        _0x32923f = _0x1b5dae[0x1],
-        _0x21d19f = _0x28ed51 - _0x1418cf,
-        _0x52b8c9 = _0x32923f - _0x4b9a82;
-    if (_0x21d19f === 0x0 && _0x52b8c9 === 0x0) return _0x486d95;
-    let _0x4472e4 = ((_0x150aa6 - _0x1418cf) * _0x21d19f + (_0x3e194e - _0x4b9a82) * _0x52b8c9) / (_0x21d19f * _0x21d19f + _0x52b8c9 * _0x52b8c9);
-    if (_0x4472e4 < 0x0) return _0x486d95;
-    else return _0x4472e4 > 0x1 ? _0x1b5dae : [_0x1418cf + _0x4472e4 * _0x21d19f, _0x4b9a82 + _0x4472e4 * _0x52b8c9];
-}
-function distanceBetweenPoints(_0x1f7082, _0x39c32a) {
-    const _0x446b76 = a39_0x363e4a;
-    let _0x5eefad = _0x1f7082[0x0] - _0x39c32a[0x0],
-        _0x3a7e56 = _0x1f7082[0x1] - _0x39c32a[0x1];
-    return Math[_0x446b76(0x1f0)](_0x5eefad * _0x5eefad + _0x3a7e56 * _0x3a7e56);
-}
-function toolbox() {
-    const _0x2e6f64 = a39_0x363e4a;
-    var _0x324b4d = _0x2e6f64(0x292),
-        _0x4522b8 = _0x2e6f64(0x215),
-        _0x52f246 = 0.5,
-        _0x8fe38e = "dash",
-        _0x29ef53 = {
-            map: map,
-            drawingMode: [
-                kakao[_0x2e6f64(0x170)][_0x2e6f64(0x1fd)]["OverlayType"]["MARKER"],
-                kakao[_0x2e6f64(0x170)]["Drawing"][_0x2e6f64(0x294)][_0x2e6f64(0x198)],
-                kakao[_0x2e6f64(0x170)][_0x2e6f64(0x1fd)]["OverlayType"][_0x2e6f64(0x285)],
-                kakao[_0x2e6f64(0x170)][_0x2e6f64(0x1fd)][_0x2e6f64(0x294)][_0x2e6f64(0x1aa)],
-                kakao[_0x2e6f64(0x170)][_0x2e6f64(0x1fd)][_0x2e6f64(0x294)][_0x2e6f64(0x17d)],
-                kakao[_0x2e6f64(0x170)]["Drawing"][_0x2e6f64(0x294)]["ELLIPSE"],
-                kakao["maps"][_0x2e6f64(0x1fd)][_0x2e6f64(0x294)][_0x2e6f64(0x1e1)],
-            ],
-            guideTooltip: ["draw", _0x2e6f64(0x1af), _0x2e6f64(0x290)],
-            markerOptions: { draggable: !![], removable: !![] },
-            arrowOptions: { draggable: !![], removable: !![], strokeColor: _0x324b4d, hintStrokeStyle: _0x8fe38e },
-            polylineOptions: { draggable: !![], removable: !![], strokeColor: _0x324b4d, hintStrokeStyle: _0x8fe38e },
-            rectangleOptions: { draggable: !![], removable: !![], strokeColor: _0x324b4d, fillColor: _0x4522b8, fillOpacity: _0x52f246 },
-            circleOptions: { draggable: !![], removable: !![], strokeColor: _0x324b4d, fillColor: _0x4522b8, fillOpacity: _0x52f246 },
-            ellipseOptions: { draggable: !![], removable: !![], strokeColor: _0x324b4d, fillColor: _0x4522b8, fillOpacity: _0x52f246 },
-            polygonOptions: { draggable: !![], removable: !![], strokeColor: _0x324b4d, fillColor: _0x4522b8, fillOpacity: _0x52f246 },
+
+async function showRealPrice(geomFilter, buffer) {
+    const url = "/front/back/realPrice/realPrice_apartment.php";
+    const dataObj = {
+        geomFilter: geomFilter,
+        geometry: false, // 폴리곤 정보를 포함
+        attribute: true, // 속성 정보를 포함
+        buffer: buffer, // 반경
+    };
+    const result = await callApi("POST", url, dataObj);
+
+    markers = [];
+    $.each(result, function (index, item) {
+        const pnu = item.pnu;
+        const lat = item.latitude;
+        const lng = item.longitude;
+        const latlng = new kakao.maps.LatLng(lat, lng);
+
+        // 이동된 중심에 마커를 생성하고 지도에 표시한다.
+        const marker = {
+            title: pnu,
+            latlng: latlng,
         };
-    (manager = new kakao["maps"]["Drawing"][_0x2e6f64(0x1f4)](_0x29ef53)),
-        manager[_0x2e6f64(0x277)](_0x2e6f64(0x1ef), function (_0x3cf861) {}),
-        manager[_0x2e6f64(0x277)](_0x2e6f64(0x21d), function (_0x3dd95e) {
-            const _0x268dfb = _0x2e6f64;
-            var _0x167b50 = document[_0x268dfb(0x182)](_0x268dfb(0x1fc));
-            _0x167b50[_0x268dfb(0x278)](function (_0x524773) {
-                const _0x3a516b = _0x268dfb;
-                var _0x1a6516 = _0x524773[_0x3a516b(0x1ce)](_0x3a516b(0x265));
-                _0x1a6516 ? (_0x524773[_0x3a516b(0x172)][_0x3a516b(0x26a)] = _0x1a6516) : (_0x524773[_0x3a516b(0x172)][_0x3a516b(0x26a)] = _0x3a516b(0x209)), _0x524773[_0x3a516b(0x2a5)]("data-moved", "false");
-            }),
-                $(_0x268dfb(0x1c8))["removeClass"]("active");
-        }),
-        manager["addListener"](_0x2e6f64(0x23a), function (_0xf1d994) {
-            const _0x20a684 = _0x2e6f64;
-            var _0x3f90f = document["querySelectorAll"]("#draw_toolbox\x20a\x20span");
-            _0x3f90f["forEach"](function (_0x543773) {
-                const _0x43a1f6 = a39_0x57f5;
-                var _0x178c9f = _0x543773[_0x43a1f6(0x1ce)]("data-original-position");
-                _0x178c9f ? (_0x543773[_0x43a1f6(0x172)]["backgroundPosition"] = _0x178c9f) : (_0x543773["style"]["backgroundPosition"] = _0x43a1f6(0x209)), _0x543773[_0x43a1f6(0x2a5)](_0x43a1f6(0x262), _0x43a1f6(0x1c0));
-            }),
-                $(_0x20a684(0x1c8))[_0x20a684(0x1cd)]("active");
+
+        // 클릭된 마커
+        markers.push(marker); // 새로운 마커를 마커 배열에 추가한다.
+
+        var iwContent = `
+        <div class="real-price-marker" style="padding:5px;">
+            <ul class="text-center bg-white border border-danger overflow-hidden" style="border-radius:10px;">
+                <li class="up bg-white p-1">
+                    <span class="number">${item.dealAmount}</span>
+                </li>
+                <li class="text-white p-1" style="background-color:var(--var-color-main-1)">
+                    <span class="number">${item.dealYear}</span>
+                </li>
+            </ul>
+            <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/icn_arr_mark.svg" width="15" alt="" title=""></p>
+        </div>
+        `; // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+        let iwPosition = new kakao.maps.LatLng(lat, lng); //인포윈도우 표시 위치입니다
+        let iwRemoveable = false; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+
+        // <div class="map-mark1" style="top:300px; left:50%; z-index:1;">
+        //     <h2>${item.dealAmount}</h2>
+        //     <h3>${item.dealYear}</h3>
+        //     <p><img src="/front/assets/image/icn_arr_mark.svg" width="15" alt="" title=""></p>
+        // </div>
+        // // 인포윈도우를 생성하고 지도에 표시합니다
+        // var infowindow = new kakao.maps.InfoWindow({
+        //     map: map, // 인포윈도우가 표시될 지도
+        //     position: iwPosition,
+        //     content: iwContent,
+        //     removable: iwRemoveable,
+        // });
+
+        // 커스텀 오버레이를 생성합니다
+        var customOverlay = new kakao.maps.CustomOverlay({
+            clickable: true,
+            content: iwContent,
+            map: map,
+            position: iwPosition,
+            xAnchor: 0.5,
+            yAnchor: 0.5,
+            zIndex: 1,
         });
-    var _0x22d21f = ![];
-    document[_0x2e6f64(0x1c3)](_0x2e6f64(0x232))["addEventListener"](_0x2e6f64(0x272), function () {
-        const _0x3ef0de = _0x2e6f64;
-        !_0x22d21f ? ($("#draw_toolbox")["show"](), (_0x22d21f = !![])) : ($(_0x3ef0de(0x181))["hide"](), (_0x22d21f = ![]), manager["cancel"]());
+
+        // 커스텀 오버레이를 지도에 표시합니다
+        customOverlay.setMap(map);
     });
+
+    for (var i = 0; i < markers.length; i++) {}
+
+    return result;
 }
-function selectOverlay(_0x228268, _0x3f451c) {
-    const _0x380804 = a39_0x363e4a;
-    var _0x17a803 = _0x228268["classList"][_0x380804(0x178)](_0x380804(0x197));
-    $(_0x380804(0x1c8))["removeClass"]("active");
-    if (_0x17a803) {
-        textModuleControl[_0x380804(0x297)](), manager["cancel"]();
-        var _0x41c66d = _0x228268[_0x380804(0x19f)](_0x380804(0x281)),
-            _0xe1834 = _0x41c66d[_0x380804(0x1ce)](_0x380804(0x265));
-        _0xe1834 && (_0x41c66d[_0x380804(0x172)][_0x380804(0x26a)] = _0xe1834);
+
+// 좌표 변환 결과를 받아서 처리할 콜백함수 입니다.
+function transCoordCB(result, status) {
+    // 정상적으로 검색이 완료됐으면
+    if (status === kakao.maps.services.Status.OK) {
+        console.log(result);
+        searchAddrFromCoords(new kakao.maps.LatLng(result[0].y, result[0].x), function () {
+            console.log(result[0].y, result[0].x);
+        });
+
         return;
+
+        // 마커를 변환된 위치에 표시합니다
+        var marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(result[0].y, result[0].x), // 마커를 표시할 위치입니다
+            map: map, // 마커를 표시할 지도객체입니다
+        });
     }
-    manager[_0x380804(0x23a)]();
-    _0x3f451c == _0x380804(0x19e) ? textModuleControl[_0x380804(0x195)]() : (manager[_0x380804(0x1f3)](kakao[_0x380804(0x170)][_0x380804(0x24a)]["OverlayType"][_0x3f451c]), textModuleControl["stop"]());
-    var _0x1ba5f9 = document[_0x380804(0x182)]("#draw_toolbox\x20a\x20span");
-    _0x1ba5f9[_0x380804(0x278)](function (_0x56c73d) {
-        const _0x5afdb1 = _0x380804;
-        var _0x9d2c47 = getComputedStyle(_0x56c73d)["backgroundPosition"][_0x5afdb1(0x18a)]("\x20"),
-            _0x40a47c = _0x9d2c47[0x1];
-        !_0x56c73d[_0x5afdb1(0x1ce)](_0x5afdb1(0x265)) && _0x56c73d[_0x5afdb1(0x2a5)](_0x5afdb1(0x265), _0x56c73d[_0x5afdb1(0x172)][_0x5afdb1(0x26a)] || "0px\x20" + _0x40a47c),
-            (_0x56c73d[_0x5afdb1(0x172)][_0x5afdb1(0x26a)] = "0px\x20" + _0x40a47c),
-            _0x56c73d[_0x5afdb1(0x2a5)]("data-moved", "false");
+}
+
+function drawPolygon(polygonArray) {
+    // 폴리곤을 그리기 위한 경로 배열 생성
+    const path = polygonArray[0].map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+
+    // 폴리곤 옵션 설정
+    const polygon = new kakao.maps.Polygon({
+        map: map,
+        path: path, // 그려질 폴리곤 경로
+        strokeWeight: 3, // 선의 두께
+        strokeColor: "#FF0000", // 선의 색
+        strokeOpacity: 0.8, // 선의 불투명도
+        strokeStyle: "solid", // 선의 스타일
+        fillColor: "#FF0000", // 채우기 색깔
+        fillOpacity: 0.5, // 채우기 불투명도
     });
-    var _0x41c66d = _0x228268["querySelector"](_0x380804(0x281));
-    if (_0x41c66d) {
-        var _0x24f2b7 = getComputedStyle(_0x41c66d)[_0x380804(0x26a)][_0x380804(0x18a)]("\x20"),
-            _0xdbbce6 = _0x41c66d[_0x380804(0x1ce)]("data-moved") === _0x380804(0x25b);
-        if (!_0xdbbce6) {
-            var _0x2320c4 = parseInt(_0x24f2b7[0x0], 0xa) - 0x1e + "px",
-                _0x33c0a0 = _0x24f2b7[0x1];
-            (_0x41c66d[_0x380804(0x172)][_0x380804(0x26a)] = _0x2320c4 + "\x20" + _0x33c0a0), _0x41c66d[_0x380804(0x2a5)](_0x380804(0x262), "true");
-        } else {
-            var _0xe1834 = _0x41c66d[_0x380804(0x1ce)](_0x380804(0x265));
-            (_0x41c66d[_0x380804(0x172)]["backgroundPosition"] = _0xe1834), _0x41c66d[_0x380804(0x2a5)]("data-moved", _0x380804(0x1c0));
+
+    // 지도 중심을 폴리곤의 첫 번째 좌표로 이동
+    map.setCenter(path[0]);
+}
+
+/**
+ * 면좌표계에서 무게 중심을 계산한 후, 해당 점이 폴리곤 내부에 있는지 확인
+ * 외부에 있다면 가장 가까운 폴리곤 경계점으로 보정
+ *
+ * @param {*} coords
+ * @returns
+ */
+function getPolygonCentroid(coords) {
+    let countCoords = coords.length;
+    let xcos = 0.0;
+    let ycos = 0.0;
+    let zsin = 0.0;
+
+    coords.forEach((coord) => {
+        let lat = (coord[1] * Math.PI) / 180; // 위도
+        let lon = (coord[0] * Math.PI) / 180; // 경도
+
+        let acos = Math.cos(lat) * Math.cos(lon);
+        let bcos = Math.cos(lat) * Math.sin(lon);
+        let csin = Math.sin(lat);
+
+        xcos += acos;
+        ycos += bcos;
+        zsin += csin;
+    });
+
+    xcos /= countCoords;
+    ycos /= countCoords;
+    zsin /= countCoords;
+
+    let lon = Math.atan2(ycos, xcos);
+    let sqrt = Math.sqrt(xcos * xcos + ycos * ycos);
+    let lat = Math.atan2(zsin, sqrt);
+
+    let centroid = {
+        lat: (lat * 180) / Math.PI,
+        lng: (lon * 180) / Math.PI,
+    };
+
+    // 폴리곤 내부에 있는지 확인
+    if (isPointInPolygon([centroid.lng, centroid.lat], coords)) {
+        return centroid; // 폴리곤 내부에 있다면 그대로 반환
+    } else {
+        // 폴리곤 외부에 있다면 가장 가까운 점을 찾음
+        let closestPoint = findClosestPointOnPolygon([centroid.lng, centroid.lat], coords);
+        return {
+            lat: closestPoint[1],
+            lng: closestPoint[0],
+        };
+    }
+}
+
+/**
+ * 주어진 점이 폴리곤 내부에 있는지 확인
+ * @param {*} point
+ * @param {*} polygon
+ * @returns
+ */
+function isPointInPolygon(point, polygon) {
+    let [x, y] = point;
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        let xi = polygon[i][0],
+            yi = polygon[i][1];
+        let xj = polygon[j][0],
+            yj = polygon[j][1];
+        let intersect = yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+/**
+ * 폴리곤 경계에서 주어진 점과 가장 가까운 점을 찾기
+ * @param {*} point
+ * @param {*} polygon
+ * @returns
+ */
+function findClosestPointOnPolygon(point, polygon) {
+    let closestPoint = null;
+    let closestDist = Infinity;
+
+    for (let i = 0; i < polygon.length; i++) {
+        let p1 = polygon[i];
+        let p2 = polygon[(i + 1) % polygon.length];
+        let candidate = getClosestPointOnSegment(point, p1, p2);
+        let dist = distanceBetweenPoints(point, candidate);
+        if (dist < closestDist) {
+            closestDist = dist;
+            closestPoint = candidate;
         }
     }
-    _0x228268["classList"][_0x380804(0x27a)](_0x380804(0x197));
+
+    return closestPoint;
 }
-function recentVisit(_0x46b313) {
-    const _0x1e0d6d = a39_0x363e4a,
-        _0x1c9dcd = userInfo();
-    if (!_0x1c9dcd) return;
-    geocoder[_0x1e0d6d(0x2a4)](
-        _0x46b313,
-        function (_0x5c3be7, _0x5735ff, _0x4391ae) {
-            const _0x5d5b9e = _0x1e0d6d;
-            if (_0x5735ff === daum[_0x5d5b9e(0x170)][_0x5d5b9e(0x1e6)][_0x5d5b9e(0x239)]["OK"]) {
-                const _0x155f5c = _0x5c3be7[0x0],
-                    _0x11e7ac = _0x155f5c["y"],
-                    _0x5f5623 = _0x155f5c["x"],
-                    _0x316485 = _0x155f5c[_0x5d5b9e(0x1f9)],
-                    _0x1afa9e = _0x155f5c[_0x5d5b9e(0x1fa)][_0x5d5b9e(0x1b6)],
-                    _0x102272 = _0x155f5c[_0x5d5b9e(0x1fa)][_0x5d5b9e(0x207)] === "Y" ? "1" : "0",
-                    _0x2f253c = _0x155f5c[_0x5d5b9e(0x1fa)][_0x5d5b9e(0x27d)][_0x5d5b9e(0x2ac)](0x4, "0"),
-                    _0x41c922 = _0x155f5c["address"]["sub_address_no"] ? _0x155f5c["address"][_0x5d5b9e(0x268)]["padStart"](0x4, "0") : _0x5d5b9e(0x2c0),
-                    _0x136c3f = _0x1afa9e + _0x102272 + _0x2f253c + _0x41c922,
-                    _0x35ce04 = { ..._0x1c9dcd, address: encodeURIComponent(_0x316485), lat: encodeURIComponent(_0x11e7ac), lng: encodeURIComponent(_0x5f5623), pnu: encodeURIComponent(_0x136c3f) };
-                callApiAbort(_0x5d5b9e(0x184), _0x5d5b9e(0x167), _0x35ce04, _0x5d5b9e(0x1ea))
-                    [_0x5d5b9e(0x269)]((_0x46f709) => {
-                        if (!_0x46f709) return;
-                        const { responseData: _0x35092c, message: _0x31ac35, statusCode: _0x305d4e } = _0x46f709;
-                        if (_0x305d4e !== 0xc8) return;
+
+/**
+ * 선분(p1, p2) 위에서 주어진 점과 가장 가까운 점을 찾
+ * @param {*} p
+ * @param {*} p1
+ * @param {*} p2
+ * @returns
+ */
+function getClosestPointOnSegment(p, p1, p2) {
+    let x = p[0],
+        y = p[1];
+    let x1 = p1[0],
+        y1 = p1[1];
+    let x2 = p2[0],
+        y2 = p2[1];
+
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+
+    if (dx === 0 && dy === 0) {
+        // p1과 p2가 동일한 점이라면
+        return p1;
+    }
+
+    let t = ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy);
+
+    if (t < 0) {
+        return p1;
+    } else if (t > 1) {
+        return p2;
+    } else {
+        return [x1 + t * dx, y1 + t * dy];
+    }
+}
+
+/**
+ * 두 점 사이의 유클리드 거리를 계산
+ * @param {*} p1
+ * @param {*} p2
+ * @returns
+ */
+function distanceBetweenPoints(p1, p2) {
+    let dx = p1[0] - p2[0];
+    let dy = p1[1] - p2[1];
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function toolbox() {
+    // 도형 스타일을 변수로 설정합니다
+    var strokeColor = "#39f",
+        fillColor = "#cce6ff",
+        fillOpacity = 0.5,
+        hintStrokeStyle = "dash";
+
+    var options = {
+        // Drawing Manager를 생성할 때 사용할 옵션입니다
+        map: map, // Drawing Manager로 그리기 요소를 그릴 map 객체입니다
+        drawingMode: [
+            kakao.maps.Drawing.OverlayType.MARKER,
+            kakao.maps.Drawing.OverlayType.ARROW,
+            kakao.maps.Drawing.OverlayType.POLYLINE,
+            kakao.maps.Drawing.OverlayType.RECTANGLE,
+            kakao.maps.Drawing.OverlayType.CIRCLE,
+            kakao.maps.Drawing.OverlayType.ELLIPSE,
+            kakao.maps.Drawing.OverlayType.POLYGON,
+        ],
+        // 사용자에게 제공할 그리기 가이드 툴팁입니다
+        // 사용자에게 도형을 그릴때, 드래그할때, 수정할때 가이드 툴팁을 표시하도록 설정합니다
+        guideTooltip: ["draw", "drag", "edit"],
+        markerOptions: {
+            draggable: true,
+            removable: true,
+        },
+        arrowOptions: {
+            draggable: true,
+            removable: true,
+            strokeColor: strokeColor,
+            hintStrokeStyle: hintStrokeStyle,
+        },
+        polylineOptions: {
+            draggable: true,
+            removable: true,
+            strokeColor: strokeColor,
+            hintStrokeStyle: hintStrokeStyle,
+        },
+        rectangleOptions: {
+            draggable: true,
+            removable: true,
+            strokeColor: strokeColor,
+            fillColor: fillColor,
+            fillOpacity: fillOpacity,
+        },
+        circleOptions: {
+            draggable: true,
+            removable: true,
+            strokeColor: strokeColor,
+            fillColor: fillColor,
+            fillOpacity: fillOpacity,
+        },
+        ellipseOptions: {
+            draggable: true,
+            removable: true,
+            strokeColor: strokeColor,
+            fillColor: fillColor,
+            fillOpacity: fillOpacity,
+        },
+        polygonOptions: {
+            draggable: true,
+            removable: true,
+            strokeColor: strokeColor,
+            fillColor: fillColor,
+            fillOpacity: fillOpacity,
+        },
+    };
+
+    // 위에 작성한 옵션으로 Drawing Manager를 생성합니다
+    manager = new kakao.maps.Drawing.DrawingManager(options);
+
+    // 그리기 관련 이벤트 등록 =================================
+
+    // 그리기 시작 시 발생하는 이벤트
+    manager.addListener("drawstart", function (data) {
+        // console.log("그리기 시작: ", data);
+        // 모든 a 요소의 active 클래스를 제거
+        // $("#draw_toolbox a").removeClass("active");
+    });
+
+    // 그리기 진행 중 마우스 이동 시 발생하는 이벤트
+    // manager.addListener("draw", function (data) {
+    //     console.log("그리기 중: ", data);
+    // });
+
+    // 그리기가 완료되었을 때 발생하는 이벤트
+    manager.addListener("drawend", function (data) {
+        // console.log("그리기 끝: ", data);
+
+        // 모든 span의 background-position을 원래대로 복원
+        var allSpans = document.querySelectorAll("#draw_toolbox a span");
+        allSpans.forEach(function (span) {
+            var originalPosition = span.getAttribute("data-original-position");
+            if (originalPosition) {
+                span.style.backgroundPosition = originalPosition;
+            } else {
+                span.style.backgroundPosition = "0px 0px";
+            }
+
+            // data-moved 상태를 false로 변경
+            span.setAttribute("data-moved", "false");
+        });
+
+        // 모든 a 요소에서 active 클래스를 제거
+        $("#draw_toolbox a").removeClass("active");
+    });
+
+    // 그리기가 취소되었을 때 발생하는 이벤트
+    manager.addListener("cancel", function (e) {
+        // console.log("그리기 취소: ", e.overlayType);
+
+        // 모든 span의 background-position을 원래대로 복원
+        var allSpans = document.querySelectorAll("#draw_toolbox a span");
+        allSpans.forEach(function (span) {
+            var originalPosition = span.getAttribute("data-original-position");
+            if (originalPosition) {
+                span.style.backgroundPosition = originalPosition;
+            } else {
+                span.style.backgroundPosition = "0px 0px";
+            }
+
+            // data-moved 상태를 false로 변경
+            span.setAttribute("data-moved", "false");
+        });
+
+        // 모든 a 요소에서 active 클래스를 제거
+        $("#draw_toolbox a").removeClass("active");
+    });
+
+    // 그리기 상태가 변경되었을 때 발생하는 이벤트 (생성, 수정, 삭제 등)
+    // manager.addListener("state_changed", function () {
+    //     console.log("그리기 상태 변경");
+    // });
+
+    var toolboxAdded = false; // 툴박스가 추가된 상태인지 여부를 저장하는 변수
+
+    // 버튼 클릭 시 툴박스를 나타내거나 숨기는 기능
+    document.getElementById("draw_tool_btn").addEventListener("click", function () {
+        if (!toolboxAdded) {
+            $("#draw_toolbox").show();
+            toolboxAdded = true;
+        } else {
+            $("#draw_toolbox").hide();
+            toolboxAdded = false;
+
+            // 현재 진행 중인 그리기 작업을 취소
+            manager.cancel();
+        }
+    });
+}
+
+// 버튼 클릭 시 호출되는 핸들러 입니다
+function selectOverlay(element, type) {
+    // 이미 활성화된 버튼인지 확인
+    var isActive = element.classList.contains("active");
+
+    // 모든 a 요소의 active 클래스 제거
+    $("#draw_toolbox a").removeClass("active");
+
+    // 만약 활성화된 상태에서 다시 클릭되었으면 취소하고 return
+    if (isActive) {
+        // 텍스트 모듈 중지
+        textModuleControl.stop(); // 텍스트 입력 중지
+        manager.cancel(); // 다른 그리기 작업 취소
+
+        // 클릭된 element 하위의 span을 원래의 background-position 값으로 복원
+        var span = element.querySelector("span");
+        var originalPosition = span.getAttribute("data-original-position");
+        if (originalPosition) {
+            span.style.backgroundPosition = originalPosition; // 원래 배경 위치로 복원
+        }
+
+        return; // 함수 종료
+    }
+
+    // 그리기 중이면 그리기를 취소합니다
+    manager.cancel();
+
+    if (type == "TEXT") {
+        // 텍스트 입력 시작
+        textModuleControl.start();
+    } else {
+        // 클릭한 그리기 요소 타입을 선택합니다
+        manager.select(kakao.maps.drawing.OverlayType[type]);
+        textModuleControl.stop(); // 텍스트 입력 중지
+    }
+
+    // #draw_toolbox 내 모든 a 요소의 span을 0px로 초기화 (y값 유지)
+    var allSpans = document.querySelectorAll("#draw_toolbox a span");
+    allSpans.forEach(function (span) {
+        // 기존 background-position 값을 가져오기 (y값 유지)
+        var currentPosition = getComputedStyle(span).backgroundPosition.split(" ");
+        var newPositionY = currentPosition[1]; // y 값은 그대로 유지
+
+        // 원래의 background-position 값을 저장
+        if (!span.getAttribute("data-original-position")) {
+            span.setAttribute("data-original-position", span.style.backgroundPosition || "0px " + newPositionY);
+        }
+
+        // x 값을 0으로 설정
+        span.style.backgroundPosition = "0px " + newPositionY;
+        span.setAttribute("data-moved", "false"); // 상태를 'false'로 변경
+    });
+
+    // element 하위의 span 요소 선택
+    var span = element.querySelector("span");
+
+    if (span) {
+        // 현재 background-position 값을 가져오기
+        var currentPosition = getComputedStyle(span).backgroundPosition.split(" ");
+
+        // 현재 상태를 data 속성으로 관리 (isMoved 상태를 data-moved로 저장)
+        var isMoved = span.getAttribute("data-moved") === "true";
+
+        if (!isMoved) {
+            // background-position의 x 값을 -30px로 이동
+            var newPositionX = parseInt(currentPosition[0], 10) - 30 + "px";
+            var newPositionY = currentPosition[1]; // y 값은 그대로 유지
+
+            // 새로운 background-position 적용
+            span.style.backgroundPosition = newPositionX + " " + newPositionY;
+
+            span.setAttribute("data-moved", "true"); // 상태를 'true'로 변경
+        } else {
+            // background-position을 원래 값으로 복구
+            var originalPosition = span.getAttribute("data-original-position");
+            span.style.backgroundPosition = originalPosition;
+
+            span.setAttribute("data-moved", "false"); // 상태를 'false'로 변경
+        }
+    }
+
+    // 선택된 버튼에 active 클래스 추가
+    element.classList.add("active");
+}
+
+function recentVisit(address) {
+    const user = userInfo();
+    if (!user) return;
+
+    geocoder.addressSearch(
+        address,
+        function (data, status, pagination) {
+            if (status === daum.maps.services.Status.OK) {
+                const result = data[0];
+
+                const lat = result.y;
+                const lng = result.x;
+                const address_name = result.address_name;
+                const b_code = result.address.b_code; // 법정동코드
+                const mountain_yn = result.address.mountain_yn === "Y" ? "1" : "0"; // 산 여부 (평지면 0, 산이면 1)
+                const main_address_no = result.address.main_address_no.padStart(4, "0"); // 본번 (4자리로 변환, 앞에 0을 채워서 4자리로 만듦)
+                const sub_address_no = result.address.sub_address_no ? result.address.sub_address_no.padStart(4, "0") : "0000"; // 부번 (부번이 없으면 0000, 있으면 4자리로 변환)
+                const pnu = b_code + mountain_yn + main_address_no + sub_address_no; // PNU 생성
+
+                const dataObj = {
+                    ...user,
+                    address: encodeURIComponent(address_name),
+                    lat: encodeURIComponent(lat),
+                    lng: encodeURIComponent(lng),
+                    pnu: encodeURIComponent(pnu),
+                };
+
+                callApiAbort("/front/back/history/recent_visit_register_realPrice.php", "POST", dataObj, "recentVisit")
+                    .then((response) => {
+                        if (!response) {
+                            return;
+                        }
+
+                        const { responseData, message, statusCode } = response;
+                        if (statusCode !== 200) return;
                     })
-                    [_0x5d5b9e(0x173)]((_0x19bdb6) => {
-                        const _0x3572c0 = _0x5d5b9e;
-                        console[_0x3572c0(0x1e9)](_0x19bdb6);
+                    .catch((error) => {
+                        console.log(error);
                     });
             }
         },
-        { size: "5", analyze_type: _0x1e0d6d(0x1dd) }
-    );
+        { size: "5", analyze_type: "similar" }
+    ); // 장소 검색
 }
-function saveSearchHistory(_0x86d212) {
-    const _0x7d38ca = a39_0x363e4a,
-        _0x224e6d = userInfo();
-    if (!_0x224e6d) return;
-    const _0x48b676 = _0x86d212[_0x7d38ca(0x1fa)],
-        _0x42ed52 = _0x86d212["lat"],
-        _0x3e06c8 = _0x86d212["lng"],
-        _0x313bed = { ..._0x224e6d, address: encodeURIComponent(_0x48b676), lat: encodeURIComponent(_0x42ed52), lng: encodeURIComponent(_0x3e06c8) };
-    callApiAbort(_0x7d38ca(0x259), _0x7d38ca(0x167), _0x313bed, _0x7d38ca(0x2b1))
-        [_0x7d38ca(0x269)]((_0x35251d) => {
-            if (!_0x35251d) return;
-            const { responseData: _0x24e48c, message: _0x2e6bfb, statusCode: _0x402beb } = _0x35251d;
-            if (_0x402beb !== 0xc8) return;
+
+/**
+ * 최근 검색 주소 이력 저장하는 함수
+ * @param {*} data
+ * @returns
+ */
+function saveSearchHistory(data) {
+    const user = userInfo();
+    if (!user) return;
+
+    const address = data.address;
+    const lat = data.lat;
+    const lng = data.lng;
+
+    const dataObj = {
+        ...user,
+        address: encodeURIComponent(address),
+        lat: encodeURIComponent(lat),
+        lng: encodeURIComponent(lng),
+    };
+
+    callApiAbort("/front/back/history/save_search_history.php", "POST", dataObj, "saveSearchHistory")
+        .then((response) => {
+            if (!response) {
+                return;
+            }
+
+            const { responseData, message, statusCode } = response;
+            if (statusCode !== 200) return;
             getRescentHistory();
         })
-        [_0x7d38ca(0x173)]((_0x4d593f) => {
-            const _0x53e1d8 = _0x7d38ca;
-            console[_0x53e1d8(0x1e9)](_0x4d593f);
+        .catch((error) => {
+            console.log(error);
         });
 }
-function a39_0x57f5(_0x4bff41, _0x221612) {
-    const _0x4e6756 = a39_0x4e67();
-    return (
-        (a39_0x57f5 = function (_0x57f535, _0x221f63) {
-            _0x57f535 = _0x57f535 - 0x164;
-            let _0x4fa8f8 = _0x4e6756[_0x57f535];
-            return _0x4fa8f8;
-        }),
-        a39_0x57f5(_0x4bff41, _0x221612)
-    );
-}
-function cancelDrawingMode(_0x2f2948, _0x4834e6) {
-    const _0x570919 = a39_0x363e4a;
-    if ($(_0x2f2948)[_0x570919(0x299)](_0x570919(0x197))) {
-        $(_0x570919(0x26f))[_0x570919(0x1cd)]("active"), lineDrawer["cancelDrawingMode"](_0x2f2948), polygonDrawer[_0x570919(0x190)](_0x2f2948), circleDrawer[_0x570919(0x190)](_0x2f2948);
+
+/**
+ * 그리기 모드 전환 함수
+ * @param {*} button
+ * @param {*} type
+ * @returns
+ */
+function cancelDrawingMode(button, type) {
+    if ($(button).hasClass("active")) {
+        $(".mo-tool-option button").removeClass("active");
+        lineDrawer.cancelDrawingMode(button);
+        polygonDrawer.cancelDrawingMode(button);
+        circleDrawer.cancelDrawingMode(button);
         return;
     }
-    $(_0x570919(0x26f))[_0x570919(0x1cd)](_0x570919(0x197)), lineDrawer["cancelDrawingMode"](_0x2f2948), polygonDrawer[_0x570919(0x190)](_0x2f2948), circleDrawer[_0x570919(0x190)](_0x2f2948);
-    if (_0x4834e6 == _0x570919(0x1d4)) lineDrawer[_0x570919(0x1a3)](_0x2f2948);
-    else {
-        if (_0x4834e6 == "polygon") polygonDrawer[_0x570919(0x1a3)](_0x2f2948);
-        else _0x4834e6 == _0x570919(0x1b8) && circleDrawer["onStartDrawing"](_0x2f2948);
+
+    $(".mo-tool-option button").removeClass("active");
+    lineDrawer.cancelDrawingMode(button);
+    polygonDrawer.cancelDrawingMode(button);
+    circleDrawer.cancelDrawingMode(button);
+
+    if (type == "line") {
+        lineDrawer.toggleDrawingMode(button);
+    } else if (type == "polygon") {
+        polygonDrawer.toggleDrawingMode(button);
+    } else if (type == "circle") {
+        circleDrawer.onStartDrawing(button);
     }
 }
-function a39_0x4e67() {
-    const _0x2d8937 = [
-        "each",
-        "block",
-        "success",
-        "defs",
-        "afterKeyword",
-        "item",
-        "prototype",
-        "70px",
-        "POST",
-        "Point",
-        "135045vAvduq",
-        "absolute",
-        "onRemove",
-        "LatLng",
-        "area",
-        "textAlign",
-        "html",
-        "maps",
-        "constructor",
-        "style",
-        "catch",
-        "buildingPolygon2",
-        "revokeObjectURL",
-        "top",
-        "setContent",
-        "contains",
-        "onclick",
-        "pnu",
-        "CustomOverlay",
-        "AbstractOverlay",
-        "CIRCLE",
-        "</div>",
-        "INPUT",
-        "80px",
-        "#draw_toolbox",
-        "querySelectorAll",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22real-price-marker\x22\x20style=\x22padding:5px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22text-center\x20bg-white\x20border\x20border-danger\x20overflow-hidden\x22\x20style=\x22border-radius:10px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22up\x20bg-white\x20p-1\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22number\x22>",
-        "/front/back/history/recent_visit_register_realPrice.php",
-        "createDocumentFragment",
-        "MultiPolygon",
-        "#FFAAAA",
-        "ecologyzmpWFS_1",
-        "land_trade_data.csv",
-        "split",
-        "latitude",
-        "Failed\x20to\x20get\x20address\x20information",
-        "items",
-        "ajax",
-        "clearPolygon",
-        "cancelDrawingMode",
-        "message",
-        "coord2RegionCode",
-        "innerHTML",
-        "region_type",
-        "start",
-        "/front/back/realPrice/download_realPrice_apartment.php",
-        "active",
-        "ARROW",
-        "EPSG:5186",
-        "Tileset",
-        "getLng",
-        "12UIEheY",
-        "onAdd",
-        "TEXT",
-        "querySelector",
-        "text",
-        "extend",
-        "popstate",
-        "toggleDrawingMode",
-        "road_address",
-        "none",
-        "유효하지\x20않은\x20landPolygon입니다.",
-        "</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22position-absolute\x22\x20style=\x22margin:-5px\x200\x200\x2020px;\x20\x22><img\x20src=\x22/front/assets/image/icn_arr_mark.svg\x22\x20width=\x2215\x22\x20alt=\x22\x22\x20title=\x22\x22></p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20",
-        "InfoWindow",
-        "#analysis_info_table\x20tbody",
-        "RECTANGLE",
-        "empty",
-        "src",
-        "sin",
-        "response",
-        "drag",
-        "dealAmount",
-        "50%",
-        "파일\x20생성에\x20실패했습니다.",
-        "blob",
-        "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png",
-        "getCenter",
-        "b_code",
-        "addOverlayMapTypeId",
-        "circle",
-        "removeAllCircles",
-        "getPanels",
-        "position",
-        "Size",
-        "error",
-        "searchParams",
-        "reduce",
-        "false",
-        "MarkerImage",
-        "width",
-        "getElementById",
-        "setMap",
-        "latLng",
-        "boundsA\x20SouthWest:",
-        "geometry",
-        "#draw_toolbox\x20a",
-        "all",
-        "\x22>◼︎</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-center\x22>",
-        "LatLngBounds",
-        "polygon",
-        "removeClass",
-        "getAttribute",
-        "event",
-        "result",
-        "hasChildNodes",
-        "pointFromCoords",
-        "height",
-        "line",
-        "bounds",
-        "7XhRyng",
-        "body",
-        "display",
-        "appendChild",
-        "1727785KccACT",
-        "Marker",
-        "value",
-        "similar",
-        "buildingPolygon",
-        "줌\x20레벨:\x20",
-        "TILE_NUMBER",
-        "POLYGON",
-        "API\x20요청\x20중\x20오류\x20발생:",
-        "type",
-        "stringify",
-        "panTo",
-        "services",
-        "overlayLayer",
-        "pointerEvents",
-        "log",
-        "recentVisit",
-        "폴리곤\x20비교\x20중\x20오류\x20발생:",
-        "coordinates",
-        "getLevel",
-        "#analysis_info_table",
-        "drawstart",
-        "sqrt",
-        "getSouthWest",
-        "features",
-        "select",
-        "DrawingManager",
-        "url(",
-        "featureCollection",
-        "curLng",
-        "MapTypeId",
-        "address_name",
-        "address",
-        "EPSG:4326",
-        "#draw_toolbox\x20a\x20span",
-        "Drawing",
-        "lat",
-        "atan2",
-        "push",
-        "file_path",
-        "Error\x20updating\x20address\x20information:",
-        "val",
-        "cos",
-        "load",
-        "getLat",
-        "mountain_yn",
-        "zIndex",
-        "0px\x200px",
-        "center",
-        "append",
-        "history",
-        "20240701",
-        "offsetHeight",
-        "/front/back/realPrice/test.php",
-        "273743pneEeW",
-        "#f48356",
-        "WMS\x20이미지가\x20로드되지\x20않았습니다.",
-        "solid",
-        "land",
-        "#cce6ff",
-        "ecologyzmpWFS_2",
-        "featureMember",
-        "</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-center\x22>",
-        "getProjection",
-        "setBounds",
-        "/front/back/realPrice/realPrice_apartment.php",
-        "tbl_opn_eczm",
-        "drawend",
-        "img",
-        "find",
-        "href",
-        "</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>",
-        "removeOverlayMapTypeId",
-        "+proj=tmerc\x20+lat_0=38\x20+lon_0=127\x20+k=1\x20+x_0=200000\x20+y_0=500000\x20+ellps=GRS80\x20+units=m\x20+no_defs",
-        "longitude",
-        "60px",
-        "outerBoundaryIs",
-        "last",
-        "996odwrQF",
-        "map_bg",
-        "location",
-        "curLat",
-        "Polygon",
-        "left",
-        "polygonMember",
-        "#mapSearchInput",
-        "intersect",
-        "400FRNOtj",
-        "draw_tool_btn",
-        "node",
-        "setCenter",
-        "#land_analysis_total_area",
-        "filter",
-        "draw",
-        "lastChild",
-        "Status",
-        "cancel",
-        "parentNode",
-        "map",
-        "260194hPXnph",
-        "LinearRing",
-        "geom",
-        "#0000FF",
-        "createElement",
-        "Polyline",
-        "Bounds\x20intersect:",
-        "offsetWidth",
-        "boundsB\x20SouthWest:",
-        "overlay-image",
-        ".mo-land\x20input[type=radio]:checked",
-        "#land_analysis_info_table",
-        "addEventListener",
-        "drawing",
-        "max",
-        "100%",
-        "&format=png&transparent=true&exceptions=BLANK&SG_APIM=2ug8Dm9qNBfD32JLZGPN64f3EoTlkpD8kSOHWfXpyrY",
-        "50px",
-        "EPSG:5178",
-        "className",
-        "curZoom",
-        "#e9e8d6",
-        "boundsA\x20NorthEast:",
-        "dealYear",
-        "clear",
-        "#fff",
-        "20px",
-        "height:",
-        "/front/back/history/save_search_history.php",
-        "values",
-        "true",
-        "innerBoundaryIs",
-        "lng",
-        "WMS\x20Blob\x20Response:\x20",
-        "pagination",
-        "#mapHistoryOpen",
-        "6283696SIJqQX",
-        "data-moved",
-        "256",
-        "126.831477350333",
-        "data-original-position",
-        "ne:",
-        "shortdot",
-        "sub_address_no",
-        "then",
-        "backgroundPosition",
-        "#analysis_total_area",
-        "tilesloaded",
-        "lineHeight",
-        "/front/back/realPrice/echologyWMS.php",
-        ".mo-tool-option\x20button",
-        "정보를\x20가져오는\x20중\x20오류가\x20발생했습니다:\x20",
-        "EPSG:5179",
-        "click",
-        "<tr>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-center\x22\x20style=\x22color:",
-        "&width=",
-        "create",
-        "<img\x20src=\x22",
-        "addListener",
-        "forEach",
-        "#alert_message",
-        "add",
-        "border",
-        "@text",
-        "main_address_no",
-        "+proj=merc\x20+lon_0=0\x20+k=1\x20+x_0=0\x20+y_0=0\x20+datum=WGS84\x20+units=m\x20+no_defs",
-        "get",
-        "loading",
-        "span",
-        "4525230nUVSaM",
-        "유효하지\x20않은\x20ecologyPolygon이\x20있습니다.\x20건너뜁니다.",
-        "properties",
-        "POLYLINE",
-        "zoom_changed",
-        "dragend",
-        "download",
-        "entries",
-        "<h2>분석\x20중\x20<span>문제</span>가\x20발생했습니다.\x20다시\x20시도해주세요.</h2>",
-        "gotoPage",
-        "search",
-        "2FaYYic",
-        "Feature",
-        "/front/back/realPrice/echology.php",
-        "edit",
-        "tbody",
-        "#39f",
-        "</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22text-white\x20p-1\x22\x20style=\x22background-color:var(--var-color-main-1)\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22number\x22>",
-        "OverlayType",
-        "16px",
-        "isArray",
-        "stop",
-        "pow",
-        "hasClass",
-        "#AAAAFF",
-        "set",
-        "#FF0000",
-        "#land_analysis_info_table\x20tbody",
-        "256px",
-        "POINT(",
-        "#9ad37f",
-        "div",
-        "dblclick",
-        "pushState",
-        "addressSearch",
-        "setAttribute",
-        "removeChild",
-        "/front/back/realPrice/test2.php",
-        "backgroundImage",
-        "length",
-        "substring",
-        "getNorthEast",
-        "padStart",
-        "createObjectURL",
-        "37.199537203472",
-        "14px",
-        "toFixed",
-        "saveSearchHistory",
-        "open",
-        "code",
-        "<div\x20style=\x22padding:5px;z-index:1;\x22>",
-        "32226ZQPLAn",
-        "header",
-        ":checked",
-        "tagName",
-        "toString",
-        "Places",
-        "getContent",
-        "202407",
-        "resultMsg",
-        "ready",
-        "width:",
-        "0000",
-        "+proj=tmerc\x20+lat_0=38\x20+lon_0=127.5\x20+k=1\x20+x_0=200000\x20+y_0=500000\x20+ellps=GRS80\x20+units=m\x20+no_defs",
-        "MarkerClusterer",
-        "EPSG:5176",
-        "min",
-        "status",
-    ];
-    a39_0x4e67 = function () {
-        return _0x2d8937;
-    };
-    return a39_0x4e67();
-}
+
+/**
+ * 지도위 거리/면적 제거
+ */
 function resetDrawing() {
-    const _0x512fea = a39_0x363e4a;
-    lineDrawer["clearAllLines"](), circleDrawer[_0x512fea(0x1b9)](), polygonDrawer[_0x512fea(0x18f)]();
+    lineDrawer.clearAllLines(); // 선 모두 제거
+    circleDrawer.removeAllCircles(); // 원 모두 제거
+    polygonDrawer.clearPolygon(); // 다각형 모두 제거
 }

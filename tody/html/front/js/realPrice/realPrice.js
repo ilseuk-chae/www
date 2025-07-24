@@ -237,7 +237,12 @@ function initAction() {
         $(".map-bg").toggleClass("full");
         $("#rvWrapper").toggleClass("full");
         // $("#mapContentOpenClose i").toggleClass("fa-rotate-180");
-
+        if ($(".map-content").hasClass("active")) {
+            $(".realmap-estate-group").addClass("active");
+        }
+        else {
+            $(".realmap-estate-group").removeClass("active");
+        }
         // 합필분석 단기
         $(".mo-land").removeClass("active");
         $(".map-land").removeClass("active");
@@ -296,6 +301,51 @@ function initAction() {
     //         mapContentMoChk = 0;
     //     }
     // });
+
+    // 지도 - real estate 선택 20250722
+    $(".realmap-estate-group").on("click", "button", function () {
+        const clickedButton = $(this);
+        const allButtons = $(".realmap-estate-group button");
+        const allToggleButton = allButtons.eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
+        const nonAllButtons = allButtons.not(allToggleButton); // '전체' 버튼을 제외한 나머지 버튼들
+
+        // 0. 전체 버튼 (첫 번째 버튼) 클릭 시 로직
+        if (clickedButton.is(allToggleButton)) {
+            // 1. 첫 번째 버튼('전체')이 클릭되었을 때
+            if (allToggleButton.hasClass("active")) {
+                // '전체' 버튼이 이미 활성화 상태였다면, 토글하여 비활성화
+                allToggleButton.removeClass("active");
+                nonAllButtons.removeClass("active"); // 나머지 모든 버튼 비활성화
+                //allButtons.eq(1).addClass("active"); // 두 번째 버튼만 활성화 (요구사항 1.2)
+            } else {
+                // '전체' 버튼이 비활성화 상태였다면, 토글하여 활성화
+                allToggleButton.addClass("active");
+                nonAllButtons.addClass("active"); // 나머지 모든 버튼 활성화 (요구사항 1.1)
+            }
+        } else {
+            // '전체' 버튼이 아닌 다른 버튼이 클릭되었을 때
+            clickedButton.toggleClass("active"); // 클릭된 버튼의 active 상태 토글
+
+            // 나머지 버튼들의 상태를 확인하여 '전체' 버튼의 상태를 결정
+            let allOthersAreActive = true;
+            nonAllButtons.each(function() {
+                if (!$(this).hasClass("active")) {
+                    allOthersAreActive = false;
+                    return false; // 하나라도 비활성화된 버튼이 있으면 루프 중단
+                }
+            });
+
+            if (allOthersAreActive) {
+                // 3. '전체' 버튼이 아닌 나머지 버튼들이 모두 활성화되면 '전체' 버튼도 활성화
+                allToggleButton.addClass("active");
+            } else {
+                // 2. '전체' 버튼 이외에 하나라도 비활성화된 버튼이 있으면 '전체' 버튼 비활성화
+                allToggleButton.removeClass("active");
+            }
+        }
+        //estateNewList();
+        fetchRealPriceAptBasedOnMapCenter();
+    });
 
     // 지도 - 이력관리 //
     $("#mapHistoryOpen").click(function () {

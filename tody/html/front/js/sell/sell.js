@@ -2296,26 +2296,42 @@ function getSaleListFilterParams() {
 
 function getEstateListFilterParams() {
     let estate_value = [];
-    let = btn_text = "";
-    $('.map-estate-group button.active').each(function () {
-        const btn_text = $(this).text().trim();
-        if( btn_text === "전체") {
-            estate_value.push("001"); // 버튼의 텍스트 값을 가져와 배열에 추가
-            estate_value.push("002");
-            estate_value.push("003");
-            estate_value.push("004");
-            estate_value.push("005");
-            estate_value.push("006");
-            estate_value.push("007");
-            estate_value.push("008");
-            estate_value.push("009");
-            estate_value.push("999");
-        }
-        else {
-            estate_value.push(estateTypeToValue(btn_text)); // 버튼의 텍스트 값을 가져와 배열에 추가
-        }
-        
-    });
+    
+    const allToggleButton = $('.map-estate-group button').eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
+    const isAllActive = allToggleButton.hasClass("active"); // '전체' 버튼이 활성화된 상태인지 확인
+
+    if (isAllActive) {
+        // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
+        // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
+        estate_value.push("001"); // 버튼의 텍스트 값을 가져와 배열에 추가
+        estate_value.push("002");
+        estate_value.push("003");
+        estate_value.push("004");
+        estate_value.push("005");
+        estate_value.push("006");
+        estate_value.push("007");
+        estate_value.push("008");
+        estate_value.push("009");
+        estate_value.push("999");
+    } else {
+        // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
+        // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
+        $('.map-estate-group button.active').not(allToggleButton).each(function () {
+            const btn_text = $(this).text().trim();
+            // 개별 유형 버튼의 텍스트를 이용해 값을 추가
+            estate_value.push(estateTypeToValue(btn_text));
+        });
+    }
+
+    // 만약 아무것도 선택되지 않았을 경우 (estate_value가 빈 배열일 때)
+    // 모든 유형을 포함하거나, 특정 기본값을 설정할지 결정할 수 있습니다.
+    // 현재 PHP 로직은 빈 배열을 받으면 빈 응답을 반환하도록 되어 있으므로
+    // 여기서 추가적인 처리가 필요 없을 수 있습니다.
+    if (estate_value.length === 0) {
+        // 예시: 아무것도 선택되지 않았을 때 모든 유형을 기본으로 선택
+        // estate_value.push("apt", "multi", "officetel", "land");
+    }
+
     return estate_value;
     
 }

@@ -2,6 +2,33 @@ let clusterersByType = {}; // 클러스터러 객체들을 저장할 변수
 let realPriceData = []; // 실거래가 정보
 let realEstimatedPrice = null; // 추정가
 
+
+function countEstateTypes(apiResponseObject) {
+    // 1. 실제 데이터 배열이 존재하는지 확인합니다.
+    const dataRecords = apiResponseObject.responseData;
+    const estateTypeCounts = {}; // 각 estate_type의 개수를 저장할 객체
+
+    // 2. dataRecords 배열을 순회하며 estate_type별 개수를 집계합니다.
+    dataRecords.forEach(record => {
+        // 각 레코드가 'estate_type' 속성을 가지고 있는지 확인
+        if (record && record.estate_type) {
+            const type = record.estate_type;
+            // 해당 type이 이미 객체에 있으면 1 증가, 없으면 1로 초기화
+            estateTypeCounts[type] = (estateTypeCounts[type] || 0) + 1;
+        }
+    });
+
+    // 3. 집계된 결과를 콘솔에 표시합니다.
+    console.log("Estate 총수 : " + dataRecords.length);
+    if (Object.keys(estateTypeCounts).length === 0) {
+        console.log("데이터 내에 estate_type이 없거나, 레코드가 없습니다.");
+    } else {
+        for (const type in estateTypeCounts) {
+            console.log(` - ${type}: ${estateTypeCounts[type]}개`);
+        }
+    }
+}
+
 async function realPriceApt(sggCd) {
     var bounds = map.getBounds();
     var sw = bounds.getSouthWest(); // 남서쪽 좌표
@@ -9,7 +36,13 @@ async function realPriceApt(sggCd) {
     var boxString = `BOX(${sw.getLng()},${sw.getLat()},${ne.getLng()},${ne.getLat()})`; // BOX 형식으로 변환
     var bbox = `${sw.getLat()},${sw.getLng()},${ne.getLat()},${ne.getLng()},EPSG:4326`; // BOX 형식으로 변환
 
-    const dataObj = { bbox: encodeURIComponent(bbox), sggCd };
+    var filterObj = collectMultiFilterParams(); // 필터
+
+    const dataObj = { 
+        ...filterObj, 
+        bbox: encodeURIComponent(bbox), 
+        sggCd 
+    };
     callApiAbort("/front/back/realPrice/realPrice_apt.php", "POST", dataObj, "realPriceApt")
         .then((response) => {
             if (!response) return;
@@ -19,13 +52,18 @@ async function realPriceApt(sggCd) {
 
             const zoomLevel = map.getLevel();
 
+//debug용            // 1. estate_type별 개수 집계 함수 호출
+//            countEstateTypes(response); // 'response' 객체 전체를 전달
+
             // 기존 오버레이 제거
             realPriceOverlays.forEach((overlay) => overlay.setMap(null));
             realPriceOverlays = []; // 배열 초기화
 
             // 모든 클러스터러 초기화
             Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
-
+            let markerString = ""; // 초기화
+            
+            
             // 클러스터러 생성 또는 인포윈도우 생성
             Object.values(responseData).forEach((data) => {
                 if (zoomLevel > 5) {
@@ -36,7 +74,25 @@ async function realPriceApt(sggCd) {
                 } else if (zoomLevel == 5) {
                     // 줌 레벨이 5 이하일 경우, 작은 원형 점으로 표시
                     const smallMarker = document.createElement("div");
-                    smallMarker.className = data.estate_type !== "land" ? "small-marker bg-main border-danger" : "small-marker bg-yellow1 border-yellow1";
+                    //smallMarker.className = data.estate_type !== "land" ? "small-marker bg-main border-danger" : "small-marker bg-yellow1 border-yellow1";
+                    switch(data.estate_type) {
+                        case "apt":
+                            markerString = "small-marker bg-orange2 border-orange2";
+                            break;
+                        case "land":
+                            markerString = "small-marker bg-yellow1 border-yellow1";
+                            break;
+                        case "multi":
+                            markerString = "small-marker bg-red2 border-red2";
+                            break;
+                        case "officetel":
+                            markerString = "small-marker bg-indigo2 border-indigo2";
+                            break;
+                        default:    
+                            markerString = "small-marker bg-gray border-gray";
+                            break;
+                    }
+                    smallMarker.className = markerString;
                     smallMarker.style.cssText = `
                         width: 7px;
                         height: 7px;
@@ -89,20 +145,67 @@ async function realPriceApt(sggCd) {
 
                     const iwContent = document.createElement("div"); // HTML 콘텐츠를 담을 div 요소 생성
                     iwContent.className = "real-price-marker cursor-pointer";
+                    let liString = ""; // 초기화
+                    let imgString = ""; // 초기화
+                    let estateString = ""; // 초기화
+                    let borderString = ""; // 초기화
+                    switch(data.estate_type) {
+                        case "apt":
+                            markerString = "border-orange2";
+                            borderString = "border-bottom-orange2";
+                            liString = "bg-orange2";
+                            imgString = "icn_arr_mark.svg";
+                            estateString = "아파트";
+                            break;
+                        case "land":
+                            markerString = "border-yellow1";
+                            borderString = "border-bottom-yellow1";
+                            liString = "bg-yellow1";
+                            imgString = "icn_arr_mark_yellow1.svg";
+                            estateString = "토지";
+                            break;
+                        case "multi":
+                            markerString = "border-red2";
+                            borderString = "border-bottom-red2";
+                            liString = "bg-red2";
+                            imgString = "icn_arr_mark_red2.svg";
+                            estateString = "연립/다세대";
+                            break;
+                        case "officetel":
+                            markerString = "border-indigo2";
+                            borderString = "border-bottom-indigo2";
+                            liString = "bg-indigo2";
+                            imgString = "icn_arr_mark_indigo2.svg";
+                            estateString = "오피스텔";
+                            break;
+                        default:    
+                            markerString = "border-gray";
+                            borderString = "border-bottom-gray";
+                            liString = "bg-gray";
+                            imgString = "icn_arr_mark_gray.svg";
+                            estateString = "-";
+                            break;
+                    }
+                    //<ul class="text-center bg-white border ${data.estate_type !== "land" ? "border-danger" : "border-yellow1"} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
+                    //<li class="${data.estate_type !== "land" ? "bg-main" : "bg-yellow1"} text-white">
+                    //<p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${data.estate_type !== "land" ? "icn_arr_mark.svg" : "icn_arr_mark_yellow.svg"}" width="15" alt="" title=""></p>
                     iwContent.innerHTML = `
-                    <ul class="text-center bg-white border ${data.estate_type !== "land" ? "border-danger" : "border-yellow1"} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${
-                        data.estate_type
+                    <ul class="text-center bg-white border ${markerString} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
                     }" ondragstart="return false;" onselectstart="return false;">
+                        <li class="up bg-white ${borderString} p-1" style="line-height: 11px;">
+                            <p class="font10">${estateString}</p>
+                        </li>
                         <li class="up bg-white p-1">
                             <!-- <p class="font11">${data.estate_type}</p> --!>
                             <!-- <p class="font11">${data.bonbun}</p> --!>
-                            <p class="font15" style="line-height: 20px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
+                            <!-- class="font15" style="line-height: 20px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p> --!>
+                            <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
                         </li>
-                        <li class="${data.estate_type !== "land" ? "bg-main" : "bg-yellow1"} text-white">
-                            <span class="number toggle-unit">${(data.excluUseAr / 3.3058).toFixed(2)}평</span>
+                        <li class="${liString} text-white">
+                            <span class="font12 number toggle-unit">${(data.excluUseAr / 3.3058).toFixed(2)}평</span>
                         </li>
                     </ul>
-                    <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${data.estate_type !== "land" ? "icn_arr_mark.svg" : "icn_arr_mark_yellow.svg"}" width="15" alt="" title=""></p>
+                    <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
                     `;
 
                     let iwPosition = new kakao.maps.LatLng(data.center_latitude, data.center_longitude); //인포윈도우 표시 위치입니다
@@ -180,6 +283,89 @@ async function realPriceApt(sggCd) {
         });
 }
 
+/**
+ * 멀티 필터 파라미터를 수집하는 함수( 추가)
+ * @returns {Object} 필터 파라미터 객체
+ */
+function collectMultiFilterParams() {
+    return {
+        estateType: getEstateListFilterParams(), 
+    };
+}
+function getEstateListFilterParams() {
+    let estate_value = [];
+    
+    const allToggleButton = $('.realmap-estate-group button').eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
+    const isAllActive = allToggleButton.hasClass("active"); // '전체' 버튼이 활성화된 상태인지 확인
+
+    if (isAllActive) {
+        // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
+        // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
+        estate_value.push("apt");
+        estate_value.push("multi"); // 오타 수정!
+        estate_value.push("officetel");
+        estate_value.push("land");
+    } else {
+        // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
+        // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
+        $('.realmap-estate-group button.active').not(allToggleButton).each(function () {
+            const btn_text = $(this).text().trim();
+            // 개별 유형 버튼의 텍스트를 이용해 값을 추가
+            estate_value.push(estateTypeToValue(btn_text));
+        });
+    }
+
+    // 만약 아무것도 선택되지 않았을 경우 (estate_value가 빈 배열일 때)
+    // 모든 유형을 포함하거나, 특정 기본값을 설정할지 결정할 수 있습니다.
+    // 현재 PHP 로직은 빈 배열을 받으면 빈 응답을 반환하도록 되어 있으므로
+    // 여기서 추가적인 처리가 필요 없을 수 있습니다.
+    if (estate_value.length === 0) {
+        // 예시: 아무것도 선택되지 않았을 때 모든 유형을 기본으로 선택
+        // estate_value.push("apt", "multi", "officetel", "land");
+    }
+    return estate_value;
+    
+}
+/**
+ * estate 타입을 값으로변경하는 함수
+ * @param {string} estateType - estate 타입 타입 
+ */
+function estateTypeToValue(estateType) {
+    let estateValue;
+    switch (estateType) {
+        case "전체":
+            estateValue = "";
+            break;
+        case "아파트":
+            estateValue = "apt";
+            break;
+        case "연립/다세대":
+            estateValue = "multi";
+            break;
+        case "오피스텔":
+            estateValue = "officetel";
+            break;
+        case "토지":
+            estateValue = "land";
+            break;
+        case "단독/다가구":
+            estateValue = "single";
+            break;
+        case "상업/업무용":
+            estateValue = "commercial";
+            break;
+        case "공장/창고":
+            estateValue = "factory";
+            break;
+        case "분양/입주권":
+            estateValue = "lots";
+            break;
+        default:
+            console.error("유효하지 않은 매물유형입니다.");
+            break;
+    }
+    return estateValue;
+}
 /**
  * 매물 데이터를 기반으로 클러스터링 마커 생성 함수
  * estate_type과 sale_type을 기준으로 클러스터링하도록 설정
@@ -354,7 +540,7 @@ function createClustererAll(type) {
  * 특정 estate_type과 sale_type에 대한 클러스터러 생성 함수
  */
 function createClusterer(estateType) {
-    console.log(estateType);
+    //console.log(estateType);
 
     // const key = `${estateType}_${saleType}`;
     const key = `${estateType}`;

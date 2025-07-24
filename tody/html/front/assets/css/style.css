@@ -220,6 +220,31 @@ textarea {
 .border-black {border:#222222 1px solid !important;}
 .border-main {border:var(--var-color-main-1) 1px solid !important;}
 
+/* 라인색_아래 쪽 */
+.border-bottom-red1 {border-bottom:#E81A0C 1px solid !important;}
+.border-bottom-red2 {border-bottom:#FE7D87 1px solid !important;}
+.border-bottom-orange1 {border-bottom:#FF4400 1px solid !important;}
+.border-bottom-orange2 {border-bottom:#FE6900 1px solid !important;}
+.border-bottom-yellow1 {border-bottom:#FEB912 1px solid !important;}
+.border-bottom-yellow2 {border-bottom:#FEDA49 1px solid !important;}
+.border-bottom-lime {border-bottom:#AFF218 1px solid !important;}
+.border-bottom-indigo1 {border-bottom:#E54887 1px solid !important;}
+.border-bottom-indigo2 {border-bottom:#F4AFCA 1px solid !important;}
+.border-bottom-violet1 {border-bottom:#702BFE 1px solid !important;}
+.border-bottom-violet2 {border-bottom:#61305D 1px solid !important;}
+.border-bottom-blue1 {border-bottom:#2973D6 1px solid !important;}
+.border-bottom-blue2 {border-bottom:#4271F4 1px solid !important;}
+.border-bottom-blue3 {border-bottom:#5BA6EB 1px solid !important;}
+.border-bottom-green1 {border-bottom:#039C55 1px solid !important;}
+.border-bottom-green2 {border-bottom:#98DD62 1px solid !important;}
+.border-bottom-aqua1 {border-bottom:#33A8A1 1px solid !important;}
+.border-bottom-aqua2 {border-bottom:#87DBDD 1px solid !important;}
+.border-bottom-white {border-bottom:#ffffff 1px solid !important;}
+.border-bottom-light {border-bottom:#DEE2E9 1px solid !important;}
+.border-bottom-gray {border-bottom:#888888 1px solid !important;}
+.border-bottom-dark {border-bottom:#343a40 1px solid !important;}
+.border-bottom-black {border-bottom:#222222 1px solid !important;}
+.border-bottom-main {border-bottom:var(--var-color-main-1) 1px solid !important;}
 
 /* 가로사이즈 (%) */
 .w100p {width:100% !important;}
@@ -534,8 +559,10 @@ textarea {
 
 
 /* 폰트사이즈 */
+.font10 {font-size:10px !important;}
 .font11 {font-size:11px !important;}
 .font12 {font-size:12px !important;}
+.font13 {font-size:13px !important;}
 .font14 {font-size:14px !important;}
 .font15 {font-size:15px !important;}
 .font16 {font-size:16px !important;}

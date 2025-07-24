@@ -108,9 +108,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($bbox)) {
         list($minLat, $minLng, $maxLat, $maxLng) = array_slice(explode(',', $bbox), 0, 4);
     }
-
     // echo $minLng;exit;
+    // 클라이언트에서 요청한 특정 부동산 유형을 가져옵니다.
+    $requested_estate_types = isset($_POST['estateType']) && is_array($_POST['estateType']) ? $_POST['estateType'] : [];
 
+    if (empty($requested_estate_types)) {
+        responseApi(200, 'SUCCESS', []); // 빈 배열을 응답하고 종료
+        exit;
+    }
     // Redis에서 sggCd 캐시 확인
     $cacheKey = "realPrice:all:latest:{$sggCd}";
     $cachedData = $redis->get($cacheKey);
@@ -122,6 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         foreach ($allData as $row) {
             if (!empty($row['poligon'])) {
+                // *** 추가된 로직: 요청된 estateType으로 필터링 ***
+                // 현재 row의 estate_type이 요청된 목록에 없다면 건너뜁니다.
+                if (!in_array($row['estate_type'], $requested_estate_types)) { 
+                    continue;
+                }
+                // ... 기존의 bbox 필터링 로직 ...
                 $coordinates = extractCoordinates($row['poligon']);
                 $centerCoords = getPolygonCentroid($coordinates);
                 $row['center_latitude'] = $centerCoords[1];
@@ -139,6 +150,143 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         responseApi(200, 'SUCCESS', $response_data);
         exit;
     } else {
+        
+        // estate_type이 선택된 경우에만 쿼리 실행
+        // --- 캐시 미스: DB에서 데이터 가져와야 함 ---
+        $union_queries = []; // 각 부동산 유형별 쿼리를 저장할 배열
+        
+        // 아파트 쿼리 템플릿
+        $apt_query_template = "
+            SELECT
+                rap.aptSeq,
+                rap.excluUseAr,
+                rap.dealYear,
+                rap.dealMonth,
+                rap.dealDay,
+                rap.dealAmount,
+                rap.pnu,
+                'apt' AS estate_type,
+                ST_AsText(admg.WKT) AS poligon
+            FROM realPrice_apt_41 AS rap
+            INNER JOIN administrative_district_map_41 AS admg
+            ON admg.pnu_cd = rap.pnu
+            INNER JOIN
+            (
+                SELECT aptSeq, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                FROM realPrice_apt_41
+                GROUP BY aptSeq
+            ) AS latest
+            ON rap.aptSeq = latest.aptSeq
+            AND CONCAT(rap.dealYear, LPAD(rap.dealMonth, 2, '0'), LPAD(rap.dealDay, 2, '0')) = latest.max_date
+            WHERE rap.pnu LIKE ?
+            GROUP BY rap.aptSeq";
+
+        // 다세대/연립 쿼리 템플릿
+        $multi_query_template = "
+            SELECT
+                null AS aptSeq,
+                rmf.excluUseAr,
+                rmf.dealYear,
+                rmf.dealMonth,
+                rmf.dealDay,
+                rmf.dealAmount,
+                rmf.pnu,
+                'multi' AS estate_type,
+                ST_AsText(admg.WKT) AS poligon
+            FROM realPrice_multiFamily_41 AS rmf
+            INNER JOIN administrative_district_map_41 AS admg
+            ON admg.pnu_cd = rmf.pnu
+            INNER JOIN
+            (
+                SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                FROM realPrice_multiFamily_41
+                GROUP BY pnu
+            ) AS latest
+            ON rmf.pnu = latest.pnu
+            AND CONCAT(rmf.dealYear, LPAD(rmf.dealMonth, 2, '0'), LPAD(rmf.dealDay, 2, '0')) = latest.max_date
+            WHERE rmf.pnu LIKE ?
+            GROUP BY rmf.pnu";
+
+        // 오피스텔 쿼리 템플릿
+        $officetel_query_template = "
+            SELECT
+                null AS aptSeq,
+                rot.excluUseAr,
+                rot.dealYear,
+                rot.dealMonth,
+                rot.dealDay,
+                rot.dealAmount,
+                rot.pnu,
+                'officetel' AS estate_type,
+                ST_AsText(admg.WKT) AS poligon
+            FROM realPrice_officetel_41 AS rot
+            INNER JOIN administrative_district_map_41 AS admg
+            ON admg.pnu_cd = rot.pnu
+            INNER JOIN
+            (
+                SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                FROM realPrice_officetel_41
+                GROUP BY pnu
+            ) AS latest
+            ON rot.pnu = latest.pnu
+            AND CONCAT(rot.dealYear, LPAD(rot.dealMonth, 2, '0'), LPAD(rot.dealDay, 2, '0')) = latest.max_date
+            WHERE rot.pnu LIKE ?
+            GROUP BY rot.pnu";
+
+        // 토지 쿼리 템플릿
+        $land_query_template = "
+            SELECT
+                null AS aptSeq,
+                rl.dealArea AS excluUseAr,
+                rl.dealYear,
+                rl.dealMonth,
+                rl.dealDay,
+                rl.dealAmount,
+                rl.pnu,
+                'land' AS estate_type,
+                ST_AsText(admg.WKT) AS poligon
+            FROM realPrice_land_41 AS rl
+            INNER JOIN administrative_district_map_41 AS admg
+            ON admg.pnu_cd = rl.pnu
+            INNER JOIN
+            (
+                SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                FROM realPrice_land_41
+                GROUP BY pnu
+            ) AS latest
+            ON rl.pnu = latest.pnu
+            AND CONCAT(rl.dealYear, LPAD(rl.dealMonth, 2, '0'), LPAD(rl.dealDay, 2, '0')) = latest.max_date
+            WHERE rl.pnu LIKE ? AND rl.jimok != '도로'
+            GROUP BY rl.pnu";
+    
+        foreach ($requested_estate_types as $type) {
+            switch ($type) {
+                case 'apt':
+                    $union_queries[] = $apt_query_template;
+                    //$params[] = $pnu_filter_value;
+                    break;
+                case 'multi':
+                    $union_queries[] = $multi_query_template;
+                    //$params[] = $pnu_filter_value;
+                    break;
+                case 'officetel':
+                    $union_queries[] = $officetel_query_template;
+                    //$params[] = $pnu_filter_value;
+                    break;
+                case 'land':
+                    $union_queries[] = $land_query_template;
+                    //$params[] = $pnu_filter_value;
+                    break;
+                // 추가적인 부동산 유형이 있다면 여기에 case 추가
+            }
+        }
+        if (empty($union_queries)) {
+            // $estate_types에 유효하지 않은 타입만 있어서 union_queries가 비어있는 경우
+            $response_data = [];
+            responseApi(200, 'SUCCESS', $response_data);
+            exit;
+        }
+        /*
         $sql = 
             "SELECT 
                 rap.aptSeq,
@@ -263,11 +411,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             AND rl.jimok != '도로'
             GROUP BY rl.pnu; -- pnu 기준 중복 제거
             ";
+        */
+        // --- $sql 변수가 이 시점에서 확실히 정의되고 값이 할당됩니다 ---
+        $sql = implode(" UNION ALL ", $union_queries);
+
         $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            // 쿼리 준비 실패 시 오류 처리 (실제 운영에서는 로그를 사용)
+            error_log("Failed to prepare statement: " . $conn->error);
+            // 클라이언트에게 오류 응답 전송
+            responseApi(500, 'ERROR', ['message' => 'Statement preparation failed.']);
+            exit;
+        }
         $sggCdLike = "{$sggCd}%"; // $sggCd 값으로 시작하는 모든 값
         // echo get_bound_query($sql, [$sggCdLike]);exit;
-        $stmt->bind_param("ssss", $sggCdLike, $sggCdLike, $sggCdLike, $sggCdLike);
-        $stmt->execute();
+        // 1. 바인딩할 파라미터의 개수를 결정합니다.
+    
+        $num_params = count($requested_estate_types);
+
+        // 2. 바인딩 타입 문자열을 동적으로 생성합니다.
+        // 이 경우 모든 파라미터는 문자열('s')이므로 's'를 필요한 개수만큼 반복합니다.
+        $types_string = str_repeat('s', $num_params);
+
+        // 3. call_user_func_array를 위해 bind_param에 전달할 인자 배열을 구성합니다.
+        // 첫 번째 요소는 타입 문자열($types_string)이고,
+        // 그 이후의 요소들은 실제 바인딩될 변수들입니다.
+        // bind_param은 변수의 참조(&)를 요구하므로, $sggCdLike의 참조를 사용합니다.
+        $bind_args = [$types_string]; // 첫 번째 인자는 타입 문자열
+
+        // $sggCdLike 변수의 참조를 필요한 개수만큼 배열에 추가합니다.
+        for ($i = 0; $i < $num_params; $i++) {
+            $bind_args[] = &$sggCdLike; // $sggCdLike 변수의 참조를 추가
+        }
+        // 4. call_user_func_array를 사용하여 bind_param 메서드를 동적으로 호출합니다.
+        // 첫 번째 인자는 호출할 객체($stmt), 두 번째 인자는 호출할 메서드 이름('bind_param'),
+        // 세 번째 인자는 메서드에 전달될 인자들의 배열($bind_args)입니다.
+        // SQL 바인딩 및 실행 부분
+        try {
+            call_user_func_array([$stmt, 'bind_param'], $bind_args);
+        } catch (Throwable $e) { // PHP 7 이상에서 Fatal Error도 잡을 수 있음
+            error_log("Error during bind_param: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            responseApi(500, 'ERROR', ['message' => 'bind_param error. Check logs.']);
+            exit;
+        }   
+        //$stmt->bind_param("ssss", $sggCdLike, $sggCdLike, $sggCdLike, $sggCdLike);
+        try {
+            $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("Error during execute: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            responseApi(500, 'ERROR', ['message' => 'SQL execute error. Check logs.']);
+            exit;
+        }        
         $result = $stmt->get_result();
 
         // 전체 데이터를 배열에 저장
