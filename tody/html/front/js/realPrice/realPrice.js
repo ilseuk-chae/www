@@ -236,12 +236,16 @@ function initAction() {
         $(".map-history").toggleClass("active");
         $(".map-bg").toggleClass("full");
         $("#rvWrapper").toggleClass("full");
+        $(".realmap-estate-group").toggleClass("active");
+        $(".realmap-estate-info").toggleClass("active");
         // $("#mapContentOpenClose i").toggleClass("fa-rotate-180");
         if ($(".map-content").hasClass("active")) {
             $(".realmap-estate-group").addClass("active");
+            $(".realmap-estate-info").addClass("active");
         }
         else {
             $(".realmap-estate-group").removeClass("active");
+            $(".realmap-estate-info").removeClass("active");
         }
         // 합필분석 단기
         $(".mo-land").removeClass("active");
@@ -275,16 +279,22 @@ function initAction() {
             $(this).removeClass("active full");
             $(".map-bg").addClass("full");
             $(".map-history").removeClass("active");
+            $(".realmap-estate-group").removeClass("active");
+            $(".realmap-estate-info").removeClass("active");
         } else if ($(this).hasClass("active")) {
             $(".map-content").addClass("full");
             $(this).addClass("full");
             $(".map-bg").removeClass("full");
             $(".map-history").addClass("active");
+            $(".realmap-estate-group").addClass("active");
+            $(".realmap-estate-info").addClass("active");
         } else {
             $(".map-content").addClass("active full");
             $(this).addClass("active full");
             $(".map-bg").removeClass("full");
             $(".map-history").addClass("active");
+            $(".realmap-estate-group").addClass("active");
+            $(".realmap-estate-info").addClass("active");
         }
     });
     // var mapContentMoChk = 0;
@@ -344,7 +354,12 @@ function initAction() {
             }
         }
         //estateNewList();
-        fetchRealPriceAptBasedOnMapCenter();
+        fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기
+    });
+
+    //지도 - real estate info 선택 - 정보 타입
+    $('#infoType').on('change', function() {
+        fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기
     });
 
     // 지도 - 이력관리 //

@@ -3137,12 +3137,12 @@
     position: absolute;
     top: 0;
     left: 0;
-    margin: 1px 0 0 10px;
+    margin: 1px 0 0 4px;
     z-index: 1;
     transition: margin-left 0.4s ease-out;
 }
 .map-history {
-    margin-right: 10px; /* map-sale-group과 간격 */
+    margin-right: 4px; /* map-sale-group과 간격 */
 }
 .map-history.active {
     margin-left: 454px;

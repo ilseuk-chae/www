@@ -111,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // echo $minLng;exit;
     // 클라이언트에서 요청한 특정 부동산 유형을 가져옵니다.
     $requested_estate_types = isset($_POST['estateType']) && is_array($_POST['estateType']) ? $_POST['estateType'] : [];
+    $estate_info = isset($_POST['estateInfo']) ? urldecode($_POST['estateInfo']) : '';
 
     if (empty($requested_estate_types)) {
         responseApi(200, 'SUCCESS', []); // 빈 배열을 응답하고 종료
@@ -165,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 rap.dealDay,
                 rap.dealAmount,
                 rap.pnu,
+                null AS jimok,
                 'apt' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
             FROM realPrice_apt_41 AS rap
@@ -191,6 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 rmf.dealDay,
                 rmf.dealAmount,
                 rmf.pnu,
+                null AS jimok,
                 'multi' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
             FROM realPrice_multiFamily_41 AS rmf
@@ -217,6 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 rot.dealDay,
                 rot.dealAmount,
                 rot.pnu,
+                null AS jimok,
                 'officetel' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
             FROM realPrice_officetel_41 AS rot
@@ -243,6 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 rl.dealDay,
                 rl.dealAmount,
                 rl.pnu,
+                rl.jimok,
                 'land' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
             FROM realPrice_land_41 AS rl
@@ -412,8 +417,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             GROUP BY rl.pnu; -- pnu 기준 중복 제거
             ";
         */
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         // --- $sql 변수가 이 시점에서 확실히 정의되고 값이 할당됩니다 ---
         $sql = implode(" UNION ALL ", $union_queries);
+
+        // --- *** 중요 *** ---
+        // 여기서 최종 생성된 $sql 문자열을 로그에 기록하여 확인합니다.
+        // 이 로그 내용을 DB 클라이언트 (MySQL Workbench, DBeaver 등)에 복사하여
+        // "PREPARE stmt FROM '복사한 SQL 문자열'; EXECUTE stmt USING @param1, @param2...; DEALLOCATE PREPARE stmt;" 와 같이
+        // 직접 실행하여 어떤 오류가 나는지 확인해야 합니다.
+        //error_log("Final SQL query string: " . $sql);
 
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
@@ -450,7 +463,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             call_user_func_array([$stmt, 'bind_param'], $bind_args);
         } catch (Throwable $e) { // PHP 7 이상에서 Fatal Error도 잡을 수 있음
-            error_log("Error during bind_param: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            //error_log("Error during bind_param: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             responseApi(500, 'ERROR', ['message' => 'bind_param error. Check logs.']);
             exit;
         }   
@@ -458,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $stmt->execute();
         } catch (Throwable $e) {
-            error_log("Error during execute: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            //error_log("Error during execute: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             responseApi(500, 'ERROR', ['message' => 'SQL execute error. Check logs.']);
             exit;
         }        
@@ -469,14 +482,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         while ($row = $result->fetch_assoc()) {
             $allData[] = $row;
         }
+        //error_log("Fetched allData: " . var_export($allData, true)); // 이전에 말씀드린 var_dump 대신 var_export 사용
 
         // Redis에 캐시 저장, TTL 한달 설정 (3600초)
-        $redis->setex($cacheKey, 2592000, json_encode($allData));
+        $redis->setex($cacheKey, 2592000, json_encode($allData,JSON_FORCE_OBJECT));
 
         // 결과 처리
         $response_data = [];
         foreach ($allData as $row) {
             // $response_data[] = $row;
+            // 1. 여기서 $row에 'jimok' 필드가 있는지 확인하고, 없거나 null일 경우 빈 문자열로 강제 할당
+            // array_key_exists를 사용하면 키가 있고 값이 null인 경우도 걸러낼 수 있습니다.
+            // 또한, isset으로 체크하여 키 자체가 없는 경우를 처리할 수도 있습니다.
+            if (!array_key_exists('jimok', $row) || $row['jimok'] === null) {
+                $row['jimok'] = ''; // jimok 필드가 없거나 null일 경우 빈 문자열로 초기화
+            }
+            // 만약 jimok 값이 존재하지만, 비어있을 수도 있다고 가정한다면
+            // if (empty($row['jimok']) && $row['jimok'] !== '0') { // 0 값은 제외
+            //     $row['jimok'] = '';
+            // }
+
             if (!empty($row['poligon'])) {
                 $coordinates = extractCoordinates($row['poligon']);
                 $centerCoords = getPolygonCentroid($coordinates);

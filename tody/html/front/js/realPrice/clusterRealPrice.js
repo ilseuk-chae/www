@@ -63,7 +63,6 @@ async function realPriceApt(sggCd) {
             Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
             let markerString = ""; // 초기화
             
-            
             // 클러스터러 생성 또는 인포윈도우 생성
             Object.values(responseData).forEach((data) => {
                 if (zoomLevel > 5) {
@@ -92,6 +91,7 @@ async function realPriceApt(sggCd) {
                             markerString = "small-marker bg-gray border-gray";
                             break;
                     }
+                    
                     smallMarker.className = markerString;
                     smallMarker.style.cssText = `
                         width: 7px;
@@ -149,6 +149,8 @@ async function realPriceApt(sggCd) {
                     let imgString = ""; // 초기화
                     let estateString = ""; // 초기화
                     let borderString = ""; // 초기화
+                    let infoString = ""; // 초기화
+                    let jimokString = ""; // 초기화
                     switch(data.estate_type) {
                         case "apt":
                             markerString = "border-orange2";
@@ -162,7 +164,22 @@ async function realPriceApt(sggCd) {
                             borderString = "border-bottom-yellow1";
                             liString = "bg-yellow1";
                             imgString = "icn_arr_mark_yellow1.svg";
-                            estateString = "토지";
+                            // data.jimok이 undefined 또는 null이 아니고, string 타입일 경우에만 replace 실행
+                            if (data.jimok != null && typeof data.jimok === 'string') {
+                                jimokString = data.jimok.replace(/용지/g, "");
+                            } else {
+                                // data.jimok이 유효한 문자열이 아닐 경우
+                                //console.warn("data.jimok :", data.jimok);
+                                //console.warn("경고: data.jimok이 유효한 문자열이 아니거나 정의되지 않았습니다.", data.jimok);
+                                // jimokString은 초기값인 ""을 유지합니다.
+                                jimokString ="";
+                            }
+                            jimokString = jimokString ? jimokString : "";
+                            if(jimokString.length > 0) {
+                                estateString = `토지: ${jimokString}`;
+                            } else {
+                                estateString = "토지";
+                            }                            
                             break;
                         case "multi":
                             markerString = "border-red2";
@@ -186,6 +203,26 @@ async function realPriceApt(sggCd) {
                             estateString = "-";
                             break;
                     }
+                    switch(filterObj.estateinfo) {
+                        case "거래면적":
+                        // 여기를 백틱(``)으로 변경합니다.
+                        infoString = `<span class="font12 number toggle-unit">${(data.excluUseAr / 3.3058).toFixed(2)}평</span>`;
+                        break;
+                    case "거래년도":
+                        // 이 부분도 백틱(``)으로 변경하고, 이전 답변에서 말씀드린 오타도 수정합니다.
+                        infoString = `<span class="font12">${data.dealYear}년</span>`;
+                        break;
+                    case "거래단가":
+                        const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                        const originalArea = data.excluUseAr / 3.3058;
+                        const unitPrice = originalAmount / originalArea;
+                        // 이 부분도 백틱(``)으로 변경합니다.
+                        infoString = `<span class="font12 number toggle-unit">${formatPrice(unitPrice, "all", false, true)}/평</span>`;
+                        break;
+                    default:
+                        infoString = `<span class="font12 ">-</span>`; // 백틱으로 변경
+                        break;
+                    }
                     //<ul class="text-center bg-white border ${data.estate_type !== "land" ? "border-danger" : "border-yellow1"} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
                     //<li class="${data.estate_type !== "land" ? "bg-main" : "bg-yellow1"} text-white">
                     //<p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${data.estate_type !== "land" ? "icn_arr_mark.svg" : "icn_arr_mark_yellow.svg"}" width="15" alt="" title=""></p>
@@ -202,7 +239,7 @@ async function realPriceApt(sggCd) {
                             <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
                         </li>
                         <li class="${liString} text-white">
-                            <span class="font12 number toggle-unit">${(data.excluUseAr / 3.3058).toFixed(2)}평</span>
+                            ${infoString}
                         </li>
                     </ul>
                     <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
@@ -241,8 +278,18 @@ async function realPriceApt(sggCd) {
                         // 커스텀 오버레이를 드래그 할 때, 내부 텍스트가 영역 선택되는 현상을 막아줍니다.
                         e.preventDefault();
                         const unitElement = iwContent.querySelector(".toggle-unit");
+
                         const isPyeong = unitElement.textContent.includes("평");
-                        unitElement.textContent = isPyeong ? `${parseFloat(data.excluUseAr)}㎡` : `${(data.excluUseAr / 3.3058).toFixed(2)}평`;
+                        if(filterObj.estateinfo === "거래면적") {
+                            unitElement.textContent = isPyeong ? `${parseFloat(data.excluUseAr).toFixed(2)}㎡` : `${(data.excluUseAr / 3.3058).toFixed(2)}평`;
+                        } else if(filterObj.estateinfo === "거래단가") {
+                            const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                            const originalM2Area = data.excluUseAr;
+                            const originalPyArea = data.excluUseAr / 3.3058;
+                            const unitPyPrice = originalAmount / originalPyArea;
+                            const unitM2rice = originalAmount / originalM2Area;
+                            unitElement.textContent = isPyeong ? `${formatPrice(unitM2rice, "all", false, true)}/㎡` : `${formatPrice(unitPyPrice, "all", false, true)}/평`;
+                        }
                         const type = data.estate_type;
                         const pnu = data.pnu;
 
@@ -288,9 +335,25 @@ async function realPriceApt(sggCd) {
  * @returns {Object} 필터 파라미터 객체
  */
 function collectMultiFilterParams() {
+    
     return {
-        estateType: getEstateListFilterParams(), 
+        estateType: getEstateListFilterParams(),
+        estateinfo: getEstateInfoParams()
     };
+}
+
+function getEstateInfoParams() {
+    let selectedValue = ""; 
+    const selectElement = document.getElementById('infoType');
+
+    if (selectElement) {
+        selectedValue = selectElement.value; // 이제 블록 밖에서 선언된 변수에 값을 할당합니다.
+        finalValue = selectedValue !== "all" ? selectedValue : "";
+    } else {
+        //console.error("ID가 'infoType'인 요소를 찾을 수 없습니다. 기본값 사용.");
+    }
+
+    return selectedValue ;
 }
 function getEstateListFilterParams() {
     let estate_value = [];

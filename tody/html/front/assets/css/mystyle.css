@@ -627,7 +627,7 @@
   position: relative; /* ::before 가상 요소의 위치 기준을 위해 필요 */
   display: inline-block;
   height: 32px;
-  padding: 6px 4px 6px 12px;  /* 6px <--> 4px */
+  padding: 7px 4px 7px 12px;  /* 6px <--> 4px */
   font-size: 12px;
   line-height: 12px;
   letter-spacing: -1px;
@@ -656,31 +656,73 @@
   margin-right: 8px; /* 원과 텍스트 사이 간격 */
   vertical-align: middle; /* 텍스트와 세로 중앙 정렬 */
   position: absolute; /* 버튼 내에서 자유롭게 위치 조절 */
-  left: 5px; /* 버튼 왼쪽에서 떨어진 거리 */
-  top: 50%; /* 버튼 상단에서 50% 위치 */
+  left: 4px; /* 버튼 왼쪽에서 떨어진 거리 */
+  top: 45%; /* 버튼 상단에서 50% 위치 */
   transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+}
+/* 지도 - 이력관리 */
+.realmap-estate-info {
+  /*position: relative;  부모 컨텍스트 기준으로 배치 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1px 0 0 10px;
+  border: 1px solid #ccc; /* 예시 테두리 */
+  z-index: 1;
+  /*transition: margin-left 0.4s ease-out;*/
+  width : 70px;
+  /*border: #FEB912 1px solid;*/
+}
+.realmap-estate-info {
+  margin-top: 40px;
+  margin-left: 4px; 
+}
+.realmap-estate-info.active {
+  margin-top: 40px;
+  margin-left: 454px;
+}
+.my-select-box {
+  height:13px; 
+  /*padding:0 15px; */
+  width: 66px;
+  font-size:11px; 
+  line-height:12px; 
+  color:#f53535; 
+  border:#fff 1px solid; 
+  border-radius:6px; 
+  padding-right:0px; /* 이 값은 아래에서 설명 */
+  padding-left:2px; /* 이 값은 아래에서 설명 */
+  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #FEB912; /*#FEB912*/
+  
+} 
+
+@media all and (max-width: 1040px) {
+  .realmap-estate-group {
+    margin-top: 100px;
+    margin-left: 4px;
+    flex-direction: column;  
+  }
+  .realmap-estate-group.active {
+    margin-top: 100px;
+    margin-left: 454px;
+    flex-direction: column;   
+  }
 }
 @media all and (max-width: 991px) {
   .realmap-estate-group{
     margin-left: 4px;
   }
-  #realmapEstateGroup.realmap-estate-group.active {
+  .realmap-estate-group.active {
     margin-left: 4px;
   }
+  .realmap-estate-info {
+    margin-left: 4px; 
+  }
+  .realmap-estate-info.active {
+    margin-left: 4px;
+  }  
 }
 
-@media all and (max-width: 1040px) {
-  .realmap-estate-group {
-    margin-top: 44px;
-    margin-left: 4px;
-    flex-direction: column;  
-  }
-  .realmap-estate-group.active {
-    margin-top: 44px;
-    margin-left: 454px;
-    flex-direction: column;   
-  }
-}
 
 /* 각 버튼에 다른 색상 적용 (nth-child 사용) */
 /* "전체" 버튼 
@@ -728,3 +770,4 @@
   box-shadow: 0 0 0 2px var(--original-button-color); 
   background-color: transparent; 
 } */
+
