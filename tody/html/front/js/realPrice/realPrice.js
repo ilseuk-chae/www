@@ -668,6 +668,8 @@ function initHandleEvents() {
             clearAllPolygons();
         }
         landWFSArrays = [];
+        globalAnalysisArrays = []; //cis change 20250805 기존 합필분석을 닫으면 초기화 안되는 문제점 수정을 위해 추가
+
         $(".ml-info").empty();
         landAnalysisTotal();
     });

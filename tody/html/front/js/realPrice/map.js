@@ -1095,7 +1095,13 @@ async function handleMapClick(coords) {
 
     try {
         isLoading = true; // 작업 시작 플래그 설정
-        clearAllPolygons(); // 기존 폴리곤을 모두 지움
+        
+        // isMultiSelectMode 일 때는 clearAllPolygons를 호출하지 않고,
+        // addPolygonsToMap을 직접 호출하지도 않습니다.
+        // 이 모드에서는 landAnalysis 함수가 개별 폴리곤 렌더링을 담당합니다.
+        if (!isMultiSelectMode) { // 단일 선택 모드일 때만 초기화 및 렌더링
+            clearAllPolygons(); // 기존 폴리곤을 모두 지움
+        }
         let returnBuildingPolygons = [];
         let returnLandPolygons = [];
 
@@ -1104,14 +1110,24 @@ async function handleMapClick(coords) {
         const { buildingPolygon, buildingPolygon2, landPolygon } = polygons;
 
         // 건물 정보와 토지 정보를 동시에 가져옴
+        /*
         [returnBuildingPolygons, returnLandPolygons] = await Promise.all([
+            getBuilindInfo({ buildingPolygon, buildingPolygon2 }), // 건물 정보 가져오기
+            getLandInfo(landPolygon), // 토지 정보 가져오기
+        ]);
+        */
+        await Promise.all([
             getBuilindInfo({ buildingPolygon, buildingPolygon2 }), // 건물 정보 가져오기
             getLandInfo(landPolygon), // 토지 정보 가져오기
         ]);
 
         // 두 작업이 완료된 후 폴리곤을 한 번에 지도에 추가
         // addPolygonsToMap(returnBuildingPolygons, returnLandPolygons);
-        addPolygonsToMap(buildingPolygons, landPolygons);
+        // 단일 선택 모드일 때만 addPolygonsToMap을 호출합니다.
+        // 합필 분석 모드에서는 landAnalysis 함수가 폴리곤 렌더링을 담당합니다.
+        if (!isMultiSelectMode) {
+            addPolygonsToMap(buildingPolygons, landPolygons);
+       }
     } catch (error) {
         console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
     } finally {
@@ -1133,9 +1149,19 @@ function addPolygonsToMap(buildingPolygonPaths = [], landPolygonPaths = []) {
     // 토지 폴리곤을 map과 miniMap 모두에 추가
     if (landPolygonPaths.length > 0) {
         // 메인 지도에 토지 폴리곤 추가
-        landPolygonPaths.forEach((polygon) => polygon.setMap(map));
+        //landPolygonPaths.forEach((polygon) => polygon.setMap(map));
         // 미니 지도에 토지 폴리곤 추가
-        landPolygonsMiniMap.forEach((polygon) => polygon.setMap(miniMap));
+        //landPolygonsMiniMap.forEach((polygon) => polygon.setMap(miniMap));
+        // 메인 지도에 토지 폴리곤 추가
+        landPolygonPaths.forEach((polygon) => {
+            //console.log("addPolygonsToMap: Drawing Land Polygon", { pnu: polygon.pnu, id: polygon.uniqueId, instance: polygon });
+            polygon.setMap(map);
+        });
+        // 미니 지도에 토지 폴리곤 추가
+        landPolygonsMiniMap.forEach((polygon) => { 
+            //console.log("addPolygonsToMap: Drawing MiniMap Polygon", { pnu: polygon.pnu, id: polygon.uniqueId, instance: polygon });
+            polygon.setMap(miniMap);
+        });
     }
 }
 
@@ -1147,16 +1173,39 @@ function clearAllPolygons() {
     if (isMultiSelectMode) return;
 
     // 모든 건물 폴리곤과 지적도 폴리곤을 지도에서 제거
-    buildingPolygons.forEach((polygon) => polygon.setMap(null));
-    landPolygons.forEach((polygon) => polygon.setMap(null));
-    landPolygonsMiniMap.forEach((polygon) => polygon.setMap(null));
-    analysisPolygonArray.forEach((polygon) => polygon.setMap(null));
+    // 지도에 현재 그려진 모든 landPolygons (전역 배열)의 폴리곤들을 지도에서 지웁니다.
+    landPolygons.forEach(polygon => {
+        if (polygon) { // null 체크 (안전 장치)
+            polygon.setMap(null);
+        }
+    });
+    // miniMap에 그려진 폴리곤들도 지웁니다.
+    landPolygonsMiniMap.forEach(polygon => {
+        if (polygon) {
+            polygon.setMap(null);
+        }
+    });
+
+    // 건물 폴리곤들도 지웁니다 (buildingPolygons도 전역 배열이라고 가정)
+    buildingPolygons.forEach(polygon => {
+        if (polygon) {
+            polygon.setMap(null);
+        }
+    });
+
+    // 분석 폴리곤 배열의 폴리곤들을 지도에서 제거
+    analysisPolygonArray.forEach(polygon => {
+        if (polygon) {
+            polygon.setMap(null);
+        }
+    });
 
     // 폴리곤 배열 초기화
     buildingPolygons = [];
     landPolygons = [];
     landPolygonsMiniMap = [];
     analysisPolygonArray = [];
+    globalAnalysisArrays = []; // 합필분석 모드에서 사용되는 전역 배열 초기화
 }
 
 /**
@@ -2022,6 +2071,13 @@ async function getLandInfo(result) {
                 zIndex: 5, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
             });
 
+            polygon.pnu = feature.properties.pnu;
+            polygon.uniqueId = Math.random().toString(36).substr(2, 9); // 임시 Unique ID 부여
+            miniMapPolygon.pnu = feature.properties.pnu;
+            
+            //console.log("Newly created polygon PNU:", polygon.pnu); // 이 로그가 찍히는지, 값이 맞는지 확인
+            //console.log("Feature properties PNU:", feature.properties.pnu); // 원본 PNU도 확인
+
             geojsonPolygon = turf.polygon([coordinates]); // GeoJSON 형식으로 변환
 
             returnPolygons.push(polygon);
@@ -2029,6 +2085,8 @@ async function getLandInfo(result) {
             // 전역 변수 landPolygons에 지적도 폴리곤 값들을 추가
             landPolygons.push(polygon);
             landPolygonsMiniMap.push(miniMapPolygon);
+
+            //console.log("getLandInfo: Polygon Created & Pushed", { pnu: polygon.pnu, id: polygon.uniqueId, instance: polygon });
 
             // =================================================
             // 미니맵 관련 로직

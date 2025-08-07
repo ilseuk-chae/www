@@ -2915,7 +2915,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;  /* 20 <--> 10 */
     text-align: center;
 }
 .map-land .ml-summary ul li {
@@ -2948,13 +2948,19 @@
     background: #fff;
 }
 .map-land .ml-summary ul li div {
-    margin-top: 12px;
+    margin-top: 10px; /* 10 <--> 2 */
     font-weight: 700;
-    font-size: 20px;
+    font-size: 20px;    /* 20 <--> 10 */
     line-height: 20px;
     color: #111;
 }
-
+.map-land .ml-summary ul li div div {
+    margin-top: 2px; /* 10 <--> 2 */
+    font-weight: 700;
+    font-size: 15px;    /* 20 <--> 10 */
+    line-height: 17px;
+    color: #111;
+}
 .map-land .ml-info {
     height: calc(100% - 358px);
     padding: 20px;

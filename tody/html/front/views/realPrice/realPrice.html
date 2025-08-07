@@ -375,7 +375,7 @@
                             <dl>
                                 <dt>전체 <span id="land_analysis_total_cnt">0</span>개 필지</dt>
                                 <dd>
-                                    <button id="anaysis_toggle_unit_btn"><span>평</span> <i class="fa-light fa-arrows-repeat"></i> <span class="active">㎡</span></button>
+                                    <button id="anaysis_toggle_unit_btn"><span id="anaysis_unit_pyeong">평</span> <i class="fa-light fa-arrows-repeat"></i> <span id="anaysis_unit_m2" class="active">㎡</span></button>
                                     <button type="button" id="land_analysis_reset" class="btn-default-s bg-blue1 text-white">초기화</button>
                                 </dd>
                             </dl>
@@ -383,10 +383,16 @@
                                 <li>
                                     <h2><span>면적 합계</span></h2>
                                     <div id="land_total_area">0㎡</div>
+                                    <div>
+                                        <div id="land_area_by_color_summary" class="color-summary-row"></div> <!-- 색상별 면적 합계가 표시될 곳 -->
+                                    </div>
                                 </li>
                                 <li>
                                     <h2><span>공시지가 합계</span></h2>
                                     <div id="land_total_price">0만</div>
+                                    <div>
+                                        <div id="land_price_by_color_summary" class="color-summary-row"></div> <!-- 색상별 공시지가 합계가 표시될 곳 -->
+                                    </div>    
                                 </li>
                             </ul>
                         </div>
@@ -550,8 +556,9 @@
                                 <dt>분석주제도</dt>
                                 <dd>
                                     <select name="" id="land_analysis_select" class="form-select select-box middle w100p">
-                                        <option value="">선택</option>
+                                        <option value="initial">분석주제도 선택(또는 분석 초기화)</option>
                                         <option value="ecology">생태자연도</option>
+                                        <!-- <option value="nationalEnv">국토환경성평가</option> -->
                                     </select>
                                     <button id="land_analysis_btn" class="btn-default-m bg-dark">분석</button>
                                 </dd>
@@ -571,6 +578,7 @@
 
                             <div>
                                 <p class="text-center">면적: <span id="land_analysis_total_area"></span></p>
+                                <p class="text-center color-main">※ 분석 면적은 구적면적으로 토지대장상 면적과 다르며 참고용입니다.</p>
                             </div>
                         </div>
                     </div>
@@ -1233,8 +1241,10 @@
                                         <dt>분석주제도</dt>
                                         <dd>
                                             <select name="" id="analysis_select" class="form-select select-box middle w100p">
-                                                <option value="">분석 주제도를 선택하세요.</option>
+                                                <option value="initial">분석주제도 선택(또는 분석 초기화)</option>
                                                 <option value="ecology">생태자연도</option>
+                                                <!-- <option value="nationalEnv">국토환경성평가</option> -->
+
                                             </select>
                                             <button id="analysis_btn" class="btn-default-m bg-dark">분석</button>
                                         </dd>
@@ -1276,6 +1286,7 @@
 
                                 <div>
                                     <p class="text-center">면적: <span id="analysis_total_area"></span></p>
+                                    <p class="text-center color-main">※ 분석 면적은 구적면적으로 토지대장상 면적과 다르며 참고용입니다.</p>
                                 </div>
                             </div>
 

@@ -771,3 +771,38 @@
   background-color: transparent; 
 } */
 
+#land_area_by_color_summary,
+#land_price_by_color_summary {
+    display: flex !important;
+    flex-wrap: wrap;
+    margin-top: 3px; /* 기존 10px에서 3px로 재설정 */
+    gap: 2px;
+    border: 1px;
+    /* (선택 사항) 상위 선택자로부터 상속받은 원치 않는 스타일을 초기화 */
+    font-weight: normal; /* 700에서 normal로 */
+    font-size: 10px;     /* 20px에서 더 작은 사이즈로 조정 (원하는 사이즈로) */
+    line-height: normal; /* 20px에서 normal로 */
+    color: initial;      /* #111에서 기본 색상으로 */
+    align-items: center;
+    justify-content: center;
+}
+/* color-summary-row 에 추가할 스타일 */
+.color-summary-row {
+  display: flex;
+  flex-wrap: wrap; /* 내용이 길어지면 줄 바꿈 */
+  margin-top: 3px;
+  gap: 1px; /* 블록들 사이의 간격 */
+}
+
+/* 개별 색상별 합계 블록에 추가할 스타일 */
+.color-summary-item {
+  padding: 1px;
+  border-radius: 4px;
+  color: white; /* 텍스트 색상 (배경색이 어두울 경우) */
+  font-size: 8px; /*0.6em;*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* 각 아이템이 부모의 전체 너비를 차지하도록 설정 */
+}
+
