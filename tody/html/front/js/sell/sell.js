@@ -853,28 +853,44 @@ function initSearchEvents() {
 
     // '검색위치로' 버튼 클릭 이벤트    cis add 200701(아래함수 전체추가)
     $("#search_return_btn").on("click", function () {
-        let places = JSON.parse(sessionStorage.getItem("lastSearchedPlace"));
-
-        if (Object.keys(places).length > 0) {
+        let placesString = sessionStorage.getItem("lastSearchedPlace"); // 1. 먼저 문자열 자체를 가져옵니다.
+        let places = null; // places 변수를 null로 초기화합니다.
+    
+        // 2. placesString이 유효한 값인 경우에만 JSON.parse를 시도합니다.
+        // JSON.parse 과정에서 오류가 발생할 수 있으므로 try-catch 문으로 감싸줍니다.
+        if (placesString) {
+            try {
+                places = JSON.parse(placesString);
+            } catch (e) {
+                console.error("세션 스토리지 데이터 파싱 오류:", e);
+                // 파싱 오류 발생 시 places를 null로 유지하여 다음 조건문에서 처리되도록 합니다.
+                places = null;
+            }
+        }
+    
+        // 3. places가 객체(object)이며, null이 아니고, 유효한 속성을 가지고 있는지 확인합니다.
+        // 이 조건문이 places가 null이거나 유효하지 않은 객체일 경우 Object.keys() 호출을 방지합니다.
+        if (places && typeof places === 'object' && Object.keys(places).length > 0) {
             // 필요한 파라미터 및 쿠키를 한 번에 업데이트합니다
             updateURL({
                 curLat: places.y,
                 curLng: places.x,
             });
-
+    
             // URL 변경 후 즉시 파라미터를 체크하고 로그 출력
             handleUrlChange();
-
+    
             // 이동할 위도 경도 위치를 생성합니다
             var moveLatLon = new kakao.maps.LatLng(places.y, places.x);
-
+    
             // 지도 중심을 이동 시킵니다
             map.panTo(moveLatLon);
-
+    
             // 법정동 상세 주소 정보를 요청
             searchDetailAddrFromCoords(moveLatLon, displayAddressInfo);
             searchArroundPlaces({ lat: places.y, lng: places.x }); // 주변 시설 정보 가져오기
         } else {
+            // places가 null이거나 비어있는 객체인 경우 (세션 스토리지에 데이터가 없거나 유효하지 않은 경우)
             $("#modalAlert").iziModal("open");
             $("#alert_message").html("<h2>이동할 <span>검색 위치</span>가 없습니다.</h2>");
         }

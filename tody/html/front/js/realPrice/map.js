@@ -1216,29 +1216,43 @@ async function initializeMap() {
     if (zoomLevel > 5) zoomLevel = 5;
 
     const urlParams = new URLSearchParams(window.location.search);
-    let lat = urlParams.get("curLat");
-    let lng = urlParams.get("curLng");
 
-    // 유효한 중심 좌표가 없는 경우 기본 좌표로 설정.
-    if (!areValidCoordinatesInKorea(parseFloat(lat), parseFloat(lng))) {
-        lat = "37.199537203472"; // 기본 좌표 (화성시청)
-        lng = "126.831477350333";
+    let lat = parseFloat(urlParams.get('curLat'));
+    let lng = parseFloat(urlParams.get('curLng'));
+
+    // 유효성 검사(온돌님 함수로 대체 가능)
+    if (!areValidCoordinatesInKorea(lat, lng)) {
+        // 쿠키 선호 시, 먼저 쿠키를 보시고 없으면 기본값으로
+        const cLat = parseFloat(getCookie('curLat'));
+        const cLng = parseFloat(getCookie('curLng'));
+        if (areValidCoordinatesInKorea(cLat, cLng)) {
+            lat = cLat; lng = cLng;
+        } else {
+            lat = 37.199537203472; // 화성시청
+            lng = 126.831477350333;
+        }
     }
 
-    setCookie("curLat", lat, 1);
-    setCookie("curLng", lng, 1);
-    console.log(lat, ", ", lng);
+    // 쿠키는 선택 사항(유지 원하시면 그대로 두세요)
+    setCookie('curLat', String(lat), 1);
+    setCookie('curLng', String(lng), 1);
 
     const kakaoCoords = new kakao.maps.LatLng(lat, lng);
-    var mapOption = {
-        center: kakaoCoords, // 지도의 중심좌표
-        level: zoomLevel, // 지도의 확대 레벨,
+    const mapOption = {
+        center: kakaoCoords,
+        level: zoomLevel, // clamp(zoomLevel, 0, 13) 검토 권장
         minLevel: 0,
         maxLevel: 13,
-        disableDoubleClickZoom: true,
+        disableDoubleClickZoom: true
     };
 
-    map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+    map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 1) 초기 복원(= URL 있으면 저장 동기화만, 없으면 스토리지/쿠키/기본으로 복원)
+    applyGlobalViewOnInit(map, { persist: 'both' });
+
+    // 2) 이후 변경 자동 저장(dual-write)
+    attachGlobalViewSaver(map, { persist: 'both' });
 
     infowindow = new kakao.maps.InfoWindow({ zIndex: 1 }); // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
 
