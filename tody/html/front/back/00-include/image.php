@@ -11,6 +11,7 @@ $token = urldecode($_GET['token']);
 // echo $token;
 // exit;
 // $type = urldecode($_GET['type']);
+$type = isset($_GET['type']) ? urldecode($_GET['type']) : null; // GET 파라미터가 없을 경우를 대비하여 
 $secretKey = 'tody2024';
 
 try {

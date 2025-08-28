@@ -18,19 +18,35 @@ let circleDrawer = null; // 원 반경 모듈
 let lineDrawer = null; // 직선 거리 모듈
 let polygonDrawer = null; // 다각형 거리 모듈
 var textModule = null; // 텍스트 입력 모듈
+let landPolygons = []; // 지적도 폴리곤 배열
+let buildingPolygons = []; // 건물 폴리곤 배열
+let currentMemoOverlays = []; // 현재 지도에 표시된 메모 오버레이들을 저장할 배열
 
 $(document).ready(function () {
+    initProj4(); // proj4 초기화
     initModal(); // 이지모달 초기화
     initializeMap(); // 지도 초기화
     handleMapEvents(); // 지도 이벤트
     // handleDefaultEvents(); // 기본 이벤트
 
+    //displayMemoOnMap(); // 메모 표시
     // URL 변경 감지 이벤트
     window.addEventListener("popstate", function (e) {
         handleUrlChange();
     });
+
+    initMemo(); // memo 초기화    
 });
 
+function initProj4() {
+    proj4.defs("EPSG:5186", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs");
+    proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
+    // proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +towgs84=0,0,0 +no_defs");
+    proj4.defs("EPSG:5178", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=600000 +y_0=200000 +ellps=GRS80 +units=m +no_defs");
+    proj4.defs("EPSG:5176", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
+    // proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs");
+    proj4.defs("EPSG:3857", "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
+}
 /**
  * URL 변경 후 즉시 파라미터를 체크하고 좌표 변경하는 함수
  */
@@ -58,9 +74,7 @@ function handleUrlChange() {
 
     // // 좌표가 변경되었을 때만 지도 중심을 업데이트
     // if (currentLat !== previousLat || currentLng !== previousLng) {
-    //     console.log(`Latitude changed to: ${currentLat} from ${previousLat}`);
-    //     console.log(`Longitude changed to: ${currentLng} from ${previousLng}`);
-
+    
     //     // 지도 중심을 새 좌표로 이동
     //     const newCenter = new kakao.maps.LatLng(currentLat, currentLng);
     //     map.setCenter(newCenter);
@@ -238,8 +252,7 @@ function handleMapEvents() {
         var sw = bounds.getSouthWest(); // 남서쪽 좌표
         var ne = bounds.getNorthEast(); // 북동쪽 좌표
         var boxString = `BOX(${sw.getLng()},${sw.getLat()},${ne.getLng()},${ne.getLat()})`; // BOX 형식으로 변환
-        // console.log(boxString);
-
+        
         const geomFilter = point;
         // const realPriceApart = await showRealPrice(geomFilter, buffer); // 실거래가 가져오는 함수
     });
@@ -257,7 +270,7 @@ function handleMapEvents() {
         const lat = mouseEvent.latLng.Ma;
         const lng = mouseEvent.latLng.La;
         updateURL({ curLat: lat, curLng: lng, estateNo: "" }); // url 파라미터 및 쿠키 변경
-
+        const coords = { lat: lat, lng: lng };
         // 리스트를 부드럽게 나타나게 함
         if (
             $(".mcs-list")
@@ -272,9 +285,19 @@ function handleMapEvents() {
                 .delay(150) // 일정 시간 지연
                 .fadeIn(400); // 부드럽게 나타나게 설정
         }
+        //for test
+        const level = map.getLevel();
+        if (level < 7) {
+            // 건물 및 토지 정보를 동시에 가져오기
+            handleMapClick(coords);
+
+            // 주변 시설 정보 가져오기
+            //20250811 del searchArroundPlaces(coords);
+        }
+
     });
 
-    // [EVENT] 지도 타일 이미지 로드가 모두 완료 훟 이벤트 처리
+    // [EVENT] 지도 타일 이미지 로드가 모두 완료 후 이벤트 처리
     kakao.maps.event.addListener(map, "tilesloaded", function () {
         // 매물번호를 검색하여 지도가 이동됐을 때는 전체검색 중단
         if (searchEstateNo) {
@@ -284,9 +307,275 @@ function handleMapEvents() {
         removeMarker(contentsMarkers);
         //estateList();
         estateNewList();
+        if($("#mapOptionMemoOpen2").hasClass("active")) {
+            displayMemoOnMap();
+        }        
     });
+
+    // kakao.maps.load 콜백 내부 또는 handleMapEvents 함수 내부
+    kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
+        const clickedPoint = mouseEvent.latLng; // 클릭된 위경도 (kakao.maps.LatLng 객체)
+        const clickedScreenPoint = mouseEvent.point; // 클릭된 화면 픽셀 좌표 (메뉴 위치 지정용)
+
+        let foundPolygon = null;
+
+        // 1단계: 토지 폴리곤에서 Point-in-Polygon 검사
+        for (let i = 0; i < landPolygons.length; i++) {
+            const polygon = landPolygons[i];
+            if (polygon.originalCoordinates) {
+                const turfPolygon = turf.polygon([polygon.originalCoordinates]); // 저장된 원본 좌표로 Turf.js 폴리곤 생성
+                const turfPoint = turf.point([clickedPoint.getLng(), clickedPoint.getLat()]); // 클릭된 지점을 Turf.js 포인트로 변환
+
+                if (turf.booleanPointInPolygon(turfPoint, turfPolygon)) {
+                    foundPolygon = polygon;
+                    break; // 폴리곤을 찾았으니 루프 종료
+                }
+            }
+        }
+
+        // 2단계: 토지 폴리곤에서 찾지 못했다면 건물 폴리곤에서 검사
+        if (!foundPolygon) {
+            for (let i = 0; i < buildingPolygons.length; i++) {
+                const polygon = buildingPolygons[i];
+                if (polygon.originalCoordinates) {
+                    const turfPolygon = turf.polygon([polygon.originalCoordinates]);
+                    const turfPoint = turf.point([clickedPoint.getLng(), clickedPoint.getLat()]);
+
+                    if (turf.booleanPointInPolygon(turfPoint, turfPolygon)) {
+                        foundPolygon = polygon;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 폴리곤이 찾아졌다면 메모 등록 메뉴 띄우기
+        if (foundPolygon) {
+            // 실제 메모 등록 메뉴를 띄우는 함수 호출
+            showMemoContextMenu(
+                clickedPoint,          // 클릭된 위경도
+                clickedScreenPoint,    // 클릭된 화면 픽셀 좌표
+                foundPolygon.pnu,      // 폴리곤의 PNU 정보
+                foundPolygon.uniquePolygonId, // 폴리곤의 고유 ID
+                foundPolygon.type      // 폴리곤의 종류 ('land' 또는 'building')
+            );
+        } else {
+            const contextMenu = $('#memoContextMenu');
+            contextMenu.fadeOut(100, function() {
+                // 완전히 숨겨진 후 데이터 초기화 (메모등록하기를 다시 누르기 전까지)
+                currentMemoData = null;
+            });
+        }
+});
 }
 
+/**
+ * 지도 클릭 시 건물과 토지 정보를 동시에 가져오는 함수
+ 20250811 add*/
+async function handleMapClick(coords) {
+    if (isLoading) return; // 이전 작업이 완료되지 않았으면 새로운 작업을 시작하지 않음
+
+    //console.log("지도 클릭 좌표: ", coords);
+    try {
+        isLoading = true; // 작업 시작 플래그 설정
+        
+        clearAllPolygons(); // 기존 폴리곤을 모두 지움
+
+        // 폴리곤 정보 가져오기
+        const polygons = await getLandBuildingPolygon(coords);
+        const { buildingPolygon, buildingPolygon2, landPolygon } = polygons;
+
+        // 건물 정보와 토지 정보를 동시에 가져옴
+        await Promise.all([
+            getBuilindInfo({ buildingPolygon, buildingPolygon2 }), // 건물 정보 가져오기
+            getLandInfo(landPolygon), // 토지 정보 가져오기
+        ]);
+
+        // 두 작업이 완료된 후 폴리곤을 한 번에 지도에 추가
+        addPolygonsToMap(buildingPolygons, landPolygons);
+       
+    } catch (error) {
+        console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
+    } finally {
+        isLoading = false; // 작업 완료 플래그 해제
+    }
+}
+
+/**
+ * 모든 폴리곤을 제거하는 함수 (싱글 모드에서 호출)
+ *20250811 add*/
+function clearAllPolygons() {
+    // 모든 건물 폴리곤과 지적도 폴리곤을 지도에서 제거
+    // 지도에 현재 그려진 모든 landPolygons (전역 배열)의 폴리곤들을 지도에서 지웁니다.
+    landPolygons.forEach(polygon => {
+        if (polygon) { // null 체크 (안전 장치)
+            polygon.setMap(null);
+        }
+    });
+    // 건물 폴리곤들도 지웁니다 (buildingPolygons도 전역 배열이라고 가정)
+    buildingPolygons.forEach(polygon => {
+        if (polygon) {
+            polygon.setMap(null);
+        }
+    });
+
+    // 폴리곤 배열 초기화
+    buildingPolygons = [];
+    landPolygons = [];
+}
+// 건물 정보 가져오기 함수 2025.08.11 add
+async function getLandBuildingPolygon(coords) {
+    const url = "/front/back/realPrice/building_info.php";
+    const dataObj = {
+        geomFilter: `POINT(${coords.lng} ${coords.lat})`, // 좌표
+        geometry: true, // 폴리곤 정보를 포함
+        attribute: true, // 속성 정보를 포함
+    };
+    const result = await callApi("POST", url, dataObj);
+
+    return result;
+}
+
+/**
+ * 건축물정보 가져오는 함수
+ * @param {*} buildingInfos
+ */
+async function getBuilindInfo(buildingInfos) {
+    // returnPolygons 초기화
+    let returnPolygons = [];
+    
+    // 중복을 제거하기 위한 Map
+    let uniqueFeaturesMap = new Map();
+
+    // buildingPolygon과 buildingPolygon2의 features 처리 함수
+    function processPolygon(polygonData) {
+        const features = polygonData.features;
+
+        // features가 비어있지 않으면 처리
+        if (features && features.length > 0) {
+            features.forEach(function (feature) {
+                const gisIdntfcNo = feature.properties.gis_idntfc_no;
+
+                // 중복되지 않은 경우에만 처리
+                if (!uniqueFeaturesMap.has(gisIdntfcNo)) {
+                    uniqueFeaturesMap.set(gisIdntfcNo, feature);
+
+                    const coordinates = feature.geometry.coordinates[0][0];
+                    const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                    const polygon = new kakao.maps.Polygon({
+                        path: polygonPath,
+                        strokeWeight: 2,
+                        strokeColor: "#FF0000",
+                        strokeOpacity: 1,
+                        strokeStyle: "shortdot",
+                        fillColor: "#FFAAAA",
+                        fillOpacity: 0.2, // 투명도를 0.1로 변경
+                        zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
+                    });
+                    polygon.pnu = feature.properties.pnu;
+                    polygon.uniquePolygonId = Math.random().toString(36).substr(2, 9);
+                    polygon.originalCoordinates = coordinates; // Turf.js에서 사용할 원본 GeoJSON 좌표 저장
+                    polygon.type = 'building'; // 폴리곤 종류를 저장 (메뉴 호출 시 구분용)
+
+                    returnPolygons.push(polygon);
+                    buildingPolygons.push(polygon); // 전역 변수에도 추가
+                }
+            });
+        }
+    }
+
+    // buildingPolygon 처리
+    processPolygon(buildingInfos.buildingPolygon);
+
+    // buildingPolygon2 처리
+    processPolygon(buildingInfos.buildingPolygon2);
+
+    
+    // 전역 변수 buildingPolygons returnPolygons의 값들을 추가
+    buildingPolygons.push(...returnPolygons);
+
+    return returnPolygons;
+}
+/**
+ * 토지정보 가져오는 함수
+ * @param {*} coords
+ */
+async function getLandInfo(result) {
+    // 성공적으로 데이터가 반환된 경우
+    if (result.response.status && result.response.status === "OK") {
+        const features = result.response.result.featureCollection.features;
+        const bbox = result.response.result.featureCollection.bbox;
+        
+        // 좌하단 좌표와 우상단 좌표 각각 변환
+        const lowerLeft = proj4("EPSG:4326", "EPSG:5186", [bbox[0], bbox[1]]); // 좌하단 좌표 (lc1, lc2)
+        const upperRight = proj4("EPSG:4326", "EPSG:5186", [bbox[2], bbox[3]]); // 우상단 좌표 (uc1, uc2)
+
+        // 변환된 bbox 값 (하단좌표, 상단좌표 형식 유지)
+        const transformedBbox = [
+            lowerLeft[0],
+            lowerLeft[1], // 변환된 하단 좌표
+            upperRight[0],
+            upperRight[1], // 변환된 상단 좌표
+        ];
+
+        // returnPolygons 초기화
+        let returnPolygons = [];
+        let turfLandPolygons = []; // Turf.js로 사용할 폴리곤 리스트
+        let geojsonPolygon = null; // Turf.js로 사용할 토지 폴리곤
+
+        let strokeColor = "#0000FF";
+        let fillColor = "#AAAAFF";
+
+        
+        // 받은 지적도 정보를 바탕으로 returnPolygons에 실제 Polygon 객체를 저장
+        features.forEach(function (feature) {
+            const coordinates = feature.geometry.coordinates[0][0];
+            const polygonPath = coordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+            const polygon = new kakao.maps.Polygon({
+                path: polygonPath,
+                strokeWeight: 1,
+                strokeColor: strokeColor,
+                strokeOpacity: 1,
+                strokeStyle: "solid",
+                fillColor: fillColor,
+                fillOpacity: 0.5,
+                zIndex: 9999, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
+            });
+            
+            polygon.pnu = feature.properties.pnu;
+            polygon.uniquePolygonId = Math.random().toString(36).substr(2, 9); // 임시 Unique ID 부여
+            polygon.originalCoordinates = coordinates; // Turf.js에서 사용할 원본 GeoJSON 좌표 저장
+            polygon.type = 'land'; // 폴리곤 종류를 저장 (메뉴 호출 시 구분용)
+
+            geojsonPolygon = turf.polygon([coordinates]); // GeoJSON 형식으로 변환
+
+            returnPolygons.push(polygon);
+            // 전역 변수 landPolygons에 지적도 폴리곤 값들을 추가
+            landPolygons.push(polygon);
+        });
+
+        return returnPolygons;
+    }
+    // TODO: result.response.status가 "OK"가 아닌 경우의 예외 처리 로직 추가 고려
+    return []; // 오류 발생 시 빈 배열 반환
+}
+/**
+ * 건물 폴리곤과 토지 폴리곤을 지도에 동시에 추가하는 함수
+ * @param {Array} buildingPolygonPaths - 건물 폴리곤 경로 배열
+ * @param {Array} landPolygonPaths - 토지 폴리곤 경로 배열
+ */
+function addPolygonsToMap(buildingPolygonPaths = [], landPolygonPaths = []) {
+    // 건물 폴리곤 추가
+    if (buildingPolygonPaths.length > 0) {
+        buildingPolygonPaths.forEach((polygon) => polygon.setMap(map));
+    }
+
+    // 토지 폴리곤을 map에 추가
+    if (landPolygonPaths.length > 0) {
+        // 메인 지도에 토지 폴리곤 추가
+        landPolygonPaths.forEach((polygon) => polygon.setMap(map));
+    }
+}
 // 매물 수 표시 함수
 const totalMarker = (className, sale_classifi, tran_method, count) => {
     let typeName = "";
@@ -872,4 +1161,430 @@ function initModal() {
             path: lottiePath,
         });
     }
+}
+
+function initMemo() {
+    if($("#mapOptionMemoOpen2").hasClass("active")) {
+        displayMemoOnMap();
+    }
+    
+}
+/**
+ * 메모 리스트 가져오는 함수
+ * @param {*} searchNo = 매물번호 검색
+ */
+async function fetchMemoList() {
+    // 1. 필요한 모든 데이터를 수집합니다.
+    const filterObj = collectFilterMemo(); // 필터 조건 (type, keyword, complete)
+
+    const bounds = map.getBounds();       // 지도의 현재 영역
+    const currentUserInfo = userInfo();   // 현재 로그인 사용자 정보 (reg_no 등을 포함)
+
+    const swLatLng = bounds.getSouthWest(); // 영역의 남서쪽 좌표
+    const neLatLng = bounds.getNorthEast(); // 영역의 북동쪽 좌표
+
+    // 'radio_memo'는 owner 필터 (all/my)로 예상됩니다.
+    // PHP 스크립트에서 $_POST['owner']로 받는 필드입니다.
+    const owner = $('input[name="radio_memo"]:checked').val(); 
+    
+    // 2. PHP 스크립트로 전달할 dataObj를 구성합니다.
+    const dataObj = {
+        // 필터 객체 내용 병합 (type, keyword 등)
+        ...filterObj, 
+        
+        // PHP 스크립트에서 $_POST['owner']로 받는 필드
+        owner: owner, 
+
+        // 사용자 정보 병합 (PHP 스크립트에서 get_user_no_for_hash로 userNo를 사용하는 경우)
+        // userInfo()가 undefined를 반환할 수도 있으니 안전하게 처리합니다.
+        ...(currentUserInfo ? currentUserInfo : {}), 
+        
+        // 지도 경계 정보: PHP의 minLat, maxLat, minLng, maxLng와 이름 일치!
+        minLat: swLatLng.getLat(),
+        maxLat: neLatLng.getLat(),
+        minLng: swLatLng.getLng(),
+        maxLng: neLatLng.getLng(),
+        
+    };
+    const url = "/front/back/memo/memo2_list.php"; 
+    
+    try {
+        // 4. callApi 함수에 모든 데이터를 담은 dataObj를 전달
+        const result = await callApi("POST", url, dataObj);
+
+        if (!result) {
+            // callApi 함수 자체에서 오류가 발생했거나 반환값이 없는 경우
+            sweetAlertMessage("메모 목록 조회에 실패했습니다. 다시 시도해주세요.","","e");
+            return []; // 실패 시 빈 배열 반환
+        }
+
+        const { message, responseData, statusCode } = result;
+
+        if (statusCode === 200 && message === "SUCCESS") {
+            // API 호출 성공 및 데이터 처리 성공
+            // console.log("메모 목록 데이터:", responseData); // 개발자 도구에서 데이터 확인용
+            return responseData; // 실제 메모 목록 데이터 (배열 형태) 반환
+        } else {
+            // API는 응답했지만, 백엔드에서 처리 실패 메시지를 반환한 경우
+            sweetAlertMessage("메모 목록 조회 실패: " + message,"","e");
+            return []; // 실패 시 빈 배열 반환
+        }
+    } catch (error) {
+        //console.error("메모 목록 가져오기 실패:", error); // 현재 이렇게 출력되고 뒤에 내용이 없는 상황
+        
+        sweetAlertMessage("메모 목록 가져오는 중 문제가 발생했습니다. 콘솔을 확인해주세요.","","e");
+        return [];
+    }
+}
+
+//가져온 메모 데이터를 지도에 표시합니다. 
+//메모 데이터를 기반으로 kakao.maps.Marker 또는 kakao.maps.CustomOverlay를 생성하여 지도에 추가합니다.
+async function displayMemoOnMap(updatedMemoData = null) {
+    if (updatedMemoData) {
+        // 특정 메모만 업데이트하는 로직을 호출 (아래 updateSingleMemoOnMap)
+        await updateSingleMemoOnMap(updatedMemoData);
+    } else {
+        removeExistingMemoOverlays();
+        // fetchMemoList() 호출하여 최신 메모 목록 가져오기
+        if (!map || !(map instanceof kakao.maps.Map)) {
+            console.error("지도 객체(map)가 유효하지 않습니다. 지도 초기화 상태를 확인해주세요.", map);
+            return;
+        }
+        const memoList = await fetchMemoList();
+
+        if (!Array.isArray(memoList)) {
+            console.error("fetchMemoList에서 유효한 배열을 반환하지 않았습니다.", memoList);
+            return;
+        }
+
+        if (memoList.length === 0) {
+            //console.log("fetchMemoList에서 가져온 메모가 없습니다. 지도에 표시할 오버레이가 없습니다.");
+            return;
+        }
+        console.log(`fetchMemoList에서 ${memoList.length}개의 메모를 가져왔습니다.`);
+
+        memoList.forEach((memo, index) => {
+            if (typeof memo.latitude !== 'number' || typeof memo.longitude !== 'number') {
+                console.error(`메모 ${index} (${memo.memo_no})의 위경도 값이 유효한 숫자가 아닙니다.`, memo.latitude, memo.longitude);
+                return;
+            }
+            //console.log(`메모 ${index} (${memo.memo_no}) - Latitude: ${memo.latitude}, Longitude: ${memo.longitude}`);
+
+            const position = new kakao.maps.LatLng(memo.latitude, memo.longitude);
+
+            // 이미지 마커 URL (기본 이미지 또는 memo 객체에 image_url 필드가 있다면 사용)
+            // memo_listings 테이블에 이미지 URL 컬럼 (예: image_url varchar(255))이 필요합니다.
+            // PHP select 절에도 ml.image_url 추가 필요.
+            let markerImageUrl;
+            if (memo.complete === 'Y') {
+                markerImageUrl = '/front/assets/image/markerStar_orange2.png';
+                //markerImageUrl = '/front/assets/image/markerStar.png';
+            } else if (memo.complete === 'N') { // complete === 'N' 이면 거래진행이므로 green2
+                markerImageUrl = '/front/assets/image/markerStar_green2.png';
+            } else {
+                // 그 외의 경우 (예: complete 필드가 없거나 다른 값)에 대한 기본 이미지 경로
+                markerImageUrl = '/front/assets/image/markerStar.png'; // 기본 마커 (혹은 다른 기본값)
+            }
+
+            const markerImageHeight = 34; // ⭐️ 마커 이미지의 실제 높이를 여기에 입력해주세요 (예: 30, 40, 50 등) ⭐️
+            const popupOffsetFromMarker = 10; // 마커와 팝업 사이의 간격 (조정 가능)
+            const markerImageWidth = 32;  // ⭐ 마커 이미지의 실제 너비 ⭐ (일반적으로 정사각형이 많음)
+
+            // 콘텐츠 HTML 구성 (마커 이미지와 상세 정보 팝업을 모두 포함)
+            const completeStatusText = memo.complete === 'Y' ? '<span class="label-default bg-orange2">거래완료</span>' : '<span class="label-default bg-green2">거래진행</span>';
+            const estateNoText = (memo.estate_no && memo.estate_no !== 0) ? `매물번호 : ${memo.estate_no}` : '매물번호 : 없음';
+            const dateText = memo.lst_date ? memo.lst_date : memo.reg_date; 
+            const summarizedContent = memo.content ? 
+                (memo.content.length > 10 ? memo.content.substring(0, 10) + '...' : memo.content) : '내용 없음'; 
+                
+            const overlayContent = `
+                <div class="memo-marker-container" style="
+                    position: relative; /* 자식 팝업의 absolute 포지셔닝 기준 */
+                    width: ${markerImageWidth}px;
+                    height: ${markerImageHeight}px;
+                ">
+                    <img src="${markerImageUrl}" class="memo-marker-image" 
+                        id="marker-${memo.memo_no}" 
+                        style="display: block; cursor: pointer; width: 100%; height: 100%;" />
+                    
+                    <!-- 상세 정보 팝업 부분 -->
+                    <div class="memo-details-popup" style="
+                        display: none; 
+                        position: absolute; 
+                        /* ⭐⭐ 팝업의 top 위치 계산 핵심 수정 ⭐⭐ */
+                        /* 목표: 팝업의 '하단'이 마커 이미지의 '상단' + '간격' 에 오도록 */
+                        /* 현재 top은 팝업의 상단을 기준으로 함 */
+                        /* 팝업의 실제 높이를 알아야 정확한 계산 가능. 여기서는 팝업 콘텐츠의 예상 높이 (대략 150px)로 추정 */
+                        /* 또는 markerImageHeight + popupOffsetFromMarker 로 팝업 바닥이 마커 상단에 위치하도록 함 */
+                        
+                        top: -${popupOffsetFromMarker}px; /* ⭐ 마커 이미지 상단에 팝업 하단이 오도록 (10px 간격) ⭐ */
+                        transform: translateX(-50%) translateY(-100%); /* ⭐ X축 중앙, Y축 상단으로 정렬 ⭐ */
+                        left: 50%; /* X축 중앙 정렬을 위한 기준점 */
+                        z-index: 100;
+                        background: white; 
+                        border: 1px solid blue; 
+                        padding: 5px; 
+                        border-radius: 5px; 
+                        min-width:150px; max-width:250px; 
+                        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+                    ">
+                        <div class="memo-overlay-content">
+                            <h5 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; 
+                                    font-size:12px; font-weight:bold; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0;">
+                                <span>내 메모번호: ${memo.my_idx ? memo.my_idx : '-'}</span>
+                                ${completeStatusText}
+                            </h5>
+                            <p style="margin-bottom: 3px; font-size:12px; color:#555;">
+                                ${estateNoText}
+                            </p>
+                            <p style="margin-bottom: 0; font-size:13px;">
+                                ${summarizedContent}
+                            </p>
+                            <p style="margin-bottom: 0; font-size:10px;">
+                                ${dateText}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const customOverlay = new kakao.maps.CustomOverlay({
+                position: position,
+                content: overlayContent,
+                xAnchor: 0.5,
+                yAnchor: 1.0, // 이미지 하단 중앙에 오버레이가 위치하도록 설정 (마커 핀처럼)
+                zIndex: 10
+            });
+
+            // ⭐ 지도에 오버레이 추가 후 이벤트 리스너 바인딩 ⭐
+            customOverlay.setMap(map);
+            currentMemoOverlays.push(customOverlay);
+
+            // CustomOverlay가 DOM에 추가된 후, 마커 이미지에 이벤트 리스너를 바인딩
+            kakao.maps.event.addListener(customOverlay, 'customOverlay:onAdd', function() { // 가상의 이벤트
+                // 실제 CustomOverlay의 content 요소는 div로 감싸져 있고 그 안에 우리의 overlayContent HTML이 들어갑니다.
+                const overlayWrapper = customOverlay.a; // 이 부분은 카카오맵 내부 구현에 따라 달라질 수 있으니 디버깅 필요 (a 속성이 content의 부모 div일 경우)
+                // 더 안전하게는 jQuery를 사용하여 데이터 속성으로 찾기
+                const $markerImage = $(overlayWrapper).find(`.memo-marker-image[data-memo-id="${memo.memo_no}"]`);
+                const $detailsPopup = $(overlayWrapper).find('.memo-details-popup');
+                
+                // 마우스 오버 시 상세 팝업 표시
+                $markerImage.on('mouseover', function() {
+                    $detailsPopup.css('display', 'block');
+                });
+
+                // 마우스 아웃 시 상세 팝업 숨김
+                $markerImage.on('mouseout', function() {
+                    $detailsPopup.css('display', 'none');
+                });
+
+                // (선택 사항) 상세 팝업 자체에 마우스가 올라가면 팝업이 사라지지 않도록
+                $detailsPopup.on('mouseover', function() {
+                    $detailsPopup.css('display', 'block');
+                });
+                $detailsPopup.on('mouseout', function() {
+                    $detailsPopup.css('display', 'none');
+                });
+            });
+            // ⭐️ 중요: customOverlay.a 대신 querySelector로 content 내부의 특정 클래스를 찾거나,
+            // 카카오맵 문서에서 CustomOverlay의 content가 실제 DOM에 어떻게 붙는지 확인하여 올바르게 접근해야 합니다.
+            // jQuery의 find()나 JavaScript의 querySelector() 사용이 더 안전합니다.
+            // content가 이미 HTML 문자열이므로, setMap() 호출 후 DOM에 붙었을 때 ID나 클래스를 이용해 접근하는 것이 일반적입니다.
+            // 다음은 setMap() 직후 접근하는 일반적인 방법입니다.
+            
+            // setMap() 호출은 비동기적이지 않지만, DOM에 요소가 실제로 삽입되는 데는 미세한 지연이 있을 수 있습니다.
+            // 가장 확실한 방법은 ID를 주고 setTimeout으로 살짝 딜레이를 주거나,
+            // CustomOverlay에 onAdd 콜백 함수가 있으면 활용하는 것입니다 (하지만 KakaoMap에 명시적으로 그런 이벤트는 없는 듯)
+            // 따라서, CustomOverlay의 content에 특정 id를 부여하고 setTimeout(..., 0)으로 비동기 호출을 한번 래핑하여 DOM 준비를 기다립니다.
+
+            const tempMarkerId = `marker-${memo.memo_no}`;
+            customOverlay.setContent(overlayContent.replace('class="memo-marker-image"', `class="memo-marker-image" id="${tempMarkerId}"`));
+            
+            // DOM 요소가 추가된 후 이벤트 바인딩 (짧은 setTimeout으로 DOM 준비 대기)
+            setTimeout(() => {
+                const markerElement = document.getElementById(`marker-${memo.memo_no}`);
+                if (markerElement) {
+                    const detailsPopup = markerElement.closest('.memo-marker-container').querySelector('.memo-details-popup');
+                    
+                    // 마우스 오버/아웃 이벤트 (기존 기능)
+                    if (detailsPopup) {
+                        markerElement.onmouseover = () => { detailsPopup.style.display = 'block'; };
+                        markerElement.onmouseout = () => { detailsPopup.style.display = 'none'; };
+                        detailsPopup.onmouseover = () => { detailsPopup.style.display = 'block'; }; // 팝업 위에서 마우스 떼도 사라지지 않도록
+                        detailsPopup.onmouseout = () => { detailsPopup.style.display = 'none'; };
+                    } else {
+                        console.warn(`Details popup not found for marker-${memo.memo_no}`);
+                    }
+
+                    // ⭐ 마커 클릭 이벤트 추가 ⭐
+                    markerElement.onclick = (e) => {
+                        e.stopPropagation(); // 이벤트 버블링 방지 (지도 클릭 이벤트 등에 영향을 주지 않도록)
+                        
+                        // 기존 openMemoModal 함수를 활용하여 수정 팝업 띄우기
+                        // openMemoModal 함수는 이미 메모등록시 위경도, PNU 등을 인자로 받도록 되어있습니다.
+                        // 이제 이 함수가 수정 모드와 등록 모드를 구분할 수 있어야 합니다.
+                        // 여기서는 수정할 memo의 전체 데이터를 넘겨서 팝업을 띄웁니다.
+                        // openMemoModal 함수를 수정할 것입니다.
+                        openMemoModifyModal(memo , e.clientX, e.clientY); // ⭐ event.clientX, event.clientY 전달 ⭐
+                    };
+
+                } else {
+                    console.warn(`Marker element marker-${memo.memo_no} not found in DOM.`);
+                }
+            }, 0); // 0ms setTimeout으로 DOM이 업데이트될 기회를 줍니다.
+       });
+    }
+}
+
+/**
+ * 지도상의 특정 메모(마커, 오버레이)를 업데이트하는 함수
+ * 이 함수는 기존 CustomOverlay를 찾아서 content를 변경하거나, 필요시 새로 생성합니다.
+ * @param {object} memoData - 업데이트된 단일 메모 데이터
+ */
+async function updateSingleMemoOnMap(memoData) {
+    // 1. 기존 CustomOverlay 찾기 (memo_no 기준으로)
+    const existingOverlayIndex = currentMemoOverlays.findIndex(overlay => {
+        // 오버레이 content 내부에 memo_no가 있는 요소를 찾기 위해 DOM을 파싱해야 할 수 있음
+        // 또는 CustomOverlay 생성 시 data-memo-no 속성을 HTML content에 추가하고 여기서 파싱
+        // 가장 좋은 방법: currentMemoOverlays 배열에 CustomOverlay와 memo_no를 함께 저장
+        // currentMemoOverlays = [{ overlay: customOverlay, memoNo: memo.memo_no }, ...]
+        
+        // 예시 (HTML content 파싱 필요)
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = overlay.getContent();
+        return tempDiv.querySelector(`#marker-${memoData.memo_no}`);
+    });
+
+    if (existingOverlayIndex !== -1) {
+        // 2. 기존 오버레이 제거
+        currentMemoOverlays[existingOverlayIndex].setMap(null);
+        currentMemoOverlays.splice(existingOverlayIndex, 1);
+        console.log(`기존 메모 ${memoData.memo_no} 오버레이 제거.`);
+    }
+
+    // 3. 업데이트된 데이터로 새로운 마커/오버레이 생성 (기존 displayMemoOnMap 루프 내부 로직 재활용)
+    const position = new kakao.maps.LatLng(memoData.latitude, memoData.longitude);
+
+    let markerImageUrl;
+    if (memoData.complete === 'Y') {
+        markerImageUrl = '/front/assets/image/markerStar_orange2.png';
+    } else if (memoData.complete === 'N') {
+        markerImageUrl = '/front/assets/image/markerStar_green2.png';
+    } else {
+        markerImageUrl = '/front/assets/image/markerStar.png';
+    }
+
+    const markerImageWidth = 32;   // 실제 마커 이미지의 너비 (픽셀)
+    const markerImageHeight = 34;  // 실제 마커 이미지의 높이 (픽셀)
+    const popupOffsetFromMarker = 10; 
+
+    // 콘텐츠 HTML 구성 (기존 displayMemoOnMap 내부의 overlayContent 로직 재활용)
+    const completeStatusText = memoData.complete === 'Y' ? '<span class="label-default bg-orange2">거래완료</span>' : '<span class="label-default bg-green2">거래진행</span>';
+    const estateNoText = (memoData.estate_no && memoData.estate_no !== 0) ? `매물번호 : ${memoData.estate_no}` : '매물번호 : 없음';
+    const dateText = memoData.lst_date ? memoData.lst_date : memoData.reg_date; 
+    const summarizedContent = memoData.content ? 
+        (memoData.content.length > 10 ? memoData.content.substring(0, 10) + '...' : memoData.content) : '내용 없음'; 
+
+    const overlayContent = `
+        <div class="memo-marker-container" style="
+            position: relative; /* 자식 팝업의 absolute 포지셔닝 기준 */
+            width: ${markerImageWidth}px;
+            height: ${markerImageHeight}px;
+        ">
+            <img src="${markerImageUrl}" class="memo-marker-image" 
+                id="marker-${memoData.memo_no}" 
+                style="display: block; cursor: pointer; width: 100%; height: 100%;" />
+            
+            <!-- 상세 정보 팝업 부분 -->
+            <div class="memo-details-popup" style="
+                display: none; 
+                position: absolute; 
+                /* ⭐⭐ 팝업의 top 위치 계산 핵심 수정 ⭐⭐ */
+                /* 목표: 팝업의 '하단'이 마커 이미지의 '상단' + '간격' 에 오도록 */
+                /* 현재 top은 팝업의 상단을 기준으로 함 */
+                /* 팝업의 실제 높이를 알아야 정확한 계산 가능. 여기서는 팝업 콘텐츠의 예상 높이 (대략 150px)로 추정 */
+                /* 또는 markerImageHeight + popupOffsetFromMarker 로 팝업 바닥이 마커 상단에 위치하도록 함 */
+                
+                top: -${popupOffsetFromMarker}px; /* ⭐ 마커 이미지 상단에 팝업 하단이 오도록 (10px 간격) ⭐ */
+                transform: translateX(-50%) translateY(-100%); /* ⭐ X축 중앙, Y축 상단으로 정렬 ⭐ */
+                left: 50%; /* X축 중앙 정렬을 위한 기준점 */
+                z-index: 100;
+                background: white; 
+                border: 1px solid blue; 
+                padding: 5px; 
+                border-radius: 5px; 
+                min-width:150px; max-width:250px; 
+                box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            ">
+                <div class="memo-overlay-content">
+                    <h5 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; 
+                            font-size:12px; font-weight:bold; padding-bottom: 5px; border-bottom: 1px solid #e0e0e0;">
+                        <span>내 메모번호: ${memoData.my_idx ? memoData.my_idx : '-'}</span>
+                        ${completeStatusText}
+                    </h5>
+                    <p style="margin-bottom: 3px; font-size:12px; color:#555;">
+                        ${estateNoText}
+                    </p>
+                    <p style="margin-bottom: 0; font-size:13px;">
+                        ${summarizedContent}
+                    </p>
+                    <p style="margin-bottom: 0; font-size:10px;">
+                        ${dateText}
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const customOverlay = new kakao.maps.CustomOverlay({
+        position: position,
+        content: overlayContent,
+        xAnchor: 0.5, 
+        yAnchor: 1.0, 
+        zIndex: 10
+    });
+
+    customOverlay.setMap(map);
+    currentMemoOverlays.push(customOverlay); // 배열에 추가 (혹은 {overlay: customOverlay, memoNo: memoData.memo_no})
+
+    // 이벤트 리스너 바인딩 (기존 displayMemoOnMap 내 로직 재활용)
+    setTimeout(() => {
+        const markerElement = document.getElementById(`marker-${memoData.memo_no}`);
+        if (markerElement) {
+            const detailsPopup = markerElement.closest('.memo-marker-container').querySelector('.memo-details-popup');
+            if (detailsPopup) {
+                markerElement.onmouseover = () => { detailsPopup.style.display = 'block'; };
+                markerElement.onmouseout = () => { detailsPopup.style.display = 'none'; };
+                detailsPopup.onmouseover = () => { detailsPopup.style.display = 'block'; };
+                detailsPopup.onmouseout = () => { detailsPopup.style.display = 'none'; };
+            }
+            markerElement.onclick = (e) => {
+                e.stopPropagation(); 
+                openMemoModifyModal(memoData, e.clientX, e.clientY);
+            };
+        }
+    }, 0); 
+
+    console.log(`메모 ${memoData.memo_no} 오버레이 업데이트 완료.`);
+}
+// 기존 오버레이를 모두 지우는 함수
+function removeExistingMemoOverlays() {
+    //for (let i = 0; i < currentMemoOverlays.length; i++) {
+    //    currentMemoOverlays[i].setMap(null); // 지도에서 오버레이 제거
+    //}
+    currentMemoOverlays.forEach(overlay => overlay.setMap(null));
+    currentMemoOverlays = []; // 배열 초기화
+}
+
+/**
+ * 필터 파라미터를 수집하는 함수
+ * @returns {Object} 필터 파라미터 객체
+ */
+function collectFilterMemo() {
+    
+    // ⭐️ complete 필드의 값을 PHP 스크립트가 기대하는 'Y' 또는 'N' 문자열로 변환합니다. ⭐️
+    const completeStatus = $("#opt_complet").is(':checked') ? 'Y' : 'N';
+    return {
+        complete: completeStatus,
+    };
 }

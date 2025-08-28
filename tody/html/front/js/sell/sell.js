@@ -25,7 +25,8 @@ $(document).ready(async function () {
     });
     //getEstateListToMakeOption(); // 매물 리스트 가져와서 SelectOption list 생성
     updateCompareApplyButtonState(); // <-- 비교버튼 초기화
-    initTooltip(); // 툴팁 초기화    
+    initTooltip(); // 툴팁 초기화  
+    
 });
 
 // 초기화 함수 호출
@@ -230,14 +231,6 @@ function initModalDrag() {
             },
             dataType: "json", // 서버 응답 데이터 형식 (JSON으로 예상)
             success: function(response) {
-                //console.log(`[${selectId}] 매물 리스트 가져오기 성공:`, response);
-                // 여기에 가져온 매물 리스트 데이터를 화면에 표시하는 로직을 작성합니다.
-                // 예를 들어, 특정 div에 데이터를 채워 넣거나, iframe의 src를 변경할 수 있습니다.
-                // if (selectId === "estate_type_filter_1") {
-                //     $("#property_list_for_1").html(response.html_content);
-                // } else if (selectId === "estate_type_filter_2") {
-                //     $("#property_list_for_2").html(response.html_content);
-                // }
             },
             error: function(xhr, status, error) {
                 console.error(`[${selectId}] 매물 리스트 가져오기 실패:`, status, error);
@@ -267,7 +260,6 @@ async function initTooltip(){
             $.getJSON("/front/back/00-include/get_tooltips.php", { screen: screenType })
                 .done(function(data) {
                     globalTooltipContents = data.responseData || {}; // 전역 변수에 데이터 할당
-                    //console.log("fetchTooltipContent: globalTooltipContents에 데이터 할당 완료.", globalTooltipContents);
                     resolve();
                 })
                 .fail(function(jqXHR, textStatus, errorThrown) {
@@ -280,10 +272,6 @@ async function initTooltip(){
 
     // 툴팁 활성화/비활성화 및 내용 업데이트 함수
     async function updateTooltips() { // 함수 자체를 async로 정의
-        //console.log("updateTooltips 함수 실행. isHelpActive:", isHelpActive);
-        //console.log("updateTooltips 시작 시 .tooltip-target 요소 개수:", $('.tooltip-target').length);
-
-        // [중요 수정] 모든 툴팁 인스턴스를 dispose하고 맵에서 제거, 속성/이벤트 제거를 일괄적으로 수행.
         // 이는 함수가 호출될 때마다 깨끗한 상태에서 다시 시작하도록 합니다.
         $('.tooltip-target').each(function() {
             let existingTooltipInstance = activeBootstrapTooltips.get(this);
@@ -294,8 +282,7 @@ async function initTooltip(){
             $(this).removeAttr('data-bs-title data-bs-toggle'); // data 속성 제거
             $(this).off('click.tooltipHide'); // 이전에 붙였던 click 이벤트 제거
         });
-        //console.log("기존 툴팁 정리 루프 완료.");
-
+        
         if (isHelpActive) {
             // 도움말 모드 활성화 시
 
@@ -307,10 +294,6 @@ async function initTooltip(){
                 // 에러 발생 시 더 이상 진행하지 않음
                 return Promise.reject(error);
             }
-
-            // fetchTooltipContent에서 globalTooltipContents가 채워졌음을 확인
-            //console.log("fetchTooltipContent 완료. globalTooltipContents 설정됨.");
-            //console.log("툴팁 생성 시작. .tooltip-target 개수:", $('.tooltip-target').length);
 
             if ($('.tooltip-target').length > 0) {
                 $('.tooltip-target').each(function() {
@@ -352,17 +335,13 @@ async function initTooltip(){
                                 clickedTooltipInstance.hide(); // 툴팁 숨기기
                                 //clickedTooltipInstance.disable(); // 툴팁 자동 재활성화 방지 (매우 중요!)
                                 $(this).blur(); // 요소의 포커스를 제거 (클릭 후 포커스가 남을 때 유용)
-                                //console.log(`요소 ID '${clickedElementId}' 클릭: 툴팁 숨김 및 비활성화 처리.`);
                             } else {
                                 //console.warn(`클릭된 요소 '${clickedElementId}'에 대한 툴팁 인스턴스를 찾을 수 없습니다.`);
                             }
                         });
                         // ===== [클릭 이벤트 로직 추가 끝] =====
-                        //console.log(`요소 ID '${elementId}'에 Bootstrap 툴팁 설정 완료.`);
                     } else {
-                        // 툴팁 내용이 없는 경우 (DB에 없는 경우)
-                        // 기존 정리 로직은 함수 시작 부분에서 이미 처리되었으므로 여기서는 추가 작업 불필요.
-                        //console.log(`요소 ID '${elementId}'에 대한 툴팁 내용이 없어 Bootstrap 툴팁을 설정하지 않습니다.`);
+                    
                     }
                 }); // .each() 끝
                 // updateTooltips 함수가 Promise를 반환하도록 최종적으로 Resolve
@@ -373,7 +352,6 @@ async function initTooltip(){
             }
         } else {
             // 도움말 모드 비활성화 시 (초기 공통 처리 부분에서 이미 모든 툴팁 제거됨)
-            //console.log("도움말 모드 비활성화 완료.");
             return Promise.resolve();
         }
     }
@@ -384,7 +362,6 @@ async function initTooltip(){
 
         // updateTooltips가 Promise를 반환하도록 변경했으므로, 여기서 await로 기다립니다.
         await updateTooltips();
-        //console.log("updateTooltips 호출 완료.");
     });
 
     
@@ -429,6 +406,112 @@ function initAction() {
         // $(".mo-tool-draw-option").fadeOut(400, "easeOutQuad");
     });
 
+    // 지도 - 옵션 - 메모관리 //
+    $("#mapOptionMemoOpen2").click(function () {
+        const user = userInfo();
+        if (!user) {
+            $("#modalAlert").iziModal("open");
+            $("#alert_message").html("<h2><span>회원 전용</span> 기능입니다.</h2>");
+            return;
+        }
+
+        $(this).toggleClass("active"); // active 클래스를 토글합니다.
+
+        if ($(this).hasClass("active")) {
+            $(".mo-memo").fadeIn(100, "easeOutQuad");
+            displayMemoOnMap();
+
+        } else {
+            $(".mo-memo").fadeOut(100, "easeOutQuad");
+            removeExistingMemoOverlays();
+        }
+    });
+
+    // ⭐ opt_complet (거래완료 포함) 체크박스 변경 시 ⭐
+    $("#opt_complet").on("change", function() {
+        // 메모 목록을 다시 불러와 지도에 표시합니다.
+        displayMemoOnMap(); 
+    });
+    
+    // ⭐ radio_memo (전체/내 매물 메모보기) 라디오 버튼 변경 시 ⭐
+    $('input[name="radio_memo"]').on("change", function() {
+        // 메모 목록을 다시 불러와 지도에 표시합니다.
+        displayMemoOnMap();
+    });
+
+    $(".mo-memo > dl > dd > button").click(function () {
+        //$("#mapOptionMemoOpen2").removeClass("active");
+        $(".mo-memo").fadeOut(400, "easeOutQuad");
+    });
+    
+    // 모달 초기화 로직 (initMemoEvents() 함수 안이든, $(document).ready()의 한 부분으로)
+    // 이 핸들러는 한 번만 바인딩되어야 합니다.
+    $("#memoRegisterModal").off("hidden.bs.modal").on("hidden.bs.modal", function () { // .off() 추가
+        const $dialog = $(this).find(".modal-dialog");
+
+        // jQuery UI draggable 인스턴스 파괴
+        if ($dialog.data('ui-draggable')) {
+            $dialog.draggable('destroy');
+        }
+        // ⭐⭐ 강력한 초기화 로직 ⭐⭐
+        // 1. 모든 인라인 스타일 제거
+        $dialog.removeAttr('style');
+
+        // 2. Bootstrap의 기본 모달 클래스 및 스타일을 명시적으로 적용하여, 어떤 상황에서도 중앙으로 정렬되도록 합니다.
+        // 이는 .modal-dialog 클래스가 다른 CSS에 의해 오버라이드 되었을 경우를 대비합니다.
+        $dialog.css({
+            'position': '', // 인라인 스타일 제거 (Bootstrap의 기본 position:fixed로 돌아감)
+            'top': '',      // 인라인 top 제거
+            'left': '',     // 인라인 left 제거
+            'margin': '',   // 인라인 margin 제거
+            'transform': '' // 인라인 transform 제거 (Bootstrap의 기본 translate(-50%, -50%)로 돌아감)
+        });
+
+        
+        // Bootstrap의 flexbox 기반 중앙 정렬 클래스도 확인 (있다면 유지)
+        //$dialog.addClass('modal-dialog-scrollable'); // 필요하면.
+
+        // 그 외 모달이 닫힐 때 필요한 공통 정리 작업 (예: 백드롭 제거, body 클래스 제거)
+        // 이전에 이 로직도 여기에 추가해 드렸습니다.
+    //    $(".modal-backdrop").remove();
+    //    $("body").removeClass("modal-open");
+    //    $("body").removeAttr("style"); // 혹시 body에 직접 style이 추가되었다면 제거
+        // 만약 모달 내용도 비워야 한다면
+        $(this).find(".modal-content").empty(); // 다음 로드를 위해 내용 비우기 (필요시)
+    });
+    $("#memoModifyModal").off("hidden.bs.modal").on("hidden.bs.modal", function () { // .off() 추가
+        const $dialog = $(this).find(".modal-dialog");
+
+        // jQuery UI draggable 인스턴스 파괴
+        if ($dialog.data('ui-draggable')) {
+            $dialog.draggable('destroy');
+        }
+        // ⭐⭐ 강력한 초기화 로직 ⭐⭐
+        // 1. 모든 인라인 스타일 제거
+        $dialog.removeAttr('style');
+
+        // 2. Bootstrap의 기본 모달 클래스 및 스타일을 명시적으로 적용하여, 어떤 상황에서도 중앙으로 정렬되도록 합니다.
+        // 이는 .modal-dialog 클래스가 다른 CSS에 의해 오버라이드 되었을 경우를 대비합니다.
+        $dialog.css({
+            'position': '', // 인라인 스타일 제거 (Bootstrap의 기본 position:fixed로 돌아감)
+            'top': '',      // 인라인 top 제거
+            'left': '',     // 인라인 left 제거
+            'margin': '',   // 인라인 margin 제거
+            'transform': '' // 인라인 transform 제거 (Bootstrap의 기본 translate(-50%, -50%)로 돌아감)
+        });
+
+        
+        // Bootstrap의 flexbox 기반 중앙 정렬 클래스도 확인 (있다면 유지)
+        //$dialog.addClass('modal-dialog-scrollable'); // 필요하면.
+
+        // 그 외 모달이 닫힐 때 필요한 공통 정리 작업 (예: 백드롭 제거, body 클래스 제거)
+        // 이전에 이 로직도 여기에 추가해 드렸습니다.
+    //    $(".modal-backdrop").remove();
+    //    $("body").removeClass("modal-open");
+    //    $("body").removeAttr("style"); // 혹시 body에 직접 style이 추가되었다면 제거
+        // 만약 모달 내용도 비워야 한다면
+        $(this).find(".modal-content").empty(); // 다음 로드를 위해 내용 비우기 (필요시)
+    });
     // 지도 - 옵션 - 도구사용 - 도구 //
     $("#mapOptionToolOptionOpen").click(function () {
         if ($(".mo-tool-option").css("display") == "none") {
@@ -765,7 +848,30 @@ function initAction() {
     
 }
 
+function resetModalContainer(modalId) {
+    const $modal = $(`#${modalId}`);
+    const $dialog = $modal.find(".modal-dialog");
+    const $modalContent = $modal.find(".modal-content"); // modal-content 요소를 별도 변수에 저장
 
+    // Draggable 인스턴스가 있다면 파괴하여 깨끗한 상태로 만듭니다.
+    if ($dialog.data('ui-draggable')) {
+        $dialog.draggable('destroy');
+    }
+
+    // ⭐⭐ 강력하게 인라인 스타일만 제거 ⭐⭐
+    // ⭐⭐ 모든 관련 요소의 인라인 스타일을 제거하여 Bootstrap 기본값으로 돌아가게 합니다. ⭐⭐
+    $modal.removeAttr('style'); // modal 컨테이너 자체
+    $dialog.removeAttr('style'); // modal-dialog
+    $modalContent.removeAttr('style'); // modal-content도 스타일 제거
+    
+    $modal.find(".modal-header").removeAttr('style'); // modal-header
+    $modal.find(".modal-body").removeAttr('style'); // modal-body
+    $modal.find(".modal-footer").removeAttr('style'); // modal-footer
+
+    // ⭐⭐ 핵심: modal-content의 내부 HTML을 완전히 비웁니다! ⭐⭐
+    $modalContent.empty(); 
+    
+}
 /**
  * 검색 관련 이벤트 초기화 함수
  */
@@ -1099,7 +1205,7 @@ function initListEvents() {
                 if(compareList.data.length >= 2) {
                     // 이미 비교 매물이 2개 이상인 경우, 체크박스 상태를 원래대로 되돌립니다.
                     $(this).prop('checked', false);
-                    alert("비교 매물은 최대 2개까지 선택할 수 있습니다.");
+                    sweetAlertMessage("비교 매물은 최대 2개까지 선택할 수 있습니다.","","w");
                     parentDl.removeClass('dl-highlight-border');
                     return;
                 }
@@ -1108,7 +1214,7 @@ function initListEvents() {
                     const existingEstateType = compareList.data[0].estateType;
                     if (existingEstateType !== estateType) {
                         $(this).prop('checked', false); // 체크박스 체크 해제
-                        alert("매물 비교는 동일한 매물구분(유형)만 비교할 수 있습니다.");
+                        sweetAlertMessage("매물 비교는 동일한 매물구분(유형)만 비교할 수 있습니다.","","w");
                         // 하이라이트도 제거
                         parentDl.removeClass('dl-highlight-border');
                         return; // 함수 종료
@@ -1190,6 +1296,7 @@ function updateCompareApplyButtonState() {
         $compareApplyBtn.addClass('disabled-style'); // 필요시 비활성화 스타일 추가
     }
 }
+
 /**
  * 매물 리스트 가져오는 함수
  * @param {*} searchNo = 매물번호 검색
@@ -1776,7 +1883,7 @@ async function renderEstateDetail(data) {
 // make_compareList 함수 정의
 async function make_compareList(compareList) {
     if (compareList.data.length !== 2) {
-        alert("비교할 매물은 정확히 2개여야 합니다.");
+        sweetAlertMessage("비교할 매물은 정확히 2개여야 합니다.","","e");
         $('#compareModal').hide();
         return;
     }
@@ -1810,7 +1917,7 @@ async function make_compareList(compareList) {
             data1 = response1.responseData;
         } else {
             console.error("첫 번째 매물 상세 정보 로드 실패:", response1);
-            alert("첫 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.");
+            sweetAlertMessage("첫 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.","","e");
             $('#compareModal').hide();
             return;
         }
@@ -1819,7 +1926,7 @@ async function make_compareList(compareList) {
             data2 = response2.responseData;
         } else {
             console.error("두 번째 매물 상세 정보 로드 실패:", response2);
-            alert("두 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.");
+            sweetAlertMessage("두 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.","","e");
             $('#compareModal').hide();
             return;
         }
@@ -1830,8 +1937,8 @@ async function make_compareList(compareList) {
         adjustComparisonModalHeight(); 
 
     } catch (error) {
-        console.error("매물 상세 정보 로드 중 오류 발생:", error);
-        alert("매물 상세 정보를 불러오는 중 오류가 발생했습니다.");
+        //console.error("매물 상세 정보 로드 중 오류 발생:", error);
+        sweetAlertMessage("매물 상세 정보를 불러오는 중 오류가 발생했습니다.","","e");
         $('#compareModal').hide();
     }
 }
@@ -3455,7 +3562,7 @@ async function saveMap(divId) {
             document.body.removeChild(link);
         } else {
             // 서버로부터 실패 메시지를 받은 경우 경고 메시지 표시
-            alert("Error: " + res.message);
+            sweetAlertMessage("Error: " + res.message, "", "e");
         }
     } catch (error) {
         // 오류가 발생한 경우 콘솔에 에러 메시지 출력
@@ -3477,8 +3584,7 @@ function initShareEvents() {
     }
 
     const currentUrl = location.href;
-    console.log(currentUrl);
-
+    
     Kakao.Share.sendDefault({
         // container: "#kakaotalk_sharing_btn",
         objectType: "text",
@@ -3594,10 +3700,6 @@ async function favoriteRegister() {
         .catch((error) => {
             console.log(error);
         });
-    // }
-    // },
-    // { size: "5", analyze_type: "similar" }
-    // ); // 장소 검색
 }
 
 /**
@@ -3614,8 +3716,7 @@ async function favoriteCancel() {
 
     const estateEle = $("#map_sell_view .estate-no");
     const estateNo = estateEle.text();
-    console.log(estateNo);
-
+    
     // const address = $("#msv_content").find(".address_jibun").text();
     const dataObj = {
         ...user,
@@ -4118,4 +4219,431 @@ function cutAfterSuffix(text) {
     }
     // 어떤 접미사도 발견되지 않으면 원본 문자열을 그대로 반환합니다.
     return text;
+}
+
+// 메모 컨텍스트 메뉴를 위한 전역 변수 (메모등록하기 클릭 시 사용할 데이터 임시 저장)
+let currentMemoData = null; // { latLng, pnu, uniqueId, type } 형태
+/**
+ * 지도 위에서 마우스 우클릭 시 메모 컨텍스트 메뉴를 표시합니다.
+ * @param {Object} latLng - 클릭한 위치의 위도/경도 객체
+ * @param {Object} screenPoint - 클릭한 위치의 화면 좌표 객체 (x, y)
+ * @param {string} pnu - PNU 코드
+ * @param {string} uniqueId - 고유 ID (예: 매물 번호)
+ * @param {string} type - 폴리곤 타입 (예: '매물', '토지' 등)
+ */
+function showMemoContextMenu(latLng, screenPoint, pnu, uniquePolygonId, type) {
+    
+    const contextMenu = $('#memoContextMenu');
+    // 메뉴에 전달된 데이터 저장
+    currentMemoData = {
+        latLng: latLng,
+        pnu: pnu,
+        uniquePolygonId: uniquePolygonId,
+        type: type
+    };
+    
+    // 지도 객체 'map'에서 컨테이너 요소를 직접 가져옵니다.
+    // 'map'은 전역 변수로 이미 선언되어있고, initializeMap()에서 할당되었을 것입니다.
+    
+    // mapContainerElement가 제대로 가져와졌는지 확인하는 안전장치
+    // 이 변수가 유효한지 안전장치로 확인합니다.
+    if (!mapContainer) {
+        console.error("지도 컨테이너 요소 (mapContainer)를 찾을 수 없습니다! ID를 확인해주세요.");
+        return; // 오류 방지 및 함수 종료
+    }
+
+    // 지도 컨테이너의 화면 기준 절대 위치를 가져옵니다.
+    const mapContainerOffset = $(mapContainer).offset(); // <--- 수정된 변수명 사용
+
+    // mapContainerOffset이 유효한지 다시 한번 확인 (안전장치)
+    if (!mapContainerOffset || typeof mapContainerOffset.left === 'undefined') {
+        console.error("지도 컨테이너의 offset 값을 가져올 수 없습니다! (offset() 반환값 문제)");
+        return; // 오류 방지 및 함수 종료
+    }
+
+    // 마우스 클릭 시 문서(document) 기준 절대 좌표 계산
+    const clickDocumentX = mapContainerOffset.left + screenPoint.x + window.scrollX;
+    const clickDocumentY = mapContainerOffset.top + screenPoint.y + window.scrollY;
+
+    // 메뉴 위치 설정
+    contextMenu.css({
+        left: clickDocumentX + 'px',
+        top: clickDocumentY + 'px'
+    });
+
+    // 메뉴 보이기
+    contextMenu.fadeIn(100); // 부드럽게 나타나게
+
+    // ************* 중요: 메뉴 외부 클릭 시 메뉴 숨기기 처리 *************
+    // document.once를 사용하여 한 번만 이벤트 리스너를 등록하고 실행 후 제거
+    $(document).off('click.hideMemoMenu'); // 기존 이벤트 리스너가 있다면 먼저 제거하여 중복 방지
+    $(document).on('click.hideMemoMenu', function(e) {
+        // 메뉴 요소를 클릭했거나 메뉴 안의 요소를 클릭했다면 숨기지 않음
+        if (!$(e.target).closest('#memoContextMenu').length) {
+            contextMenu.fadeOut(100, function() {
+                // 완전히 숨겨진 후 데이터 초기화 (메모등록하기를 다시 누르기 전까지)
+                currentMemoData = null;
+            });
+            $(document).off('click.hideMemoMenu'); // 이벤트 리스너 제거
+        }
+        
+    });
+
+    // 마우스 휠 스크롤 시에도 메뉴 숨기기 (페이지 스크롤에 메뉴가 딸려가지 않도록)
+    $(document).off('scroll.hideMemoMenu');
+    $(document).on('scroll.hideMemoMenu', function() {
+        contextMenu.fadeOut(100, function() {
+            currentMemoData = null;
+        });
+        $(document).off('scroll.hideMemoMenu');
+        $(document).off('click.hideMemoMenu'); // 스크롤 시 클릭 이벤트 리스너도 제거
+    });
+
+
+    // ************* "메모등록하기" 옵션 클릭 시 동작 *************
+    $('#memoRegisterOption').off('click.memoAction'); // 기존 이벤트 핸들러 제거
+    $('#memoRegisterOption').on('click.memoAction', function() {
+        // 메뉴 숨기기
+        contextMenu.fadeOut(100, function() {
+            currentMemoData = null;
+        });
+        $(document).off('click.hideMemoMenu');
+        $(document).off('scroll.hideMemoMenu');
+
+        // 실제 메모 등록 로직 호출
+        if (currentMemoData) {
+            if (!userInfo()) {
+                $("#modalAlert").iziModal("open");
+                $("#alert_message").html("<h2><span>회원 전용</span> 기능입니다.</h2>");
+                return;
+            }
+            
+            // 실제 모달이나 페이지 이동 등 메모 등록 UI를 띄우는 함수를 여기에 호출
+            openMemoRegisterModal(currentMemoData.latLng, currentMemoData.pnu, currentMemoData.type, clickDocumentX, clickDocumentY);
+        }
+    });
+
+    // 브라우저 기본 컨텍스트 메뉴가 뜨지 않도록 방지 (중요!)
+    // 이벤트 객체를 받아서 preventDefault()를 호출
+    return false; // 이벤트를 막기 위해 false 반환 (jQuery 방식)
+}
+
+// 이 함수는 기존 #memoRegisterModal 만 사용합니다.
+async function openMemoRegisterModal(latLng, pnu, type, clientX, clientY, addressInfo = null) {
+    // memoData 인자는 memo_register.html 로직에서 사용하므로 직접 구성
+    const memoData = { 
+        latLng,
+        latitude: latLng.getLat(), 
+        longitude: latLng.getLng(), 
+        pnu: pnu, 
+        type: type 
+    };
+    await openMemoFunction(memoData, clientX, clientY, true); // true for isRegisterMode
+}
+
+
+/**
+ * 메모 수정 모달을 여는 함수
+ * @param {object} memoData - 수정할 메모의 모든 데이터 객체 (memo_no, name, phone, content 등)
+ */
+async function openMemoModifyModal(memoData, clientX, clientY) {
+    await openMemoFunction(memoData, clientX, clientY, false); // false for isRegisterMode
+}
+
+async function openMemoFunction(memoData, clientX, clientY, isRegisterMode) { // openMemoModal과 openMemoModifyModal의 공통 로직을 담음
+    const modalId = isRegisterMode ? "memoRegisterModal" : "memoModifyModal";
+    const htmlFile = isRegisterMode ? "/front/views/memo/memo_register.html" : "/front/views/memo/memo_modify.html";
+    const initLogicFunction = isRegisterMode ? initMemoRegisterModalLogic : initMemoModifyModalLogic;
+
+    
+    const $modal = $(`#${modalId}`);
+    const $modalContent = $modal.find(".modal-content");
+    const $modalDialog = $modal.find(".modal-dialog"); // dialog 변수 추가
+    
+    // ⭐⭐⭐ 여기가 핵심: resetModalContainer는 memo 관련 모달에만 호출 ⭐⭐⭐
+    if (modalId === "memoRegisterModal" || modalId === "memoModifyModal") {
+        resetModalContainerForMemo(modalId); // ⭐ 새로운 함수 호출 ⭐
+    } else {
+        // ⭐ 다른 모달들은 Bootstrap 기본값으로 돌아가도록 최소한의 초기화만 ⭐
+        $modal.removeAttr('style').removeClass('show'); // 혹시 남아있는 인라인 스타일과 show 클래스 제거
+        $modal.find(".modal-content").empty(); // 내용만 비웁니다.
+        $modalDialog.removeAttr('style'); // dialog 스타일만 제거
+    }
+
+    try {
+        const htmlContent = await $.ajax({
+            url: htmlFile,
+            method: "GET",
+            dataType: "html"
+        });
+        
+        $modalContent.html(htmlContent); // HTML 내용 삽입
+        
+        // ⭐1. 데이터 저장 ⭐
+        const dataKey = isRegisterMode ? "memoData" : "currentMemoDataForEdit";
+        $modal.data(dataKey, { ...memoData, clientX: clientX, clientY: clientY });
+        $modal.data("modalMode", isRegisterMode ? "register" : "modify");
+
+        // ⭐⭐⭐ 핵심: Bootstrap 모달 Transition 비활성화 ⭐⭐⭐
+        // 모달과 그 자식 요소들의 모든 CSS Transition을 임시적으로 끕니다.
+        // 이렇게 하면 display: none -> display: block 전환 시 애니메이션이 없습니다.
+        $modal.css('transition', 'none');
+        $modalDialog.css('transition', 'none');
+        $modalContent.css('transition', 'none');
+        
+        // 3. 모달 인스턴스 생성 및 표시
+        const memoModalInstance = new bootstrap.Modal($modal[0]);
+        memoModalInstance.show();
+
+        // 4. 로직 초기화 (폼 채우기, 이벤트 바인딩 등)
+        if (typeof initLogicFunction === 'function') {
+            await  initLogicFunction();
+        }
+
+        // ⭐ hidden.bs.modal 핸들러는 그대로 유지 (모달이 닫힐 때 modal-pre-hidden 복원) ⭐
+        // 이 핸들러가 없으면 resetModalContainerForMemo에서 addClass() 한 것이 의미가 없어집니다.
+        $modal.one('hidden.bs.modal', function() {
+            if (modalId === "memoRegisterModal" || modalId === "memoModifyModal") {
+                 $(this).addClass('modal-pre-hidden');
+            }
+        });
+        
+    } catch (error) {
+       // $.fx.off = false; // 오류 발생 시에도 애니메이션 복원
+        //console.error("모달 로드 실패:", error);
+        sweetAlertMessage("모달 화면을 불러오는 데 실패했습니다.", "","e");
+    }
+}
+// ⭐⭐ memo 관련 모달만 위한 새로운 reset 함수 ⭐⭐
+function resetModalContainerForMemo(modalId) { // 이 함수 이름을 구체적으로 변경
+    const $modal = $(`#${modalId}`);
+    const $dialog = $modal.find(".modal-dialog");
+
+    if ($dialog.data('ui-draggable')) {
+        $dialog.draggable('destroy');
+    }
+
+    // ⭐⭐ 강력하게 인라인 스타일만 제거 (memo 모달에만 적용) ⭐⭐
+    $modal.removeAttr('style');
+    $dialog.removeAttr('style');
+    $modal.find(".modal-content").removeAttr('style').empty(); // 내용 비우는 것도 여기서
+    $modal.find(".modal-header").removeAttr('style');
+    $modal.find(".modal-body").removeAttr('style');
+    $modal.find(".modal-footer").removeAttr('style');
+    
+    //$dialog.removeClass('modal-dialog-scrollable'); 
+
+    // ⭐⭐ memo 모달만 위한 modal-pre-hidden 클래스 추가 ⭐⭐
+    $modal.addClass('modal-pre-hidden');
+    $modal.removeClass('show'); // Bootstrap이 show() 호출 시 .show 추가
+
+    // (Debug용 클래스 경고는 제거 또는 필요시 유지)
+    if (!$modal.hasClass('modal') || !$modal.hasClass('fade')) {
+        console.warn(`Modal ${modalId} is missing essential Bootstrap classes!`);
+        // 필요하다면 다시 추가 (하지만 이렇게 되면 원인 파악이 더 어려워짐)
+        // $modal.addClass('modal fade');
+    }
+    if (!$dialog.hasClass('modal-dialog')) {
+        console.warn(`Modal dialog for ${modalId} is missing essential Bootstrap classes!`);
+        // $dialog.addClass('modal-dialog');
+    }
+}
+
+// ==== 핸드폰 모드시 길게 누르기 관련 전역 변수 (이전과 동일) ====
+let pressTimer;
+const LONG_PRESS_THRESHOLD = 700;
+let isLongPress = false;
+
+
+// ==== 카카오 맵 초기화 코드 어딘가에 추가 (이전과 동일) ====
+//const mapContainer = document.getElementById('map');
+if (mapContainer) {
+    mapContainer.addEventListener('touchstart', handleMapTouchStart);
+    mapContainer.addEventListener('touchend', handleMapTouchEnd);
+    mapContainer.addEventListener('touchmove', handleMapTouchMove);
+    mapContainer.addEventListener('touchcancel', handleMapTouchEnd); 
+} else {
+    console.error("맵 컨테이너 요소를 찾을 수 없습니다. 'map' ID를 확인해주세요.");
+}
+
+// ==== 터치 이벤트 핸들러 함수들 (이전과 동일) ====
+function handleMapTouchStart(event) {
+    if (event.touches.length > 1) {
+        clearTimeout(pressTimer);
+        isLongPress = false;
+        return;
+    }
+
+    isLongPress = false;
+    clearTimeout(pressTimer);
+
+    const touchClientX = event.touches[0].clientX;
+    const touchClientY = event.touches[0].clientY;
+
+    const point = new kakao.maps.Point(touchClientX, touchClientY);
+    const latLngAtTouch = map.screenToLatLng(point);
+
+    pressTimer = setTimeout(() => {
+        isLongPress = true;
+
+        const coords = { lat: latLngAtTouch.getLat(), lng: latLngAtTouch.getLng() };
+
+        const currentLevel = map.getLevel();
+        if (currentLevel < 7) {
+            getPolygonInfoForCoords(coords).then(polygonInfo => {
+                if (polygonInfo && polygonInfo.pnu && polygonInfo.type) {
+                    const { pnu, type } = polygonInfo;
+                    
+                    if (!userInfo()) {
+                        $("#modalAlert").iziModal("open");
+                        $("#alert_message").html("<h2><span>회원 전용</span> 기능입니다.</h2>");
+                        return;
+                    }
+                    
+                    openMemoRegisterModal(latLngAtTouch, pnu, type, touchClientX, touchClientY);
+                    //console.log("길게 누르기 감지! 메모 등록 모달 호출됨:", coords, pnu, type);
+                } else {
+                    console.warn("해당 좌표에 대한 메모 등록 정보를 가져올 수 없습니다. PNU 또는 Type이 누락되었거나 정보가 없습니다.");
+                    sweetAlertMessage("해당 위치에 대한 토지/건물 정보가 명확하지 않아 메모를 등록할 수 없습니다. 지도에 정보가 표시된 영역에서 다시 시도해주세요.","","w");
+                }
+            }).catch(error => {
+                console.error("폴리곤 정보 가져오기 오류:", error);
+                sweetAlertMessage("정보를 가져오는 중 오류가 발생했습니다. 다시 시도해주세요.","","e");
+            });
+            
+        } else {
+            sweetAlertMessage("확대하여 더 자세한 위치에 메모를 등록해주세요.","","w");
+        }
+        
+    }, LONG_PRESS_THRESHOLD);
+}
+
+function handleMapTouchEnd(event) {
+    clearTimeout(pressTimer);
+    // if (isLongPress) { event.preventDefault(); }
+    // isLongPress = false;
+}
+
+function handleMapTouchMove(event) {
+    clearTimeout(pressTimer);
+    isLongPress = false;
+}
+
+
+// === `getPolygonInfoForCoords` 함수 재수정 ===
+// 이 함수는 `getLandBuildingPolygon`이 반환하는 데이터의 구조를
+// `getLandInfo` 및 `getBuilindInfo` 함수가 처리하는 구조에 맞게 유추하여 작성되었습니다.
+/**
+ * 주어진 좌표에 대한 대표 폴리곤 정보 (PNU, Type)를 비동기적으로 가져오는 함수.
+ * `getLandBuildingPolygon`을 호출하여 받은 원시 데이터를 직접 파싱하여 PNU와 Type을 추출합니다.
+ * 
+ * @param {Object} coords - { lat: number, lng: number } 형태의 좌표 객체
+ * @returns {Promise<Object|null>} PNU와 Type을 포함하는 객체 ({ pnu: string, type: string }) 또는 null
+ */
+async function getPolygonInfoForCoords(coords) {
+    try {
+        // 1. `getLandBuildingPolygon` 호출하여 원시 데이터 가져오기
+        // 이 함수가 getLandInfo와 getBuilindInfo에 전달되는 `result` 객체를 생성하는 것으로 가정합니다.
+        // 즉, getLandBuildingPolygon의 반환값이 { buildingPolygon, buildingPolygon2, landPolygon }이 아니라
+        // `getLandInfo`가 받는 `result` 형태 (ex: {response: {status, result:{featureCollection}}})와 유사할 것입니다.
+        const polygonRawData = await getLandBuildingPolygon(coords); 
+        // 여기서 polygonRawData는 getLandInfo 또는 getBuilindInfo 함수가 받을 수 있는 형태여야 합니다.
+        // 예를 들어, getLandBuildingPolygon이 서버로부터의 전체 응답 객체를 반환한다면 다음과 같을 수 있습니다.
+        // {
+        //   landInfoResponse: { response: { status: "OK", result: { featureCollection: { features: [...], bbox: [...] } } } },
+        //   buildingInfoResponse: { features: [...], buildingId: "..." }
+        // }
+        
+        let pnu = null;
+        let type = null;
+
+        // 2. landPolygon 정보 추출 및 PNU/Type 결정
+        // getLandInfo의 로직을 참고하여 landInfoResponse에서 PNU와 Type을 찾습니다.
+        if (polygonRawData && polygonRawData.landInfoResponse && polygonRawData.landInfoResponse.response.status === "OK") {
+            const landFeatures = polygonRawData.landInfoResponse.response.result.featureCollection.features;
+            if (landFeatures && landFeatures.length > 0) {
+                // 첫 번째 토지 Feature의 PNU와 Type을 대표로 사용
+                pnu = landFeatures[0].properties.pnu;
+                type = 'land'; 
+            }
+        }
+
+        // 3. buildingPolygon 정보 추출 및 PNU/Type 결정 (건물 정보가 더 우선순위를 가지도록)
+        // getBuilindInfo의 로직을 참고하여 buildingInfoResponse에서 PNU와 Type을 찾습니다.
+        // uniqueFeaturesMap을 사용하셨으므로, 여러 건물 중 첫 번째 건물을 대표로 가정합니다.
+        const processBuildingData = (buildingData) => {
+            if (buildingData && buildingData.features && buildingData.features.length > 0) {
+                // 중복 제거 없이 첫 번째 유효한 건물 feature를 찾음
+                const buildingFeature = buildingData.features.find(f => f.properties && f.properties.pnu);
+                if (buildingFeature) {
+                    pnu = buildingFeature.properties.pnu; // 건물 PNU
+                    type = 'building'; // 건물 유형으로 고정 (getBuilindInfo처럼)
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        // buildingPolygon과 buildingPolygon2 모두 확인
+        // 만약 건물 정보가 있다면 해당 건물 정보를 우선적으로 사용합니다.
+        // onedol님의 `getBuilindInfo`는 `buildingInfos.buildingPolygon`과 `buildingInfos.buildingPolygon2`를 인자로 받는데,
+        // `getLandBuildingPolygon`의 반환값 형태를 정확히 알 수 없어 임시 변수명 `polygonRawData.buildingInfoResponse`로 가정합니다.
+        // 실제 `getLandBuildingPolygon`이 어떤 형태의 객체를 반환하여
+        // `getBuilindInfo({ buildingPolygon, buildingPolygon2 })`에 전달되는지 확인이 필요합니다.
+        
+        // 예시: getLandBuildingPolygon이 { land: {...}, building1: {...}, building2: {...}} 형태라고 가정하고,
+        // building1과 building2가 `getBuilindInfo`에 전달되는 `features` 배열을 직접 포함하고 있다고 가정합니다.
+        if (polygonRawData.building1 && processBuildingData(polygonRawData.building1)) {
+            // building1에서 정보를 찾았으면 통과
+        } else if (polygonRawData.building2 && processBuildingData(polygonRawData.building2)) {
+            // building1에서 못 찾았으면 building2에서 시도
+        }
+        
+        // --- `getLandBuildingPolygon`의 실제 반환값 구조에 맞게 이 부분 조정 필요 ---
+        // onedol님이 이 함수 내부에서 `getLandBuildingPolygon`의 반환값을 `polygons`라는 이름으로 받고
+        // { buildingPolygon, buildingPolygon2, landPolygon }으로 구조 분해 할당하는 것으로 보아
+        // `getLandBuildingPolygon`이 이 세 객체를 속성으로 가진 단일 객체를 반환하는 것으로 유추했습니다.
+        // 그렇다면, `getLandInfo`와 `getBuilindInfo`가 받는 인자 또한 해당 속성들이 직접 인자로 전달되거나,
+        // 혹은 `result`나 `buildingInfos`처럼 wrapping된 객체 형태로 전달될 것입니다.
+
+        // 예를 들어, getLandBuildingPolygon이 { buildingPolygon: { features: [...] }, landPolygon: { response: {...} } } 형태로 반환한다면:
+        // land part:
+        if (polygonRawData.landPolygon && polygonRawData.landPolygon.response && polygonRawData.landPolygon.response.status === "OK") {
+            const landFeatures = polygonRawData.landPolygon.response.result.featureCollection.features;
+            if (landFeatures && landFeatures.length > 0) {
+                pnu = landFeatures[0].properties.pnu;
+                type = 'land'; 
+            }
+        }
+        // building part (건물 정보가 있다면 우선시)
+        const checkBuilding = (buildingPolyData) => {
+             if (buildingPolyData && buildingPolyData.features && buildingPolyData.features.length > 0) {
+                const bFeature = buildingPolyData.features.find(f => f.properties && f.properties.pnu);
+                if (bFeature) {
+                    pnu = bFeature.properties.pnu;
+                    type = 'building';
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (polygonRawData.buildingPolygon && checkBuilding(polygonRawData.buildingPolygon)) {
+            // Main building
+        } else if (polygonRawData.buildingPolygon2 && checkBuilding(polygonRawData.buildingPolygon2)) {
+            // Secondary building
+        }
+        // --------------------------------------------------------------------------------------------------
+
+        if (pnu && type) {
+            return { pnu: pnu, type: type };
+        } else {
+            console.log("해당 좌표에 PNU 또는 Type 정보가 충분하지 않습니다:", { pnu, type });
+            return null; // 정보가 부족하면 null 반환
+        }
+
+    } catch (error) {
+        console.error("getPolygonInfoForCoords에서 오류 발생:", error);
+        return null;
+    }
 }

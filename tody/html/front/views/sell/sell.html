@@ -28,6 +28,8 @@
         <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <!-- Swiper Css -->
         <!-- <link href="/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" /> -->
+         <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
         <!-- App Css-->
         <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
         <!-- Custom Css-->
@@ -335,10 +337,42 @@
                             </p>
                         </div> -->
 
+                    <!--
                         <button type="button" id="mapOptionMemoOpen" class="tooltip-target">
                             <i class="mdi mdi-notebook-edit-outline"></i>
                             <span>메모<br />관리</span>
                         </button>
+                    -->
+                        <button type="button" id="mapOptionMemoOpen2" class="tooltip-target">
+                            <i class="mdi mdi-notebook-edit-outline"></i>
+                            <span>메모<br />관리</span>
+                        </button>
+                        <div class="mo-memo">
+                            <dl>
+                                <dt>메모설정</dt>
+                                <dd>
+                                    <button><i class="fa-light fa-xmark"></i></button>
+                                </dd>
+                            </dl>
+                            <div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_complet" id="opt_complet" checked />
+                                        <label for="opt_complet">거래완료 포함</label>
+                                    </p>
+                                </div>
+                                <div>
+                                    <input class="form-check-input" type="radio" name="radio_memo" id="radio_my_memo" value="all" checked="">
+                                    <label class="form-check-label" for="radio_my_memo">전체 매물 메모보기 </label>
+                                </div>
+                                <div>
+                                    <input class="form-check-input" type="radio" name="radio_memo" id="radio_all_memo" value="my">
+                                    <label class="form-check-label" for="radio_all_memo">내 매물 메모보기 </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       
                     </div>
                     <!-- 우측 옵션 끝 -->
 
@@ -789,6 +823,14 @@
             <!-- 지도 영역 끝 -->
         </div>
 
+        <!-- 메모 등록 컨텍스트 메뉴 (body 태그 닫히기 직전에 추가하는 것을 권장합니다.) -->
+        <div id="memoContextMenu" class="context-menu" style="display: none; position: absolute !important; ">
+            <ul>
+                <li id="memoRegisterOption">메모 등록 하기</li>
+                <!-- 필요하면 다른 메뉴 항목 추가 가능 -->
+            </ul>
+        </div>
+
         <!--preloader-->
         <div id="preloader">
             <div id="status">
@@ -816,12 +858,28 @@
             </div>
         </div>
 
+        <!-- 메모 등록 모달 컨테이너 -->
+        <div class="modal fade" id="memoRegisterModal" tabindex="-1" aria-labelledby="memoRegisterModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 여기에 memo_register.html 내용이 로드됩니다. -->
+                </div>
+            </div>
+        </div>
+        <!-- ⭐새로 추가할 메모 수정 전용 모달 컨테이너⭐ -->
+        <div class="modal fade" id="memoModifyModal" tabindex="-1" aria-labelledby="memoModifyModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 여기에 memo_register.html 내용이 로드됩니다. -->
+                </div>
+            </div>
+        </div>
+
         <script src="/front/assets/js/jquery-3.3.1.js"></script>
         <script src="/front/assets/js/jquery-ui.js"></script>
         <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
         
         <script src="/front/assets/js/easing.js"></script>
-
         <script src="/front/assets/js/gsap.min.js"></script>
         <script src="/front/assets/js/ScrollTrigger.min.js"></script>
         <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
@@ -836,16 +894,24 @@
         <script src="/front/assets/js/multiSelect.js"></script>
         <!-- <script src="/front/assets/js/nouislider.js"></script> -->
         <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
         <script src="/assets/libs/wnumb/wNumb.min.js"></script>
         <script src="/assets/libs/nouislider/nouislider.min.js"></script>
         <script src="/assets/libs/swiper/swiper-bundle.min.js"></script>
         <script src="/front/assets/js/mfb.js"></script>
 
         <!-- 카카오맵 -->
-        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"></script>
-
+        <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"></script>-->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing&_v=34859"></script>
+ 
         <!-- 카카오공유 -->
         <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+
+        <!-- proj4js -->
+        <script src="/front/js/realPrice/proj4.js"></script>
+
+        <!-- turf.js -->
+        <script src="/front/js/realPrice/turf.min.js"></script>
 
         <!-- custom -->
         <script src="/front/assets/js/common.js"></script>
@@ -859,17 +925,27 @@
         <script src="/front/js/realPrice/polygonDrawer.js"></script>
         <script src="/front/js/realPrice/textDrawer.js"></script>
         <script src="/front/js/realPrice/roadView.js"></script>
-        <script src="/front/js/sell/sell.js"></script>
-        <script src="/front/js/memo/memo.js"></script>
-        <!-- map 위치를 저장 위해 추가    -->
+        
+         <!-- map 위치를 저장 위해 추가    -->
         <script src="/front/assets/js/myMap.js"></script>
         <script src="/front/js/sell/map.js"></script>
         
         <!-- 단위변환을 위해 추가    -->
         <script src="/front/js/sell/tab.js"></script>
+        <script src="/front/js/sell/sell.js"></script>
         <!-- active menu를 위해 추가    -->
         <script src="/front/assets/js/myscript.js"></script>
 
+        <!-- 기존 memo 관련    
+        <script src="/front/js/memo/memo.js"></script>-->
+        <!-- 변경 memo 관련 -->   
+        <script src="/front/js/memo/memo2.js"></script>
+       
+        <!-- memo_register.js 파일 로드 (jQuery와 Bootstrap JS 로드 후) -->
+        <script src="/front/js/memo/memo_register.js"></script>
+        <!-- memo_modify.js 파일 로드  -->
+        <script src="/front/js/memo/memo_modify.js"></script>
+        
         <!-- 계산기 menu를 위해 추가    -->
         <div id="toolModal" class="toolmodal" style="display: none;">
             <div class="tool-modal-overlay"></div>

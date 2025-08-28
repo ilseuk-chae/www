@@ -23,6 +23,7 @@ function responseApi($statusCode, $message, $data)
     http_response_code($statusCode);
     // JSON 응답 출력
     echo json_encode($response_array);
+    exit; // JSON 응답을 보낸 후 즉시 스크립트 종료
 }
 
 /**

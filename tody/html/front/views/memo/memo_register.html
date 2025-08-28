@@ -1,0 +1,89 @@
+<div class="modal-header d-flex justify-content-between align-items-center p-3" style="cursor: move;">
+    <!-- ⭐⭐ 왼쪽 여백을 위한 빈 요소 추가 ⭐⭐ -->
+    <!-- X 버튼 + 메모 번호의 너비만큼의 공간을 왼쪽에도 확보합니다. -->
+    <div style="width: 100px; flex-shrink: 0;"></div> <!-- ⭐ 너비는 실제 버튼+번호 그룹의 예상 너비로 조정 ⭐ -->
+    
+    <!-- ⭐⭐ 타이틀: flex-grow로 남은 공간 차지 및 텍스트 중앙 정렬 ⭐⭐ -->
+    <h5 class="modal-title m-auto font28 color-black" id="myModalLabel" style="flex-grow:1; text-align:center;">메모등록</h5>
+
+    <!-- X 버튼과 메모 번호를 담을 컨테이너 -->
+    <div class="d-flex align-items-center gap-2" style="width: 100px; flex-shrink: 0;"> <!-- ⭐ 이 div의 너비도 위 빈 요소와 동일하게 조정 ⭐ -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+    </div>
+</div>
+
+<div class="modal-body d-flex flex-column align-items-center pt-0">
+
+    <!-- ⭐⭐ 여기부터 핵심 변경 지점 ⭐⭐ -->
+    <!-- 모달 바디 콘텐츠를 담을 스크롤 가능한 래퍼 div -->
+    <div  style="
+        max-height: calc(100vh - 200px); /* 뷰포트 높이 - 헤더/푸터 및 기타 여백. 이 값은 조정이 필요 */
+        overflow-y: auto; 
+        width: 100%; /* 부모(modal-body)의 너비에 맞춤 */
+    ">
+        <div class="card my-card-body bg-red2 bg-opacity-25 mb-2 shadow-none">
+            <div id="memo_form" class="row g-2">
+                <div class="col-4">
+                    <div class="form-floating">
+                        <input type="text" id="memo_name" class="form-control" placeholder="이름" minlength="1" maxlength="50" />
+                        <label for="memo_name">이름</label>
+                    </div>
+                </div>
+
+                <div class="col-5">
+                    <div class="form-floating">
+                        <input type="tel" id="memo_phone" class="form-control" placeholder="연락처" oninput="allowOnlyNumbers(this, 11)" />
+                        <label for="memo_phone">연락처</label>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="form-floating">
+                        <input type="tel" id="memo_estateNo" class="form-control" placeholder="매물번호" oninput="allowOnlyNumbers(this, 7)" minlength="1" maxlength="9999999" />
+                        <label for="memo_estateNo">매물번호</label>
+                    </div>
+                </div>
+                <div class="row mt-2"> <!-- 상단 여백을 위해 mt-2 추가 -->
+                    <!-- col-12로 전체 너비 확보 ,d-flex로 flex 컨테이너 설정 ,justify-content-between으로 좌우 끝으로 요소 정렬 , align-items-center로 세로 중앙 정렬 -->
+                    <div class="col-12 d-flex justify-content-between align-items-center"> 
+                        <!-- ⭐ 글자수 표시 영역 (왼쪽 끝) ⭐ -->
+                        <p class="mb-0 text-muted" style="white-space: nowrap;"> <!-- mb-0: p 태그 기본 마진 제거, text-muted: 글자색 약하게 -->
+                            <span id="memoContentCharCount">0</span>/250
+                        </p>
+                
+                        <!-- ⭐ 거래완료 체크박스 (오른쪽 끝) ⭐ -->
+                        <p class="check-box-red-s mb-0"> <!-- mb-0: p 태그 기본 마진 제거 -->
+                            <input type="checkbox" name="memo_opt" id="memo_complet" />
+                            <label for="memo_complet">거래완료</label>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-floating">
+                        <!-- <input type="text" class="form-control" /> -->
+                        <textarea type="text" id="memo_content" class="form-control" placeholder="메모" minlength="0" maxlength="250" style="height: 140px; max-height: 140px;"></textarea>
+                        <label for="memo_content">메모</label>
+                    </div>
+                </div>
+
+                <div class="col-12 " style="margin-top : 2px"    > <!-- ⭐mt-2 이 부분 추가: 마진 top 2 추가하여 위 textarea와 간격 확보 ⭐ -->
+                    <div class="form-floating">
+                        <!-- ⭐ 위치 정보를 표시할 태그 추가 ⭐ -->
+                        <p id="memo_location_info" class="form-control-plaintext text-muted" style="font-size: 0.9em; padding-top: 1px; padding-bottom: ipx; min-height: 50px;">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- 모달 푸터 영역 (하단 고정될 부분) -->
+<div class="modal-footer">
+    <!-- Bootstrap 기본 modal-footer에 내부 패딩이 있으므로 col-12 mb-2에서 mb-2는 제거하는 것이 좋습니다.<div class="col-12 mb-2"></div> -->
+    <div class="col-12"> 
+        <button type="button" id="memo_add_btn" class="btn-line-red-m w-100">메모 등록하기</button>
+    </div>
+</div>
+

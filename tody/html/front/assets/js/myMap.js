@@ -85,11 +85,11 @@
                 const cLat = parseFloat(getCookie('curLat')); // 이미 구현돼 있는 getCookie 재사용
                 const cLng = parseFloat(getCookie('curLng'));
                 if (isValidKorea(cLat, cLng)) {
-                map.setLevel(fallbackLevel);
-                map.setCenter(new kakao.maps.LatLng(cLat, cLng));
-                // 스토리지 동기화
-                saveGlobalMapView({ lat: cLat, lng: cLng, level: map.getLevel() }, { persist });
-                return;
+                    map.setLevel(fallbackLevel);
+                    map.setCenter(new kakao.maps.LatLng(cLat, cLng));
+                    // 스토리지 동기화
+                    saveGlobalMapView({ lat: cLat, lng: cLng, level: map.getLevel() }, { persist });
+                    return;
                 }
             } catch {}
 

@@ -544,14 +544,80 @@
 .compare-down {
   color: red;
 }
+#mapOptionMemoOpen2.active,
 #mapOptionTooltip.active {
   /*background-color: #ef8779; /* 활성화된 상태의 배경색 */
   border: 1px solid #ef8779; /* 활성화된 상태의 테두리 */
 }
-
+#mapOptionMemoOpen2.tooltip-target.active i,
+#mapOptionMemoOpen2.tooltip-target.active span,
 #mapOptionTooltip.tooltip-target.active i,
 #mapOptionTooltip.tooltip-target.active span {
     color: #ef8779 !important;
+}
+
+.map-option .mo-memo {
+  display: none;
+  position: absolute;
+  width: 170px;
+  margin: -58px 0 0 -175px;
+  padding: 15px;
+  border: #e9e9e9 1px solid;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); /* opacity:0; */
+}
+.map-option .mo-memo > dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.map-option .mo-memo > dl dt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.map-option .mo-memo > dl dd button {
+  cursor: pointer;
+}
+.map-option .mo-memo > dl dd i {
+  font-size: 14px;
+  line-height: 14px;
+}
+.map-option .mo-memo > div {
+  margin-top: 10px;
+}
+.map-option .mo-memo > div > button,
+.map-option .mo-memo > div div {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.5px;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.map-option .mo-memo > div > button:hover,
+.map-option .mo-memo > div > div:hover {
+  color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-memo > div > button.active {
+  color: #fff;
+  background-color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-memo > div > button i {
+  margin-right: 5px;
+}
+.map-option .mo-memo > div > button span {
+  display: flex;
 }
 
 /* 기본 툴팁 컨테이너  bootstrap용 */
@@ -805,4 +871,51 @@
   justify-content: center;
   width: 100%; /* 각 아이템이 부모의 전체 너비를 차지하도록 설정 */
 }
+/* context-menu */
+.context-menu {
+  position: absolute; /* 절대 위치 */
+  background-color: #fff; /* 배경색 */
+  background: #fff;
+  border: 1px solid #e9e9e9; /* 테두리 */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* 그림자 */
+  min-width: 100px; /* 최소 너비 */
+  z-index: 999; /* 다른 요소 위에 표시 (지도 zIndex보다 높게) */
+  list-style: none; /* 리스트 스타일 제거 */
+  padding: 1px;
+  margin: 1px;
+  font-size: 12px;
+}
 
+.context-menu ul {
+  list-style: none; /* ul의 리스트 스타일 제거 */
+  padding: 1px;
+  margin: 0;
+  border: 1px solid #ccc; /* 테두리 */
+}
+
+.context-menu li {
+  padding: 2px 4px; /* 패딩 */
+  cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+  transition: background-color 0.2s ease; /* 배경색 변화 부드럽게 */
+}
+
+.context-menu li:hover {
+  color: #ef8779;
+}
+
+.memo-overlay {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+}
+
+
+/* ⭐⭐ modal-dialog의 높이/너비/스크롤을 강력하게 오버라이드 ⭐⭐ */
+
+
+.my-card-body{
+  padding: 12px;
+}
