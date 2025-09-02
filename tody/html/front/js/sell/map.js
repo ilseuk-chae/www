@@ -221,6 +221,39 @@ async function initializeMap() {
     polygonDrawer = createPolygonDrawer(map);
     // 텍스트 모듈과 selectOverlay 함수 결합
     textModule = addTextToMap(map); // 지도에 텍스트 모듈을 연결
+
+    ///let coords = { lat: lat, lng: lng };
+    // 건물 및 토지 정보를 동시에 가져오기
+    ///handleMapClick(coords);
+    // 주변 시설 정보 가져오기
+    
+    // --- 여기에 sessionStorage 로드 및 폴리곤 재현 로직 수정 ---
+    const storedPolygonInfoString = sessionStorage.getItem('lastViewedPolygonInfo');
+    let shouldCallHandleMapClick = true; // handleMapClick 호출 여부 제어
+
+    if (storedPolygonInfoString) {
+        try {
+            const storedInfo = JSON.parse(storedPolygonInfoString);
+            if (storedInfo && storedInfo.lat && storedInfo.lng) {
+                const loadedCoords = { lat: storedInfo.lat, lng: storedInfo.lng };
+                
+                // 불러온 좌표로 handleMapClick을 호출합니다.
+                // isLoading 플래그는 handleMapClick 내부에서 관리됩니다.
+                await handleMapClick(loadedCoords); 
+                shouldCallHandleMapClick = false; // 기본 handleMapClick 호출 방지
+            }
+        } catch (e) {
+            console.error("sessionStorage 데이터 파싱 오류:", e);
+        }
+    }
+
+    // sessionStorage에 정보가 없거나 오류 발생 시, 기존 URL/쿠키 기반 로직으로 처리
+    if (shouldCallHandleMapClick) {
+        let initialCoords = { lat: lat, lng: lng }; // URL/쿠키에서 가져온 기본 좌표
+        await handleMapClick(initialCoords);
+    }
+
+    //searchArroundPlaces(coords);  // 현재 이함수는 하는 일이 없음
 }
 
 /**
@@ -287,12 +320,12 @@ function handleMapEvents() {
         }
         //for test
         const level = map.getLevel();
-        if (level < 7) {
+        if (level < 6) {
             // 건물 및 토지 정보를 동시에 가져오기
             handleMapClick(coords);
 
             // 주변 시설 정보 가져오기
-            //20250811 del searchArroundPlaces(coords);
+            searchArroundPlaces(coords);
         }
 
     });
@@ -390,6 +423,21 @@ async function handleMapClick(coords) {
             getBuilindInfo({ buildingPolygon, buildingPolygon2 }), // 건물 정보 가져오기
             getLandInfo(landPolygon), // 토지 정보 가져오기
         ]);
+
+        // 두 작업이 완료된 후 폴리곤을 한 번에 지도에 추가
+        // addPolygonsToMap(returnBuildingPolygons, returnLandPolygons);
+        // 단일 선택 모드일 때만 addPolygonsToMap을 호출합니다.
+        // 합필 분석 모드에서는 landAnalysis 함수가 폴리곤 렌더링을 담당합니다.
+
+        // --- 여기에 sessionStorage 저장 로직 추가 ---
+        // 폴리곤의 PNU와 함께 해당 폴리곤을 불러온 coords 정보도 저장합니다.
+        const polygonDataToStore = {
+            pnu: landPolygon.pnu, // 또는 `coords`를 통해 얻은 다른 식별자
+            lat: coords.lat,
+            lng: coords.lng
+        };
+        sessionStorage.setItem('lastViewedPolygonInfo', JSON.stringify(polygonDataToStore));
+        // --- sessionStorage 저장 로직 끝 ---
 
         // 두 작업이 완료된 후 폴리곤을 한 번에 지도에 추가
         addPolygonsToMap(buildingPolygons, landPolygons);
@@ -539,7 +587,7 @@ async function getLandInfo(result) {
                 strokeStyle: "solid",
                 fillColor: fillColor,
                 fillOpacity: 0.5,
-                zIndex: 9999, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
+                zIndex: 6,//9999, // zIndex를 낮게 설정하여 건물 폴리곤 아래에 표시
             });
             
             polygon.pnu = feature.properties.pnu;
