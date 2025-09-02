@@ -6,6 +6,7 @@ let isKeyDown = false; // 이벤트 중복 방지 플래그
 let compareList = {
     data: [] // 비교 대상 매물의 상세 정보를 저장할 배열 (data 구조체 역할)
 };
+let comparisonData=[]; // 비교 대상 매물의 기본 정보를 저장할 배열 (comparisonData 구조체 역할)
 let activeBootstrapTooltips = new Map(); // Map<HTMLElement, bootstrap.Tooltip>
 let globalTooltipContents = {};   
 
@@ -824,7 +825,7 @@ function initAction() {
             // 모달이 닫힐 때 resize 이벤트 리스너 제거
             $(window).off('resize.modalScrollbar');
             // 적용했던 margin-right 초기화 (선택 사항, 다음 열릴 때 다시 계산되므로)
-            $(".modal-body-header, .modal-body-footer").css('margin-right', '');
+            //$(".modal-body-header, .modal-body-footer").css('margin-right', '');
         });
     });
 
@@ -841,7 +842,7 @@ function initAction() {
             // 모달이 닫힐 때 resize 이벤트 리스너 제거
             $(window).off('resize.modalScrollbar');
             // 적용했던 margin-right 초기화 (선택 사항, 다음 열릴 때 다시 계산되므로)
-            $(".modal-body-header, .modal-body-footer").css('margin-right', '');
+            //$(".modal-body-header, .modal-body-footer").css('margin-right', '');
         });
     });
 
@@ -1202,14 +1203,14 @@ function initListEvents() {
             const address = parentDl.find('h2 .ms-md-auto').text().trim(); // 주소
 
             if (this.checked) {
-                if(compareList.data.length >= 2) {
+                if(compareList.data.length >= 3) {
                     // 이미 비교 매물이 2개 이상인 경우, 체크박스 상태를 원래대로 되돌립니다.
                     $(this).prop('checked', false);
-                    sweetAlertMessage("비교 매물은 최대 2개까지 선택할 수 있습니다.","","w");
+                    sweetAlertMessage("비교 매물은 최대 3개까지 선택할 수 있습니다.","","w");
                     parentDl.removeClass('dl-highlight-border');
                     return;
                 }
-                else if (compareList.data.length === 1) {
+                else if (compareList.data.length >= 1) {
                     // 이미 1개의 매물이 선택되어 있다면, 매물 유형(estateType)이 동일한지 확인
                     const existingEstateType = compareList.data[0].estateType;
                     if (existingEstateType !== estateType) {
@@ -1286,7 +1287,7 @@ function updateCompareApplyButtonState() {
         return;
     }
     
-    if (compareList.data.length === 2) {
+    if (compareList.data.length >= 2) {
         $compareApplyBtn.prop('disabled', false); // 버튼 활성화
         // $compareApplyBtn.removeClass('disabled-style'); // 필요시 비활성화 스타일 제거
         $compareApplyBtn.removeClass('disabled-style'); // 필요시 비활성화 스타일 제거
@@ -1882,8 +1883,8 @@ async function renderEstateDetail(data) {
 
 // make_compareList 함수 정의
 async function make_compareList(compareList) {
-    if (compareList.data.length !== 2) {
-        sweetAlertMessage("비교할 매물은 정확히 2개여야 합니다.","","e");
+    if (compareList.data.length < 2 || compareList.data.length > 3) {
+        sweetAlertMessage("비교할 매물은 2개 또는 3개여야 합니다.","","e"); 
         $('#compareModal').hide();
         return;
     }
@@ -1905,36 +1906,39 @@ async function make_compareList(compareList) {
      // Promise.all을 사용하여 두 매물의 상세 정보를 동시에 가져옵니다.
     
     try {
-        const [response1, response2] = await Promise.all([
-            callApiAbort(estateDetailApiUrl, "POST", { estate_no: compareList.data[0].estateNo }, "estateDetail_${compareList.data[0].estateNo}"),
-            callApiAbort(estateDetailApiUrl, "POST", { estate_no: compareList.data[1].estateNo }, "estateDetail_${compareList.data[1].estateNo}")
-        ]);
-
-        let data1 = null;
-        let data2 = null;
-
-        if (response1 && response1.statusCode === 200 && response1.message === "SUCCESS") {
-            data1 = response1.responseData;
-        } else {
-            console.error("첫 번째 매물 상세 정보 로드 실패:", response1);
-            sweetAlertMessage("첫 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.","","e");
-            $('#compareModal').hide();
-            return;
+        const apiCalls = [];
+        // compareList.data에 있는 각 매물에 대해 API 호출 Promise를 생성하여 배열에 추가
+        for (let i = 0; i < compareList.data.length; i++) {
+            const estateNo = compareList.data[i].estateNo;
+            apiCalls.push(
+                callApiAbort(estateDetailApiUrl, "POST", { estate_no: estateNo }, `estateDetail_${estateNo}`)
+            );
         }
+        // 모든 API 호출을 동시에 실행하고 응답을 기다립니다.
+        const responses = await Promise.all(apiCalls);
 
-        if (response2 && response2.statusCode === 200 && response2.message === "SUCCESS") {
-            data2 = response2.responseData;
-        } else {
-            console.error("두 번째 매물 상세 정보 로드 실패:", response2);
-            sweetAlertMessage("두 번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.","","e");
-            $('#compareModal').hide();
-            return;
+        // comparisonData 배열 초기화 (함수 스코프에 선언된 전역 또는 상위 스코프 변수여야 함)
+        comparisonData = []; 
+
+        // 각 응답을 순회하며 성공 여부 확인 및 데이터 저장
+        for (let i = 0; i < responses.length; i++) {
+            const response = responses[i];
+            const estateIndex = i + 1; // 몇 번째 매물인지 표시하기 위함 (1부터 시작)
+
+            if (response && response.statusCode === 200 && response.message === "SUCCESS") {
+                comparisonData.push(response.responseData);
+            } else {
+                console.error(`${estateIndex}번째 매물 상세 정보 로드 실패:`, response);
+                sweetAlertMessage(`${estateIndex}번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.`, "", "e");
+                $('#compareModal').hide();
+                return; // 실패 시 즉시 중단
+            }
         }
-
-        // 두 매물의 상세 데이터를 가져왔으므로, 이제 비교 테이블을 채웁니다.
         
-        renderComparisonTable(data1, data2);
-        adjustComparisonModalHeight(); 
+        // 모든 매물의 상세 데이터를 성공적으로 가져왔으므로, 이제 비교 테이블을 채웁니다.
+        renderComparisonTable(comparisonData); // comparisonData 배열을 넘깁니다.
+        adjustComparisonModalHeight();
+        adjustComparisonModalWidth(comparisonData.length); // 실제 비교 매물 개수를 넘깁니다.
 
     } catch (error) {
         //console.error("매물 상세 정보 로드 중 오류 발생:", error);
@@ -1947,8 +1951,10 @@ async function make_compareList(compareList) {
  * 두 매물의 상세 데이터를 비교 테이블에 렌더링합니다.
  * @param {Object} data1 - 첫 번째 매물의 상세 데이터.
  * @param {Object} data2 - 두 번째 매물의 상세 데이터.
+ * @param {Object} comparisonData - 매물의 상세 데이터 배열.
  */
-function renderComparisonTable(data1, data2) {
+//function renderComparisonTable(data1, data2) {
+function renderComparisonTable(comparisonData) {
     // 매물별 값과 비교 결과를 표시할 항목들을 정의합니다.
     // label: HTML에 표시된 라벨 텍스트
     // prop: responseData 내의 해당 속성명
@@ -1989,233 +1995,287 @@ function renderComparisonTable(data1, data2) {
     // comparisonFields 배열은 이 함수 외부 또는 함수 내부에 정의되어 있어야 합니다.
     // (위에서 제시된 comparisonFields 배열을 여기에 붙여넣거나, 전역 변수로 선언)
 
-    let sateTypeHtml1 = "";
-    let sateTypeHtml2 = "";
-    switch (data1.sale_type) {
-        case "임대":
-            sateTypeHtml1 = `<span class="label-default bg-violet1">임대</span>`;
-            break;
-        case "매매":
-            sateTypeHtml1 = `<span class="label-default bg-green1">매매</span>`;
-            break;
-        case "교환":
-            sateTypeHtml1 = `<span class="label-default bg-indigo1">교환</span>`;
-            break;
-    }
-    switch (data2.sale_type) {
-        case "임대":
-            sateTypeHtml2 = `<span class="label-default bg-violet1">임대</span>`;
-            break;
-        case "매매":
-            sateTypeHtml2 = `<span class="label-default bg-green1">매매</span>`;
-            break;
-        case "교환":
-            sateTypeHtml2 = `<span class="label-default bg-indigo1">교환</span>`;
-            break;
-    }
-    $("#compare_item1").html(`${sateTypeHtml1} ${data1.estate_type} (매물번호 : ${data1.estate_no})`);
-    $("#compare_item2").html(`${sateTypeHtml2} ${data2.estate_type} (매물번호 : ${data2.estate_no})`);
+    // 1. sale_type 값에 따라 반환될 HTML 정보(클래스, 텍스트)를 매핑하는 객체를 정의합니다.
+    const saleTypeInfoMap = {
+        "임대": { colorClass: "bg-violet1", text: "임대" },
+        "매매": { colorClass: "bg-green1", text: "매매" },
+        "교환": { colorClass: "bg-indigo1", text: "교환" },
+        // 필요하다면 다른 sale_type도 여기에 추가할 수 있습니다.
+    };
 
-    $('#compareModal .modal-body-scroll-content .property-detail-row').each(function() {
-        const $row = $(this);
-        const labelText = $row.find('.property-label').text().trim(); // HTML의 라벨 텍스트
+    // 2. 각 sale_type에 해당하는 HTML 문자열을 생성하는 헬퍼 함수를 정의합니다.
+    const getSaleTypeHtml = (saleType) => {
+        const info = saleTypeInfoMap[saleType];
+        if (info) {
+            return `<span class="label-default ${info.colorClass}">${info.text}</span>`;
+        }
+        // 정의되지 않은 sale_type이 있을 경우 기본값 또는 에러 처리
+        return `<span class="label-default">정보 없음</span>`;
+    };
+
+    // 3. comparisonData 배열의 각 요소에 대해 getSaleTypeHtml 함수를 호출하여
+    //    각 매물별 sale_type HTML 문자열을 배열로 생성합니다.
+    const sateTypeHtmls = comparisonData.map(data => getSaleTypeHtml(data.sale_type));
+
+    // 4. 생성된 배열의 값을 각각의 변수에 할당합니다.
+    //    comparisonData.length가 2인 경우 sateTypeHtmls[2]는 undefined가 되므로,
+    //    || '' (OR 연산자)를 사용하여 기본값으로 빈 문자열을 할당하여 안전성을 높입니다.
+    const sateTypeHtml1 = sateTypeHtmls[0] || '';
+    const sateTypeHtml2 = sateTypeHtmls[1] || '';
+    const sateTypeHtml3 = sateTypeHtmls[2] || ''; // comparisonData.length가 2일 경우 ''이 할당됨
+
     
-        // comparisonFields에서 현재 라벨에 해당하는 필드 정의를 찾습니다.
-        const field = comparisonFields.find(f => f.label === labelText);
-    
-        if (field) {
-            // --- 1. property-value-item에 표시될 값은 'compare' 속성과 상관없이 항상 계산하고 표시합니다. ---
-            let rawValue1 = data1[field.prop];
-            let rawValue2 = data2[field.prop];
-    
-            // 포맷터를 사용하여 화면에 표시될 값을 생성합니다.
-            const displayValue1 = field.formatter ? field.formatter(rawValue1, data1) : (rawValue1 || '-');
-            const displayValue2 = field.formatter ? field.formatter(rawValue2, data2) : (rawValue2 || '-');
-    
-            // property-value-item에 값 표시 (항상 표시)
-            const $item1 = $row.find('.property-value-item:eq(0)'); // 첫 번째 아이템 (xx)
-            const $item2 = $row.find('.property-value-item:eq(1)'); // 두 번째 아이템 (yy)
-            
-            let bgColor1= `#f7e8c4`;
-            let bgColor2= `#f7efdb`;
-            $item1.css('background-color', bgColor1);
-            $item2.css('background-color', bgColor2);
-            
+    // -----------------------------------------------------
+    // 🚩 Header 부분 (#compare_itemX) 동적 생성 및 내용 채우기
+    // -----------------------------------------------------
+    const $header = $('#compareModal .modal-body-header');
+    $header.empty(); // 이전 내용 전부 삭제 (필수!)
+
+    // Header의 property-label (제목) 생성
+    $header.append('<div class="property-label column-left">선택 매물</div>');
+
+    // Header의 property-values (아이템 목록) 컨테이너 생성
+    const $headerPropertyValues = $('<div class="property-values column-center"></div>');
+    $header.append($headerPropertyValues);
+
+    for (let i = 0; i < comparisonData.length; i++) {
+        const itemData = comparisonData[i];
+        const itemIndex = i + 1; // compare_item1, compare_item2, ...
+        const sateTypeHtml = sateTypeHtmls[i] || ''; // 미리 계산된 sale_type HTML
+
+        // property-value-item 클래스를 사용하여 요소 생성
+        const $headerItem = $(`<div class="property-value-item" id="compare_item${itemIndex}"></div>`);
+        switch (i) {
+            case 0:
+                $headerItem.css('background-color', '#e0e9f0'); // 첫 번째 매물은 연한 파란색
+                break;
+            case 1:
+                $headerItem.css('background-color', '#f7efdb'); // 세 번째 매물은 더 연한 노란색
+                break;
+            case 2:
+                $headerItem.css('background-color', '#f7e8c4'); // 두 번째 매물은 연한 노란색
+                break;
+            default:
+                $headerItem.css('background-color', '#ffffff'); // 그 외는 흰색 (안전장치)
+        }
+        
+        // 내용 채우기
+        $headerItem.html(`${sateTypeHtml} ${itemData.estate_type} (매물번호 : ${itemData.estate_no})`);
+        
+        $headerPropertyValues.append($headerItem); // 생성된 아이템을 property-values에 추가
+    }
+    // -----------------------------------------------------
+    // 🚩 Main Scrollable Content 부분 (이전 코드와 동일하게 유지됩니다)
+    // -----------------------------------------------------
+    // 이 부분은 이미 요청하신 구조대로 (property-detail-row > property-label + property-values)
+    // 동적으로 생성되고 있으므로 변경이 없습니다.
+    const $modalBodyScrollContent = $('#compareModal .modal-body-scroll-content');
+    $modalBodyScrollContent.empty(); // 이전 내용 전부 삭제 (필수!)
+
+    comparisonFields.forEach(function(field) {
+        const $row = $('<div class="property-detail-row"></div>');
+        $row.append(`<div class="property-label">${field.label}</div>`); // 라벨 추가
+
+        const $rowPropertyValues = $('<div class="property-values column-center"></div>'); // property-values 컨테이너
+        $row.append($rowPropertyValues);
+
+        const baseData = comparisonData[0];
+        if (!baseData) { console.warn("경고: comparisonData[0]가 없습니다. 비교 행을 생성할 수 없습니다."); return; }
+
+        let rawBaseValue = baseData[field.prop];
+        const displayBaseValue = field.formatter ? field.formatter(rawBaseValue, baseData) : (rawBaseValue || '-');
+
+        const $baseItem = $('<div class="property-value-item"></div>');
+        $baseItem.css('background-color', '#e0e9f0');
+
+        if (field.type === "image") {
+            $baseItem.html(`<img src="${displayBaseValue}" alt="${field.label}" style="max-width:100px; height:auto;">`);
+        } else {
+            $baseItem.append(`<span class="display-value">${displayBaseValue}</span>`);
+        }
+        $rowPropertyValues.append($baseItem); // 생성된 첫 번째 항목을 property-values에 추가
+
+
+        for (let i = 1; i < comparisonData.length; i++) {
+            const currentData = comparisonData[i];
+            if (!currentData) { console.warn(`경고: comparisonData[${i}]가 없습니다. 처리를 건너뜁니다.`); continue; }
+
+            let rawCurrentValue = currentData[field.prop];
+            const displayCurrentValue = field.formatter ? field.formatter(rawCurrentValue, currentData) : (rawCurrentValue || '-');
+
+            const $currentItem = $('<div class="property-value-item"></div>');
+            $currentItem.css('background-color', (i % 2 === 0) ? '#f7e8c4' : '#f7efdb');
+
             if (field.type === "image") {
-                $item1.html(`<img src="${displayValue1}" alt="${labelText}" style="max-width:100px; height:auto;">`);
-                $item2.html(`<img src="${displayValue2}" alt="${labelText}" style="max-width:100px; height:auto;">`);
+                $currentItem.html(`<img src="${displayCurrentValue}" alt="${field.label}" style="max-width:100px; height:auto;">`);
             } else {
-                $item1.text(displayValue1);
-                $item2.text(displayValue2);
+                $currentItem.append(`<span class="display-value">${displayCurrentValue}</span>`);
             }
-    
-            // --- 2. property-compare (비교 결과)는 'compare' 속성에 따라 조건부 처리합니다. ---
-            const $compareResultColumn = $row.find('.property-compare');
-            let resultText = ''; // 기본값은 빈 문자열
+
+            let resultText = '';
             let isDifferent = false;
-    
-            // 이전에 적용된 색상 클래스들을 먼저 제거합니다.
-            $compareResultColumn.removeClass('compare-up compare-down');
-    
-            // 'compare' 속성을 확인하여 해당 필드가 비교 대상인지 결정합니다.
-            // 'compare' 속성이 없거나 "Y"인 경우 비교 대상으로 간주합니다.
+            let compareClass = '';
             const isComparable = field.compare !== "N";
-    
-            if (isComparable) { // 비교 대상인 필드일 경우에만 비교 로직 수행
-                // 비교 로직은 원본 값을 사용해야 합니다.
-                let currentRawValue1 = data1[field.prop]; // 최신 값으로 다시 가져옴
-                let currentRawValue2 = data2[field.prop]; // 최신 값으로 다시 가져옴
-    
+
+            if (isComparable) {
+                let compareRawValue1 = baseData[field.prop];
+                let compareRawValue2 = currentData[field.prop];
                 if (field.type === "number") {
-                    const num1 = Number(currentRawValue1);
-                    const num2 = Number(currentRawValue2);
-    
-                    if (isNaN(num1) || isNaN(num2) || currentRawValue1 === null || currentRawValue2 === null) {
-                        resultText = '-';
-                    } else if (num1 === num2) {
-                        resultText = '동일';
-                        isDifferent = false;
-                    } else {
-                        isDifferent = true;
-                        const difference = Math.abs(num1 - num2);
-                        let formattedDifference;
-    
-                        // 필드 prop에 따라 차이 값 포맷팅을 다르게 적용
-                        if (field.prop.includes('price')) { // 가격 관련 필드
-                            formattedDifference = formatPrice(difference, "all", true);
-                        } else if (field.prop.includes('Area')) { // 면적 관련 필드
-                            formattedDifference = formatArea(difference);
-                        } else if (field.prop === "vlRat" || field.prop === "bcRat") { // 용적률, 건폐율
-                            formattedDifference = difference.toFixed(2) + "%";
-                        } else if (field.prop === "car_parking") { // 주차 대수
-                            formattedDifference = difference + "대";
-                        } else if (field.prop === "power") { // 전기
-                            formattedDifference = difference + "Kw"; // 차이값이므로 "이하"는 제거
-                        } else if (field.prop === "floor_height") { // 건물 층고
-                            formattedDifference = difference + "m";
-                        } else { // 그 외 숫자 필드
-                            formattedDifference = difference;
-                        }
-    
-                        if (num1 < num2) {
-                            resultText = `▲ (${formattedDifference})`;
-                            $compareResultColumn.addClass('compare-up');
-                        } else { // num1 > num2
-                            resultText = `▼ (${formattedDifference})`;
-                            $compareResultColumn.addClass('compare-down');
-                        }
+                    const num1 = Number(compareRawValue1); const num2 = Number(compareRawValue2);
+                    if (isNaN(num1) || isNaN(num2) || compareRawValue1 === null || compareRawValue2 === null) { resultText = '';
+                    } else if (num1 === num2) { resultText = '동일'; isDifferent = false; } else {
+                        isDifferent = true; const difference = Math.abs(num1 - num2); let formattedDifference;
+                        if (field.prop.includes('price')) { formattedDifference = formatPrice(difference, "all", true);
+                        } else if (field.prop.includes('Area')) { formattedDifference = formatArea(difference);
+                        } else if (field.prop === "vlRat" || field.prop === "bcRat") { formattedDifference = difference.toFixed(2) + "%";
+                        } else if (field.prop === "car_parking") { formattedDifference = difference + "대";
+                        } else if (field.prop === "power") { formattedDifference = difference + "Kw";
+                        } else if (field.prop === "floor_height") { formattedDifference = difference + "m";
+                        } else { formattedDifference = difference; }
+                        if (num1 < num2) { resultText = `▲ (${formattedDifference})`; compareClass = 'compare-up';
+                        } else { resultText = `▼ (${formattedDifference})`; compareClass = 'compare-down'; }
                     }
                 } else if (field.type === "image") {
-                    // 이미지의 경우, 포맷팅된 URL을 비교하는 것이 더 정확할 수 있습니다.
-                    if (displayValue1 === displayValue2) {
-                        resultText = '동일';
+                    if (displayBaseValue === displayCurrentValue) { resultText = '동일';
+                    } else { resultText = '다름'; isDifferent = true; }
+                } else { if (compareRawValue1 === compareRawValue2) { resultText = '동일';
+                } else { resultText = '다름'; isDifferent = true; } }
+            }
+
+            if (resultText) {
+                if (field.type !== "image") { $currentItem.append(`<span class="compare-info ${compareClass}">[ ${resultText} ]</span>`);
+                } else { $currentItem.append(`<div class="image-compare-overlay ${compareClass}">${resultText}</div>`); }
+            }
+            
+            if (isDifferent) { $currentItem.addClass('highlight-difference');
+            } else { $currentItem.removeClass('highlight-difference'); }
+            
+            $rowPropertyValues.append($currentItem); // 현재 비교 항목을 property-values에 추가
+        } // for 루프 끝
+
+        $modalBodyScrollContent.append($row); // 생성된 행을 스크롤 콘텐츠에 추가
+    }); // comparisonFields.forEach 루프 끝
+
+
+    // --- 1. 각 매물(data)에 대한 평 단가와 제곱미터 단가를 계산하는 헬퍼 함수 ---
+    // 이 함수는 comparisonData 배열의 각 항목에 대해 호출되어, 해당 항목의 단가를 계산합니다.
+    const calculateUnitPrice = (data) => {
+        let denominator = 0; // 평 단가 계산용 분모 (평)
+        let denominatorSqm = 0; // 제곱미터 단가 계산용 분모 (제곱미터)
+        const PY_CONVERSION_FACTOR = 0.3025; // ㎡를 평으로 변환하는 계수 (1㎡ = 0.3025평)
+
+        // 데이터가 유효하지 않으면 0을 반환하여 에러를 방지합니다.
+        if (!data) return { pricePerArea: 0, pricePerSqm: 0, salePrice: 0 };
+
+        // 매물 타입(토지/건물 등)에 따라 면적 기준을 설정합니다.
+        if (data.estate_type === "토지") {
+            denominator = data.platArea * PY_CONVERSION_FACTOR; // 토지면적을 평으로
+            denominatorSqm = data.platArea; // 토지면적을 제곱미터로
+        } else {
+            denominator = data.totArea * PY_CONVERSION_FACTOR; // 총면적을 평으로
+            denominatorSqm = data.totArea; // 총면적을 제곱미터로
+        }
+
+        // sale_price가 정의되지 않았거나 0이하인 경우를 대비하여 방어 코드 추가
+        const salePrice = data.sale_price !== undefined && data.sale_price > 0 ? data.sale_price : 0;
+
+        const pricePerArea = denominator > 0 ? salePrice / denominator : 0; // 평 단가
+        const pricePerSqm = denominatorSqm > 0 ? salePrice / denominatorSqm : 0; // 제곱미터 단가
+
+        return { pricePerArea, pricePerSqm };
+    };
+
+    // --- 2. comparisonData 배열의 모든 매물에 대한 단가 정보 계산 ---
+    // calculateUnitPrice 헬퍼 함수를 사용하여 comparisonData 배열의 각 매물에 대한 단가를 계산하고
+    // 그 결과를 unitPriceResults 배열에 저장합니다.
+    const unitPriceResults = [];
+    for (let i = 0; i < comparisonData.length; i++) {
+        unitPriceResults.push(calculateUnitPrice(comparisonData[i]));
+    }
+
+    // -----------------------------------------------------
+    // 🚩 Footer 부분 (#compare_unitX) 동적 생성 및 내용 채우기
+    // -----------------------------------------------------
+    const $footer = $('#compareModal .modal-body-footer');
+    $footer.empty(); // 이전 내용 전부 삭제 (필수!)
+
+    // Footer의 property-label (제목) 생성
+    $footer.append('<div class="property-label column-left">단가</div>');
+
+    // Footer의 property-values (아이템 목록) 컨테이너 생성
+    const $footerPropertyValues = $('<div class="property-values column-center"></div>');
+    $footer.append($footerPropertyValues);
+
+    // 푸터 단가 계산 로직 (calculateUnitPrice, unitPriceResults는 이미 위에 정의되었다고 가정)
+    for (let i = 0; i < comparisonData.length; i++) {
+        let footerResultText = '';
+        let footerIsDifferent = false;
+        let footerCompareClass = '';
+
+        const currentUnitPrice = unitPriceResults[i];
+        // unitIdSelector는 이제 jQuery 객체에 직접 접근하므로 필요없습니다.
+
+        // property-value-item 클래스를 사용하여 요소 생성 (price-wrapper는 CSS에서 처리)
+        const $footerItem = $(`<div class="property-value-item price-wrapper" id="compare_unit${i + 1}"></div>`);
+        switch (i) {
+            case 0:
+                $footerItem.css('background-color', '#e0e9f0'); // 첫 번째 매물은 연한 파란색
+                break;
+            case 1:
+                $footerItem.css('background-color', '#f7efdb'); // 세 번째 매물은 더 연한 노란색
+                break;
+            case 2:
+                $footerItem.css('background-color', '#f7e8c4'); // 두 번째 매물은 연한 노란색
+                break;
+            default:
+                $footerItem.css('background-color', '#ffffff'); // 그 외는 흰색 (안전장치)
+        }
+        
+        // 내용 채우기
+        let unitpriceText = formatPrice(currentUnitPrice.pricePerArea, "all", true) + '/평';
+        let unitpriceTextSqm = formatPrice(currentUnitPrice.pricePerSqm, "all", true) + '/㎡';
+        let finalHtmlContent = `<span class="label-default bg-green1">${unitpriceText}</span> <span class="label-default bg-aqua1">${unitpriceTextSqm}</span>`;
+
+        // 비교 로직 (첫 번째 매물 이외의 경우에만)
+        if (i > 0) {
+            const baseUnitPrice = unitPriceResults[0];
+            if (baseUnitPrice.pricePerArea > 0 && currentUnitPrice.pricePerArea > 0) {
+                if (baseUnitPrice.pricePerArea === currentUnitPrice.pricePerArea) {
+                    footerResultText = '동일';
+                } else {
+                    footerIsDifferent = true;
+                    const difference = Math.abs(baseUnitPrice.pricePerArea - currentUnitPrice.pricePerArea);
+                    const differenceSqm = Math.abs(baseUnitPrice.pricePerSqm - currentUnitPrice.pricePerSqm);
+                    const formattedDifference = formatPrice(difference, "all", true);
+                    const formattedDifferenceSqm = formatPrice(differenceSqm, "all", true);
+
+                    if (baseUnitPrice.pricePerArea < currentUnitPrice.pricePerArea) {
+                        footerResultText = `▲ (${formattedDifference}, ${formattedDifferenceSqm})`;
+                        footerCompareClass = 'compare-up';
                     } else {
-                        resultText = '다름';
-                        isDifferent = true;
-                    }
-                } else { // text 타입 비교
-                    if (currentRawValue1 === currentRawValue2) {
-                        resultText = '동일';
-                    } else {
-                        resultText = '다름';
-                        isDifferent = true;
+                        footerResultText = `▼ (${formattedDifference}, ${formattedDifferenceSqm})`;
+                        footerCompareClass = 'compare-down';
                     }
                 }
             }
-            // isComparable이 false인 경우, resultText는 초기값인 '' (빈 문자열)로 유지됩니다.
-            
-            $compareResultColumn.text(resultText);
-            // isDifferent는 isComparable이 true일 때만 true가 될 수 있으므로, 별도의 isComparable 조건이 필요 없습니다.
-            if (isDifferent) {
-                $compareResultColumn.addClass('highlight-difference');
-            } else {
-                $compareResultColumn.removeClass('highlight-difference');
+        }
+
+        if (footerResultText) {
+            finalHtmlContent += `<span class="compare-info ${footerCompareClass}"> [ ${footerResultText} ]</span>`;
+        }
+
+        // 최종 내용을 생성된 요소에 삽입
+        $footerItem.html(finalHtmlContent);
+
+        // highlight-difference 클래스 적용
+        if (i > 0) {
+            $footerItem.removeClass('highlight-difference compare-up compare-down');
+            if (footerIsDifferent) {
+                $footerItem.addClass('highlight-difference');
             }
         }
-    });
-    
-    // 푸터의 '평 단가' 처리
-    const $footer = $('#compareModal .modal-body-footer');
-    const $footerCompareResult = $footer.find('.column-right');
-
-    // 푸터 비교 결과도 화살표/색상 로직을 적용하려면 아래와 같이 수정합니다.
-    // 푸터도 비교 결과 표시 전에 이전 색상 클래스들을 제거
-    $footerCompareResult.removeClass('compare-up compare-down');
-
-    // --- '평 단가' 계산 로직 변경 시작 ---
-    let pricePerArea1 = 0;
-    let pricePerArea2 = 0;
-    let pricePersquareArea1 = 0;
-    let pricePersquareArea2 = 0;
-    const PY_CONVERSION_FACTOR = 0.3025; // ㎡를 평으로 변환하는 계수 (1㎡ = 0.3025평)
-
-    // 첫 번째 매물 평 단가 계산
-    let denominator1 = 0;
-    let denominator11 = 0;
-    if (data1.estate_type === "토지") {
-        // 매물 구분이 '토지'인 경우 토지면적(platArea) 사용
-        denominator1 = data1.platArea * PY_CONVERSION_FACTOR;
-        denominator11 = data1.platArea;
-    } else {
-        // 그 외의 경우 총면적(totArea) 사용
-        denominator1 = data1.totArea * PY_CONVERSION_FACTOR;
-        denominator11 = data1.totArea;
-    }
-    pricePerArea1 = denominator1 > 0 ? data1.sale_price / denominator1 : 0;
-    pricePersquareArea1 = denominator11 > 0 ? data1.sale_price / denominator11 : 0;
-    // 두 번째 매물 평 단가 계산
-    let denominator2 = 0;
-    let denominator21 = 0;
-    if (data2.estate_type === "토지") {
-        // 매물 구분이 '토지'인 경우 토지면적(platArea) 사용
-        denominator2 = data2.platArea * PY_CONVERSION_FACTOR;
-        denominator21 = data2.platArea;
-    } else {
-        // 그 외의 경우 총면적(totArea) 사용
-        denominator2 = data2.totArea * PY_CONVERSION_FACTOR;
-        denominator21 = data1.totArea;
-    }
-    pricePerArea2 = denominator2 > 0 ? data2.sale_price / denominator2 : 0;
-    pricePersquareArea2 = denominator11 > 0 ? data2.sale_price / denominator21 : 0;
-    // --- '평 단가' 계산 로직 변경 끝 ---
-
-    let unitpriceText1 = formatPrice(pricePerArea1, "all", true) + '/평' ; // 단위 변경
-    let unitpriceText2 = formatPrice(pricePerArea2, "all", true) + '/평' ; // 단위 변경
-    let unitpriceText11 = formatPrice(pricePersquareArea1, "all", true) + '/㎡' ; // 단위 변경
-    let unitpriceText21 = formatPrice(pricePersquareArea2, "all", true) + '/㎡' ; // 단위 변경
-
-    let unitpriceTextHtml1 = `<span class="label-default bg-green1">${unitpriceText1}</span> <span class="label-default bg-aqua1">${unitpriceText11}</span>`;
-    let unitpriceTextHtml2 = `<span class="label-default bg-green1">${unitpriceText2}</span> <span class="label-default bg-aqua1">${unitpriceText21}</span>`;
-
-    $("#compare_unit1").html(`${unitpriceTextHtml1}`);
-    $("#compare_unit2").html(`${unitpriceTextHtml2}`);
-
-    let footerResultText = '';
-    let footerIsDifferent = false;
-
-    if (pricePerArea1 === pricePerArea2) {
-        footerResultText = '동일';
-        footerIsDifferent = false;
-    } else {
-        footerIsDifferent = true;
-        const difference = Math.abs(pricePerArea1 - pricePerArea2);
-        const difference2 = Math.abs(pricePersquareArea1 - pricePersquareArea2);
-        const formattedDifference = formatPrice(difference, "all", true); // 평 단가도 가격 포맷 사용
-        const formattedDifference2 = formatPrice(difference2, "all", true); // 평 단가도 가격 포맷 사용
-
-        if (pricePerArea1 < pricePerArea2) {
-            footerResultText = `▲ (${formattedDifference}, ${formattedDifference2})`;
-            $footerCompareResult.addClass('compare-up');
-        } else { // pricePerArea1 > pricePerArea2
-            footerResultText = `▼ (${formattedDifference}, ${formattedDifference2})`;
-            $footerCompareResult.addClass('compare-down');
-        }
-    }
-    $footerCompareResult.text(footerResultText);
-    if (footerIsDifferent) {
-        $footerCompareResult.addClass('highlight-difference');
-    } else {
-        $footerCompareResult.removeClass('highlight-difference');
+        
+        $footerPropertyValues.append($footerItem); // 생성된 아이템을 property-values에 추가
     }
     
 }
@@ -2269,6 +2329,34 @@ function adjustComparisonModalHeight() {
         // 이 외의 복잡한 높이 계산 로직은 모두 CSS Flexbox에 맡깁니다.
     });
 }
+/**
+ * 매물 비교 모달의 넓이를 내용에 맞춰 동적으로 조절합니다.
+ * .modal-body-scroll-content의 내용이 모두 표시된 후 호출되어야 합니다.
+ * 이 함수는 .compare-modal-content의 max-width와 min-width 제약을 존중합니다.
+ */
+function adjustComparisonModalWidth(compare_length) {
+    const modalContent = document.querySelector('.compare-modal-content');
+
+    // ✅ 개선: modalContent가 존재하는지(null이 아닌지)만 확인합니다.
+    //         또한, 불필요한 else if 없이 조건들을 통합할 수 있습니다.
+    if (modalContent) { // modalContent가 null이 아닐 경우 (요소가 존재할 경우)
+        let newWidth = '600px'; // 기본 너비를 2개인 경우의 너비로 설정
+
+        if (compare_length > 2) {
+            // 비교 매물이 3개 이상일 경우 너비 계산
+            newWidth = `${600 + (compare_length - 2) * 250}px`;
+        }
+        // compare_length가 2인 경우는 newWidth가 이미 '560px'이므로 별도의 조건 필요 없음.
+        // compare_length가 2보다 작은 경우 (0 또는 1)는 명시된 요구사항이 없으나,
+        // 현재 로직으로는 역시 '560px'이 될 것입니다.
+
+        modalContent.style.width = newWidth;
+    } else {
+        // 모달 요소가 없음을 콘솔에 경고하여 디버깅에 도움을 줄 수 있습니다.
+        console.warn("경고: '.compare-modal-content' 요소를 찾을 수 없습니다. 모달 너비를 조절할 수 없습니다.");
+    }
+
+} 
 
 // ResizeObserver를 사용하여 .modal-body-scroll-content의 크기 변화를 감지하고 높이 재조정
 // 이 옵저버는 페이지 로드 시 한 번만 설정하면 됩니다.
