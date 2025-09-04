@@ -1732,8 +1732,17 @@ async function estateDetail(estateNo) {
             favoriteCheck(estateNo); // 즐겨찾기 확인
             await renderEstateDetail(responseData); // 상세레이어 랜더링
             $(".map-sell-view").addClass("active"); // 상세 레이어 펼치기
-
             recentVisit(responseData);
+            //setMapToCurrentLocationAndZoom(2);
+            const dataObj = {
+                // html: (encodeURIComponent(escapeHtmlContent)), // 인코딩된 HTML 데이터
+                lat: responseData.lat, 
+                lng: responseData.lng, // 요소의 너비
+                animate: true, 
+            };
+            setMapCenterAndZoom (2, dataObj);
+            const coords = { lat: responseData.lat, lng: responseData.lng };
+            handleMapClick(coords);
         })
         .catch((error) => {
             console.log(error);
@@ -3106,7 +3115,8 @@ function createClusteredMarker(data) {
 
     // 랜덤 오프셋 범위 설정 (-0.00005 ~ 0.00005 사이의 값)
     const randomOffset = () => (Math.random() - 0.5) * 0.0001; // 랜덤 값을 생성하여 약간의 좌표 차이를 줌
-    const latlng = new kakao.maps.LatLng(data.lat + randomOffset(), data.lng + randomOffset());
+    //const latlng = new kakao.maps.LatLng(data.lat + randomOffset(), data.lng + randomOffset());
+    const latlng = new kakao.maps.LatLng(data.lat , data.lng );
 
     // 클러스터러에 추가할 마커 생성
     var marker = new kakao.maps.Marker({
@@ -3285,8 +3295,9 @@ function createClusterer(estateType) {
         disableClickZoom: true,
         styles: [
             {
-                width: "1px",
-                height: "1px",
+                 // 실제 보이는 클러스터 아이콘의 최종 크기로 width/height를 설정합니다.
+                width: "1px",  // 계산된 최종 너비로 설정48
+                height: "1px", // 계산된 최종 높이로 설정72
                 background: "transparent",
                 border: "none",
                 borderRadius: "50%",
@@ -3298,6 +3309,12 @@ function createClusterer(estateType) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+
+                // *** 클러스터 아이콘의 앵커 포인트를 하단 중앙에 맞추기 위한 오프셋 ***
+                // offsetX: 아이콘 너비의 절반만큼 왼쪽으로 이동 (가로 중앙)
+                //offsetX: -(48 / 2), // -24px
+                // offsetY: 아이콘 전체 높이만큼 위로 이동 (세로 하단)
+                //offsetY: -(72)    // -72px
             },
         ],
     });
@@ -3316,7 +3333,7 @@ function createClusterer(estateType) {
 
             // 커스텀 클러스터 디자인 적용
             const customClusterContent = `
-                <ul class="custom-cluster-content position-absolute text-center font14 bg-white border border-danger overflow-hidden" style="min-width:55px; border-radius:10px;">
+                 <ul class="custom-cluster-content text-center font14 bg-white border border-danger overflow-hidden" style="min-width:55px; border-radius:10px; position: relative;">
                     <li class="color-gray bg-white p-1">
                         <span class="">${estateType}</span>
                     </li>
@@ -3324,8 +3341,8 @@ function createClusterer(estateType) {
                         <span class="">${clusterCount}</span>
                     </li>
                 </ul>
-                <!--
-                <p class="position-absolute" style="margin:-5px 0 0 20px;">
+                <!-- 여기에 <p> 태그를 다시 포함시키고, 기존 마진과 스타일을 부여합니다. 
+                <p style="position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); margin-bottom: -15px;">
                     <img src="/front/assets/image/icn_arr_mark.svg" width="15" alt="" title="">
                 </p>
                 -->
@@ -3333,12 +3350,16 @@ function createClusterer(estateType) {
 
             // 클러스터 마커에 커스텀 콘텐츠 설정
             const clusterMarker = cluster.getClusterMarker();
-            const overlay = clusterMarker.getContent();
+            const overlay = clusterMarker.getContent();   // MarkerClusterer가 제공하는 기본 DOM 요소
             overlay.innerHTML = customClusterContent;
             // clusterMarker.setContent(customClusterContent);
 
+            overlay.style.position = "relative"; // **이것이 중요합니다.** p 태그의 absolute 포지셔닝 기준
+
             // 초기 scale 설정 및 transition 적용
-            // overlay.style.scale = "0.8";
+            overlay.style.display = "flex"; // flexbox 사용 시
+            overlay.style.alignItems = "center"; // flexbox 사용 시
+            overlay.style.justifyContent = "center"; // flexbox 사용 시
             overlay.style.transform = "scale(0.8)";
 
             overlay.addEventListener("mouseover", function () {
@@ -4735,3 +4756,161 @@ async function getPolygonInfoForCoords(coords) {
         return null;
     }
 }
+/**
+ * 현재 위치로 지도를 이동하고 지정된 줌 레벨을 설정합니다.
+ * @param {number} targetLevel - 설정하고자 하는 지도의 줌 레벨 (1부터 14까지, 숫자가 작을수록 확대)
+ * @param {boolean} animation - 지도 이동 시 부드러운 애니메이션 적용 여부 (기본값: true)
+ * // 사용 예시:
+ * 지도를 현재 위치로 이동하고 줌 레벨을 3으로 설정합니다.
+ * setMapToCurrentLocationAndZoom(3);
+ * 지도를 현재 위치로 이동하고 줌 레벨을 5로 설정하며, 애니메이션은 적용하지 않습니다.
+ * setMapToCurrentLocationAndZoom(5, false);
+ */
+function setMapToCurrentLocationAndZoom(targetLevel, animation = true) {
+    // 지도 객체가 유효한지 확인합니다. (여기서 'map'은 카카오맵 초기화 시 생성된 전역 map 객체라고 가정합니다)
+    if (!map) {
+        console.error("카카오맵 객체가 초기화되지 않았습니다.");
+        return;
+    }
+
+    // Geolocation API를 지원하는지 확인합니다.
+    if (navigator.geolocation) {
+        // 현재 위치를 얻어옵니다.
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;  // 위도
+                const lng = position.coords.longitude; // 경도
+
+                const locPosition = new kakao.maps.LatLng(lat, lng); // LatLng 객체 생성
+
+                // 1. 지도 중앙을 현재 위치로 이동
+                map.setCenter(locPosition);
+
+                // 2. 원하는 줌 레벨 설정
+                map.setLevel(targetLevel);
+
+                // (선택 사항) 지도 이동 시 애니메이션 적용 여부
+                // setCenter와 setLevel은 기본적으로 애니메이션을 지원하므로, 따로 설정하지 않아도 됩니다.
+                // 만약 애니메이션 제어가 필요하다면, 옵션 객체를 넘겨줄 수 있습니다.
+                // 예: map.setCenter(locPosition, { animation: animation });
+                // 예: map.setLevel(targetLevel, { animate: animation });
+
+                console.log(`지도를 현재 위치(위도: ${lat}, 경도: ${lng})로 이동하고 줌 레벨을 ${targetLevel}로 설정했습니다.`);
+            },
+            function(error) {
+                // 위치 가져오기 실패 시 에러 처리
+                console.error("위치 정보를 가져오는데 실패했습니다.", error);
+                // 사용자에게 알림 (예: "위치 정보를 가져올 수 없습니다. 기본 위치로 지도를 표시합니다.")
+                // 혹은 기본 위치(예: 서울 시청)로 지도를 이동시키는 로직을 여기에 추가할 수 있습니다.
+                alert("위치 정보를 가져오는 데 실패했습니다. 브라우저의 위치 권한을 확인해주세요.");
+
+                // 실패 시 특정 기본 위치로 지도를 이동
+                const defaultPosition = new kakao.maps.LatLng(37.566826, 126.9786567); // 서울 시청
+                map.setCenter(defaultPosition);
+                map.setLevel(targetLevel);
+            },
+            {
+                // Geolocation API 옵션 (선택 사항)
+                enableHighAccuracy: true, // 높은 정확도 (GPS 사용)
+                timeout: 5000,           // 5초 내에 위치 정보를 가져오지 못하면 에러 처리
+                maximumAge: 0            // 캐시된 위치 정보 사용 안 함 (항상 최신 위치 시도)
+            }
+        );
+    } else {
+        // Geolocation API를 지원하지 않는 경우 처리
+        console.error("이 브라우저는 Geolocation API를 지원하지 않습니다.");
+        alert("이 브라우저에서는 위치 정보를 사용할 수 없습니다.");
+        // 역시 기본 위치로 지도를 이동시키는 로직을 여기에 추가할 수 있습니다.
+        //const defaultPosition = new kakao.maps.LatLng(37.566826, 126.9786567); // 서울 시청
+        //map.setCenter(defaultPosition);
+        //map.setLevel(targetLevel);
+    }
+}
+/**
+ * 지도의 중앙을 특정 위치로 설정하거나 현재 중앙을 유지하며 줌 레벨을 변경합니다.
+ *
+ * @param {number} targetLevel - 설정하고자 하는 지도의 줌 레벨 (1부터 14까지, 숫자가 작을수록 확대). 필수.
+ * @param {object} [options] - 추가 설정 옵션 객체.
+ * @param {number} [options.lat] - 지도의 중앙으로 설정할 위도. 이 값이 제공되면 해당 위치로 이동합니다.
+ * @param {number} [options.lng] - 지도의 중앙으로 설정할 경도. 이 값이 제공되면 해당 위치로 이동합니다.
+ * @param {boolean} [options.animate=true] - 지도 이동 시 부드러운 애니메이션 적용 여부. 기본값은 true.
+ */
+// ======================= 사용 예시 =======================
+
+// 1. 특정 위치(예: 서울역)로 지도를 이동하고 줌 레벨을 3으로 설정
+// setMapCenterAndZoom(3, { lat: 37.555946, lng: 126.972317 });
+
+// 2. 입력받은 위치가 없으므로 지도의 현재 중앙을 유지하면서 줌 레벨을 5로 설정
+// (map.getCenter()가 현재 지도의 중심 좌표를 반환하여 map.setCenter(map.getCenter())와 동일한 효과)
+// setMapCenterAndZoom(5);
+
+// 3. 부드러운 애니메이션 없이 특정 위치로 지도를 이동하고 줌 레벨을 1로 설정
+// setMapCenterAndZoom(1, { lat: 37.498095, lng: 127.027610, animate: false }); // 강남역
+
+// 4. 위도만 입력된 경우 (lng가 없어 유효하지 않으므로 현재 중앙 유지)
+// setMapCenterAndZoom(4, { lat: 37.00 });
+
+// 5. 숫자가 아닌 값이 입력된 경우 (유효하지 않으므로 현재 중앙 유지)
+// setMapCenterAndZoom(6, { lat: "invalid", lng: "invalid" });
+function setMapCenterAndZoom(targetLevel, options = {}) {
+    // 지도 객체가 유효한지 확인합니다. (여기서 'map'은 카카오맵 초기화 시 생성된 전역 map 객체라고 가정합니다)
+    if (!map) {
+        console.error("카카오맵 객체가 초기화되지 않았습니다. 지도가 로드된 후 호출해주세요.");
+        return;
+    }
+
+    const { lat, lng, animate = true } = options;
+    let targetPosition;
+
+    // 1. 입력받은 위치(lat, lng)가 유효한지 확인
+    if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+        targetPosition = new kakao.maps.LatLng(lat, lng);
+        console.log(`지도를 입력받은 위치(위도: ${lat}, 경도: ${lng})로 이동합니다.`);
+    } else {
+        // 2. 입력받은 위치가 없으면 현재 지도의 중앙을 유지합니다.
+        //    map.getCenter()를 사용하면 현재 중앙 좌표를 얻을 수 있습니다.
+        targetPosition = map.getCenter();
+        //console.log("입력받은 위치가 없어 지도의 현재 중앙을 유지합니다.");
+    }
+
+    // 3. 지도의 중앙 설정 (애니메이션 적용 여부 옵션 활용)
+    map.setCenter(targetPosition);
+
+    // 4. 원하는 줌 레벨 설정 (애니메이션 적용 여부 옵션 활용)
+    map.setLevel(targetLevel);
+
+    console.log(`지도의 줌 레벨을 ${targetLevel}로 설정했습니다.`);
+}
+
+/**
+ * 지도에 폴리곤을 표시합니다.
+ *
+ * @param {object} [options] - 추가 설정 옵션 객체.
+ * @param {number} [options.lat] - 지도의 중앙으로 설정할 위도. 이 값이 제공되면 해당 위치로 이동합니다.
+ * @param {number} [options.lng] - 지도의 중앙으로 설정할 경도. 이 값이 제공되면 해당 위치로 이동합니다.
+ */
+function updataePolygonToMap(targetLevel, options = {}) {
+    // 지도 객체가 유효한지 확인합니다. (여기서 'map'은 카카오맵 초기화 시 생성된 전역 map 객체라고 가정합니다)
+    if (!map) {
+        console.error("카카오맵 객체가 초기화되지 않았습니다. 지도가 로드된 후 호출해주세요.");
+        return;
+    }
+
+    const { lat, lng } = options;
+    let targetPosition;
+
+    // 1. 입력받은 위치(lat, lng)가 유효한지 확인
+    if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+        targetPosition = new kakao.maps.LatLng(lat, lng);
+    } else {
+        // 2. 입력받은 위치가 없으면 현재 지도의 중앙을 유지합니다.
+        //    map.getCenter()를 사용하면 현재 중앙 좌표를 얻을 수 있습니다.
+        targetPosition = map.getCenter();
+        return;
+        //console.log("입력받은 위치가 없어 지도의 현재 중앙을 유지합니다.");
+    }
+    clearAllPolygons();
+    addPolygonsToMap(buildingPolygonPaths = [], landPolygonPaths = [])
+}
+
+
