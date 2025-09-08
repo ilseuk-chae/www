@@ -104,7 +104,7 @@ async function initMemoRegisterModalLogic() {
         
         try {
             const coords = { lat: memoCurrentData.latitude, lng: memoCurrentData.longitude };
-            const addressResult = await searchDetailAddrFromCoords(coords);
+            const addressResult = await searchDetailAddrFromCoordsMy(coords);
 
             if (addressResult && addressResult.status === kakao.maps.services.Status.OK && addressResult.result && addressResult.result[0]) {
                 const result = addressResult.result[0];

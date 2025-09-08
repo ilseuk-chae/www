@@ -3296,9 +3296,11 @@
 .map-content .mc-mo-open-close i {
     transition: transform 0.4s ease-out;
 }
-.map-content.active .mc-mo-open-close i {
+/*
+.map-content.active.full .mc-mo-open-close i {
     transform: rotate(180deg);
 }
+*/    
 
 .map-content .mc-open-close {
     position: absolute;
@@ -4378,35 +4380,34 @@
 }
 @media all and (max-width: 991px) {
     .map-content {
-        top: 100%;
+        /*top: 100%; */
+        top: calc(100vh - 175px);
         width: 100%;
         margin-top: -25px;
         box-shadow: none;
         overflow: hidden;
         transition: top 0.4s ease-out, margin-top 0.4s ease-out;
         margin-left: 0;
+        
+        height: calc(100vh - 125px); /* 뷰포트 높이에서 margin-top 값을 뺀 높이로 설정 */
+        padding-top: 30px;  /*mc-mo-open-close의 높이 + 여백 (대략적인 값) */
+        box-sizing: border-box; /* 패딩이 최종 너비/높이에 포함되도록 */
     }
     .map-content.active {
         top: 60%;
+        height: calc(100vh - 60%); /* 뷰포트 높이에서 top 값(60%)을 뺀 남은 높이로 설정 */
     }
     .map-content.active.full {
         top: 0;
         margin-top: -1px;
+        height : 100%
     }
 
     .map-content .mc-mo-open-close {
+        height: auto; /* 내용에 따라 높이 결정 */
         display: block;
     }
-    .map-content .mc-mo-open-close i {
-        transition: transform 0.4s ease-out;
-    }
-    .map-content.active .mc-mo-open-close i {
-        transform: rotate(0deg);
-    }
-    .map-content.active.full .mc-mo-open-close i {
-        transform: rotate(180deg);
-    }
-
+    
     .map-content .mc-open-close {
         display: none;
     }
@@ -4414,17 +4415,6 @@
     .map-content .mc-search {
         padding: 40px 20px 0 20px;
         display: none;
-    }
-
-    .map-content .mc-tab-content {
-        height: calc(100% - 200px);
-    }
-    .map-content.active .mc-sell {
-        height: 50%;
-        margin-top: 0;
-    }
-    .map-content.active.full .mc-sell {
-        height: 100%;
     }
 }
 @media all and (max-width: 479px) {

@@ -148,7 +148,7 @@ async function initMemoModifyModalLogic() {
             
             try {
                 const coords = { lat: memoCurrentData.latitude, lng: memoCurrentData.longitude };
-                const addressResult = await searchDetailAddrFromCoords(coords);
+                const addressResult = await searchDetailAddrFromCoordsMy(coords);
 
                 if (addressResult && addressResult.status === kakao.maps.services.Status.OK && addressResult.result && addressResult.result[0]) {
                     const result = addressResult.result[0];
@@ -323,7 +323,7 @@ async function initMemoModifyModalLogic() {
                     displayMemoOnMap(); // 지도상의 메모를 새로고침
                 }
             } else {
-                sweetAlertMessage("메모 수정에 실패했습니다: " + (result ? result.message : "알 수 없는 오류","","e"));
+                sweetAlertMessage("메모 수정에 실패했습니다: " + (result ? result.message : "알 수 없는 오류"),"","e");
             }
         } catch (error) {
             //console.error("메모 수정 API 호출 중 오류:", error);
@@ -357,11 +357,11 @@ async function initMemoModifyModalLogic() {
                 if (memoModifyModalInstance) memoModifyModalInstance.hide();
                 displayMemoOnMap(); 
             } else {
-                sweetAlertMessage("메모 삭제 실패: " + (result ? result.message : "알 수 없는 오류","","e"));
+                sweetAlertMessage("메모 삭제 실패: " + (result ? result.message : "알 수 없는 오류"),"","e");
             }
         } catch (e) {
             console.error("메모 삭제 오류:", e);
-            asweetAlertMessagelert("메모 삭제 중 오류가 발생했습니다.","","e");
+            sweetAlertMessage("메모 삭제 중 오류가 발생했습니다.","","e");
         }
     });
     // 3. "닫기" 버튼 이벤트 (x 버튼) - 이벤트 위임
@@ -492,7 +492,7 @@ function bindMemoCommentSectionEvents(currentMemoNo) {
             const result = await callApi("POST", "/front/back/memo/memo2_comment_register.php", dataObj); // dataObj 전달
 
             if (result && result.statusCode === 200 && result.message === "SUCCESS") {
-                alsweetAlertMessageert("댓글이 등록되었습니다.","","s");
+                sweetAlertMessage("댓글이 등록되었습니다.","","s");
                 $commentInput.val(''); // 입력 필드 초기화
 
                 // ⭐⭐ 이전 commentRegist 함수의 즉시 댓글 추가 로직 통합 ⭐⭐
@@ -531,7 +531,7 @@ function bindMemoCommentSectionEvents(currentMemoNo) {
                 displayMemoOnMap(); // 지도상의 메모를 새로고침 (필요시)
 
             } else {
-                alesweetAlertMessagert("댓글 등록 실패: " + (result ? result.message : "알 수 없는 오류","","e"));
+                sweetAlertMessage("댓글 등록 실패: " + (result ? result.message : "알 수 없는 오류"),"","e");
             }
         } catch (e) {
             console.error("댓글 등록 오류:", e);
@@ -604,7 +604,7 @@ function bindMemoCommentSectionEvents(currentMemoNo) {
  * 주소 검색
  * @param {*} coords
  */
-async function searchDetailAddrFromCoords(coords) {
+async function searchDetailAddrFromCoordsMy(coords) {
     return new Promise((resolve, reject) => {
         geocoder.coord2Address(coords.lng, coords.lat, function (result, status) {
             if (status === kakao.maps.services.Status.OK) {

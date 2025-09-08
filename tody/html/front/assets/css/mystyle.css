@@ -538,6 +538,56 @@
 .mc-tab-menu3 .unit-toggle-group button span.active {
   color: #ef8779;
 }
+.mc-tab-menu4 {
+  display: flex; /* Flex 컨테이너로 설정 */
+  align-items: center; /* 자식 요소들을 세로 중앙에 정렬 (label과 input의 높이가 다를 경우 보기 좋게) */
+  gap: 00px; /* label과 input 사이에 간격 추가 (선택 사항) */
+  /* 필요하다면 이 컨테이너의 전체 너비도 설정할 수 있습니다. 예: width: 100%; */
+  
+  padding: 4px 20px 2px 20px;
+  /* 임시로 배경과 테두리를 추가하여 패딩 적용 여부 확인 
+  background-color: lightgray;
+  border: 1px solid red;*/
+  border-radius: 10px;
+  
+}
+
+.mc-tab-menu4 label {
+  /* label은 콘텐츠 너비만큼만 차지하도록 합니다. */
+  flex-shrink: 0; /* label이 줄어들지 않도록 설정 (콘텐츠가 길어질 경우 대비) */
+  color:#111;
+  background-color: #f5f1fe;;
+  border-radius: 10px;
+}
+
+.mc-tab-menu4 input[type="text"] {
+  flex-grow: 1; /* input이 남은 공간을 모두 차지하도록 설정 */
+  /* 필요하다면 input의 최소/최대 너비도 설정할 수 있습니다. */
+  min-width: 0; /*(간혹 flex-grow 1을 줬는데도 스크롤 생기는 문제 방지용) */
+  border: none;             /* 테두리 없애기 */
+  background-color: transparent; /* 배경색 투명하게 */
+  box-shadow: none;         /* 혹시 있을 수 있는 그림자 효과 제거 */
+  outline: none;            /* 포커스 시 나타나는 파란색/검은색 외곽선 제거 */
+  cursor: default;          /* 마우스 포인터를 기본 화살표로 변경 (입력 필드임을 강조하지 않기 위해) */
+
+  /* readonly 상태에 대한 스타일은 필요에 따라 추가 */
+  /* opacity: 1; (disabled 상태의 opacity: 0.5 같은 효과가 필요없을 때) */
+  /* color: #333; (색상 명확히 지정) */
+  color:#111;
+  background-color: #f5f1fe;
+  border-radius: 10px;
+}
+
+@media all and (max-width: 991px) {
+  
+  .mc-tab-menu3 {
+      display: none;
+  }
+  .mc-tab-menu4 {
+      padding: 4px 20px; /* 적절한 패딩 추가 */
+  }
+  
+}
 
 .highlight-difference {
   color: #dc3545;

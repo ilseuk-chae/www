@@ -441,6 +441,12 @@ async function handleMapClick(coords) {
 
         // 두 작업이 완료된 후 폴리곤을 한 번에 지도에 추가
         addPolygonsToMap(buildingPolygons, landPolygons);
+        const addressResult = await searchDetailAddrFromCoordsMy(coords);
+        if (addressResult && addressResult.status === kakao.maps.services.Status.OK && addressResult.result && addressResult.result[0]) {
+            const result = addressResult.result[0];
+            let jibunAddr = result.address ? result.address.address_name : '';
+            $("#click_location").val(jibunAddr); // 
+        }
        
     } catch (error) {
         console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
@@ -466,7 +472,7 @@ function clearAllPolygons() {
             polygon.setMap(null);
         }
     });
-
+    $("#click_location").val(""); // 
     // 폴리곤 배열 초기화
     buildingPolygons = [];
     landPolygons = [];

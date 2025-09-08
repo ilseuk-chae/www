@@ -460,7 +460,10 @@
 
                     <!-- 매물정보 -->
                     <div class="map-content active">
-                        <div class="mc-mo-open-close" id="mapContentMoOpenClose"><i class="fa-regular fa-chevron-up"></i></div>
+                        <div class="mc-mo-open-close" id="mapContentMoOpenClose">
+                            <i class="fa-regular fa-chevron-up" id="mapContentMoUp"></i>
+                            <i class="fa-regular fa-chevron-down" id="mapContentMoDown"></i>
+                        </div>
                         <div class="mc-open-close" id="mapContentOpenClose"><i class="fa-solid fa-chevron-left"></i></div>
 
                         <div class="mc-search">
@@ -472,7 +475,10 @@
                                 <div id="pagination" class="mcsb-pagination"></div>
                             </div>
                         </div>
-                       
+                        <div class="mc-tab-menu4">
+                            <label for="click_location">선택 주소 : </label>
+                            <input type="text" id="click_location" value="" readonly />
+                        </div>
                         <div class="mc-tab-menu3">
                             <div class="comparison-area-content"> <!-- 새로운 Flexbox 컨테이너 -->
                                 <div class="comparison-left-group" id="comparison_Button_Group">

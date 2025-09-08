@@ -11,6 +11,7 @@ $(document).ready(async function () {
     // popstate 이벤트를 사용하여 URL 변경 감지
     window.addEventListener("popstate", function (e) {});
     initTooltip(); // 툴팁 초기화
+    updateMapContentIcons();
 });
 
 /**************************************************
@@ -275,27 +276,64 @@ function initAction() {
     // 지도 - 모바일 - 컨텐츠 열고 닫기 //
     $(".mc-mo-open-close").click(function () {
         if ($(this).hasClass("active full")) {
-            $(".map-content").removeClass("active full");
-            $(this).removeClass("active full");
+            //$(".map-content").removeClass("active full");
+            //$(this).removeClass("active full");
             $(".map-bg").addClass("full");
             $(".map-history").removeClass("active");
             $(".realmap-estate-group").removeClass("active");
             $(".realmap-estate-info").removeClass("active");
         } else if ($(this).hasClass("active")) {
-            $(".map-content").addClass("full");
-            $(this).addClass("full");
+            //$(".map-content").addClass("full");
+            //$(this).addClass("full");
             $(".map-bg").removeClass("full");
             $(".map-history").addClass("active");
             $(".realmap-estate-group").addClass("active");
             $(".realmap-estate-info").addClass("active");
         } else {
-            $(".map-content").addClass("active full");
-            $(this).addClass("active full");
+            //$(".map-content").addClass("active full");
+            //$(this).addClass("active full");
             $(".map-bg").removeClass("full");
             $(".map-history").addClass("active");
             $(".realmap-estate-group").addClass("active");
             $(".realmap-estate-info").addClass("active");
         }
+    });
+
+    $("#mapContentMoUp").click(function () {
+        const $mapContent = $(".map-content");
+        const $mcMoOpenClose = $("#mapContentMoOpenClose"); // 클래스를 추가/제거할 대상 부모 div
+
+        if ($mapContent.hasClass("active")) {
+            // 현재 'active' 상태 (not full) 이면 -> 'active full'로
+            $mapContent.addClass("full");
+            $mcMoOpenClose.addClass("full"); // 부모 div에도 클래스 동기화
+        } else {
+            // 현재 'None' (클래스 없음) 이면 -> 'active'로
+            $mapContent.addClass("active");
+            $mcMoOpenClose.addClass("active"); // 부모 div에도 클래스 동기화
+        }
+        
+        // 상태 변경 후 아이콘 가시성 업데이트
+        updateMapContentIcons();
+    });
+
+    // ⬇️ mapContentMoDown 클릭 이벤트 (축소)
+    $("#mapContentMoDown").click(function () {
+        const $mapContent = $(".map-content");
+        const $mcMoOpenClose = $("#mapContentMoOpenClose"); // 클래스를 추가/제거할 대상 부모 div
+
+        if ($mapContent.hasClass("full")) {
+            // 현재 'active full' 상태이면 -> 'active'로 (full 클래스만 제거)
+            $mapContent.removeClass("full");
+            $mcMoOpenClose.removeClass("full"); // 부모 div에도 클래스 동기화
+        } else if ($mapContent.hasClass("active")) {
+            // 현재 'active' 상태 (not full) 이면 -> 'None'으로 (active 클래스 제거)
+            $mapContent.removeClass("active");
+            $mcMoOpenClose.removeClass("active"); // 부모 div에도 클래스 동기화
+        }
+        
+        // 상태 변경 후 아이콘 가시성 업데이트
+        updateMapContentIcons();
     });
     // var mapContentMoChk = 0;
     // $("#mapContentMoOpenClose").click(function () {
@@ -527,6 +565,26 @@ function initAction() {
     });
 }
 
+function updateMapContentIcons() {
+    const $mapContent = $(".map-content");
+    const $mapContentMoUp = $("#mapContentMoUp");
+    const $mapContentMoDown = $("#mapContentMoDown");
+
+    //if ($mapContent.hasClass("active") && $mapContent.hasClass("full")) {
+    if ($mapContent.hasClass("active full")) {
+        // 현재 'active full' 상태
+        $mapContentMoUp.hide();
+        $mapContentMoDown.show();
+    } else if ($mapContent.hasClass("active")) {
+        // 현재 'active' 상태 (full 아님)
+        $mapContentMoUp.show();
+        $mapContentMoDown.show();
+    } else {
+        // 현재 'None' (클래스 없음) 상태
+        $mapContentMoUp.show();
+        $mapContentMoDown.hide();
+    }
+}
 // 모든 옵션 비활성화
 function resetOptions() {
     $(".mo-area, .mo-tool, .mo-tool-option, .mo-land").removeClass("active").fadeOut(400, "easeOutQuad");
