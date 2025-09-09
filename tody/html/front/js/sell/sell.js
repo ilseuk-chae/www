@@ -28,6 +28,7 @@ $(document).ready(async function () {
     updateCompareApplyButtonState(); // <-- 비교버튼 초기화
     initTooltip(); // 툴팁 초기화  
     updateMapContentIcons();
+    handleMapContentClass();
 });
 
 // 초기화 함수 호출
@@ -396,6 +397,14 @@ function initAction() {
         //$(".map-content").toggleClass("active");
         $("#comparison_Button_Group").hide();
     }
+
+    let resizeTimer;
+    $(window).on("resize", function() {
+        clearTimeout(resizeTimer); // 이전 타이머가 있다면 취소
+        resizeTimer = setTimeout(function() {
+            handleMapContentClass();
+        },150); // 250ms(0.25초) 동안 추가적인 resize 이벤트가 없으면 함수 실행
+});
 
     // 지도 - 옵션 - 도구사용 //
     $("#mapOptionToolOpen").click(function () {
@@ -3438,6 +3447,7 @@ function createClusterer(estateType) {
  * 클러스터 이벤트 초기화 함수
  * @param {*} clusterer
  */
+let globalClusterZIndex = 1000; // 충분히 큰 값으로 시작 (기본 마커 z-index보다 높게)
 function initClusterEvent(clusterer) {
     let clickTimeout = null; // 단일 클릭 타임아웃을 저장할 변수
 
@@ -3450,6 +3460,22 @@ function initClusterEvent(clusterer) {
         clickTimeout = setTimeout(function () {
             // 더블클릭이 발생하지 않았을 경우 타임아웃 초기화
             clickTimeout = null;
+
+            // --- 클러스터 z-index 조절 로직 시작 ---
+            const clusterMarker = cluster.getClusterMarker();
+            if (clusterMarker) {
+                const currentZIndex = parseInt(clusterMarker.getZIndex() || 0, 10); // 현재 z-index 값 읽기
+                //console.log("읽은 z-index:" + currentZIndex);
+                if(currentZIndex >= globalClusterZIndex) {
+                    globalClusterZIndex = currentZIndex + 1; // 전역 z-index 값을 현재 값보다 크게 설정
+                }
+                else {
+                    globalClusterZIndex++; // 클릭할 때마다 전역 z-index 값 증가
+                }
+                //console.log("설정 z-index:" + globalClusterZIndex);
+                clusterMarker.setZIndex(globalClusterZIndex); // z-index 값을 1 증가
+            }
+            // --- 클러스터 z-index 조절 로직 끝 ---
 
             // 모든 매물 리스트를 부드럽게 숨기기
             $(".mcs-list").children("dl").fadeOut(100);
@@ -3485,7 +3511,7 @@ function initClusterEvent(clusterer) {
         map.setCenter(center);
         map.setLevel(map.getLevel() - 1);
     });
-
+/*
     // 클러스터 - 마우스 오버
     kakao.maps.event.addListener(clusterer, "clusterover", function (cluster) {
         // 클러스터 마커에 커스텀 콘텐츠 설정
@@ -3509,6 +3535,7 @@ function initClusterEvent(clusterer) {
         overlay.style.transition = "transform 0.3s ease"; // 0.3초 동안 부드럽게 변화
         overlay.style.transformOrigin = "center"; // 중심에서 스케일이 변화하도록 설정
     });
+*/
 }
 
 /**************************************************
@@ -4852,7 +4879,7 @@ function setMapToCurrentLocationAndZoom(targetLevel, animation = true) {
                 // 예: map.setCenter(locPosition, { animation: animation });
                 // 예: map.setLevel(targetLevel, { animate: animation });
 
-                console.log(`지도를 현재 위치(위도: ${lat}, 경도: ${lng})로 이동하고 줌 레벨을 ${targetLevel}로 설정했습니다.`);
+                //console.log(`지도를 현재 위치(위도: ${lat}, 경도: ${lng})로 이동하고 줌 레벨을 ${targetLevel}로 설정했습니다.`);
             },
             function(error) {
                 // 위치 가져오기 실패 시 에러 처리
@@ -4922,7 +4949,7 @@ function setMapCenterAndZoom(targetLevel, options = {}) {
     // 1. 입력받은 위치(lat, lng)가 유효한지 확인
     if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
         targetPosition = new kakao.maps.LatLng(lat, lng);
-        console.log(`지도를 입력받은 위치(위도: ${lat}, 경도: ${lng})로 이동합니다.`);
+        //console.log(`지도를 입력받은 위치(위도: ${lat}, 경도: ${lng})로 이동합니다.`);
     } else {
         // 2. 입력받은 위치가 없으면 현재 지도의 중앙을 유지합니다.
         //    map.getCenter()를 사용하면 현재 중앙 좌표를 얻을 수 있습니다.
@@ -4936,7 +4963,7 @@ function setMapCenterAndZoom(targetLevel, options = {}) {
     // 4. 원하는 줌 레벨 설정 (애니메이션 적용 여부 옵션 활용)
     map.setLevel(targetLevel);
 
-    console.log(`지도의 줌 레벨을 ${targetLevel}로 설정했습니다.`);
+    //console.log(`지도의 줌 레벨을 ${targetLevel}로 설정했습니다.`);
 }
 
 /**
@@ -4969,5 +4996,30 @@ function updataePolygonToMap(targetLevel, options = {}) {
     clearAllPolygons();
     addPolygonsToMap(buildingPolygonPaths = [], landPolygonPaths = [])
 }
+// 함수: 창 크기에 따라 .map-content 클래스 조절
+let isMobileView = $(window).width() <= 991;
 
+function handleMapContentClass() {
+    const currentWidth = $(window).width();
+
+    if (currentWidth > 991) {
+        // 창 너비가 991px 초과일 때 (PC 뷰)
+        if (isMobileView) { // 이전에 모바일 뷰였다면
+            // .map-content에 active 클래스 추가
+            $(".map-content").addClass("active");
+            //console.log("창 너비 > 991px: .map-content에 active 클래스 추가");
+            isMobileView = false; // PC 뷰로 전환
+        }
+    } else {
+        // 창 너비가 991px 이하일 때 (모바일 뷰)
+        if (!isMobileView) { // 이전에 PC 뷰였다면
+            // .map-content에서 active 클래스 제거 (필요하다면)
+            // onedol님의 요청에 따라 이 부분에서는 active를 제거하지 않았습니다.
+            // $(".map-content").removeClass("active");
+            //console.log("창 너비 <= 991px: .map-content 클래스 유지 (또는 제거 로직 필요시 추가)");
+            isMobileView = true; // 모바일 뷰로 전환
+        }
+    }
+    updateMapContentIcons();
+}
 

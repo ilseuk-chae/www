@@ -255,21 +255,39 @@ async function realPriceApt(sggCd) {
                         yAnchor: 1.2,
                         zIndex: 1,
                     });
-
-                    // 부모의 z-index를 조작하기 위해 originalZIndex를 부모의 스타일에서 가져옴
-                    let originalZIndex = iwContent.parentElement.style.zIndex || 1; // 초기 zIndex 값
-
-                    // 마우스 오버 시 zIndex 높이기
+                /*
+                    let hoverTimeout; // 마우스 오버 지연을 위한 타이머 변수
                     iwContent.addEventListener("mouseover", function () {
-                        iwContent.parentElement.style.zIndex = 2; // 마우스 오버 시 부모 zIndex를 2로 설정
+                        // 이전 타이머가 있다면 지웁니다. (만약 다른 오버레이에서 빠르게 옮겨왔다면)
+                        clearTimeout(hoverTimeout); 
+
+                        // 0.5초 (500ms) 후에 실행될 함수를 예약합니다.
+                        hoverTimeout = setTimeout(() => {
+                            // 이 블록 안의 코드는 마우스가 0.3초 이상 머물렀을 때만 실행됩니다.
+                            const currentZ = realPriceOverlay.getZIndex(); // 현재 오버레이의 z-index를 가져옵니다.
+                            // 이 값을 realPriceOverlay 객체의 임시 속성으로 저장해두어 mouseout 시 복원할 수 있도록 합니다.
+                            if(currentZ >= globalClusterZIndex) {
+                                globalClusterZIndex = currentZ + 1; // 전역 z-index 값을 현재 값보다 크게 설정
+                            }
+                            else {
+                                globalClusterZIndex++; // 클릭할 때마다 전역 z-index 값 증가
+                            }
+    
+                            realPriceOverlay.setZIndex(globalClusterZIndex); // 일시적으로 매우 높게 설정
+                        }, 500); // 0.3초 = 500밀리초
                     });
 
-                    // 마우스 아웃 시 원래 zIndex로 복원
+                   
                     iwContent.addEventListener("mouseout", function () {
-                        iwContent.parentElement.style.zIndex = originalZIndex; // 마우스 아웃 시 부모 zIndex 원래 값으로 복원
+                        // 마우스 아웃 시에는 원래 zIndex 또는 클릭으로 설정된 zIndex로 돌아와야 합니다.
+                        // 이 부분은 복잡할 수 있으므로, "클릭"에 의한 zIndex 최상위 유지를 우선한다면
+                        // 마우스 오버/아웃에 의한 zIndex 변화 로직을 제거하는 것을 고려해볼 수 있습니다.
+                        // 여기서는 예시로 초기 ZIndex로 돌아가도록 했습니다.
+                       // realPriceOverlay.setZIndex(initialOverlayZIndex); 
                     });
-
-                    // HTML 내부의 toggle-unit 요소에 직접 클릭 이벤트 추가
+                */                
+                    
+                   // HTML 내부의 toggle-unit 요소에 직접 클릭 이벤트 추가 (이것이 realPriceOverlay 클릭 시 이벤트)
                     iwContent.addEventListener("click", function (e) {
                         // 그리기 모드일 때 중지
                         if ($(".mo-tool-option button").hasClass("active")) return;
@@ -277,18 +295,41 @@ async function realPriceApt(sggCd) {
 
                         // 커스텀 오버레이를 드래그 할 때, 내부 텍스트가 영역 선택되는 현상을 막아줍니다.
                         e.preventDefault();
-                        const unitElement = iwContent.querySelector(".toggle-unit");
 
-                        const isPyeong = unitElement.textContent.includes("평");
-                        if(filterObj.estateinfo === "거래면적") {
-                            unitElement.textContent = isPyeong ? `${parseFloat(data.excluUseAr).toFixed(2)}㎡` : `${(data.excluUseAr / 3.3058).toFixed(2)}평`;
-                        } else if(filterObj.estateinfo === "거래단가") {
-                            const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
-                            const originalM2Area = data.excluUseAr;
-                            const originalPyArea = data.excluUseAr / 3.3058;
-                            const unitPyPrice = originalAmount / originalPyArea;
-                            const unitM2rice = originalAmount / originalM2Area;
-                            unitElement.textContent = isPyeong ? `${formatPrice(unitM2rice, "all", false, true)}/㎡` : `${formatPrice(unitPyPrice, "all", false, true)}/평`;
+                        // --- Z-index 조절 로직 시작 ---
+                        // 클릭된 realPriceOverlay (CustomOverlay 객체)의 z-index를 조정합니다.
+                        if (realPriceOverlay) { // realPriceOverlay가 유효한지 확인
+                            // 현재 CustomOverlay의 z-index 값을 가져옵니다.
+                            const currentZIndex = parseInt(realPriceOverlay.getZIndex() || 0, 10); 
+                            //console.log("실거래가 상세 오버레이 읽은 z-index:" + currentZIndex);
+
+                            // 매물 클러스터에서 사용하셨던 동일한 최상위 로직 적용
+                            if (currentZIndex >= globalClusterZIndex) { 
+                                globalClusterZIndex = currentZIndex + 1; // 현재 ZIndex보다 1 크게 설정
+                            } else {
+                                globalClusterZIndex++; // 전역 ZIndex를 1 증가
+                            }
+                            //console.log("실거래가 상세 오버레이 설정 z-index:" + globalClusterZIndex);
+
+                            // realPriceOverlay의 z-index를 새로운 값으로 설정하여 최상위에 보이게 합니다.
+                            realPriceOverlay.setZIndex(globalClusterZIndex); 
+                        }
+                        // --- Z-index 조절 로직 끝 ---
+                        
+                        // ... (기존의 단위 토글, 좌표 및 API 호출 로직, 모바일 UI 제어 로직) ...
+                        if(filterObj.estateinfo === "거래면적" || filterObj.estateinfo === "거래단가"){
+                            const unitElement = iwContent.querySelector(".toggle-unit");
+                            const isPyeong = unitElement.textContent.includes("평");
+                            if(filterObj.estateinfo === "거래면적") {
+                                unitElement.textContent = isPyeong ? `${parseFloat(data.excluUseAr).toFixed(2)}㎡` : `${(data.excluUseAr / 3.3058).toFixed(2)}평`;
+                            } else if(filterObj.estateinfo === "거래단가") {
+                                const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                                const originalM2Area = data.excluUseAr;
+                                const originalPyArea = data.excluUseAr / 3.3058;
+                                const unitPyPrice = originalAmount / originalPyArea;
+                                const unitM2rice = originalAmount / originalM2Area;
+                                unitElement.textContent = isPyeong ? `${formatPrice(unitM2rice, "all", false, true)}/㎡` : `${formatPrice(unitPyPrice, "all", false, true)}/평`;
+                            }
                         }
                         const type = data.estate_type;
                         const pnu = data.pnu;
@@ -307,17 +348,8 @@ async function realPriceApt(sggCd) {
                             }
                             displayAddressInfo(result, status); // 지도 주소 정보 바인딩
                         });
-
-                        // 지도 - 모바일 - 컨텐츠 열고 닫기 //
-                        if (!$(".mc-mo-open-close").hasClass("active full")) {
-                            $(".map-content").addClass("active full");
-                            $(".mc-mo-open-close").addClass("active full");
-                        } else if ($(".mc-mo-open-close").hasClass("active")) {
-                            $(".map-content").addClass("full");
-                            $(".mc-mo-open-close").addClass("full");
-                        }
+                        
                     });
-
                     // 오버레이 배열에 추가
                     realPriceOverlays.push(realPriceOverlay);
                     // 커스텀 오버레이를 지도에 표시합니다
@@ -697,6 +729,7 @@ function createClusterer(estateType) {
  * 클러스터 이벤트 초기화 함수
  * @param {*} clusterer
  */
+let globalClusterZIndex = 1000; // 충분히 큰 값으로 시작 (기본 마커 z-index보다 높게)
 function initClusterEvent(clusterer) {
     let clickTimeout = null; // 단일 클릭 타임아웃을 저장할 변수
 
@@ -710,9 +743,24 @@ function initClusterEvent(clusterer) {
             // 더블클릭이 발생하지 않았을 경우 타임아웃 초기화
             clickTimeout = null;
 
+            const clusterMarker = cluster.getClusterMarker();
+            if (clusterMarker) {
+                const currentZIndex = parseInt(clusterMarker.getZIndex() || 0, 10); // 현재 z-index 값 읽기
+                //console.log("읽은 z-index:" + currentZIndex);
+                if(currentZIndex >= globalClusterZIndex) {
+                    globalClusterZIndex = currentZIndex + 1; // 전역 z-index 값을 현재 값보다 크게 설정
+                }
+                else {
+                    globalClusterZIndex++; // 클릭할 때마다 전역 z-index 값 증가
+                }
+                //console.log("설정 z-index:" + globalClusterZIndex);
+                clusterMarker.setZIndex(globalClusterZIndex); // z-index 값을 1 증가
+            }
+            // --- 클러스터 z-index 조절 로직 끝 ---
+
             // 모든 매물 리스트를 부드럽게 숨기기
             $(".mcs-list").children("dl").fadeOut(100);
-
+            
             const markers = cluster.getMarkers();
             const estateNos = markers.map((marker) => marker.estate_no);
 

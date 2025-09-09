@@ -12,6 +12,7 @@ $(document).ready(async function () {
     window.addEventListener("popstate", function (e) {});
     initTooltip(); // 툴팁 초기화
     updateMapContentIcons();
+    handleMapContentClass();
 });
 
 /**************************************************
@@ -172,6 +173,14 @@ function initAction() {
     if ($(window).width() <= 991) {
         $(".map-content").toggleClass("active");
     }
+
+    let resizeTimer;
+    $(window).on("resize", function() {
+        clearTimeout(resizeTimer); // 이전 타이머가 있다면 취소
+        resizeTimer = setTimeout(function() {
+            handleMapContentClass();
+        }, 150); // 250ms(0.25초) 동안 추가적인 resize 이벤트가 없으면 함수 실행
+    });
 
     // 지도 - 옵션 - 지역현황 //
     $("#mapOptionAreaOpen").click(function () {
@@ -2072,4 +2081,30 @@ function initModal() {
             path: lottiePath,
         });
     }
+}
+// 함수: 창 크기에 따라 .map-content 클래스 조절
+let isMobileView = $(window).width() <= 991;
+
+function handleMapContentClass() {
+    const currentWidth = $(window).width();
+
+    if (currentWidth > 991) {
+        // 창 너비가 991px 초과일 때 (PC 뷰)
+        if (isMobileView) { // 이전에 모바일 뷰였다면
+            // .map-content에 active 클래스 추가
+            $(".map-content").addClass("active");
+            console.log("창 너비 > 991px: .map-content에 active 클래스 추가");
+            isMobileView = false; // PC 뷰로 전환
+        }
+    } else {
+        // 창 너비가 991px 이하일 때 (모바일 뷰)
+        if (!isMobileView) { // 이전에 PC 뷰였다면
+            // .map-content에서 active 클래스 제거 (필요하다면)
+            // onedol님의 요청에 따라 이 부분에서는 active를 제거하지 않았습니다.
+            // $(".map-content").removeClass("active");
+            console.log("창 너비 <= 991px: .map-content 클래스 유지 (또는 제거 로직 필요시 추가)");
+            isMobileView = true; // 모바일 뷰로 전환
+        }
+    }
+    updateMapContentIcons();
 }
