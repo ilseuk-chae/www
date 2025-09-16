@@ -742,6 +742,49 @@ function callApiFormData(type, url, dataObj = {}, loading) {
         });
     });
 }
+function callApiFormData2(type, url, dataObj = {}, loading) {
+    return new Promise((resolve, reject) => {
+        const isFormData = dataObj instanceof FormData;
+
+        $.ajax({
+            type,
+            url,
+            data: dataObj,
+            contentType: isFormData ? false : "application/x-www-form-urlencoded; charset=UTF-8",
+            processData: !isFormData,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                if (loading !== "noLoading") {
+                    sessionStorage.setItem("data-preloader", "enable"); // enable로 수정
+                } else {
+                    sessionStorage.setItem("data-preloader", "disable"); // disable로 수정
+                }
+            },
+            success: (result) => {
+                resolve(result); // 서버가 유효한 JSON을 보냈다면 result는 파싱된 객체입니다.
+            },
+            error: async (xhr, status, error) => {
+                console.error("AJAX Error:", status, error, xhr); // 어떤 오류인지 자세히 로깅
+                
+                // responseJSON이 있으면 그것을 사용하고, 없으면 기본 오류 객체를 반환합니다.
+                const errorResponse = xhr.responseJSON || {
+                    statusCode: xhr.status || 500, // HTTP 상태 코드를 사용하거나 500 기본값
+                    message: error || "알 수 없는 오류가 발생했습니다.", // 에러 메시지
+                    responseData: null,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // 에러 발생 시에도 resolve(errorResponse)를 통해 .then() 블록으로 오류 객체를 전달할 수 있습니다.
+                // 또는 reject(errorResponse)를 사용하여 .catch() 블록으로 처리할 수도 있습니다.
+                // onedol님의 기존 코드는 error 시에도 resolve를 사용했으므로 동일하게 resolve를 사용하겠습니다.
+                resolve(errorResponse);
+            },
+            complete: function (xhr, status) {
+                sessionStorage.setItem("data-preloader", "disable");
+            },
+        });
+    });
+}
 
 // 이벤트별 요청을 관리하는 객체
 let eventRequests = {};

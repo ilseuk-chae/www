@@ -40,7 +40,7 @@ try {
         AND a.estate_type = b.type_code
     
         INNER JOIN type_master AS c
-        ON c.group_code = 'SALE_TYPE'
+        ON c.group_code = 'TRANSACTION_TYPE'  --  ON c.group_code = 'SALE_TYPE'
         AND a.sale_type = c.type_code
     
         INNER JOIN user_master AS d

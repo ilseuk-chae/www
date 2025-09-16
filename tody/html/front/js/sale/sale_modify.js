@@ -1,181 +1,289 @@
-const a50_0x2091a6 = a50_0xd6b2;
-function a50_0xd6b2(_0x4b7559, _0x55fb89) {
-    const _0x424937 = a50_0x4249();
-    return (
-        (a50_0xd6b2 = function (_0xd6b281, _0x3dff9f) {
-            _0xd6b281 = _0xd6b281 - 0xec;
-            let _0x5b98fa = _0x424937[_0xd6b281];
-            return _0x5b98fa;
-        }),
-        a50_0xd6b2(_0x4b7559, _0x55fb89)
-    );
-}
-(function (_0x3b7f14, _0x566ec8) {
-    const _0x8c0cc2 = a50_0xd6b2,
-        _0x55f052 = _0x3b7f14();
-    while (!![]) {
-        try {
-            const _0x23460c =
-                (-parseInt(_0x8c0cc2(0x18e)) / 0x1) * (parseInt(_0x8c0cc2(0x1f0)) / 0x2) +
-                (parseInt(_0x8c0cc2(0x128)) / 0x3) * (-parseInt(_0x8c0cc2(0x1c7)) / 0x4) +
-                (parseInt(_0x8c0cc2(0x1fa)) / 0x5) * (-parseInt(_0x8c0cc2(0x14b)) / 0x6) +
-                -parseInt(_0x8c0cc2(0x1d9)) / 0x7 +
-                (parseInt(_0x8c0cc2(0x1e9)) / 0x8) * (parseInt(_0x8c0cc2(0x165)) / 0x9) +
-                (-parseInt(_0x8c0cc2(0x19b)) / 0xa) * (-parseInt(_0x8c0cc2(0x14e)) / 0xb) +
-                (-parseInt(_0x8c0cc2(0x154)) / 0xc) * (-parseInt(_0x8c0cc2(0x173)) / 0xd);
-            if (_0x23460c === _0x566ec8) break;
-            else _0x55f052["push"](_0x55f052["shift"]());
-        } catch (_0x493120) {
-            _0x55f052["push"](_0x55f052["shift"]());
+let geocoder = new kakao.maps.services.Geocoder(); // 주소검색
+let globalBrTitleInfo = null; // 표제부
+let globalBrRecapTitleInfo = null; // 총괄표제부
+let useAprDayPickr; // 전역 flatpickr 인스턴스
+let swiper; // 이미지 스와이퍼
+let fileManager; // 전역 변수 대신 클로저에서 접근할 수 있는 객체
+let isEventEnabled = true; // 이벤트 활성화 여부를 결정하는 플래그
+var mainSearchBoxChk = 0;
+
+$(document).ready(async function () {
+    // 매물번호
+    const urlParams = new URLSearchParams(window.location.search);
+    const estateNo = parseFloat(urlParams.get("no")); // 숫자로 변환
+    if (!estateNo) {
+        const result = await sweetAlertMessage("올바르지 않은 요청입니다.", "", "e");
+        if (result) {
+            history.back();
         }
     }
-})(a50_0x4249, 0x439b9);
-let geocoder = new kakao[a50_0x2091a6(0x172)][a50_0x2091a6(0x1e4)][a50_0x2091a6(0x192)](),
-    globalBrTitleInfo = null,
-    globalBrRecapTitleInfo = null,
-    useAprDayPickr,
-    swiper,
-    fileManager,
-    isEventEnabled = !![],
-    mainSearchBoxChk = 0;
 
-$(document)[a50_0x2091a6(0x18d)](async function () {
-    const _0x183b4b = a50_0x2091a6,
-        _0x96bff8 = new URLSearchParams(window[_0x183b4b(0x11c)][_0x183b4b(0x1a9)]),
-        _0x210a8f = parseFloat(_0x96bff8[_0x183b4b(0xf5)]("no"));
-    if (!_0x210a8f) {
-        const _0x426c07 = await sweetAlertMessage("올바르지\x20않은\x20요청입니다.", "", "e");
-        _0x426c07 && history[_0x183b4b(0x117)]();
-    }
-    initModal(), initDefaultSet(_0x210a8f), initEvents(_0x210a8f), (fileManager = initImageEvents()), initValidation(_0x210a8f);
+    initModal();
+    initDefaultSet(estateNo); // 초기 셋팅
+    initEvents(estateNo);
+    fileManager = initImageEvents(); // 클로저에서 반환된 객체를 저장
+    initValidation(estateNo);
 });
-async function initDefaultSet(_0x5914c7) {
-    const _0x25d67e = a50_0x2091a6;
+
+/**
+ * 초기 셋팅 함수
+ */
+async function initDefaultSet(estateNo) {
+    // 로그인 확인
     if (!userInfo()) {
-        alert(_0x25d67e(0x197)), (location[_0x25d67e(0x144)] = _0x25d67e(0x1d0));
+        alert("정상적인 접근이 아닙니다.");
+        location.href = "/index";
         return;
     }
-    (useAprDayPickr = flatpickr(_0x25d67e(0xf8), { dateFormat: _0x25d67e(0x1aa), altFormat: "F\x20j,\x20Y", altInput: !![], locale: "ko" })),
-        (swiper = new Swiper(".fw-file", { slidesPerView: _0x25d67e(0x121), spaceBetween: 0xf })),
-        $("form\x20button")[_0x25d67e(0x10c)](_0x25d67e(0x19a))[_0x25d67e(0xfb)](_0x25d67e(0x1da), !![]),
-        $(_0x25d67e(0x15a))["prop"](_0x25d67e(0x1da), !![]),
-        $(_0x25d67e(0x1bf))[_0x25d67e(0xfb)](_0x25d67e(0x1da), !![]),
-        $(_0x25d67e(0x177))[_0x25d67e(0xfb)]("disabled", !![]),
-        $(".building-group")[_0x25d67e(0x1d2)](),
-        $(_0x25d67e(0x1dd))[_0x25d67e(0x1d2)](),
-        $(_0x25d67e(0x13a))[_0x25d67e(0x1d2)]();
+
+    // 사용승인일
+    useAprDayPickr = flatpickr("#useAprDay", {
+        dateFormat: "Y-m-d", // 날짜 형식을 yyyy-mm-dd로 설정
+        altFormat: "F j, Y", // altInput이 true일 때 표시할 형식 (옵션)
+        altInput: true, // 보기 편한 형식으로 대체 입력 필드 생성 (옵션)
+        locale: "ko", // 한글 로케일 설정
+    });
+
+    //  이미지
+    swiper = new Swiper(".fw-file", {
+        slidesPerView: "auto",
+        spaceBetween: 15,
+    });
+
+    $("form button").not(".btn-box *").prop("disabled", true);
+    $("form input").prop("disabled", true);
+    $("form select").prop("disabled", true);
+    $("form textarea").prop("disabled", true);
+    $(".building-group").hide();
+    $(".factory-group").hide();
+    $(".rent-group").hide();
+
     try {
+        // 거래종류, 매물종류 가져오기
         await initSelect();
     } finally {
-        saleInfo(_0x5914c7);
+        // 매물 상세 가져오기
+        saleInfo(estateNo);
     }
 }
+
+/**
+ * 매물종류, 거래종류 가져오는 함수
+ * @returns
+ */
 async function initSelect() {
-    const _0x3ee785 = a50_0x2091a6,
-        _0x32fda8 = _0x3ee785(0x17c);
+    const url = "/front/back/sell/filter_type_get.php";
     try {
-        const _0x2f8612 = await callApi(_0x3ee785(0x188), _0x32fda8, {});
-        if (!_0x2f8612) return;
-        const { message: _0x49e609, responseData: _0x35c2a4, statusCode: _0x4ac7da } = _0x2f8612;
-        if (_0x4ac7da !== 0xc8 || _0x35c2a4[_0x3ee785(0x169)] == 0x0) return;
-        const { ESTATE_TYPE: _0x44fd1c, SALE_TYPE: _0x8ad09b } = _0x35c2a4,
-            _0x30a663 = _0x44fd1c[_0x3ee785(0x12b)](function (_0x26c24c, _0x4261a1) {
-                const _0x113261 = _0x3ee785,
-                    { type_code: _0x3c66db, type_name: _0x49a35a } = _0x26c24c;
-                return _0x113261(0x182) + _0x3c66db + "\x22>" + _0x49a35a + _0x113261(0x11e);
-            }),
-            _0x2e759c = _0x8ad09b[_0x3ee785(0x12b)](function (_0x237315, _0x59caff) {
-                const _0x18a147 = _0x3ee785,
-                    { type_code: _0x29e7f2, type_name: _0x204b47 } = _0x237315;
-                return "<option\x20value=\x22" + _0x29e7f2 + "\x22>" + _0x204b47 + _0x18a147(0x11e);
-            });
-        return $(_0x3ee785(0x127))[_0x3ee785(0x1ab)](_0x30a663), $(_0x3ee785(0xf9))[_0x3ee785(0x1ab)](_0x2e759c), !![];
-    } catch (_0x2a248c) {
-        return console["error"](_0x3ee785(0x140), _0x2a248c), ![];
+        const result = await callApi("POST", url, {});
+        if (!result) return;
+
+        const { message, responseData, statusCode } = result;
+        if (statusCode !== 200 || responseData.length == 0) return;
+
+        const { ESTATE_TYPE, SALE_TYPE ,TRANSATION_TYPE} = responseData;
+
+        const estateOptionHtml = ESTATE_TYPE.map(function (item, index) {
+            const { type_code, type_name } = item;
+
+            return `<option value="${type_code}">${type_name}</option>`;
+        });
+
+        const saleOptionHtml = SALE_TYPE.map(function (item, index) {
+        //const saleOptionHtml = TRANSATION_TYPE.map(function (item, index) {
+            const { type_code, type_name } = item;
+
+            return `<option value="${type_code}">${type_name}</option>`;
+        });
+
+        $("#estate_type").append(estateOptionHtml);
+        $("#sale_type").append(saleOptionHtml);
+
+        return true;
+    } catch (error) {
+        console.error("getFilterTypes error:", error);
+        return false;
     }
 }
-function initEvents(_0x20ecf) {
-    const _0x4ea101 = a50_0x2091a6;
-    (function (_0x5337c8) {
-        const _0x284698 = a50_0xd6b2;
-        var _0x1eb7a8 = _0x5337c8["fn"]["val"],
-            _0x348619 = ![];
-        _0x5337c8["fn"][_0x284698(0x111)] = function () {
-            const _0x14b596 = _0x284698;
-            var _0x159b50 = _0x1eb7a8["apply"](this, arguments);
-            return arguments[_0x14b596(0x169)] > 0x0 && !_0x348619 && ((_0x348619 = !![]), this[_0x14b596(0x10f)]("input"), (_0x348619 = ![])), _0x159b50;
-        };
-    })(jQuery),
-        $("#modify_btn")["on"](_0x4ea101(0x13d), function () {
-            $(".search-address-group").removeClass("d-none");
-            const _0x4f7da9 = _0x4ea101;
-            $(".plus-desc-box")["removeClass"](_0x4f7da9(0x100)),
-                $(_0x4f7da9(0xef))[_0x4f7da9(0x1d2)](),
-                $(_0x4f7da9(0x12c))[_0x4f7da9(0xf4)]("input,\x20select,\x20checkbox,\x20textarea,\x20button")[_0x4f7da9(0x10c)](_0x4f7da9(0x19a))[_0x4f7da9(0xfb)]("disabled", ![]),
-                $("#save_btn")[_0x4f7da9(0x1b2)](),
-                $(".swiper-wrapper")[_0x4f7da9(0xf4)]("i")["show"](),
-                swiper[_0x4f7da9(0x16c)]();
-        }),
-        $(_0x4ea101(0x14f))["on"]("click", function () {
-            const _0x2eb134 = _0x4ea101;
-            $(_0x2eb134(0x116))[_0x2eb134(0x1ca)]("open");
-        }),
-        $(_0x4ea101(0x1f4))["on"](_0x4ea101(0x13d), function () {
-            saleDelete(_0x20ecf);
-        }),
-        // $(_0x4ea101(0xed))["on"](_0x4ea101(0x1b0), function () {
-        //     isEventEnabled && searchAddress($(this)["val"]());
-        // }),
-        $(_0x4ea101(0xf9))["on"](_0x4ea101(0x151), function () {
-            const _0x51e07c = _0x4ea101,
-                _0x57f7f5 = $(this)["val"]();
-            _0x57f7f5 === _0x51e07c(0x1a3)
-                ? ($(_0x51e07c(0x13a))["show"](), $("#sale_price")[_0x51e07c(0x143)]("placeholder", _0x51e07c(0x1f3)), $(_0x51e07c(0x139))[_0x51e07c(0xfb)](_0x51e07c(0x19f), !![]))
-                : ($(_0x51e07c(0x13a))["hide"](), $(_0x51e07c(0x181))[_0x51e07c(0x143)](_0x51e07c(0x1fc), "금액"), $(_0x51e07c(0x139))[_0x51e07c(0xfb)]("required", ![]));
-        }),
-        $(_0x4ea101(0x127))["on"](_0x4ea101(0x151), function () {
-            const _0x145527 = _0x4ea101,
-                _0x2a2e63 = $(this)[_0x145527(0x111)]();
-            _0x2a2e63 === _0x145527(0xee) ? ($(_0x145527(0x145))[_0x145527(0x1d2)](), $(_0x145527(0x12d))[_0x145527(0x1d2)](), resetBuildingGroupInputs()) : ($(_0x145527(0x145))[_0x145527(0x1b2)](), $(_0x145527(0x12d))["show"]()),
-                _0x2a2e63 === _0x145527(0xfc) ? $(_0x145527(0x1dd))[_0x145527(0x1b2)]() : ($(_0x145527(0x1dd))["hide"](), resetFactoryGroupInputs());
-        }),
-        $("#building_type")["on"]("change", function () {
-            const _0x40397e = _0x4ea101,
-                _0x336ca0 = $(_0x40397e(0x157))["val"]();
-            if (_0x336ca0) {
-                const _0x3d1eea = globalBrTitleInfo["find"](function (_0x94d31c) {
-                    return _0x94d31c["mgmBldrgstPk"] == _0x336ca0;
-                });
-                _0x3d1eea && buildingInfoBind(_0x3d1eea);
+
+/**
+ * 이벤트 모음 함수
+ */
+function initEvents(estateNo) {
+    // jQuery val 메서드 오버라이드
+    (function ($) {
+        // 원래의 jQuery val 메서드를 저장
+        var originalVal = $.fn.val;
+
+        // 재귀 호출 방지를 위한 플래그
+        var isValTriggered = false;
+
+        // jQuery val 메서드를 새롭게 정의
+        $.fn.val = function () {
+            // 원래의 val 메서드를 호출하여 값을 설정하거나 가져옴
+            var result = originalVal.apply(this, arguments);
+
+            // 만약 arguments가 존재하고, 재귀 방지 플래그가 false일 때만 이벤트를 트리거
+            if (arguments.length > 0 && !isValTriggered) {
+                isValTriggered = true; // 재귀 방지를 위해 플래그 설정
+                this.trigger("input"); // input 이벤트 트리거
+                isValTriggered = false; // 다시 플래그를 해제
             }
-        }),
-        $(_0x4ea101(0x135))["on"](_0x4ea101(0x1ae), function () {
-            const _0x532f4c = _0x4ea101,
-                _0x4b7d87 = $(this)
-                    ["val"]()
-                    [_0x532f4c(0x1fb)]()
-                    [_0x532f4c(0x183)](/,/g, "")
-                    ["replace"](/[^0-9.]/g, "")
-                    ["replace"](/(\..*)\./g, "$1")
-                    ["replace"](/^0+(\d)/, "$1"),
-                _0x1022f0 = $(this)[_0x532f4c(0x143)]("id"),
-                _0x77d5de = _0x1022f0 + _0x532f4c(0x1cb);
-            $("#" + _0x77d5de)[_0x532f4c(0x111)](comma(convertToPyeong(_0x4b7d87)));
-        }),
-        $(_0x4ea101(0x102))["on"](_0x4ea101(0x1ae), function () {
-            const _0x2b3da8 = _0x4ea101,
-                _0x350274 = $(this)
-                    ["val"]()
-                    [_0x2b3da8(0x1fb)]()
-                    [_0x2b3da8(0x183)](/,/g, "")
-                    [_0x2b3da8(0x183)](/[^0-9.]/g, "")
-                    ["replace"](/(\..*)\./g, "$1")
-                    ["replace"](/^0+(\d)/, "$1");
-            $(this)[_0x2b3da8(0x111)](comma(_0x350274));
-        }),
-        $("#description")["on"](_0x4ea101(0x1ae), function () {
-            autoResize(this);
-        });
+
+            // 원래의 val 메서드 결과를 반환
+            return result;
+        };
+    })(jQuery);
+
+    // 수정 버튼
+    $("#modify_btn").on("click", function () {
+        $(".search-address-group").removeClass("d-none");
+        $(".plus-desc-box").removeClass("d-none");
+        $("#modify_btn").hide();
+        $("form.needs-validation").find("input, select, checkbox, textarea, button").not(".btn-box *").prop("disabled", false);
+        $("#save_btn").show();
+        $(".swiper-wrapper").find("i").show();
+        swiper.update();
+    });
+
+    // 저장 버튼
+    $("#save_btn").on("click", function () {
+        $("#modalConfirm").iziModal("open");
+    });
+
+    // 삭제 버튼
+    $("#delete_btn").on("click", function () {
+        saleDelete(estateNo);
+    });
+
+    // 기본주소 변경 감지
+    $("input[name='address_primary']").on("input change valueSet", async function () {
+        if (isEventEnabled) {
+            // 좌표, pnu 검색
+            // searchAddress($(this).val());
+            // const addressList = await searchAddress($(this).val());
+            // if (addressList.status === "OK") {
+            //     console.log(addressList);
+            //     const address = addressList.result[0].address;
+            //     const lat = addressList.result[0].y;
+            //     const lng = addressList.result[0].x;
+            //     const address_name = addressList.result[0].address_name;
+            //     const road_address = addressList.result[0].road_address;
+            //     const mountain_yn = address.mountain_yn === "Y" ? "2" : "1";
+            //     const main_address_no_padded = String(address.main_address_no || "0000").padStart(4, "0");
+            //     const sub_address_no_padded = String(address.sub_address_no || "0000").padStart(4, "0");
+            //     const pnu = (address.b_code ? String(address.b_code) : String(address.h_code)) + mountain_yn + main_address_no_padded + sub_address_no_padded;
+            //     $("#address_primary").val(address_name);
+            //     $("#address_road").val(road_address ? road_address.address_name : "");
+            //     $("#address_jibun").val(address ? address.address_name : "");
+            //     $("#pnu").val(pnu);
+            //     $("#latitude").val(lat);
+            //     $("#longitude").val(lng);
+            //     BuildingDetail(pnu); // 건축물대장 조회
+            //     landInfo(pnu); // 토지대장 조회
+            // }
+        }
+    });
+
+    // 거래종류 변경
+    $("#sale_type").on("change", function () {
+        const value = $(this).val();
+        // 임대일 때
+        if (value === "003") {
+            $(".rent-group").show(); // rent_group (월세 입력 필드와 span 텍스트) 보이기
+            $("#sale_price").attr("placeholder", "보증금");
+            $("#rent_price").prop("required", true);
+        } else {
+            $(".rent-group").hide(); // rent_group (월세 입력 필드와 span 텍스트) 숨기기
+            $("#sale_price").attr("placeholder", "금액");
+            $("#rent_price").prop("required", false);
+        }
+    });
+
+    // 매물구분 선택
+    $("#estate_type").on("change", function () {
+        const value = $(this).val();
+
+        // 토지일 때
+        if (value === "006") {
+            $(".building-group").hide();
+            $(".building-select").hide();
+            resetBuildingGroupInputs(); // 건물 input 초기화
+        } else {
+            $(".building-group").show();
+            $(".building-select").show();
+        }
+
+        // 공장일 때
+        if (value === "003") {
+            $(".factory-group").show();
+        } else {
+            $(".factory-group").hide();
+            resetFactoryGroupInputs(); // 공장 input 초기화
+        }
+    });
+
+    // 건물종류 변경
+    $("#building_type").on("change", function () {
+        const selectedValue = $("#building_type").val(); // 선택된 옵션값 가져오기
+        if (selectedValue) {
+            // selectedValue에 해당하는 항목을 globalBrTitleInfo 배열에서 찾음
+            const selectedBuilding = globalBrTitleInfo.find(function (building) {
+                return building.mgmBldrgstPk == selectedValue;
+            });
+
+            if (selectedBuilding) {
+                buildingInfoBind(selectedBuilding); // 건물 정보 바인딩
+            }
+        }
+
+        // const selectedIndex = $("#building_type").prop("selectedIndex"); // 선택된 인덱스 가져오기
+        // if (selectedIndex > 0) {
+        //     // 첫 번째 옵션은 건너뜀
+        //     const selectedBuilding = globalBrTitleInfo[selectedIndex - 1]; // 인덱스는 0부터 시작하므로 -1
+        //     buildingInfoBind(selectedBuilding); // 건물 정보 바인딩
+        // }
+    });
+
+    // 면적(m2) 변경 감지
+    $("#platArea, #totArea, #archArea").on("input", function () {
+        const value = $(this)
+            .val()
+            .trim()
+            .replace(/,/g, "")
+            .replace(/[^0-9.]/g, "") // 숫자와 소수점만 허용
+            .replace(/(\..*)\./g, "$1") // 소수점이 두 번 이상 나오는 것을 방지
+            .replace(/^0+(\d)/, "$1"); // 선행 0 제거 (예: "012" => "12")
+
+        const id = $(this).attr("id");
+        const pyId = id + "_py";
+        $(`#${pyId}`).val(comma(convertToPyeong(value)));
+    });
+
+    // 면적(평) 변경 감지
+    // $("#platArea_py, #totArea_py, #archArea_py").on("input", function () {
+    //     const value = $(this).val();
+    //     const id = $(this).attr("id");
+    //     const m2Id = id.replace("_py", "");
+    //     $(`#${m2Id}`).val(convertToM2(value));
+    // });
+
+    // 숫자 콤마
+    $("#platArea, #totArea, #archArea, #sale_price, #rent_price, #loan_price, #maintenance_price, #vlRat, #bcRat, #grndFlrCnt, #ugrndFlrCnt, #power, #road_conditions, #floor_height").on("input", function () {
+        const value = $(this)
+            .val()
+            .trim()
+            .replace(/,/g, "")
+            .replace(/[^0-9.]/g, "") // 숫자와 소수점만 허용
+            .replace(/(\..*)\./g, "$1") // 소수점이 두 번 이상 나오는 것을 방지
+            .replace(/^0+(\d)/, "$1"); // 선행 0 제거 (예: "012" => "12")
+
+        $(this).val(comma(value));
+    });
+
+    // Textarea 높이 자동증가 이벤트 - 설명
+    $("#description").on("input", function () {
+        autoResize(this);
+    });
 
     // 검색 박스 - 입력
     $("#search_address_input").on(
@@ -243,6 +351,41 @@ function initEvents(_0x20ecf) {
         if (searchBox.css("display") == "block") {
             searchBox.slideUp(100, "easeOutQuad");
         }
+    });
+}
+
+/**
+ * daum 주소 api 실행 및 바인딩 함수
+ */
+function openDaumAddressAPI() {
+    new daum.Postcode({
+        oncomplete: function (data) {
+            console.log(data);
+            $("input[name='postal_code']").val(data.zonecode);
+            $("input[name='address_road']").val(data.roadAddress);
+            $("input[name='address_jibun']").val(data.jibunAddress || data.autoJibunAddress);
+            $("input[name='address_primary']").val(data.address);
+            $("input[name='sido']").val(data.sido);
+            $("input[name='sigungu']").val(data.sigungu);
+            $("input[name='sigungu_code']").val(data.sigunguCode);
+            $("input[name='bcode']").val(data.bcode);
+            $("input[name='dong_code']").val(data.bcode);
+            $("input[name='dong']").val(data.bname);
+            $("input[name='buildingCode']").val(data.buildingCode);
+            $("input[name='pnu']").val(data.buildingCode.slice(0, 19));
+            $("input[name='address_detail']").focus();
+        },
+        onclose: function (state) {
+            //state는 우편번호 찾기 화면이 어떻게 닫혔는지에 대한 상태 변수 이며, 상세 설명은 아래 목록에서 확인하실 수 있습니다.
+            if (state === "FORCE_CLOSE") {
+                //사용자가 브라우저 닫기 버튼을 통해 팝업창을 닫았을 경우, 실행될 코드를 작성하는 부분입니다.
+            } else if (state === "COMPLETE_CLOSE") {
+                //사용자가 검색결과를 선택하여 팝업창이 닫혔을 경우, 실행될 코드를 작성하는 부분입니다.
+                //oncomplete 콜백 함수가 실행 완료된 후에 실행됩니다.
+            }
+        },
+    }).open({
+        q: $("#search_address_input").val(),
     });
 }
 
@@ -496,733 +639,803 @@ function removeAllChildNods(el) {
     }
 }
 
+/**
+ * 이미지 관련 이벤트 및 처리 함수 모음
+ * @returns
+ */
 function initImageEvents() {
-    const _0x23b220 = a50_0x2091a6;
-    let _0x11a2c1 = {},
-        _0x2d56c8 = 0x0,
-        _0x31328a = [],
-        _0x2cad6a = [],
-        _0x2e866a = [],
-        _0x282cc1 = [];
-    $(_0x23b220(0x1d4))["on"]("change", async function (_0x16c104) {
-        await _0x248662(_0x16c104);
-    }),
-        $(_0x23b220(0x167))["on"](_0x23b220(0x13d), _0x23b220(0x153), async function () {
-            const _0x6bce5 = _0x23b220,
-                _0x3e9d2f = $(this)["closest"](_0x6bce5(0x1a2));
-            _0x5d79df(_0x3e9d2f);
-        }),
-        $(document)["on"](_0x23b220(0x13d), _0x23b220(0xf0), async function () {
-            _0x3987c1(_0x11a2c1, $(this));
-        });
-    function _0x519ff3() {
-        return _0x11a2c1;
+    let fileList = {}; // 파일 목록을 저장하는 객체
+    let fileIndex = 0; // 파일 순서를 나타내는 인덱스
+    let originArray = []; // 기존 파일 저장하는 배열
+    let remvoeFileArray = []; // 삭제한 파일 ID를 저장하는 배열
+    let existingRepresentativeImages = []; // 기존 대표 이미지 ID를 저장하는 배열
+    let selectedRepresentativeImages = []; // 신규 대표 이미지 ID를 저장하는 배열
+
+    // 파일 - 선택
+    $("#file_input").on("change", async function (e) {
+        await handleFileInputChange(e);
+    });
+
+    // 이미지 - 대표이미지 - 설정
+    $(".swiper-wrapper").on("click", ".swiper-slide img, .swiper-slide video", async function () {
+        const slide = $(this).closest(".swiper-slide");
+        representativeSet(slide);
+    });
+
+    // 이미지 - 삭제
+    $(document).on("click", ".fa-circle-xmark", async function () {
+        handleImageDelete(fileList, $(this));
+    });
+
+    // =============================================
+    // 함수 시작
+    // =============================================
+
+    /**
+     * 파일 목록 반환 함수
+     * @returns {Object} fileList - 파일 목록을 반환
+     */
+    function getFileList() {
+        return fileList;
     }
-    function _0x3a07f3() {
-        return _0x31328a;
+
+    /**
+     * 기존 파일 목록 반환 함수
+     * @returns {Object} fileList - 파일 목록을 반환
+     */
+    function getOriginArray() {
+        return originArray;
     }
-    function _0x2ff729() {
-        return _0x2cad6a;
+
+    /**
+     * 파일 목록 반환 함수
+     * @returns {Object} fileList - 파일 목록을 반환
+     */
+    function getRemoveFileArray() {
+        return remvoeFileArray;
     }
-    function _0x4e235() {
-        return _0x2e866a;
+
+    /**
+     * 선택된 기존 대표 이미지 목록 반환 함수
+     * @returns {Array} existingRepresentativeImages - 선택된 대표 이미지 파일 ID 목록을 반환
+     */
+    function getExistingRepresentativeImages() {
+        return existingRepresentativeImages;
     }
-    function _0x3d7343() {
-        return _0x282cc1;
+
+    /**
+     * 선택된 신규 대표 이미지 목록 반환 함수
+     * @returns {Array} selectedRepresentativeImages - 선택된 대표 이미지 파일 ID 목록을 반환
+     */
+    function getSelectedRepresentativeImages() {
+        return selectedRepresentativeImages;
     }
-    async function _0x248662(_0x3e021d) {
-        const _0x59c14a = _0x23b220,
-            _0x29367c = _0x3e021d["target"][_0x59c14a(0x191)],
-            _0x49caea = $(_0x59c14a(0x167));
-        _0x49caea[_0x59c14a(0x10c)](_0x59c14a(0x17d))[_0x59c14a(0x106)]();
-        for (let _0x530a88 = 0x0; _0x530a88 < _0x29367c[_0x59c14a(0x169)]; _0x530a88++) {
-            const _0x14d969 = _0x29367c[_0x530a88],
-                _0x742686 = _0x2d56c8++;
-            let _0x1d05d4 = "";
-            if (_0x14d969[_0x59c14a(0xf7)][_0x59c14a(0x149)](_0x59c14a(0x1c4))) {
-                const _0x263e83 = await handleFileInputChangeMultiple(_0x14d969);
-                _0x1d05d4 = "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20type=\x22button\x22\x20class=\x22swiper-slide\x20new-image\x22\x20data-id=\x22" + _0x742686 + _0x59c14a(0x1b1) + _0x263e83 + _0x59c14a(0x13b);
-            } else {
-                if (_0x14d969[_0x59c14a(0xf7)][_0x59c14a(0x149)](_0x59c14a(0x190))) {
-                    const _0x778220 = URL[_0x59c14a(0x150)](_0x14d969);
-                    _0x1d05d4 =
-                        _0x59c14a(0x170) +
-                        _0x742686 +
-                        "\x22\x20data-origin=\x22N\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<video\x20muted\x20controls\x20width=\x22100%\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<source\x20src=\x22" +
-                        _0x778220 +
-                        _0x59c14a(0x1ef) +
-                        _0x14d969[_0x59c14a(0xf7)] +
-                        _0x59c14a(0x115);
-                }
+
+    /**
+     * 파일 선택 후 처리 함수
+     * 파일을 선택한 후, 이미지와 영상을 구분하여 Swiper 슬라이드에 표시하고 목록에 추가
+     * @param {Event} e - 파일 선택 이벤트
+     */
+    async function handleFileInputChange(e) {
+        const files = e.target.files;
+        const container = $(".swiper-wrapper");
+        container.not(":first").empty();
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileId = fileIndex++;
+
+            // 이미지와 영상 파일 구분
+            let slide = "";
+
+            if (file.type.startsWith("image/")) {
+                // 이미지 파일 처리
+                const filePreview = await handleFileInputChangeMultiple(file);
+                slide = `
+                    <div type="button" class="swiper-slide new-image" data-id="${fileId}" data-origin="N">
+                        <img src="${filePreview}" width="100%" alt="" title="" />
+                        <span class="close-btn-box"><i class="fa-sharp fa-solid fa-circle-xmark"></i></span>
+                    </div>
+                `;
+            } else if (file.type.startsWith("video/")) {
+                // 영상 파일 처리
+                const videoURL = URL.createObjectURL(file);
+                slide = `
+                    <div type="button" class="swiper-slide new-image" data-id="${fileId}" data-origin="N">
+                        <video muted controls width="100%">
+                            <source src="${videoURL}" type="${file.type}">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="close-btn-box"><i class="fa-sharp fa-solid fa-circle-xmark"></i></span>
+                    </div>
+                `;
             }
-            _0x49caea[_0x59c14a(0x1ab)](_0x1d05d4), (_0x11a2c1[_0x742686] = _0x14d969);
+
+            container.append(slide);
+            fileList[fileId] = file;
         }
-        swiper[_0x59c14a(0x16c)](), $(_0x59c14a(0x1d4))[_0x59c14a(0x111)]("");
+
+        swiper.update();
+        $("#file_input").val("");
     }
-    async function _0x3987c1(_0x13f199, _0x301090) {
-        const _0x256fe1 = _0x23b220,
-            _0x115ea3 = await sweetConfirm(_0x256fe1(0x15e), "", "w");
-        if (!_0x115ea3) return;
-        const _0x4fe74e = _0x301090["closest"](_0x256fe1(0x1a2)),
-            _0x1ca03c = Number(_0x4fe74e[_0x256fe1(0x143)]("data-id")),
-            _0x1dd890 = _0x4fe74e["attr"](_0x256fe1(0x1a6));
-        _0x1dd890 === "Y"
-            ? ((_0x2e866a = _0x2e866a[_0x256fe1(0x1cc)]((_0xeadeea) => _0xeadeea !== _0x1ca03c)), (_0x31328a = _0x31328a["filter"]((_0x3f1e77) => _0x3f1e77 !== _0x1ca03c)), _0x2cad6a[_0x256fe1(0x18b)](_0x1ca03c))
-            : ((_0x282cc1 = _0x282cc1["filter"]((_0x252a20) => _0x252a20 !== _0x1ca03c)), delete _0x13f199[_0x1ca03c]),
-            _0x4fe74e[_0x256fe1(0x17b)](),
-            swiper[_0x256fe1(0x16c)]();
+
+    /**
+     * 이미지 삭제 처리 함수
+     * 삭제 버튼을 클릭하면 해당 파일을 목록에서 제거하고, 대표 이미지에서 제거
+     * @param {Object} fileList - 파일 목록
+     * @param {Element} element - 클릭한 삭제 버튼 요소
+     */
+    async function handleImageDelete(fileList, element) {
+        const alertResult = await sweetConfirm("삭제하시겠습니까?", "", "w");
+        if (!alertResult) {
+            return;
+        }
+
+        const slide = element.closest(".swiper-slide");
+        const fileId = Number(slide.attr("data-id"));
+        const oriFg = slide.attr("data-origin");
+
+        // 대표 이미지에서 제거
+        if (oriFg === "Y") {
+            existingRepresentativeImages = existingRepresentativeImages.filter((id) => id !== fileId);
+            originArray = originArray.filter((id) => id !== fileId);
+            remvoeFileArray.push(fileId);
+        } else {
+            selectedRepresentativeImages = selectedRepresentativeImages.filter((id) => id !== fileId);
+            delete fileList[fileId];
+        }
+
+        slide.remove();
+        swiper.update();
     }
-    function _0xe0c3b1(_0x3420dc) {
-        _0x3420dc["imageArray"]["forEach"](function (_0x514b62) {
-            const _0x42e244 = a50_0xd6b2;
-            _0x514b62[_0x42e244(0xec)] === "Y" && _0x2e866a[_0x42e244(0x18b)](_0x514b62[_0x42e244(0xf2)]);
+
+    /**
+     * 기존 대표 이미지 처리 함수
+     * @param {Object} data - 서버에서 가져온 이미지 데이터
+     */
+    function loadExistingRepresentativeImages(data) {
+        data.imageArray.forEach(function (image) {
+            if (image.representative === "Y") {
+                existingRepresentativeImages.push(image.fileNo);
+            }
         });
     }
-    function _0x123094(_0x5ac350) {
-        const _0x269bc8 = _0x23b220,
-            _0x3da5c8 = _0x269bc8(0x1de);
-        _0x5ac350["prepend"](_0x3da5c8), _0x5ac350[_0x269bc8(0x196)]("representative");
+
+    /**
+     * 대표 이미지 배지 설정 함수
+     * 슬라이드 위에 대표 이미지 배지를 추가하고, 대표 이미지 스타일을 적용
+     * @param {Element} slide - 대표 이미지로 설정할 슬라이드 요소
+     */
+    function setRepresentativeBadge(slide) {
+        const badgeHtml = `<span class="badge badge-label bg-danger"><i class="mdi mdi-circle-medium"></i> 대표</span>`;
+        slide.prepend(badgeHtml); // 배지를 이미지 위에 추가
+        slide.addClass("representative"); // 대표 이미지 스타일 추가
     }
-    async function _0x5d79df(_0x5fac58) {
-        const _0x4524fe = _0x23b220,
-            _0x3a162e = Number(_0x5fac58[_0x4524fe(0x143)](_0x4524fe(0x104))),
-            _0x3c9151 = _0x5fac58[_0x4524fe(0x143)](_0x4524fe(0x1a6));
-        if (_0x5fac58[_0x4524fe(0x17f)](_0x4524fe(0xec))) {
-            const _0x2abb8c = await sweetConfirm("대표이미지를\x20취소하시겠습니까?", "", "q");
-            if (!_0x2abb8c) return;
-            _0x3c9151 === "Y" ? (_0x2e866a = _0x2e866a["filter"]((_0x478e83) => _0x478e83 !== _0x3a162e)) : (_0x282cc1 = _0x282cc1["filter"]((_0x1a6434) => _0x1a6434 !== _0x3a162e)), _0x5fac58[_0x4524fe(0x1c0)](_0x4524fe(0xec)), _0x5fac58[_0x4524fe(0xf4)](_0x4524fe(0x16e))["remove"]();
+
+    /**
+     * 대표 이미지 설정 및 취소 처리 함수
+     * 슬라이드 클릭 시, 대표 이미지를 설정하거나 이미 설정된 대표 이미지를 취소하는 처리
+     * @param {Element} slide - 클릭한 슬라이드 요소
+     */
+    async function representativeSet(slide) {
+        const fileId = Number(slide.attr("data-id")); // fileId를 숫자로 변환
+        const oriFg = slide.attr("data-origin");
+
+        if (slide.hasClass("representative")) {
+            const alert = await sweetConfirm("대표이미지를 취소하시겠습니까?", "", "q");
+            if (!alert) return;
+
+            if (oriFg === "Y") {
+                existingRepresentativeImages = existingRepresentativeImages.filter((id) => id !== fileId);
+            } else {
+                selectedRepresentativeImages = selectedRepresentativeImages.filter((id) => id !== fileId);
+            }
+
+            slide.removeClass("representative");
+            slide.find(".badge").remove();
         } else {
-            const _0x3e437e = await sweetConfirm(_0x4524fe(0x141), "", "q");
-            if (!_0x3e437e) return;
-            const _0xcdb93e = _0x2e866a[_0x4524fe(0x169)] + _0x282cc1["length"];
-            if (_0xcdb93e >= 0x2) {
-                sweetAlertMessage(_0x4524fe(0x126), "", "i");
+            const alert = await sweetConfirm("대표 이미지로 설정하시겠습니까?", "", "q");
+            if (!alert) return;
+
+            // 기존 및 신규 대표 이미지를 합쳐서 2개 이상인지 확인
+            const totalRepresentativeCount = existingRepresentativeImages.length + selectedRepresentativeImages.length;
+
+            if (totalRepresentativeCount >= 2) {
+                sweetAlertMessage("대표 이미지는 최대 2장까지 설정 가능합니다.", "", "i");
                 return;
             }
-            _0x3c9151 === "Y"
-                ? !_0x2e866a[_0x4524fe(0x180)](_0x3a162e)
-                    ? (_0x2e866a[_0x4524fe(0x18b)](_0x3a162e), _0x123094(_0x5fac58))
-                    : sweetAlertMessage(_0x4524fe(0x1c3), "", "i")
-                : !_0x282cc1["includes"](_0x3a162e)
-                ? (_0x282cc1[_0x4524fe(0x18b)](_0x3a162e), _0x123094(_0x5fac58))
-                : sweetAlertMessage(_0x4524fe(0x1c3), "", "i");
+
+            // 대표 이미지로 설정된 경우 처리
+            if (oriFg === "Y") {
+                // 기존 이미지
+                if (!existingRepresentativeImages.includes(fileId)) {
+                    existingRepresentativeImages.push(fileId);
+                    setRepresentativeBadge(slide);
+                } else {
+                    sweetAlertMessage("이미 대표 이미지로 설정된 파일입니다.", "", "i");
+                }
+            } else {
+                // 신규 이미지
+                if (!selectedRepresentativeImages.includes(fileId)) {
+                    selectedRepresentativeImages.push(fileId);
+                    setRepresentativeBadge(slide);
+                } else {
+                    sweetAlertMessage("이미 대표 이미지로 설정된 파일입니다.", "", "i");
+                }
+            }
         }
     }
-    return { getFileList: _0x519ff3, getOriginArray: _0x3a07f3, getRemoveFileArray: _0x2ff729, getExistingRepresentativeImages: _0x4e235, getSelectedRepresentativeImages: _0x3d7343, loadExistingRepresentativeImages: _0xe0c3b1 };
+
+    // 객체 반환
+    return {
+        getFileList,
+        getOriginArray,
+        getRemoveFileArray,
+        getExistingRepresentativeImages,
+        getSelectedRepresentativeImages,
+        loadExistingRepresentativeImages,
+    };
 }
-// function searchAddress(_0x453ee6) {
-//     const _0x181df9 = a50_0x2091a6;
-//     geocoder[_0x181df9(0x1cf)](_0x453ee6, function (_0x1aa7b5, _0x1640a0) {
-//         const _0x5b84a5 = _0x181df9;
-//         if (_0x1640a0 === kakao[_0x5b84a5(0x172)]["services"]["Status"]["OK"]) {
-//             const _0x87ea80 = _0x1aa7b5[0x0],
-//                 _0x2e6611 = _0x87ea80[_0x5b84a5(0x1ad)],
-//                 _0x685b71 = _0x2e6611[_0x5b84a5(0x113)] === "Y" ? "2" : "1",
-//                 _0x26ac33 = (_0x2e6611["main_address_no"] || _0x5b84a5(0x124))[_0x5b84a5(0x1c9)](0x4, "0"),
-//                 _0x225577 = (_0x2e6611[_0x5b84a5(0x1f1)] || _0x5b84a5(0x124))[_0x5b84a5(0x1c9)](0x4, "0"),
-//                 _0xf7e74e = _0x2e6611["b_code"] + _0x685b71 + _0x26ac33 + _0x225577;
-//             $(_0x5b84a5(0x15b))[_0x5b84a5(0x111)](_0xf7e74e), $(_0x5b84a5(0x193))[_0x5b84a5(0x111)](_0x87ea80["y"]), $(_0x5b84a5(0x16b))["val"](_0x87ea80["x"]), BuildingDetail(_0xf7e74e), landInfo(_0xf7e74e);
+
+/**
+ * 주소 검색
+ * @param {*} param
+ */
+// function searchAddress(param) {
+//     // 주소로 좌표를 검색합니다
+//     geocoder.addressSearch(param, function (result, status) {
+//         // 정상적으로 검색이 완료됐으면
+//         if (status === kakao.maps.services.Status.OK) {
+//             const data = result[0];
+//             const address = data.address;
+//             const mountain_yn = address.mountain_yn === "Y" ? "2" : "1";
+//             const main_address_no_padded = (address.main_address_no || "0000").padStart(4, "0");
+//             const sub_address_no_padded = (address.sub_address_no || "0000").padStart(4, "0");
+//             const pnu = address.b_code + mountain_yn + main_address_no_padded + sub_address_no_padded;
+//             $("#pnu").val(pnu);
+//             $("#latitude").val(data.y);
+//             $("#longitude").val(data.x);
+
+//             BuildingDetail(pnu); // 건축물대장 조회
+//             landInfo(pnu); // 토지대장 조회
 //         }
 //     });
 // }
-async function BuildingDetail(_0x55b9d5) {
-    const _0x1708aa = a50_0x2091a6,
-        _0x59afbd = { pnu: _0x55b9d5 },
-        _0x4c7f59 = await callApiAbort(_0x1708aa(0x160), _0x1708aa(0x188), _0x59afbd, _0x1708aa(0x1d7));
-    let _0x6d8803 = _0x4c7f59[_0x1708aa(0x185)][_0x1708aa(0x1c8)],
-        _0x33c168 = _0x4c7f59[_0x1708aa(0x1a5)][_0x1708aa(0x1c8)];
-    Array["isArray"](_0x6d8803)
-        ? (_0x6d8803["sort"](function (_0x39bd47, _0x5c0716) {
-              const _0x312d0c = _0x1708aa,
-                  _0x3d3aed = String(_0x39bd47[_0x312d0c(0x109)])[_0x312d0c(0x1fb)]() !== "" ? String(_0x39bd47[_0x312d0c(0x109)]) : _0x39bd47[_0x312d0c(0x175)],
-                  _0x4c9278 = String(_0x5c0716[_0x312d0c(0x109)])[_0x312d0c(0x1fb)]() !== "" ? String(_0x5c0716[_0x312d0c(0x109)]) : _0x5c0716[_0x312d0c(0x175)];
-              return _0x3d3aed["localeCompare"](_0x4c9278);
-          }),
-          (globalBrTitleInfo = _0x6d8803),
-          (globalBrRecapTitleInfo = _0x33c168))
-        : ((globalBrTitleInfo = [_0x6d8803]), (globalBrRecapTitleInfo = [_0x33c168])),
-        createBuildingOptions(globalBrTitleInfo, globalBrRecapTitleInfo);
-}
-function createBuildingOptions(_0x17eb10, _0xc90de9) {
-    const _0xa22256 = a50_0x2091a6;
-    if (!_0x17eb10 || _0x17eb10["length"] === 0x0 || _0x17eb10["every"]((_0x536553) => _0x536553 === null || _0x536553 === undefined)) return;
-    _0x17eb10 = _0x17eb10["filter"]((_0x1b6dfd) => _0x1b6dfd !== null && _0x1b6dfd !== undefined);
-    if (_0x17eb10[_0xa22256(0x169)] === 0x0) return;
-    const _0xf0f777 = $(_0xa22256(0x157));
-    _0xf0f777[_0xa22256(0xf4)]("option:not(:first)")[_0xa22256(0x17b)](),
-        $[_0xa22256(0x15d)](_0x17eb10, function (_0x5af44d, _0x5dcfb8) {
-            const _0x5c9e6a = _0xa22256,
-                _0x52c2d5 = $(_0x5c9e6a(0x187))
-                    ["val"](_0x5dcfb8["mgmBldrgstPk"])
-                    [_0x5c9e6a(0x1b6)]("" + (_0x5dcfb8["dongNm"][_0x5c9e6a(0x1b7)]()[_0x5c9e6a(0x1fb)]() != "" ? _0x5dcfb8[_0x5c9e6a(0x109)] : _0x5dcfb8[_0x5c9e6a(0x175)]));
-            if (_0x5af44d === 0x0) {
-            }
-            _0xf0f777[_0x5c9e6a(0x1ab)](_0x52c2d5);
+
+/**
+ * 건축물대장 정보를 가져오는 함수
+ * @param {*} pnu - PNU 번호
+ * @returns
+ */
+async function BuildingDetail(pnu) {
+    // pnu의 처음 15자리만 추출(시도, 시군구, 읍면동, 리, 필지구분, 본번까지)
+    // pnu = pnu.substring(0, 15);
+
+    const dataObj = {
+        pnu: pnu,
+    };
+    const responseData = await callApiAbort(`/front/back/sale/buiding_register_title_info.php`, "POST", dataObj, "BuildingDetail");
+
+    let brTitleInfo = responseData.brTitleInfo.item;
+    let brRecapTitleInfo = responseData.brRecapTitleInfo.item;
+
+    // item이 객체일 때와 배열일 때를 구분하여 처리
+    if (Array.isArray(brTitleInfo)) {
+        // dongNm 기준으로 brTitleInfo 배열을 정렬
+        brTitleInfo.sort(function (a, b) {
+            // a와 b의 dongNm이 비어 있으면 mainPurpsCdNm을 사용
+            const aSortKey = String(a.dongNm).trim() !== "" ? String(a.dongNm) : a.mainPurpsCdNm;
+            const bSortKey = String(b.dongNm).trim() !== "" ? String(b.dongNm) : b.mainPurpsCdNm;
+
+            // 문자열 비교를 위해 localeCompare 사용
+            return aSortKey.localeCompare(bSortKey);
         });
+
+        // item이 배열일 경우
+        globalBrTitleInfo = brTitleInfo;
+        globalBrRecapTitleInfo = brRecapTitleInfo;
+    } else {
+        // item이 객체일 경우 배열로 변환하여 첫 번째 요소로 추가
+        globalBrTitleInfo = [brTitleInfo];
+        globalBrRecapTitleInfo = [brRecapTitleInfo];
+    }
+
+    // 건물 옵션 생성
+    createBuildingOptions(globalBrTitleInfo, globalBrRecapTitleInfo);
 }
-function buildingInfoBind(_0x1e2a8b) {
-    const _0x4bb1a9 = a50_0x2091a6,
-        {
-            platPlc: _0x4be6e5,
-            newPlatPlc: _0x7a272c,
-            bldNm: _0x32ae1c,
-            etcPurps: _0x4a07c4,
-            mainPurpsCd: _0x5a1f82,
-            mainPurpsCdNm: _0x1437d2,
-            strctCd: _0x1cb7f5,
-            strctCdNm: _0x43861f,
-            etcStrct: _0x20bb3a,
-            roofCdNm: _0x3eab8b,
-            etcRoof: _0x1fce32,
-            heit: _0x5edca7,
-            grndFlrCnt: _0x34dc02,
-            ugrndFlrCnt: _0x512dfa,
-            platArea: _0x5d787e,
-            archArea: _0x6dce90,
-            totArea: _0x3df58d,
-            vlRatEstmTotArea: _0x29efb7,
-            vlRat: _0x21052d,
-            bcRat: _0x396b12,
-            hhldCnt: _0x43af0c,
-            fmlyCnt: _0x3a657a,
-            bylotCnt: _0x78031,
-            rideUseElvtCnt: _0x1d3930,
-            emgenUseElvtCnt: _0x3535e8,
-            useAprDay: _0x23735a,
-            pmsDay: _0x158d70,
-            stcnsDay: _0x78048c,
-            sigunguCd: _0x5478b8,
-            bjdongCd: _0xaa7853,
-            platGbCd: _0x18dccb,
-            bun: _0x4921d6,
-            ji: _0x4521cc,
-        } = _0x1e2a8b;
-    $("#platArea")[_0x4bb1a9(0x111)](comma(_0x5d787e)),
-        $(_0x4bb1a9(0x1b3))[_0x4bb1a9(0x111)](comma(convertToPyeong(_0x5d787e))),
-        $(_0x4bb1a9(0x1e0))[_0x4bb1a9(0x111)](comma(_0x6dce90)),
-        $(_0x4bb1a9(0x1b8))["val"](comma(convertToPyeong(_0x6dce90))),
-        $("#totArea")["val"](comma(_0x3df58d)),
-        $(_0x4bb1a9(0x11b))[_0x4bb1a9(0x111)](comma(convertToPyeong(_0x3df58d))),
-        $("#vlRat")[_0x4bb1a9(0x111)](comma(_0x21052d)),
-        $(_0x4bb1a9(0x1e6))[_0x4bb1a9(0x111)](comma(_0x396b12)),
-        $("#grndFlrCnt")[_0x4bb1a9(0x111)](comma(_0x34dc02)),
-        $("#ugrndFlrCnt")["val"](comma(_0x512dfa)),
-        $(_0x4bb1a9(0x125))[_0x4bb1a9(0x111)](_0x1cb7f5),
-        $(_0x4bb1a9(0x114))[_0x4bb1a9(0x111)](_0x43861f),
-        $(_0x4bb1a9(0x19d))[_0x4bb1a9(0x111)](_0x20bb3a),
-        $(_0x4bb1a9(0x17e))[_0x4bb1a9(0x111)](_0x5a1f82),
-        $(_0x4bb1a9(0x136))[_0x4bb1a9(0x111)](_0x1437d2);
-    const _0x4967e7 = formatDate(_0x23735a);
-    useAprDayPickr[_0x4bb1a9(0x199)](_0x4967e7), globalBrRecapTitleInfo && globalBrRecapTitleInfo[_0x4bb1a9(0xfa)] ? $(_0x4bb1a9(0x168))[_0x4bb1a9(0x111)](globalBrRecapTitleInfo[_0x4bb1a9(0xfa)]) : $(_0x4bb1a9(0x168))[_0x4bb1a9(0x111)]("");
-}
-async function landInfo(_0x3fa63e) {
-    const _0x31f67e = a50_0x2091a6,
-        _0x422f3d = { pnu: _0x3fa63e },
-        _0xbf4940 = "/front/back/sale/land_characteristics.php";
-    callApiAbort(_0xbf4940, "POST", _0x422f3d, _0x31f67e(0x1bd))
-        [_0x31f67e(0x1ea)]((_0x1cd5ae) => {
-            const _0x58851a = _0x31f67e;
-            if (!_0x1cd5ae) return;
-            const { landCharacteristicss: _0x172427 } = _0x1cd5ae;
-            if (!_0x172427 || !_0x172427[0x0]) return;
-            const { lndcgrCode: _0x41620c, lndcgrCodeNm: _0x5c0a6d, prposArea1: _0x569afe, prposArea1Nm: _0x395b3d, lndpclAr: _0x1a6735 } = _0x172427[0x0];
-            $(_0x58851a(0x1be))[_0x58851a(0x111)](_0x41620c),
-                $(_0x58851a(0x1c5))[_0x58851a(0x111)](_0x5c0a6d),
-                $(_0x58851a(0x1d1))[_0x58851a(0x111)](_0x569afe),
-                $(_0x58851a(0x12f))["val"](_0x395b3d),
-                $(_0x58851a(0x1df))[_0x58851a(0x111)](comma(_0x1a6735)),
-                $("#platArea_py")[_0x58851a(0x111)](comma(convertToPyeong(_0x1a6735)));
-        })
-        ["catch"]((_0x53c244) => {
-            const _0x4e3e2f = _0x31f67e;
-            console[_0x4e3e2f(0x123)](_0x53c244);
-        });
-}
-function formatDate(_0x54d759) {
-    const _0x184517 = a50_0x2091a6;
-    typeof _0x54d759 === _0x184517(0x1c1) && (_0x54d759 = _0x54d759[_0x184517(0x1b7)]());
-    if (typeof _0x54d759 !== _0x184517(0x1d6) || _0x54d759[_0x184517(0x169)] !== 0x8) return "";
-    return _0x54d759[_0x184517(0x1fd)](0x0, 0x4) + "-" + _0x54d759[_0x184517(0x1fd)](0x4, 0x6) + "-" + _0x54d759[_0x184517(0x1fd)](0x6, 0x8);
-}
-function initValidation(_0x1bbdca) {
-    const _0x351454 = a50_0x2091a6;
-    var _0x44648e = document[_0x351454(0x17a)](_0x351454(0x13e));
-    Array[_0x351454(0x14a)][_0x351454(0x1fd)][_0x351454(0x1b4)](_0x44648e)[_0x351454(0x129)](function (_0x1bce10) {
-        const _0x19c655 = _0x351454,
-            _0x32a590 = document["getElementById"]("save_confirm_btn");
-        if (!_0x32a590) {
-            console[_0x19c655(0x1e5)]("#save_confirm_btn\x20not\x20found");
-            return;
+
+/**
+ * 건물 관련 버튼을 동적으로 생성하는 함수
+ *
+ * 이 함수는 주어진 건물 정보(brTitleInfo)를 기반으로 부번 버튼들을 동적으로 생성합니다.
+ * 각 버튼을 클릭하면 해당 부번의 건물 정보를 표시하는 기능을 수행합니다.
+ *
+ * @param {*} brTitleInfo
+ */
+function createBuildingOptions(brTitleInfo, brRecapTitleInfo) {
+    // brTitleInfo가 undefined, null이거나, 빈 배열이거나, 배열의 모든 요소가 undefined 또는 null인 경우 중단
+    if (!brTitleInfo || brTitleInfo.length === 0 || brTitleInfo.every((item) => item === null || item === undefined)) return;
+
+    // undefined 또는 null 값을 필터링하여 제거
+    brTitleInfo = brTitleInfo.filter((item) => item !== null && item !== undefined);
+
+    // 필터링 후 배열이 비어있는지 다시 확인
+    if (brTitleInfo.length === 0) return;
+
+    const $select = $("#building_type");
+    $select.find("option:not(:first)").remove(); // 첫 번째 option을 제외하고 나머지를 제거
+
+    // 옵션 추가
+    $.each(brTitleInfo, function (index, building) {
+        const $option = $("<option>")
+            .val(building.mgmBldrgstPk) // 값을 설정
+            .text(`${building.dongNm.toString().trim() != "" ? building.dongNm : building.mainPurpsCdNm}`); // 표시할 텍스트
+        if (index === 0) {
+            // $option.prop("selected", true); // 첫 번째 옵션을 기본 선택
+            // buildingRegisterTable(building); // 첫 번째 부번의 데이터를 기본으로 건물정보 표시
         }
-        _0x32a590[_0x19c655(0x18a)](
-            _0x19c655(0x13d),
-            async function (_0xa08665) {
-                const _0x5b5bc2 = _0x19c655;
-                _0xa08665[_0x5b5bc2(0x132)](), $(_0x5b5bc2(0x116))[_0x5b5bc2(0x1ca)](_0x5b5bc2(0x1e3));
-                const _0x42d91b = $(_0x1bce10)[_0x5b5bc2(0xf4)](_0x5b5bc2(0x10d));
-                let _0x2b63ab = !![],
-                    _0x4eab79 = null;
-                _0x42d91b[_0x5b5bc2(0x15d)]((_0x4ac3a7, _0x1af7e0) => {
-                    const _0x118926 = _0x5b5bc2,
-                        _0xffb40 = $(_0x1af7e0),
-                        _0x4b1644 = _0xffb40[_0x118926(0x143)](_0x118926(0xf7)) || _0xffb40[_0x118926(0xfb)](_0x118926(0x1f9))[_0x118926(0x156)]();
-                    let _0x192f3d, _0x564311;
-                    switch (_0x4b1644) {
-                        case _0x118926(0x1b6):
-                            (_0x192f3d = _0x118926(0x1b6)), (_0x564311 = _0x118926(0x138));
-                            break;
-                        case _0x118926(0x19e):
-                            (_0x192f3d = _0x118926(0x19e)), (_0x564311 = "비밀번호");
-                            break;
-                        case _0x118926(0xf3):
-                            (_0x192f3d = "phone"), (_0x564311 = _0x118926(0x1a0));
-                            break;
-                        case _0x118926(0x184):
-                            (_0x192f3d = _0x118926(0x184)), (_0x564311 = _0x118926(0x142));
-                            break;
-                        case _0x118926(0x1cd):
-                            (_0x192f3d = _0x118926(0x1cd)), (_0x564311 = "옵션");
-                            break;
-                        case _0x118926(0x101):
-                            (_0x192f3d = "text"), (_0x564311 = "값");
-                            break;
-                        default:
-                            (_0x192f3d = _0x4b1644), (_0x564311 = "값");
-                    }
-                    const _0xc1e435 = validateInput(_0xffb40, _0x192f3d, _0x564311 + _0x118926(0x1f8)),
-                        _0x17e788 = _0xffb40[_0x118926(0x1bc)]()["find"](_0x118926(0x198))["length"] != 0x0 ? _0xffb40["parent"]()["find"](_0x118926(0x198)) : _0xffb40["parent"]()[_0x118926(0x1bc)]()["find"](".invalid-feedback");
-                    !_0xc1e435
-                        ? (console[_0x118926(0x123)](_0x118926(0x1f6) + _0xffb40["attr"]("id") + ",\x20Is\x20Valid:\x20" + _0xc1e435),
-                          _0x17e788["length"] > 0x0 ? (_0x17e788["show"](), _0xffb40[0x0][_0x118926(0x1ac)](_0x17e788[_0x118926(0x1b6)]())) : _0xffb40[0x0][_0x118926(0x1ac)](_0x564311 + _0x118926(0x1f8)),
-                          _0xffb40[0x0]["reportValidity"](),
-                          (_0x2b63ab = ![]),
-                          !_0x4eab79 && (_0x4eab79 = _0xffb40))
-                        : (_0x17e788[_0x118926(0x1d2)](), _0xffb40[0x0][_0x118926(0x1ac)](""));
-                }),
-                    console["log"](_0x2b63ab);
-                !_0x2b63ab
-                    ? (_0x4eab79 && (_0x4eab79[0x0][_0x5b5bc2(0x12a)]({ behavior: _0x5b5bc2(0x1b9), block: _0x5b5bc2(0x11f) }), _0x4eab79[0x0]["reportValidity"](), _0x4eab79[_0x5b5bc2(0x16a)]()), _0xa08665[_0x5b5bc2(0x132)](), _0xa08665[_0x5b5bc2(0x155)]())
-                    : (_0xa08665[_0x5b5bc2(0x132)](), _0xa08665[_0x5b5bc2(0x155)](), saleRegist(fileManager["getFileList"](), _0x1bbdca));
-                return;
-            },
-            ![]
-        ),
-            _0x1bce10[_0x19c655(0x17a)](_0x19c655(0x1eb))[_0x19c655(0x129)](function (_0xe4ef5a) {
-                const _0x5ac136 = _0x19c655;
-                _0xe4ef5a["addEventListener"](_0x5ac136(0x1ae), function () {
-                    const _0x224eec = _0x5ac136,
-                        _0x4bab5f = $(_0xe4ef5a),
-                        _0x463b7e = _0x4bab5f[_0x224eec(0x143)]("type") || _0x4bab5f[_0x224eec(0xfb)](_0x224eec(0x1f9))[_0x224eec(0x156)]();
-                    let _0xad97be, _0x43f83f;
-                    switch (_0x463b7e) {
-                        case _0x224eec(0x1b6):
-                            (_0xad97be = _0x224eec(0x1b6)), (_0x43f83f = "값");
-                            break;
-                        case _0x224eec(0x19e):
-                            (_0xad97be = _0x224eec(0x19e)), (_0x43f83f = _0x224eec(0x174));
-                            break;
-                        case "tel":
-                            (_0xad97be = _0x224eec(0x195)), (_0x43f83f = _0x224eec(0x1a0));
-                            break;
-                        case _0x224eec(0x184):
-                            (_0xad97be = _0x224eec(0x184)), (_0x43f83f = _0x224eec(0x142));
-                            break;
-                        case _0x224eec(0x1cd):
-                            (_0xad97be = _0x224eec(0x1cd)), (_0x43f83f = "옵션");
-                            break;
-                        case _0x224eec(0x101):
-                            (_0xad97be = _0x224eec(0x1b6)), (_0x43f83f = "값");
-                            break;
-                        default:
-                            (_0xad97be = _0x463b7e), (_0x43f83f = "값");
-                    }
-                    const _0x1e25c5 = validateInput(_0x4bab5f, _0xad97be, _0x43f83f + _0x224eec(0x1f8)),
-                        _0x83a994 = _0x4bab5f[_0x224eec(0x1bc)]()["find"](".invalid-feedback")["length"] != 0x0 ? _0x4bab5f[_0x224eec(0x1bc)]()["find"](_0x224eec(0x198)) : _0x4bab5f[_0x224eec(0x1bc)]()[_0x224eec(0x1bc)]()[_0x224eec(0xf4)](_0x224eec(0x198));
-                    _0x1e25c5
-                        ? (_0x4bab5f[0x0][_0x224eec(0x1ac)](""), _0x83a994["hide"]())
-                        : (_0x83a994[_0x224eec(0x169)] > 0x0 ? (_0x4bab5f[0x0]["setCustomValidity"](_0x83a994[_0x224eec(0x1b6)]()), _0x83a994[_0x224eec(0x1b2)]()) : _0x4bab5f[0x0][_0x224eec(0x1ac)](_0x43f83f + "을(를)\x20입력해주세요."), _0x4bab5f[0x0]["reportValidity"]());
-                });
-            });
+        $select.append($option);
     });
 }
-async function saleRegist(_0x201ba3, _0x5e8f42) {
-    const _0x11a176 = a50_0x2091a6;
-    if (!_0x5e8f42) {
-        const _0x3ba162 = await sweetAlertMessage("올바르지\x20않은\x20요청입니다.", "", "e");
-        _0x3ba162 && history[_0x11a176(0x117)]();
+
+/**
+ * 건축물대장 바인딩 함수
+ * @param {*} building
+ */
+function buildingInfoBind(building) {
+    const {
+        platPlc, // 지번주소
+        newPlatPlc, // 도로명주소
+        bldNm, // 건물명
+        etcPurps, // 기타용도
+        mainPurpsCd, // 주용도코드
+        mainPurpsCdNm, // 주용도코드명
+        strctCd, // 구조코드
+        strctCdNm, // 구조코드명
+        etcStrct, // 기타구조
+        roofCdNm, // 지붕코드명
+        etcRoof, // 기타지붕
+        heit, // 높이
+        grndFlrCnt, // 지상층수
+        ugrndFlrCnt, // 지하층수
+        platArea, // 대지면적
+        archArea, // 건축면적
+        totArea, // 연면적
+        vlRatEstmTotArea, // 용적률산정연면적
+        vlRat, // 용적률
+        bcRat, // 건폐율
+        hhldCnt, // 세대수
+        fmlyCnt, // 가구수
+        bylotCnt, // 외필지수
+        rideUseElvtCnt, // 승용승강기수
+        emgenUseElvtCnt, // 비상용승강기수
+        useAprDay, // 사용승인일
+        pmsDay, // 허가일
+        stcnsDay, // 착공일
+        sigunguCd, // 시군구코드
+        bjdongCd, // 법정동코드
+        platGbCd, // 대지구분코드
+        bun, // 번
+        ji, // 지
+    } = building;
+
+    $("#platArea").val(comma(platArea));
+    $("#platArea_py").val(comma(convertToPyeong(platArea)));
+    $("#archArea").val(comma(archArea));
+    $("#archArea_py").val(comma(convertToPyeong(archArea)));
+    $("#totArea").val(comma(totArea));
+    $("#totArea_py").val(comma(convertToPyeong(totArea)));
+    $("#vlRat").val(comma(vlRat));
+    $("#bcRat").val(comma(bcRat));
+    $("#grndFlrCnt").val(comma(grndFlrCnt));
+    $("#ugrndFlrCnt").val(comma(ugrndFlrCnt));
+    $("#strctCd").val(strctCd);
+    $("#strctCdNm").val(strctCdNm);
+    $("#etcStrct").val(etcStrct);
+    $("#mainPurpsCd").val(mainPurpsCd);
+    $("#mainPurpsCdNm").val(mainPurpsCdNm);
+    const useAprDayFormat = formatDate(useAprDay);
+    useAprDayPickr.setDate(useAprDayFormat);
+
+    if (globalBrRecapTitleInfo && globalBrRecapTitleInfo.totPkngCnt) {
+        $("#totPkngCnt").val(globalBrRecapTitleInfo.totPkngCnt);
+    } else {
+        $("#totPkngCnt").val("");
     }
-    if ($(".swiper-slide")[_0x11a176(0x169)] === 0x0) {
-        const _0x353a7b = await sweetAlertMessage(_0x11a176(0x1ec), "", "e");
-        return;
+}
+
+/**
+ * 토지특성정보 가져오는 함수
+ * @param {*} pnu
+ */
+async function landInfo(pnu) {
+    const dataObj = { pnu };
+    const url = "/front/back/sale/land_characteristics.php";
+    callApiAbort(url, "POST", dataObj, "landInfo")
+        .then((response) => {
+            if (!response) return;
+
+            const { landCharacteristicss } = response;
+            if (!landCharacteristicss || !landCharacteristicss[0]) return;
+
+            const {
+                lndcgrCode, // 지목코드
+                lndcgrCodeNm, // 지목명
+                prposArea1, // 용도지역코드1
+                prposArea1Nm, // 용도지역명1
+                lndpclAr, // 토지면적
+            } = landCharacteristicss[0];
+
+            $("#lndcgrCode").val(lndcgrCode);
+            $("#lndcgrCodeNm").val(lndcgrCodeNm);
+            $("#prposArea").val(prposArea1);
+            $("#prposAreaNm").val(prposArea1Nm);
+            $("#platArea").val(comma(lndpclAr));
+            $("#platArea_py").val(comma(convertToPyeong(lndpclAr)));
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+// yyyymmdd 형식의 날짜를 yyyy-mm-dd 형식으로 변환하는 함수
+function formatDate(yyyymmdd) {
+    // 숫자인 경우 문자열로 변환
+    if (typeof yyyymmdd === "number") {
+        yyyymmdd = yyyymmdd.toString();
     }
-    const _0x10b0bd = userInfo(),
-        _0x363692 = getNumberData(),
-        _0x4fb1d2 = getStringData(),
-        _0x77c877 = getFactoryData();
-    let _0x54fe6c = new FormData();
-    for (const _0xe73557 in _0x201ba3) {
-        _0x201ba3["hasOwnProperty"](_0xe73557) && _0x54fe6c["append"](_0x11a176(0x18c), _0x201ba3[_0xe73557]);
+
+    // yyyymmdd가 문자열이 아닌 경우 빈 문자열 반환
+    if (typeof yyyymmdd !== "string" || yyyymmdd.length !== 8) {
+        return ""; // 잘못된 값인 경우 빈 문자열 반환
     }
-    const _0x4d2b87 = fileManager[_0x11a176(0x131)](),
-        _0x5e194f = fileManager[_0x11a176(0x164)](),
-        _0x47d7fb = fileManager[_0x11a176(0x1c6)](),
-        _0x479f50 = fileManager[_0x11a176(0xff)]();
-    if (_0x4d2b87["length"] + _0x5e194f[_0x11a176(0x169)] > 0x2) {
-        sweetAlertMessage(_0x11a176(0x126), "", "w");
-        return;
-    }
-    _0x54fe6c["append"](_0x11a176(0x186), JSON[_0x11a176(0x120)](_0x4d2b87)),
-        _0x54fe6c[_0x11a176(0x1ab)](_0x11a176(0x162), JSON["stringify"](_0x5e194f)),
-        _0x54fe6c[_0x11a176(0x1ab)](_0x11a176(0x14c), JSON["stringify"](_0x47d7fb)),
-        _0x54fe6c[_0x11a176(0x1ab)](_0x11a176(0xf6), JSON[_0x11a176(0x120)](_0x479f50));
-    let _0xa753b1 = { ..._0x10b0bd, ..._0x363692, ..._0x4fb1d2, latitude: $(_0x11a176(0x193))["val"]() || "", longitude: $("#longitude")[_0x11a176(0x111)]() || "", estateNo: _0x5e8f42 };
-    _0x4fb1d2[_0x11a176(0x10e)] === _0x11a176(0xfc) && (_0xa753b1 = { ..._0xa753b1, ..._0x77c877 });
-    for (const _0x3233e8 in _0xa753b1) {
-        if (Object[_0x11a176(0x1e1)][_0x11a176(0x1b4)](_0xa753b1, _0x3233e8)) {
-            const _0x567eab = _0xa753b1[_0x3233e8];
-            _0x54fe6c[_0x11a176(0x1ab)](_0x3233e8, _0x567eab);
+
+    return yyyymmdd.slice(0, 4) + "-" + yyyymmdd.slice(4, 6) + "-" + yyyymmdd.slice(6, 8);
+}
+
+/**
+ * 유효성 검사 함수
+ */
+function initValidation(estateNo) {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll(".needs-validation");
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        const saveConfirmBtn = document.getElementById("save_confirm_btn");
+
+        if (!saveConfirmBtn) {
+            console.error("#save_confirm_btn not found"); // 디버그 메시지
+            return;
+        }
+
+        saveConfirmBtn.addEventListener(
+            "click",
+            async function (event) {
+                event.preventDefault();
+
+                $("#modalConfirm").iziModal("close");
+
+                // required 속성이 있는 필드만 선택
+                const requiredFields = $(form).find("[required]");
+                let isFormValid = true;
+                let firstInvalidField = null;
+
+                // 유효성 검사 수행
+                requiredFields.each((index, field) => {
+                    const $field = $(field);
+                    const type = $field.attr("type") || $field.prop("tagName").toLowerCase();
+                    let fieldType;
+                    let valName;
+
+                    switch (type) {
+                        case "text":
+                            fieldType = "text";
+                            valName = "입력값";
+                            break;
+                        case "password":
+                            fieldType = "password";
+                            valName = "비밀번호";
+                            break;
+                        case "tel":
+                            fieldType = "phone";
+                            valName = "연락처";
+                            break;
+                        case "checkbox":
+                            fieldType = "checkbox";
+                            valName = "체크박스";
+                            break;
+                        case "select":
+                            fieldType = "select";
+                            valName = "옵션";
+                            break;
+                        case "textarea":
+                            fieldType = "text";
+                            valName = "값";
+                            break;
+                        default:
+                            fieldType = type;
+                            valName = "값";
+                    }
+
+                    const isValid = validateInput($field, fieldType, `${valName}을(를) 확인해주세요.`);
+                    const errorElement = $field.parent().find(".invalid-feedback").length != 0 ? $field.parent().find(".invalid-feedback") : $field.parent().parent().find(".invalid-feedback");
+
+                    if (!isValid) {
+                        console.log(`Field: ${$field.attr("id")}, Is Valid: ${isValid}`);
+
+                        if (errorElement.length > 0) {
+                            errorElement.show();
+                            $field[0].setCustomValidity(errorElement.text());
+                            // $field[0].reportValidity();
+                        } else {
+                            $field[0].setCustomValidity(`${valName}을(를) 확인해주세요.`);
+                        }
+                        $field[0].reportValidity(); // 직접 유효성 검사 메시지 표시
+                        // $field.addClass("is-invalid");
+                        isFormValid = false;
+                        if (!firstInvalidField) {
+                            firstInvalidField = $field;
+                        }
+                    } else {
+                        errorElement.hide();
+                        $field[0].setCustomValidity("");
+                        // $field.removeClass("is-invalid");
+                    }
+                });
+
+                console.log(isFormValid);
+
+                if (!isFormValid) {
+                    if (firstInvalidField) {
+                        // 해당 필드를 화면에 보이게 스크롤
+                        firstInvalidField[0].scrollIntoView({ behavior: "smooth", block: "center" });
+                        // 유효성 검사 메시지 표시
+                        firstInvalidField[0].reportValidity();
+                        firstInvalidField.focus();
+                    }
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // 유효성 검사가 통과되었을 때 모달을 띄웁니다.
+                    event.preventDefault(); // 이 라인을 제거하면 실제로 폼이 제출됩니다.
+                    event.stopPropagation();
+
+                    saleRegist(fileManager.getFileList(), estateNo); // 여기서 getFileList로 fileList를 가져옴
+                }
+
+                return;
+            },
+            false
+        );
+
+        // 입력 필드에 이벤트 리스너 추가
+        form.querySelectorAll("input[required], select[required], textarea[required]").forEach(function (field) {
+            field.addEventListener("input", function () {
+                const $field = $(field);
+                const type = $field.attr("type") || $field.prop("tagName").toLowerCase();
+                let fieldType;
+                let valName;
+
+                switch (type) {
+                    case "text":
+                        fieldType = "text";
+                        valName = "값";
+                        break;
+                    case "password":
+                        fieldType = "password";
+                        valName = "비밀번호";
+                        break;
+                    case "tel":
+                        fieldType = "phone";
+                        valName = "연락처";
+                        break;
+                    case "checkbox":
+                        fieldType = "checkbox";
+                        valName = "체크박스";
+                        break;
+                    case "select":
+                        fieldType = "select";
+                        valName = "옵션";
+                        break;
+                    case "textarea":
+                        fieldType = "text";
+                        valName = "값";
+                        break;
+                    default:
+                        fieldType = type;
+                        valName = "값";
+                }
+
+                const isValid = validateInput($field, fieldType, `${valName}을(를) 확인해주세요.`);
+                const errorElement = $field.parent().find(".invalid-feedback").length != 0 ? $field.parent().find(".invalid-feedback") : $field.parent().parent().find(".invalid-feedback");
+                if (isValid) {
+                    // $field.removeClass("is-invalid").addClass("is-valid");
+                    $field[0].setCustomValidity("");
+                    errorElement.hide();
+                } else {
+                    // $field.removeClass("is-valid").addClass("is-invalid");
+                    if (errorElement.length > 0) {
+                        $field[0].setCustomValidity(errorElement.text());
+                        errorElement.show();
+                    } else {
+                        $field[0].setCustomValidity(`${valName}을(를) 입력해주세요.`);
+                    }
+                    $field[0].reportValidity(); // 직접 유효성 검사 메시지 표시
+                }
+            });
+        });
+    });
+}
+
+/**
+ * 저장 함수
+ */
+async function saleRegist(fileList, estateNo) {
+    if (!estateNo) {
+        const result = await sweetAlertMessage("올바르지 않은 요청입니다.", "", "e");
+        if (result) {
+            history.back();
         }
     }
-    $("html")[_0x11a176(0x143)](_0x11a176(0x1db), _0x11a176(0x166)),
-        callApiFormData("POST", _0x11a176(0x159), _0x54fe6c)
-            [_0x11a176(0x1ea)]((_0x24edec) => {
-                const _0x528032 = _0x11a176;
-                if (!_0x24edec) {
-                    $(_0x528032(0x12e))[_0x528032(0x1ca)](_0x528032(0x1d3));
-                    return;
-                }
-                const { statusCode: _0x17c69e, message: _0x36f51e, responseData: _0x4fd288 } = _0x24edec;
-                _0x17c69e == 0xc8 && _0x36f51e == _0x528032(0x13f)
-                    ? ($(_0x528032(0x1b5))[_0x528032(0x1ca)](_0x528032(0x1d3)),
-                      $(_0x528032(0x1b5))["on"](_0x528032(0x16f), function () {
-                          const _0x26ea2e = _0x528032;
-                          location[_0x26ea2e(0x1c2)]();
-                      }))
-                    : sweetAlertMessage(_0x36f51e, "", "w");
-            })
-            [_0x11a176(0x103)]((_0x2e6ec8) => {
-                const _0x4a5304 = _0x11a176;
-                console[_0x4a5304(0x1e5)](_0x4a5304(0x171), _0x2e6ec8);
-            })
-            [_0x11a176(0x105)](() => {
-                const _0x1e61ba = _0x11a176;
-                $(_0x1e61ba(0x1d5))[_0x1e61ba(0x143)]("data-preloader", _0x1e61ba(0x16d));
-            });
-}
-function a50_0x4249() {
-    const _0x392bec = [
-        "#modify_btn",
-        ".fa-circle-xmark",
-        "\x22\x20data-origin=\x22Y\x22\x20>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20",
-        "fileNo",
-        "tel",
-        "find",
-        "get",
-        "removeFileArray",
-        "type",
-        "#useAprDay",
-        "#sale_type",
-        "totPkngCnt",
-        "prop",
-        "003",
-        "#related_jibun",
-        "올바르지\x20않은\x20요청입니다.",
-        "getRemoveFileArray",
-        "d-none",
-        "textarea",
-        "#platArea,\x20#totArea,\x20#archArea,\x20#sale_price,\x20#rent_price,\x20#loan_price,\x20#maintenance_price,\x20#vlRat,\x20#bcRat,\x20#grndFlrCnt,\x20#ugrndFlrCnt,\x20#power,\x20#road_conditions,\x20#floor_height",
-        "catch",
-        "data-id",
-        "finally",
-        "empty",
-        "#lottieConfirm",
-        "470px",
-        "dongNm",
-        "useAprDay",
-        "#lottieCompletion",
-        "not",
-        "[required]",
-        "estate_type",
-        "trigger",
-        "\x22\x20alt=\x22\x22\x20width=\x22100\x22\x20onerror=\x22this.onerror=null;this.src=\x27/front/assets/image/building_empty.png\x27;\x22>",
-        "val",
-        "#notes",
-        "mountain_yn",
-        "#strctCdNm",
-        "\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Your\x20browser\x20does\x20not\x20support\x20the\x20video\x20tag.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</video>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22close-btn-box\x22><i\x20class=\x22fa-sharp\x20fa-solid\x20fa-circle-xmark\x22></i></span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20",
-        "#modalConfirm",
-        "back",
-        "#modalCancel",
-        "#road_conditions",
-        "startLoading",
-        "#totArea_py",
-        "location",
-        "<video\x20controls\x20width=\x22100%\x22\x20class=\x22img-fluid\x20mx-auto\x20rounded\x22\x20controlslist=\x22nodownload\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<source\x20src=\x22",
-        "</option>",
-        "center",
-        "stringify",
-        "auto",
-        "\x22\x20data-id=\x22",
-        "log",
-        "0000",
-        "#strctCd",
-        "대표\x20이미지는\x20최대\x202장까지\x20설정\x20가능합니다.",
-        "#estate_type",
-        "39BzsoIW",
-        "forEach",
-        "scrollIntoView",
-        "map",
-        "form.needs-validation",
-        ".building-select",
-        "#modalFail",
-        "#prposAreaNm",
-        "/front/assets/lottie/failed.json",
-        "getExistingRepresentativeImages",
-        "preventDefault",
-        "#postal_code",
-        "removeFile",
-        "#platArea,\x20#totArea,\x20#archArea",
-        "#mainPurpsCdNm",
-        "#ugrndFlrCnt",
-        "입력값",
-        "#rent_price",
-        ".rent-group",
-        "\x22\x20width=\x22100%\x22\x20alt=\x22\x22\x20title=\x22\x22\x20/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22close-btn-box\x22><i\x20class=\x22fa-sharp\x20fa-solid\x20fa-circle-xmark\x22></i></span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20",
-        "#address_primary",
-        "click",
-        ".needs-validation",
-        "SUCCESS",
-        "getFilterTypes\x20error:",
-        "대표\x20이미지로\x20설정하시겠습니까?",
-        "체크박스",
-        "attr",
-        "href",
-        ".building-group",
-        "/front/assets/lottie/completion.json",
-        "처리\x20되었습니다.",
-        "/front/views/mypage/mypage_sale",
-        "startsWith",
-        "prototype",
-        "2814348DnWcAa",
-        "originArray",
-        "삭제\x20하시겠습니까?",
-        "5637335XVtTMp",
-        "#save_btn",
-        "createObjectURL",
-        "change",
-        "/front/assets/lottie/save.json",
-        ".swiper-slide\x20img,\x20.swiper-slide\x20video",
-        "10395984ONlnUh",
-        "stopPropagation",
-        "toLowerCase",
-        "#building_type",
-        "삭제를\x20실패했습니다.",
-        "/front/back/sale/sale_modify.php",
-        "form\x20input",
-        "#pnu",
-        "<img\x20src=\x22/front/assets/image/building_empty.png\x22\x20width=\x22100%\x22\x20alt=\x22\x22\x20title=\x22\x22\x20/>",
-        "each",
-        "삭제하시겠습니까?",
-        "#description",
-        "/front/back/sale/buiding_register_title_info.php",
-        "#floor_height",
-        "selectedRepresentativeImages",
-        "/front/back/sale/sale_detail.php",
-        "getSelectedRepresentativeImages",
-        "7227msTdYy",
-        "enable",
-        ".swiper-wrapper",
-        "#totPkngCnt",
-        "length",
-        "focus",
-        "#longitude",
-        "update",
-        "disable",
-        ".badge",
-        "closed",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20type=\x22button\x22\x20class=\x22swiper-slide\x20new-image\x22\x20data-id=\x22",
-        "API\x20호출\x20실패",
-        "maps",
-        "13fjTitC",
-        "비밀번호",
-        "mainPurpsCdNm",
-        "querySelector",
-        "form\x20textarea",
-        "imageArray",
-        "saleInfo",
-        "querySelectorAll",
-        "remove",
-        "/front/back/sell/filter_type_get.php",
-        ":first",
-        "#mainPurpsCd",
-        "hasClass",
-        "includes",
-        "#sale_price",
-        "<option\x20value=\x22",
-        "replace",
-        "checkbox",
-        "brTitleInfo",
-        "existingRepresentativeImages",
-        "<option>",
-        "POST",
-        "fileType",
-        "addEventListener",
-        "push",
-        "files[]",
-        "ready",
-        "31079FndglC",
-        "\x22\x20type=\x22video/mp4\x22\x20class=\x22h-100\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Your\x20browser\x20does\x20not\x20support\x20the\x20video\x20tag.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</video>",
-        "video/",
-        "files",
-        "Geocoder",
-        "#latitude",
-        "#address_road",
-        "phone",
-        "addClass",
-        "정상적인\x20접근이\x20아닙니다.",
-        ".invalid-feedback",
-        "setDate",
-        ".btn-box\x20*",
-        "10ArtGvc",
-        "building_type",
-        "#etcStrct",
-        "password",
-        "required",
-        "연락처",
-        "#maintenance_price",
-        ".swiper-slide",
-        "002",
-        "#loan_price",
-        "brRecapTitleInfo",
-        "data-origin",
-        "<img\x20src=\x22",
-        "삭제되었습니다.",
-        "search",
-        "Y-m-d",
-        "append",
-        "setCustomValidity",
-        "address",
-        "input",
-        "#water",
-        "input\x20change\x20valueSet",
-        "\x22\x20data-origin=\x22N\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22",
-        "show",
-        "#platArea_py",
-        "call",
-        "#modalCompletion",
-        "text",
-        "toString",
-        "#archArea_py",
-        "smooth",
-        ".factory-group\x20input,\x20.factory-group\x20select",
-        "#power",
-        "parent",
-        "landInfo",
-        "#lndcgrCode",
-        "form\x20select",
-        "removeClass",
-        "number",
-        "reload",
-        "이미\x20대표\x20이미지로\x20설정된\x20파일입니다.",
-        "image/",
-        "#lndcgrCodeNm",
-        "getOriginArray",
-        "34384baQtjd",
-        "item",
-        "padStart",
-        "iziModal",
-        "_py",
-        "filter",
-        "select",
-        "loadAnimation",
-        "addressSearch",
-        "/index",
-        "#prposArea",
-        "hide",
-        "open",
-        "#file_input",
-        "html",
-        "string",
-        "BuildingDetail",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22close-btn-box\x22><i\x20class=\x22fa-sharp\x20fa-solid\x20fa-circle-xmark\x20ori-close-btn\x20pointer\x22></i></span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20",
-        "1513113zQEGoE",
-        "disabled",
-        "data-preloader",
-        "<div\x20type=\x22button\x22\x20class=\x22swiper-slide\x20ori-image\x20",
-        ".factory-group",
-        "<span\x20class=\x22badge\x20badge-label\x20bg-danger\x22><i\x20class=\x22mdi\x20mdi-circle-medium\x22></i>\x20대표</span>",
-        "#platArea",
-        "#archArea",
-        "hasOwnProperty",
-        "#totArea",
-        "close",
-        "services",
-        "error",
-        "#bcRat",
-        ".building-group\x20input,\x20.building-group\x20select",
-        "image",
-        "368aJfyfX",
-        "then",
-        "input[required],\x20select[required],\x20textarea[required]",
-        "이미지/영상은\x20최소\x201장\x20이상\x20등록해야\x20합니다.",
-        "#feature",
-        "fadeIn",
-        "\x22\x20type=\x22",
-        "22qCLknT",
-        "sub_address_no",
-        "#grndFlrCnt",
-        "보증금",
-        "#delete_btn",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20",
-        "Field:\x20",
-        "/front/back/mypage/sale_delete.php",
-        "을(를)\x20확인해주세요.",
-        "tagName",
-        "5qXEEoS",
-        "trim",
-        "placeholder",
-        "slice",
-        "representative",
-        "input[name=\x27address_primary\x27]",
-        "006",
-    ];
-    a50_0x4249 = function () {
-        return _0x392bec;
+
+    if ($(".swiper-slide").length === 0) {
+        const result = await sweetAlertMessage("이미지/영상은 최소 1장 이상 등록해야 합니다.", "", "e");
+        return;
+    }
+
+    const user = userInfo();
+    const numberData = getNumberData();
+    const stringData = getStringData();
+    const factoryData = getFactoryData();
+
+    // formData 초기화
+    let formData = new FormData();
+
+    // fileList에 있는 파일 추가
+    for (const fileId in fileList) {
+        if (fileList.hasOwnProperty(fileId)) {
+            formData.append("files[]", fileList[fileId]);
+        }
+    }
+
+    const existingRepresentativeImages = fileManager.getExistingRepresentativeImages();
+    const selectedRepresentativeImages = fileManager.getSelectedRepresentativeImages();
+    const originArray = fileManager.getOriginArray();
+    const removeFileArray = fileManager.getRemoveFileArray();
+
+    // 대표 이미지가 2개 이상이면 경고 후 반환
+    if (existingRepresentativeImages.length + selectedRepresentativeImages.length > 2) {
+        sweetAlertMessage("대표 이미지는 최대 2장까지 설정 가능합니다.", "", "w");
+        return;
+    }
+
+    // 대표 이미지 정보 추가
+    formData.append("existingRepresentativeImages", JSON.stringify(existingRepresentativeImages)); // 대표 이미지 정보 배열을 JSON으로 직렬화하여 전송
+    formData.append("selectedRepresentativeImages", JSON.stringify(selectedRepresentativeImages)); // 대표 이미지 정보 배열을 JSON으로 직렬화하여 전송
+    formData.append("originArray", JSON.stringify(originArray)); // 대표 이미지 정보 배열을 JSON으로 직렬화하여 전송
+    formData.append("removeFileArray", JSON.stringify(removeFileArray)); // 대표 이미지 정보 배열을 JSON으로 직렬화하여 전송
+
+    // 두 객체를 하나로 병합
+    let dataObj = {
+        ...user,
+        ...numberData, // 숫자 데이터
+        ...stringData, // 문자 데이터 (쉼표 제거 안함)
+        latitude: $("#latitude").val() || "", // 위도, 경도는 따로 처리
+        longitude: $("#longitude").val() || "",
+        estateNo: estateNo,
     };
-    return a50_0x4249();
+
+    // estate_type이 "003"일 경우 factoryData를 병합
+    if (stringData.estate_type === "003") {
+        dataObj = {
+            ...dataObj,
+            ...factoryData, // 공장 관련 데이터 추가
+        };
+    }
+
+    for (const key in dataObj) {
+        // if (dataObj.hasOwnProperty(key)) {
+        if (Object.hasOwnProperty.call(dataObj, key)) {
+            const value = dataObj[key];
+            formData.append(key, value);
+        }
+    }
+
+    // // FormData 내용을 자바스크립트 객체로 변환
+    // const formDataObj = {};
+    // for (let pair of formData.entries()) {
+    //     // "files[]"에 여러 파일이 있을 경우 배열로 처리
+    //     if (pair[0] === "files[]") {
+    //         if (!formDataObj[pair[0]]) {
+    //             formDataObj[pair[0]] = []; // 배열 초기화
+    //         }
+    //         formDataObj[pair[0]].push(pair[1]); // 배열에 파일 추가
+    //     } else {
+    //         formDataObj[pair[0]] = pair[1];
+    //     }
+    // }
+
+    // 객체 형태로 formData 확인
+    // console.log([...formData.entries()]);
+    // return;
+
+    // API 호출 시작 전 로딩 스피너 활성화
+    $("html").attr("data-preloader", "enable");
+
+    callApiFormData("POST", "/front/back/sale/sale_modify.php", formData)
+        .then((response) => {
+            if (!response) {
+                $("#modalFail").iziModal("open");
+                return;
+            }
+
+            // API 호출 성공
+            const { statusCode, message, responseData } = response;
+            if (statusCode == 200 && message == "SUCCESS") {
+                $("#modalCompletion").iziModal("open");
+
+                // 모달 닫힘 이벤트 설정
+                $("#modalCompletion").on("closed", function () {
+                    location.reload();
+                    // location.href = "/front/views/mypage/mypage_sale";
+                });
+            } else {
+                sweetAlertMessage(message, "", "w");
+                // $("#modalFail").iziModal("open");
+            }
+        })
+        .catch((error) => {
+            // API 호출 실패
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {
+            // API 호출 완료 후 로딩 스피너 비활성화
+            $("html").attr("data-preloader", "disable");
+        });
 }
-async function saleInfo(_0x1b88ff) {
-    const _0x57fbaa = a50_0x2091a6,
-        _0x3e51e2 = userInfo();
-    if (isNaN(_0x1b88ff) || !_0x3e51e2) {
-        const _0x4d524d = await sweetAlertMessage(_0x57fbaa(0xfe));
-        if (_0x4d524d) {
-            history["back"]();
+
+/**
+ * 매물 상세정보 가져오는 함수
+ * @param {*} estateNo
+ * @returns
+ */
+async function saleInfo(estateNo) {
+    const user = userInfo();
+
+    if (isNaN(estateNo) || !user) {
+        const alert = await sweetAlertMessage("올바르지 않은 요청입니다.");
+        if (alert) {
+            history.back();
             return;
         }
     }
-    const _0x3b53ee = _0x57fbaa(0x163),
-        _0x125a8f = { ..._0x3e51e2, estate_no: _0x1b88ff };
-    callApiAbort(_0x3b53ee, "POST", _0x125a8f, _0x57fbaa(0x179))
-        [_0x57fbaa(0x1ea)](async (_0x192ccc) => {
-            const _0x474e94 = _0x57fbaa;
-            if (!_0x192ccc) return;
-            const { statusCode: _0x5bcb6e, message: _0x572a74, responseData: _0x183438 } = _0x192ccc;
-            if (_0x5bcb6e !== 0xc8 || _0x572a74 !== "SUCCESS") {
-                sweetAlertMessage(_0x474e94(0x197), "", "e");
+
+    const url = "/front/back/sale/sale_detail.php";
+    const dataObj = {
+        ...user,
+        estate_no: estateNo,
+    };
+    callApiAbort(url, "POST", dataObj, "saleInfo")
+        .then(async (response) => {
+            if (!response) return;
+
+            const { statusCode, message, responseData } = response;
+            if (statusCode !== 200 || message !== "SUCCESS") {
+                sweetAlertMessage("정상적인 접근이 아닙니다.", "", "e");
                 return;
             }
-            if (!_0x183438 || _0x183438[_0x474e94(0x169)] === 0x0) {
-                sweetAlertMessage("정상적인\x20접근이\x20아닙니다.", "", "e");
+            if (!responseData || responseData.length === 0) {
+                sweetAlertMessage("정상적인 접근이 아닙니다.", "", "e");
                 return;
             }
 
             try {
-                const addressList = await searchAddress(_0x183438.address_primary);
+                const addressList = await searchAddress(responseData.address_primary);
 
                 if (addressList.status === "OK") {
                     const address = addressList.result[0].address;
-                    const lat = addressList.result[0].y;
+                    const lat = addressList.result[0].y;s
                     const lng = addressList.result[0].x;
                     const address_name = addressList.result[0].address_name;
                     const road_address = addressList.result[0].road_address;
@@ -1236,147 +1449,259 @@ async function saleInfo(_0x1b88ff) {
                     $("#pnu").val(pnu);
                     $("#latitude").val(lat);
                     $("#longitude").val(lng);
-
+                    
                     await BuildingDetail(pnu); // 건축물대장 조회
                     // landInfo(pnu); // 토지대장 조회
                 }
             } catch (error) {
             } finally {
                 // 데이터 바인딩
-                detailBind(_0x183438);
+                detailBind(responseData);
             }
         })
-        [_0x57fbaa(0x103)]((_0x3266cd) => {
-            console["log"](_0x3266cd);
+        .catch((error) => {
+            console.log(error);
         });
 }
-async function detailBind(_0xe461f) {
-    const _0x19c02e = a50_0x2091a6;
-    $[_0x19c02e(0x15d)](_0xe461f, function (_0x9e966f, _0x37df89) {
-        const _0x24fdc9 = _0x19c02e;
-        var _0x5e1c78 = $("#" + _0x9e966f);
-        if (_0x5e1c78[_0x24fdc9(0x169)] > 0x0) {
-            if (_0x9e966f === _0x24fdc9(0x10a) && _0x37df89) {
-                const _0x2a5324 = new Date(_0x37df89);
-                useAprDayPickr[_0x24fdc9(0x199)](_0x2a5324);
-            } else {
-                if (_0x9e966f === _0x24fdc9(0x19c) && _0x37df89)
-                    setTimeout(() => {
-                        const _0x1d5bdd = _0x24fdc9;
-                        $("#" + _0x9e966f)[_0x1d5bdd(0x111)](_0x37df89 !== null ? _0x37df89 : "");
-                    }, 0x3e8);
-                else {
-                    if (_0x5e1c78["is"]("input,\x20textarea")) _0x5e1c78[_0x24fdc9(0x111)](_0x37df89 !== null ? _0x37df89 : "");
-                    else _0x5e1c78["is"]("select") && (_0x5e1c78[_0x24fdc9(0x111)](_0x37df89 !== null ? _0x37df89 : ""), _0x5e1c78[_0x24fdc9(0x10f)](_0x24fdc9(0x151)));
-                }
+
+/**
+ * 매물 정보 바인딩 함수
+ * @param {*} data
+ */
+async function detailBind(data) {
+    // 데이터를 순회하면서 각 키에 해당하는 id 값을 가진 input, select 요소의 값을 설정
+    $.each(data, function (key, value) {
+        var $element = $("#" + key); // 해당 id를 가진 요소를 찾음
+
+        if ($element.length > 0) {
+            // 요소가 존재하는지 확인
+            if (key === "useAprDay" && value) {
+                // useAprDay 필드가 존재하고 값이 있을 경우 flatpickr로 설정
+                const useAprDayFormat = new Date(value); // 문자열을 Date 객체로 변환
+                useAprDayPickr.setDate(useAprDayFormat); // flatpickr에 날짜 설정
+            } else if (key === "building_type" && value) {
+                setTimeout(() => {
+                    // isEventEnabled = false; // 이벤트 활성화 여부를 결정하는 플래그
+                    $(`#${key}`).val(value !== null ? value : ""); // input 또는 textarea에 값을 설정
+                }, 1000);
+            // **********************************************
+            // 여기! exchange_fg 체크박스 처리 로직을 추가합니다.
+            }else if (key === "exchange_fg") {
+                // jQuery의 .prop() 메서드를 사용하여 checked 상태를 설정합니다.
+                // value가 "Y"이면 체크하고, 그렇지 않으면 체크 해제합니다.
+                $element.prop("checked", value === "Y");
+            } else if ($element.is("input, textarea")) {
+                $element.val(value !== null ? value : ""); // input 또는 textarea에 값을 설정
+            } else if ($element.is("select")) {
+                $element.val(value !== null ? value : ""); // select에 값을 설정
+                $element.trigger("change"); // select 요소의 change 이벤트 트리거
             }
         }
     });
-    const _0x107c82 = $(".swiper-wrapper");
-    _0x107c82[_0x19c02e(0x10c)](_0x19c02e(0x17d))["empty"]();
-    let _0x3cc7d3 = 0x0;
-    const _0x3dd6ab = fileManager["getExistingRepresentativeImages"](),
-        _0x5cb898 = fileManager[_0x19c02e(0x1c6)]();
-    if (_0xe461f[_0x19c02e(0x178)][_0x19c02e(0x169)] > 0x0) {
-        for (let _0x6b0eb5 = 0x0; _0x6b0eb5 < _0xe461f[_0x19c02e(0x178)][_0x19c02e(0x169)]; _0x6b0eb5++) {
-            const _0x593dcc = _0xe461f[_0x19c02e(0x178)][_0x6b0eb5]["representative"],
-                _0xb21e20 = _0xe461f["imageArray"][_0x6b0eb5][_0x19c02e(0x189)],
-                _0x4f5a61 = _0xe461f["imageArray"][_0x6b0eb5]["imgSrc"],
-                _0x1dd5ea = _0xe461f[_0x19c02e(0x178)][_0x6b0eb5][_0x19c02e(0xf2)];
-            _0x5cb898[_0x19c02e(0x18b)](_0x1dd5ea);
-            _0x593dcc === "Y" && _0x3dd6ab[_0x19c02e(0x18b)](_0x1dd5ea);
-            const _0x21d1f9 = _0x593dcc === "Y" ? _0x19c02e(0x1de) : "";
-            let _0x427c7e = "";
-            if (_0xb21e20 === _0x19c02e(0x1e8)) _0x427c7e = _0x19c02e(0x1a7) + _0x4f5a61 + _0x19c02e(0x110);
-            else _0xb21e20 === "video" ? (_0x427c7e = _0x19c02e(0x11d) + _0x4f5a61 + _0x19c02e(0x18f)) : (_0x427c7e = _0x19c02e(0x15c));
-            const _0x3a7fd1 = _0x19c02e(0x1dc) + (_0x593dcc === "Y" ? _0x19c02e(0xec) : "") + _0x19c02e(0x122) + _0x1dd5ea + _0x19c02e(0xf1) + _0x21d1f9 + _0x19c02e(0x1f5) + _0x427c7e + _0x19c02e(0x1d8);
-            _0x107c82[_0x19c02e(0x1ab)](_0x3a7fd1);
+    
+    // 이미지 처리
+    const container = $(".swiper-wrapper");
+    container.not(":first").empty();
+
+    let fileIndex = 0; // 파일 순서를 나타내는 인덱스
+
+    // 기존 대표 이미지 배열 가져오기
+    const existingRepresentativeImages = fileManager.getExistingRepresentativeImages();
+
+    // 기존 이미지 배열 가져오기
+    const originArray = fileManager.getOriginArray();
+
+    // existingRepresentativeImages = [];
+
+    if (data.imageArray.length > 0) {
+        for (let i = 0; i < data.imageArray.length; i++) {
+            const representative = data.imageArray[i].representative;
+            const fileType = data.imageArray[i].fileType;
+            const imgSrc = data.imageArray[i].imgSrc;
+            const fileNo = data.imageArray[i].fileNo;
+
+            // 기존 이미지 배열에 저장
+            originArray.push(fileNo);
+
+            // 기존 대표 이미지인 경우 배열에 저장
+            if (representative === "Y") {
+                existingRepresentativeImages.push(fileNo);
+            }
+
+            // 대표 유무
+            const repHtml = representative === "Y" ? '<span class="badge badge-label bg-danger"><i class="mdi mdi-circle-medium"></i> 대표</span>' : "";
+
+            // 이미지 or 비디오
+            let image = "";
+            if (fileType === "image") {
+                image = `<img src="${imgSrc}" alt="" width="100" onerror="this.onerror=null;this.src='/front/assets/image/building_empty.png';">`;
+            } else if (fileType === "video") {
+                image = `<video controls width="100%" class="img-fluid mx-auto rounded" controlslist="nodownload">
+                            <source src="${imgSrc}" type="video/mp4" class="h-100">
+                            Your browser does not support the video tag.
+                        </video>`;
+            } else {
+                image = `<img src="/front/assets/image/building_empty.png" width="100%" alt="" title="" />`;
+            }
+
+            // Swiper 슬라이드 추가
+            const slide = `<div type="button" class="swiper-slide ori-image ${representative === "Y" ? "representative" : ""}" data-id="${fileNo}" data-origin="Y" >
+                            ${repHtml}
+                            ${image}
+                            <span class="close-btn-box"><i class="fa-sharp fa-solid fa-circle-xmark ori-close-btn pointer"></i></span>
+                        </div>
+                    `;
+
+            container.append(slide);
         }
-        _0x107c82[_0x19c02e(0xf4)]("i")["hide"]();
+        container.find("i").hide();
     }
 }
-async function saleDelete(_0x1b523d) {
-    const _0x47e6e4 = a50_0x2091a6,
-        _0x43607d = userInfo();
-    if (isNaN(_0x1b523d) || !_0x43607d) {
-        const _0x7ad8b4 = await sweetAlertMessage("올바르지\x20않은\x20요청입니다.");
-        if (_0x7ad8b4) {
-            history[_0x47e6e4(0x117)]();
+
+/**
+ * 삭제처리 함수
+ * @param {*} estateNo
+ * @returns
+ */
+async function saleDelete(estateNo) {
+    const user = userInfo();
+    if (isNaN(estateNo) || !user) {
+        const alert = await sweetAlertMessage("올바르지 않은 요청입니다.");
+        if (alert) {
+            history.back();
             return;
         }
     }
-    const _0x5d04fd = await sweetConfirm(_0x47e6e4(0x14d), "", "w");
-    if (!_0x5d04fd) return;
-    const _0x20d8e2 = { ..._0x43607d, rcvNo: _0x1b523d },
-        _0x39b32f = await callApi(_0x47e6e4(0x188), _0x47e6e4(0x1f7), _0x20d8e2);
-    if (!_0x39b32f) return;
-    const { status: _0x5f0d55, message: _0x5b6675 } = _0x39b32f;
-    if (_0x5b6675 === _0x47e6e4(0x13f)) {
-        const _0x163fd9 = await sweetAlertMessage(_0x47e6e4(0x147), "", "s");
-        if (_0x163fd9) location[_0x47e6e4(0x144)] = _0x47e6e4(0x148);
+
+    const alert = await sweetConfirm("삭제 하시겠습니까?", "", "w");
+    if (!alert) return;
+
+    const dataObj = {
+        ...user,
+        rcvNo: estateNo,
+    };
+
+    const result = await callApi("POST", "/front/back/mypage/sale_delete.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const alert = await sweetAlertMessage("처리 되었습니다.", "", "s");
+        if (alert) location.href = "/front/views/mypage/mypage_sale";
     } else {
-        const _0x37c6ed = await sweetAlertMessage(_0x47e6e4(0x158), "", "e");
-        if (_0x37c6ed) return;
+        const alert = await sweetAlertMessage("삭제를 실패했습니다.", "", "e");
+        if (alert) return;
     }
 }
-function removeFile(_0x378387) {
-    const _0x98de94 = a50_0x2091a6,
-        _0x104185 = { ...userInfo(), fileNo: _0x378387 };
-    callApiAbort("/front/back/sale/sale_file_remove.php", _0x98de94(0x188), _0x104185, _0x98de94(0x134))
-        ["then"]((_0x10ce73) => {
-            const _0x2e4be5 = _0x98de94;
-            if (!_0x10ce73) {
-                $("#modalFail")["iziModal"]("open");
+
+/**
+ * 파일 삭제 함수
+ * @param {*} fileNo
+ */
+function removeFile(fileNo) {
+    const dataObj = {
+        ...userInfo(),
+        fileNo,
+    };
+    callApiAbort("/front/back/sale/sale_file_remove.php", "POST", dataObj, "removeFile")
+        .then((response) => {
+            // API 호출 성공
+            if (!response) {
+                $("#modalFail").iziModal("open");
                 return;
             }
-            const { statusCode: _0x4b9fa3, message: _0x25c9bd, responseData: _0x247937 } = _0x10ce73;
-            _0x4b9fa3 == 0xc8 && _0x25c9bd == _0x2e4be5(0x13f) ? sweetAlertMessage(_0x2e4be5(0x1a8), "", "s") : sweetAlertMessage("삭제에\x20실패했습니다.", "", "e");
+
+            const { statusCode, message, responseData } = response;
+            if (statusCode == 200 && message == "SUCCESS") {
+                sweetAlertMessage("삭제되었습니다.", "", "s");
+            } else {
+                sweetAlertMessage("삭제에 실패했습니다.", "", "e");
+            }
         })
-        [_0x98de94(0x103)]((_0x2ab3ce) => {
-            console["log"](_0x2ab3ce);
+        .catch((error) => {
+            console.log(error);
         });
 }
+
+// =============================================================================
+// 헬퍼 함수
+// =============================================================================
+
+/**
+ * 모달 초기화 함수
+ */
 function initModal() {
-    const _0x146340 = a50_0x2091a6;
-    _0x35395a(_0x146340(0x116), _0x146340(0x152), _0x146340(0x107)), _0x35395a(_0x146340(0x118), "/front/assets/lottie/save.json"), _0x35395a(_0x146340(0x12e), _0x146340(0x130), "#lottieFail"), _0x35395a(_0x146340(0x1b5), _0x146340(0x146), _0x146340(0x10b));
-    const _0x485edc = {};
-    function _0x35395a(_0x4e3944, _0x277bd9, _0x25e4fc) {
-        const _0x6b7e64 = _0x146340;
-        $(_0x4e3944)[_0x6b7e64(0x1ca)]({
-            width: _0x6b7e64(0x108),
-            top: null,
-            bottom: null,
-            transitionIn: _0x6b7e64(0x1ee),
-            transitionOut: "fadeOut",
-            overlayClose: ![],
-            closeButton: !![],
-            zindex: 0x3e7,
-            onOpening: function (_0x383901) {
-                const _0x133e45 = _0x6b7e64;
-                _0x383901[_0x133e45(0x11a)](), !_0x485edc[_0x25e4fc] && (_0x485edc[_0x25e4fc] = bodymovin[_0x133e45(0x1ce)]({ container: document[_0x133e45(0x176)](_0x25e4fc), renderer: "svg", loop: !![], autoplay: !![], path: _0x277bd9 })), _0x383901["stopLoading"]();
+    // 모달 - 대표 확인
+    initializeModal("#modalConfirm", "/front/assets/lottie/save.json", "#lottieConfirm");
+    // 모달 - 대표 취소
+    initializeModal("#modalCancel", "/front/assets/lottie/save.json");
+    // 모달 - 등록 실패
+    initializeModal("#modalFail", "/front/assets/lottie/failed.json", "#lottieFail");
+    // 모달 - 등록 완료
+    initializeModal("#modalCompletion", "/front/assets/lottie/completion.json", "#lottieCompletion");
+
+    // Lottie 애니메이션 인스턴스를 저장할 객체
+    const animations = {};
+
+    // 모달 설정 함수
+    function initializeModal(modalId, lottiePath, lottieContainerId) {
+        $(modalId).iziModal({
+            width: "470px",
+            top: null, // 기본값으로 설정
+            bottom: null, // 기본값으로 설정
+            transitionIn: "fadeIn", // 모달 등장 애니메이션
+            transitionOut: "fadeOut", // 모달 사라짐 애니메이션
+            overlayClose: false, // 오버레이 클릭으로 닫기 방지
+            closeButton: true, // 닫기 버튼 표시
+            zindex: 999, // z-index 설정
+            onOpening: function (modal) {
+                modal.startLoading();
+
+                // Lottie 애니메이션이 이미 로드된 경우, 다시 로드하지 않음
+                if (!animations[lottieContainerId]) {
+                    animations[lottieContainerId] = bodymovin.loadAnimation({
+                        container: document.querySelector(lottieContainerId),
+                        renderer: "svg",
+                        loop: true,
+                        autoplay: true,
+                        path: lottiePath,
+                    });
+                }
+
+                modal.stopLoading();
             },
+            // onClosing: function () {
+            //     // 모달이 닫힐 때 애니메이션을 정지시키고 필요 시 제거
+            //     if (animations[lottieContainerId]) {
+            //         animations[lottieContainerId].stop();
+            //     }
+            // },
         });
     }
 }
+
+// 숫자 데이터를 처리하는 함수 (쉼표 제거)
 function getNumberData() {
-    const _0x4a0ed7 = a50_0x2091a6;
     return {
-        sale_price: ($(_0x4a0ed7(0x181))[_0x4a0ed7(0x111)]() || "")["trim"]()["replace"](/,/g, "") || "",
-        rent_price: ($(_0x4a0ed7(0x139))[_0x4a0ed7(0x111)]() || "")["trim"]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        platArea: ($("#platArea")[_0x4a0ed7(0x111)]() || "")[_0x4a0ed7(0x1fb)]()["replace"](/,/g, "") || "",
-        totArea: ($(_0x4a0ed7(0x1e2))["val"]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        archArea: ($(_0x4a0ed7(0x1e0))["val"]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        vlRat: ($("#vlRat")[_0x4a0ed7(0x111)]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        bcRat: ($(_0x4a0ed7(0x1e6))[_0x4a0ed7(0x111)]() || "")["trim"]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        grndFlrCnt: ($(_0x4a0ed7(0x1f2))[_0x4a0ed7(0x111)]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        ugrndFlrCnt: ($(_0x4a0ed7(0x137))[_0x4a0ed7(0x111)]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        maintenance_price: ($(_0x4a0ed7(0x1a1))[_0x4a0ed7(0x111)]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        loan_price: ($(_0x4a0ed7(0x1a4))[_0x4a0ed7(0x111)]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
-        totPkngCnt: ($(_0x4a0ed7(0x168))["val"]() || "")[_0x4a0ed7(0x1fb)]()[_0x4a0ed7(0x183)](/,/g, "") || "",
+        sale_price: ($("#sale_price").val() || "").trim().replace(/,/g, "") || "",
+        rent_price: ($("#rent_price").val() || "").trim().replace(/,/g, "") || "",
+        platArea: ($("#platArea").val() || "").trim().replace(/,/g, "") || "",
+        totArea: ($("#totArea").val() || "").trim().replace(/,/g, "") || "",
+        archArea: ($("#archArea").val() || "").trim().replace(/,/g, "") || "",
+        vlRat: ($("#vlRat").val() || "").trim().replace(/,/g, "") || "",
+        bcRat: ($("#bcRat").val() || "").trim().replace(/,/g, "") || "",
+        grndFlrCnt: ($("#grndFlrCnt").val() || "").trim().replace(/,/g, "") || "",
+        ugrndFlrCnt: ($("#ugrndFlrCnt").val() || "").trim().replace(/,/g, "") || "",
+        maintenance_price: ($("#maintenance_price").val() || "").trim().replace(/,/g, "") || "",
+        loan_price: ($("#loan_price").val() || "").trim().replace(/,/g, "") || "",
+        totPkngCnt: ($("#totPkngCnt").val() || "").trim().replace(/,/g, "") || "",
     };
 }
+
+// 문자 데이터를 처리하는 함수 (쉼표 유지)
 function getStringData() {
-    const _0x4b03e1 = a50_0x2091a6;
     return {
         pnu: encodeURIComponent(($("#pnu").val() || "").trim()),
         postal_code: encodeURIComponent(($("#postal_code").val() || "").trim()),
@@ -1402,29 +1727,38 @@ function getStringData() {
         description: encodeURIComponent(($("#description").val() || "").trim()),
         notes: encodeURIComponent(($("#notes").val() || "").trim()),
         mgmBldrgstPk: encodeURIComponent(($("#building_type").val() || "").trim()),
+        // 체크박스가 체크되어 있으면 'Y', 아니면 'N'
+        exchange_fg: $("#exchange_fg").is(":checked") ? "Y" : "N",
     };
 }
+
+// 문자 데이터를 처리하는 함수 (쉼표 유지)
 function getFactoryData() {
-    const _0x375186 = a50_0x2091a6;
     return {
-        road_conditions: ($(_0x375186(0x119))["val"]() || "")["trim"]()["replace"](/,/g, "") || "",
-        water: ($(_0x375186(0x1af))[_0x375186(0x111)]() || "")[_0x375186(0x1fb)]()[_0x375186(0x183)](/,/g, "") || "",
-        floor_height: ($(_0x375186(0x161))["val"]() || "")[_0x375186(0x1fb)]()[_0x375186(0x183)](/,/g, "") || "",
-        power: ($(_0x375186(0x1bb))[_0x375186(0x111)]() || "")["trim"]()[_0x375186(0x183)](/,/g, "") || "",
-        water: encodeURIComponent($("#water")[_0x375186(0x111)]()[_0x375186(0x1fb)]() || ""),
+        road_conditions: ($("#road_conditions").val() || "").trim().replace(/,/g, "") || "",
+        water: ($("#water").val() || "").trim().replace(/,/g, "") || "",
+        floor_height: ($("#floor_height").val() || "").trim().replace(/,/g, "") || "",
+        power: ($("#power").val() || "").trim().replace(/,/g, "") || "",
+        water: encodeURIComponent($("#water").val().trim() || ""),
     };
 }
+
+/**
+ * 건물 인풋 박스 초기화
+ */
 function resetBuildingGroupInputs() {
-    const _0x471bd6 = a50_0x2091a6;
-    $(_0x471bd6(0x1e7))[_0x471bd6(0x15d)](function () {
-        const _0x16cae1 = _0x471bd6;
-        $(this)[_0x16cae1(0x111)]("");
+    // building-group 클래스 내의 모든 input 요소들을 찾음
+    $(".building-group input, .building-group select").each(function () {
+        $(this).val(""); // input 요소의 값을 빈 문자열로 초기화
     });
 }
+
+/**
+ * 공장 인풋 박스 초기화
+ */
 function resetFactoryGroupInputs() {
-    const _0xb6a34a = a50_0x2091a6;
-    $(_0xb6a34a(0x1ba))[_0xb6a34a(0x15d)](function () {
-        const _0x3c635c = _0xb6a34a;
-        $(this)[_0x3c635c(0x111)]("");
+    // building-group 클래스 내의 모든 input 요소들을 찾음
+    $(".factory-group input, .factory-group select").each(function () {
+        $(this).val(""); // input 요소의 값을 빈 문자열로 초기화
     });
 }

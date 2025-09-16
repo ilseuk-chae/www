@@ -2194,9 +2194,12 @@
     width: auto;
     white-space: nowrap; /* 버튼 텍스트가 줄바꿈되지 않도록 합니다. */
 }
-/*    map-history, map-sale-group,map-estate-group,map-select-group*/
+/*    map-history, map-sale-group,map-estate-group,map-price-group*/
+/*    map-history, map-sale-group, map-exchange-group, map-price-group*/
+/*    map-estate-group*/
 /* 454(40)         504(120)       624(120)         1084(40) */
-
+/* 454(40)(4)      504(160)(54)   674(30)(224)     714(40)(264) */
+/* 454(36,488) */
 
 /* 지도 - 좌측 상단 - 이력, sale,매물 */
 /* 3. map-sale-group과 map-estate-group의 기본 배치 및 마진 */
@@ -2221,7 +2224,7 @@
 }
 .map-sale-group button {
     display: inline-block;
-    height: 32px;
+    height: 30px;
     padding: 6px;
     font-size: 12px;
     line-height: 12px;
@@ -2241,7 +2244,8 @@
 
 .map-estate-group {
     position: absolute; /* 부모 컨텍스트 기준으로 배치 */
-    top: 0;
+    flex-direction: column; 
+    top: 36px; 
     left: 0;
     display: flex; /* 내부 버튼들을 가로로 배치 */
     flex-wrap: wrap; /* 버튼이 넘치면 다음 줄로 넘어감 */
@@ -2252,15 +2256,14 @@
     gap: 2px;
     /*margin-left: 634px;*/
 }
-.map-estate-group {
-    margin-left: 174px; /* map-sale-group과의 간격을 조정 */
-}
+
 .map-estate-group.active{
-    margin-left: 624px; /* map-sale-group과의 간격을 조정 */
+    flex-direction: column; 
+    margin-left: 454px;     /*624px <--. 454px */
 }
 .map-estate-group button {
     display: inline-block;
-    height: 32px;
+    height: 30px;
     padding: 6px 4px;  /* 6px <--> 4px */
     font-size: 12px;
     line-height: 12px;
@@ -2291,14 +2294,14 @@
     /*margin-left: 1134px;*/
 }
 .map-price-group{
-    margin-left: 634px;
+    margin-left: 264px;   /*264px <--. 674px */
 }
 .map-price-group.active {
-    margin-left: 1084px;
+    margin-left: 714px;   /*1084px <--. 724px */
 }
 .map-price-group button {
     display: inline-block;
-    height: 32px;
+    height: 30px;
     padding: 6px 4px;  /* 6px <--> 4px */
     font-size: 12px;
     line-height: 12px;
@@ -2310,118 +2313,92 @@
     white-space: nowrap; /* 버튼 내용이 한 줄로 표시되도록 */
 }
 
+.map-exchange-group {
+    position: absolute; /* 부모 컨텍스트 기준으로 배치 */
+    top: 0;
+    left: 0;
+    display: flex; /* 내부 버튼들을 가로로 배치 */
+    flex-wrap: wrap; /* 버튼이 넘치면 다음 줄로 넘어감 */
+    padding: 1px; /* 예시 패딩 */
+    border: 1px solid #ccc; /* 예시 테두리 */
+    z-index: 1;
+    flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
+    /*margin-left: 1134px;*/
+}
+
+.map-exchange-group{
+    margin-left: 224px;   /*634px <--. 224px */
+}
+
+.map-exchange-group.active {
+    margin-left: 674px;   
+}
+
+.map-exchange-group button {
+    display: inline-block;
+    height: 30px;
+    padding: 6px 4px;  /* 6px <--> 4px */
+    font-size: 12px;
+    line-height: 12px;
+    letter-spacing: -1px;
+    border: #e9e9e9 1px solid;
+    border-radius: 3px;
+    background: #fff;
+    cursor: pointer;    
+    white-space: nowrap; /* 버튼 내용이 한 줄로 표시되도록 */
+}
+.map-exchange-group button.active {
+    color: #ef8779;
+    border: #bb50ec 1px solid;
+}
+
 
 @media all and (max-width: 991px) {
     .map-history.active {
         margin-left: 4px;
     }
+
     .map-sale-group {
-        margin-left: 4px;
-        margin-top: 44px;   
+        margin-left: 54px;
     }
-    .map-sale-group.active {
-        margin-left: 4px;
-        margin-top: 44px;   
-    }
-    .map-estate-group {
-        margin-left: 4px;
-        flex-direction: column; 
-        margin-top: 80px !important; 
-        margin-left: 4px !important;        
-    }
-    .map-estate-group.active {
-        margin-left: 4px;
-        flex-direction: column; 
-        margin-top: 80px !important; 
-        margin-left: 4px !important;        
-    }
-    .map-price-group {
-        margin-left: 4px !important;
-        margin-top: 422px !important; 
-    }
-    .map-price-group.active {
-        margin-left: 4px !important;
-        margin-top: 422px !important; 
-    }
-}
-/*
-@media all and (max-width: 991px) {
-    .map-history.active {
-        margin-left: 4px;
-    }
-    .map-sale-group.active {
-        margin-left: 4px;
-        margin-top: 44px;   
-    }
-    .map-sale-group button {
-        padding: 2px;
-        width: 27px;
-        height: 27px;
-        margin-bottom: 5px; 
-    }
-    .map-estate-group.active {
-        margin-left: 4px;
-        flex-direction: column; 
-        margin-top: 80px !important; 
-        margin-left: 4px !important;        
-    }
-    .map-estate-group button {
-        padding: 2px;
-        height: 27px;
-    }
-    .map-price-group.active {
-        margin-left: 4px !important;
-        margin-top: 375px !important; 
-        
-    }
-    .map-price-group button {
-        padding: 2px;
-        height: 27px;
-        width: 66.25px
-    }
-}
-*/
-
-@media all and (max-width: 1405px) {
-    .map-estate-group {
-        margin-top: 44px;
-        margin-left: 4px;
-        flex-direction: column;   
-    }
-    .map-estate-group.active {
-        margin-top: 44px;
-        margin-left: 454px;
-        flex-direction: column;   
-    }
-    .map-price-group {
-       margin-left: 4px;
-       margin-top: 392px; 
-    }
-    .map-price-group.active {
-        margin-left: 454px;
-        margin-top: 392px; 
-     }
-}
-
-/*   
-@media all and (max-width: 991px) {
     .map-sale-group.active {
         margin-left: 54px;
     }
+
+    .map-estate-group {
+        flex-direction: column; 
+        margin-top: 4px !important; 
+        margin-left: 4px !important;        
+    }
     .map-estate-group.active {
-        margin-left: 184px;
+        flex-direction: column; 
+        margin-top: 4px !important; 
+        margin-left: 4px !important;        
+    }
+
+    .map-exchange-group {
+        margin-left: 224px !important;
+    
+    }
+    .map-exchange-group.active {
+        margin-left: 224px !important;
+    
+    }
+
+    .map-price-group {
+        margin-left: 264px !important;
+    
     }
     .map-price-group.active {
-        margin-left: 684px;
+        margin-left: 264px !important;
+    
     }
-}
-*/
-@media all and (max-width: 991px) {
-   
 }
 @media all and (max-width: 479px) {
 }
 @media all and (min-width: 480px) and (max-width: 767px) {
+}
+@media all and (min-width: 768px) and (max-width: 991px) {
 }
 @media all and (min-width: 992px) and (max-width: 1199px) {
 }
@@ -4864,7 +4841,7 @@
     padding-top: 20px;
 }
 .find-write > div {
-    padding: 15px 0;
+    padding: 10px 0;        /* 15px 0 <-> 10px 0 */
 }
 .find-write > div > h2 {
     font-weight: 500;
@@ -4884,16 +4861,16 @@
     color: #e63932;
 }
 .find-write > div > p {
-    margin-top: 15px;
+    margin-top: 10px;   /* 15px <-> 10px */
 }
 .find-write > div > div {
-    margin-top: 15px;
+    margin-top: 10px;   /* 15px <-> 10px */
 }
 .find-write > div > dl {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 15px;
+    margin-top: 10px;   /* 15px <-> 10px */
 }
 .find-write > div > dl dt {
     display: flex;
@@ -4913,7 +4890,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    margin-top: 15px;
+    margin-top: 10px;   /* 15px <-> 10px */
     justify-content: space-between;
 }
 .find-write > div .fw-file {
@@ -4989,7 +4966,7 @@
     border-radius: 10px;
 }
 .find-view > div {
-    padding: 15px 0;
+    padding: 10px 0;    /* 15px 0 <-> 10px 0 */
 }
 .find-view > div > h2 {
     font-weight: 500;
@@ -5008,11 +4985,11 @@
     color: #e63932;
 }
 .find-view > div > p {
-    margin-top: 15px;
-    padding-bottom: 15px;
+    margin-top: 10px;     /* 15px <-> 10px */
+    padding-bottom: 10px; /* 15px <-> 10px */
     font-weight: 700;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 14px;   /* 24px <-> 14px */
     color: #111;
     letter-spacing: -0.5px;
     border-bottom: #e9e9e9 1px solid;
@@ -5035,7 +5012,7 @@
     margin: 14px 30px 0 0;
 }
 .find-view > div .fv-file {
-    margin-top: 15px;
+    margin-top: 10px;   /* 15px <-> 10px */
     overflow: hidden;
 }
 .find-view > div .fv-file .swiper-wrapper .swiper-slide {

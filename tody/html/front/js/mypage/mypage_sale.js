@@ -1,418 +1,461 @@
-(function (_0x2d58f3, _0x13e8e4) {
-    const _0x434ebe = a29_0x52cb,
-        _0x426e1f = _0x2d58f3();
-    while (!![]) {
-        try {
-            const _0x16b932 =
-                (-parseInt(_0x434ebe(0x1b7)) / 0x1) * (parseInt(_0x434ebe(0x1fc)) / 0x2) +
-                (parseInt(_0x434ebe(0x214)) / 0x3) * (-parseInt(_0x434ebe(0x1af)) / 0x4) +
-                (-parseInt(_0x434ebe(0x1b5)) / 0x5) * (-parseInt(_0x434ebe(0x1bd)) / 0x6) +
-                parseInt(_0x434ebe(0x1ef)) / 0x7 +
-                -parseInt(_0x434ebe(0x19a)) / 0x8 +
-                (-parseInt(_0x434ebe(0x1a6)) / 0x9) * (-parseInt(_0x434ebe(0x1f5)) / 0xa) +
-                (-parseInt(_0x434ebe(0x1cf)) / 0xb) * (-parseInt(_0x434ebe(0x1e8)) / 0xc);
-            if (_0x16b932 === _0x13e8e4) break;
-            else _0x426e1f["push"](_0x426e1f["shift"]());
-        } catch (_0x1b77f5) {
-            _0x426e1f["push"](_0x426e1f["shift"]());
-        }
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(function () {
+    const user = userInfo();
+    if (!user) {
+        alert("중개사 회원 전용 페이지입니다.");
+        location.href = "/index";
+        return;
+    } else if (user.user_role != "002") {
+        alert("중개사 회원 전용 페이지입니다.");
+        location.href = "/index";
+        return;
     }
-})(a29_0x27c8, 0xad4a3),
-    $(function () {
-        const _0x42fa82 = a29_0x52cb,
-            _0x3fbe65 = userInfo();
-        if (!_0x3fbe65) {
-            alert(_0x42fa82(0x216)), (location[_0x42fa82(0x1bc)] = _0x42fa82(0x20a));
-            return;
-        } else {
-            if (_0x3fbe65[_0x42fa82(0x1b0)] != _0x42fa82(0x1b9)) {
-                alert(_0x42fa82(0x216)), (location[_0x42fa82(0x1bc)] = _0x42fa82(0x20a));
-                return;
-            }
-        }
-        initMenu(_0x3fbe65), initializeDataTable(), initEvents(), initMemoEvents();
-    });
+    initMenu(user);
+    initializeDataTable();
+    initEvents();
+    initMemoEvents();
+});
+
+// 이벤트 초기화 함수
 function initEvents() {
-    const _0x589515 = a29_0x52cb;
-    $(document)["on"](_0x589515(0x19c), _0x589515(0x1b8), function () {
-        const _0x3aacad = _0x589515,
-            _0xd356b3 = $(this)[_0x3aacad(0x1e1)](_0x3aacad(0x1ad));
-        sale_delete(_0xd356b3);
-    }),
-        $(document)["on"]("click", _0x589515(0x196), function () {
-            const _0x49b7d9 = _0x589515,
-                _0x36ed48 = $(this)["attr"](_0x49b7d9(0x1d0)),
-                _0x5846a4 = $(this)[_0x49b7d9(0x1e1)](_0x49b7d9(0x1ad));
-            public_fg_change(_0x36ed48, _0x5846a4);
-        });
+    // [Event] 삭제 버튼 클릭
+    $(document).on("click", ".delete-btn", function () {
+        const no = $(this).attr("data-no");
+        sale_delete(no);
+    });
+
+    // [Event] 공개 상태 변경
+    $(document).on("click", ".change-public-btn", function () {
+        const val = $(this).attr("data-public_fg");
+        const no = $(this).attr("data-no");
+        public_fg_change(val, no);
+    });
 }
+
+// =============================================================================
+// table 관련 함수
+// =============================================================================
+/**
+ * DataTables 초기화
+ */
 function initializeDataTable() {
-    const _0x2b0535 = a29_0x52cb;
-    let _0x2ad008 = new DataTable(_0x2b0535(0x210), {
-        language: { url: "/assets/libs/datatables/lang/ko.json" },
+    // 사용자 정의 검색 함수 추가
+    // $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+    //     var searchValue = $("#dt-search-0").val();
+    //     var priceColumn = data[6] || ""; // 가격 열의 값 (0부터 시작, 6번째 열이 가격 열)
+
+    //     // 가격 열에서 숫자만 추출
+    //     var priceMatches = priceColumn.match(/\d+/g);
+    //     var priceValue = priceMatches ? priceMatches.join("") : "";
+
+    //     // 검색 값이 숫자인 경우, 가격 열의 숫자 부분과 비교
+    //     if (searchValue && !isNaN(searchValue)) {
+    //         return priceValue.includes(searchValue);
+    //     }
+
+    //     return true;
+    // });
+
+    let table = new DataTable("#ajax-datatables", {
+        language: {
+            url: "/assets/libs/datatables/lang/ko.json",
+        },
         drawCallback: function () {
             addPaginationClasses();
         },
         initComplete: function () {
-            const _0x224493 = _0x2b0535;
-            let _0x393d5c = this[_0x224493(0x1a9)]();
-            $(".dt-search")[_0x224493(0x1c9)]("flex-nowrap\x20input-group");
-            let _0x352807 = $(_0x224493(0x208))[_0x224493(0x1c9)](_0x224493(0x218))[_0x224493(0x1ec)](_0x224493(0x1f9))[_0x224493(0x1e1)](_0x224493(0x1a1), _0x224493(0x1eb)),
-                _0x3194b7 = $(_0x224493(0x203))
-                    [_0x224493(0x1d1)](_0x224493(0x20c))
-                    ["on"](_0x224493(0x206), function () {
-                        const _0x1c8e43 = _0x224493;
-                        let _0x3c7855 = $(this)["val"]();
-                        _0x352807[_0x1c8e43(0x1ac)](_0x1c8e43(0x1b1));
-                    });
-            _0x393d5c[_0x224493(0x20b)]()[_0x224493(0x1b2)](function () {
-                const _0x44d0c1 = _0x224493;
-                this[_0x44d0c1(0x1ff)]() !== 0x1 &&
-                    this[_0x44d0c1(0x1ff)]() !== 0x5 &&
-                    this[_0x44d0c1(0x1ff)]() !== 0x6 &&
-                    this["index"]() !== 0x9 &&
-                    this[_0x44d0c1(0x1ff)]() !== 0xa &&
-                    this["index"]() !== 0xb &&
-                    this[_0x44d0c1(0x1ff)]() !== 0xc &&
-                    _0x3194b7[_0x44d0c1(0x1ca)]("<option\x20value=\x22" + this["index"]() + "\x22>" + $(this["header"]())["text"]() + _0x44d0c1(0x211));
-            }),
-                _0x352807["on"](_0x224493(0x1b1), function () {
-                    const _0x71afda = _0x224493;
-                    let _0x549e1b = this[_0x71afda(0x1fb)],
-                        _0x1f73b8 = _0x3194b7["val"]();
-                    _0x1f73b8 ? _0x393d5c[_0x71afda(0x1d7)](_0x1f73b8)[_0x71afda(0x200)](_0x549e1b)["draw"]() : _0x393d5c[_0x71afda(0x200)](_0x549e1b)[_0x71afda(0x204)]();
-                }),
-                _0x393d5c["columns"]()["every"](function () {
-                    const _0x546c0e = _0x224493;
-                    var _0x3bd33e = this;
-                    if (_0x3bd33e["index"]() === 0xb) {
-                        var _0x4d4a7a = $(_0x546c0e(0x1cd))
-                            [_0x546c0e(0x1db)]($(_0x3bd33e[_0x546c0e(0x20f)]())[_0x546c0e(0x1f1)]())
-                            ["on"](_0x546c0e(0x206), function () {
-                                loadTableData(_0x2ad008);
-                            });
-                        _0x3bd33e[_0x546c0e(0x1f3)]()
-                            [_0x546c0e(0x1dd)]()
-                            [_0x546c0e(0x1a3)]()
-                            [_0x546c0e(0x1c2)](function (_0x2564fa, _0x5946df) {
-                                const _0x339181 = _0x546c0e,
-                                    _0x5e6bd8 = $(_0x2564fa)[_0x339181(0x209)](_0x339181(0x20d));
-                                if (_0x5e6bd8["length"] && !_0x5e6bd8["closest"]("ul")[_0x339181(0x1ab)]) {
-                                    const _0x5761ad = _0x5e6bd8[_0x339181(0x1eb)]()[_0x339181(0x1e3)](),
-                                        _0x51c244 = _0x5e6bd8[_0x339181(0x1e1)](_0x339181(0x1d0));
-                                    if (_0x5761ad) {
-                                        const _0x33f70d = _0x339181(0x1bb);
-                                        _0x4d4a7a["html"](_0x33f70d);
-                                    }
+            let api = this.api();
+
+            // 검색박스 및 선택박스 생성
+            $(".dt-search").addClass("flex-nowrap input-group");
+            let searchBox = $(".dt-search input").addClass("input-box w350").removeClass("form-control-sm").attr("type", "text");
+            let columnSelect = $('<select class="form-select select-box w150"><option value="">전체</option></select>')
+                .prependTo(".dt-search")
+                .on("change", function () {
+                    let selectedColumn = $(this).val();
+                    searchBox.trigger("keyup");
+                });
+
+            // 각 컬럼 이름으로 옵션 추가
+            api.columns().every(function () {
+                if (this.index() !== 1 && this.index() !== 5 && this.index() !== 6 && this.index() !== 9 && this.index() !== 10 && this.index() !== 11 && this.index() !== 12) {
+                    // 특정 컬럼 제외 (예: 사진, 공개, 관리)
+                    columnSelect.append('<option value="' + this.index() + '">' + $(this.header()).text() + "</option>");
+                }
+            });
+
+            // 검색박스 이벤트 핸들러 설정
+            searchBox.on("keyup", function () {
+                let searchTerm = this.value;
+                let selectedColumn = columnSelect.val();
+
+                if (selectedColumn) {
+                    api.column(selectedColumn).search(searchTerm).draw();
+                } else {
+                    api.search(searchTerm).draw();
+                }
+            });
+
+            // 특정 컬럼의 헤더에 선택박스 추가
+            api.columns().every(function () {
+                var column = this;
+                // 10번째 컬럼(인덱스 9)이 선택박스가 되도록 설정
+                if (column.index() === 11) {
+                    // 선택박스를 생성하고, 클래스와 기본 옵션을 설정합니다.
+                    var select = $('<select class="change-public-select form-select" style=""><option value="">공개(전체)</option></select>')
+                        .appendTo($(column.header()).empty()) // 생성한 선택박스를 해당 컬럼의 헤더에 추가하고 기존 내용을 비웁니다.
+                        .on("change", function () {
+                            loadTableData(table); // 선택된 값으로 데이터를 다시 로드
+
+                            // 선택박스가 변경되었을 때, 선택된 값으로 컬럼을 검색하도록 설정
+                            // var val = $.fn.dataTable.util.escapeRegex($(this).val()); // 선택된 값에서 특수 문자를 이스케이프 처리합니다.
+                            // console.log(val);
+                            // column.search(val ? "^" + val + "$" : "", true, false).draw(); // 선택된 값으로 컬럼을 검색하고 테이블을 다시 그립니다.
+                            // let val = $(this).val();
+                            // $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                            //     console.log($.fn.dataTable);
+                            //     var publicName = $(data[12]).find(".public-change-btn").text().trim();
+                            //     return val === "" || publicName === val;
+                            // });
+                            // table.draw(); // 선택된 값으로 컬럼을 검색하고 테이블을 다시 그립니다.
+                            // $.fn.dataTable.ext.search.pop();
+                        });
+
+                    // 해당 컬럼의 데이터에서 고유한 값들을 가져와 선택박스에 옵션으로 추가합니다.
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            const button = $(d).find("button.public-change-btn"); // 공개 컬럼의 첫 번째 버튼을 가져옵니다.
+                            if (button.length && !button.closest("ul").length) {
+                                // 버튼이 존재하고, ul의 자식이 아닌지 확인합니다.
+                                const text = button.text().trim();
+                                const flag = button.attr("data-public_fg");
+
+                                if (text) {
+                                    // select.append('<option value="' + flag + '">' + text + "</option>"); // 각 고유 값을 선택박스의 옵션으로 추가합니다.
+                                    const selectOptions = `
+                                                <option value="">전체</option>
+                                                <option value="Y">공개</option>
+                                                <option value="N">비공개</option>
+                                                <option value="C">거래완료</option>`;
+                                    select.html(selectOptions);
                                 }
-                            });
-                    }
-                }),
-                addPaginationClasses();
+                            }
+                        });
+                }
+            });
+
+            addPaginationClasses(); // 초기화 시점에 페이지네이션 클래스 추가
         },
-        scrollX: !![],
-        processing: !![],
-        responsive: !![],
-        destroy: !![],
-        ajax: function (_0x2b3c88, _0x2a9342, _0x15b1ec) {
-            loadTableData(_0x2ad008, _0x2a9342);
+        scrollX: true, // 가로 스크롤 활성화
+        processing: true, // 처리 중 메시지 활성화
+        responsive: true, // 반응형 테이블 설정
+        // serverSide: true, // 서버 사이드 처리를 활성화
+        // colReorder: true,    // 컬럼 이동 활성화
+        destroy: true, // 테이블 파괴 가능
+        // lengthChange: false,
+        ajax: function (data, callback, settings) {
+            loadTableData(table, callback);
         },
         columns: [
-            { data: "estate_no", title: _0x2b0535(0x1fe) },
-            { data: _0x2b0535(0x1f6), title: _0x2b0535(0x1d8), orderable: ![], searchable: ![] },
+            { data: "estate_no", title: "매물<br>번호" }, // 첫 번째 열로 순서를 추가
+            { data: "image", title: "사진/동영상", orderable: false, searchable: false },
             { data: "address_total", title: "주소" },
-            { data: _0x2b0535(0x201), title: _0x2b0535(0x1e5) },
-            { data: _0x2b0535(0x207), title: _0x2b0535(0x1e4) },
-            { data: _0x2b0535(0x19e), title: "연면적<br>(㎡)", searchable: ![] },
-            { data: _0x2b0535(0x1dc), title: _0x2b0535(0x1f2), searchable: ![] },
-            { data: "rent_price", title: _0x2b0535(0x1d6), searchable: ![] },
-            { data: "reg_date", title: _0x2b0535(0x1b3) },
-            { data: _0x2b0535(0x1c0), title: "메모", orderable: ![], searchable: ![] },
-            { data: _0x2b0535(0x1d2), title: _0x2b0535(0x1e9), searchable: ![] },
-            { data: _0x2b0535(0x1da), title: "공개", orderable: ![], searchable: ![] },
-            { data: _0x2b0535(0x19f), title: "관리", orderable: ![], searchable: ![] },
+            { data: "estate_type", title: "매물<br>종류" },
+            { data: "sale_type", title: "거래<br>종류" },
+            {
+                data: "totArea",
+                title: "연면적<br>(㎡)",
+                searchable: false,
+                // orderable: false,
+                // render: function (data, type, row) {
+                //     // 표시할 데이터는 그대로
+                //     if (type === "display") {
+                //         return data;
+                //     }
+
+                //     // 정렬용 데이터 처리: 제곱미터 값만 추출
+                //     if (type === "sort") {
+                //         // "㎡" 앞의 숫자 추출 후 공백 제거 및 숫자 변환
+                //         let match = data.match(/(\d+(\.\d+)?)(?=㎡)/);
+
+                //         // 정렬을 위해 숫자만 반환 (추출된 값이 없을 경우 0 반환)
+                //         return match ? parseFloat(match[0]) : 0;
+                //     }
+
+                //     return data; // 그 외에는 원본 데이터 반환
+                // },
+            },
+            // { data: "price", title: "금액(만 원)", searchable: false },
+            { data: "sale_price", title: "가격<br>(만 원)", searchable: false },
+            { data: "rent_price", title: "월세<br>(만 원)", searchable: false },
+            { data: "reg_date", title: "등록일" },
+            { data: "additional_note", title: "메모", orderable: false, searchable: false },
+            { data: "view_count", title: "조회수", searchable: false },
+            { data: "public_fg", title: "공개", orderable: false, searchable: false },
+            { data: "management", title: "관리", orderable: false, searchable: false },
         ],
-        order: [],
+        // rowReorder: {
+        //     selector: "td:nth-child(1)", // 첫 번째 열을 기준으로 row 재정렬
+        // },
+        order: [], // 기본 정렬 비활성화
         columnDefs: [
-            { className: _0x2b0535(0x1e7), targets: [0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa] },
-            { width: 0x64, targets: [0xb, 0xc] },
-            { className: _0x2b0535(0x1c8), targets: [0xb, 0xc] },
-            { responsivePriority: 0x1, targets: 0x2 },
-            { responsivePriority: 0x2, targets: -0x1 },
-            { targets: [0x1, 0x4, 0x5, 0x6, 0x7, 0x8, 0xa, 0xb, 0xc], visible: !![], responsivePriority: 0x2711 },
+            // { className: "text-start", targets: [0] }, // 첫 번째 열에 좌측 정렬 클래스 추가
+            { className: "text-start align-content-center", targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }, // 모든 열에 좌측 정렬 클래스 추가
+            { width: 100, targets: [11, 12] },
+            { className: "text-center align-content-center", targets: [11, 12] }, // 10 번째 열에 우측 정렬 클래스 추가
+            // { className: "text-end align-content-center", targets: [14] }, // 10 번째 열에 우측 정렬 클래스 추가
+            { responsivePriority: 1, targets: 2 }, // 첫 번째 열 우선순위 설정
+            { responsivePriority: 2, targets: -1 }, // 마지막 열 우선순위 설정
+            {
+                targets: [1, 4, 5, 6, 7, 8, 10, 11, 12],
+                visible: true, // 기본적으로 모든 열을 보이게 설정
+                responsivePriority: 10001, // 특정 열의 우선순위를 가장 낮게 설정하여 작은 화면에서 숨김 처리
+            },
         ],
     });
 }
+
+/**
+ * 페이지네이션에 클래스 추가 함수
+ */
 function addPaginationClasses() {
-    const _0x1a5d1b = a29_0x52cb,
-        _0x2e7dff = $(_0x1a5d1b(0x1cc));
-    _0x2e7dff[_0x1a5d1b(0x1ab)] && _0x2e7dff[_0x1a5d1b(0x1c9)](_0x1a5d1b(0x1ae));
+    // setTimeout(function () {
+    const pagination = $(".pagination");
+    if (pagination.length) {
+        pagination.addClass("paging-list pt-0 gap-1");
+    }
+    // }, 0);
 }
-function loadTableData(_0x26de04, _0x1f87f7) {
-    const _0x128f9e = a29_0x52cb,
-        _0x485471 = $(_0x128f9e(0x19b))[_0x128f9e(0x1aa)]() || "",
-        _0x4090cc = { ...userInfo(), public_fg: _0x485471 };
-    callApi(_0x128f9e(0x1b4), "/front/back/mypage/sale_list.php", _0x4090cc, _0x128f9e(0x1d3))
-        [_0x128f9e(0x19d)]((_0x42cdf6) => {
-            const _0x4f7d4b = _0x128f9e;
-            if (!_0x42cdf6) {
-                console[_0x4f7d4b(0x20e)](_0x4f7d4b(0x1ed));
-                if (_0x1f87f7) _0x1f87f7({ data: [] });
+
+/**
+ * 테이블 데이터 불러오는 함수
+ * @param {*} table
+ * @param {*} callback
+ */
+function loadTableData(table, callback) {
+    const filterValue = $(".change-public-select").val() || "";
+    const dataObj = {
+        ...userInfo(),
+        public_fg: filterValue,
+    };
+    callApi("POST", "/front/back/mypage/sale_list.php", dataObj, "loading")
+        .then((result) => {
+            if (!result) {
+                console.log("통신 실패!!!");
+                if (callback) callback({ data: [] });
                 return;
             }
-            const _0xc0ac56 = _0x42cdf6["responseData"];
-            if (!_0xc0ac56) {
-                if (_0x1f87f7) _0x1f87f7({ data: [] });
+
+            const responseData = result.responseData;
+
+            if (!responseData) {
+                if (callback) callback({ data: [] });
                 return;
             }
-            const _0x84d337 = _0xc0ac56[_0x4f7d4b(0x1a4)]((_0x192c6a, _0x1cb213) => {
-                const _0x29357f = _0x4f7d4b,
-                    _0x2f8f6f = _0xc0ac56["length"] - _0x1cb213,
-                    _0x47b94a = _0x192c6a[_0x29357f(0x212)] + "\x20" + (_0x192c6a[_0x29357f(0x1fd)] || ""),
-                    _0x5b9471 = _0x29357f(0x1ba) + _0x192c6a[_0x29357f(0x1be)] + "\x22>" + _0x47b94a + "</a>";
-                let _0xecef45;
-                switch (_0x192c6a[_0x29357f(0x1da)]) {
+
+            // 데이터를 올바르게 변환하여 DataTables에 전달합니다.
+            const formattedData = responseData.map((item, index) => {
+                // 순서(DESC)
+                const reversedOrder = responseData.length - index;
+                const addressTotal = `${item.address_jibun} ${item.address_detail || ""}`;
+                const descBtn = `<a class="link-dark link-body-emphasis link-offset-2 text-decoration-underline link-underline-opacity-25 link-underline-opacity-75-hover" href="mypage_sale_detail.html?no=${item.estate_no}">${addressTotal}</a>`;
+
+                // 공개 상태
+                let public_name;
+                switch (item.public_fg) {
                     case "Y":
-                        _0xecef45 = "공개";
+                        public_name = "공개";
                         break;
                     case "N":
-                        _0xecef45 = _0x29357f(0x1e6);
+                        public_name = "비공개";
                         break;
                     case "C":
-                        _0xecef45 = _0x29357f(0x1d9);
+                        public_name = "거래완료";
                         break;
                     default:
-                        _0xecef45 = "공개";
+                        public_name = "공개";
                         break;
                 }
-                let _0x4be0be = "";
-                if (_0x192c6a[_0x29357f(0x1ee)][_0x29357f(0x1ab)] > 0x0) {
-                    const _0x3158bb = _0x192c6a[_0x29357f(0x1ee)][0x0][_0x29357f(0x1f4)],
-                        _0x51f0c5 = _0x192c6a[_0x29357f(0x1ee)][0x0][_0x29357f(0x1a5)],
-                        _0x4ddcf5 = "/front/back/00-include/image.php?token=" + encodeURIComponent(_0x51f0c5);
-                    if (_0x3158bb === _0x29357f(0x1f6)) _0x4be0be = _0x29357f(0x202) + _0x4ddcf5 + _0x29357f(0x1d4);
-                    else _0x3158bb === _0x29357f(0x1f8) ? (_0x4be0be = _0x29357f(0x1f0) + _0x4ddcf5 + _0x29357f(0x1de)) : (_0x4be0be = "<img\x20src=\x22/front/assets/image/building_empty.png\x22\x20class=\x22rounded-1\x22\x20width=\x22100%\x22\x20alt=\x22\x22\x20title=\x22\x22\x20/>");
-                } else _0x4be0be = _0x29357f(0x1df);
-                const _0x474311 = _0x192c6a[_0x29357f(0x1c0)] && _0x192c6a[_0x29357f(0x1c0)]["length"] > 0x5 ? _0x192c6a[_0x29357f(0x1c0)][_0x29357f(0x199)](0x0, 0x5) + _0x29357f(0x1a2) : _0x192c6a[_0x29357f(0x1c0)] || "",
-                    _0xa43111 = convertToPyeong(_0x192c6a["totArea"]);
+
+                // 이미지 처리
+                let image = "";
+                if (item.imageArray.length > 0) {
+                    const fileType = item.imageArray[0].fileType;
+                    const imageToken = item.imageArray[0].imageToken;
+                    const imageSrc = `/front/back/00-include/image.php?token=${encodeURIComponent(imageToken)}`;
+
+                    if (fileType === "image") {
+                        image = `<img src="${imageSrc}" class="rounded-1" alt="" width="100" onerror="this.onerror=null;this.src='/front/assets/image/building_empty.png';">`;
+                    } else if (fileType === "video") {
+                        image = `<video mute width="100%" class="img-fluid mx-auto rounded" controlslist="nodownload">
+                                    <source src="${imageSrc}" type="video/mp4" class="h-100">
+                                    Your browser does not support the video tag.
+                                </video>`;
+                    } else {
+                        image = `<img src="/front/assets/image/building_empty.png" class="rounded-1" width="100%" alt="" title="" />`;
+                    }
+                } else {
+                    image = `<img src="/front/assets/image/building_empty.png" class="rounded-1" width="100" alt="" title="">`;
+                }
+
+                // 기타메모 5자 이내만 보여지도록
+                const shortNote = item.additional_note && item.additional_note.length > 5 ? item.additional_note.substring(0, 5) + "..." : item.additional_note || "";
+
+                // m2 -> 평
+                const convertedM2 = convertToPyeong(item.totArea);
+                let rentPrice = (item.sale_type === "매매") ||(item.sale_type === "전세") ?  0 : item.rent_price ? item.rent_price / 10000 : 0;
                 return {
-                    estate_no: _0x192c6a[_0x29357f(0x1be)],
-                    image: _0x4be0be,
-                    address_total: _0x5b9471,
-                    estate_type: _0x192c6a[_0x29357f(0x201)],
-                    sale_type: _0x192c6a[_0x29357f(0x207)],
-                    totArea: _0x192c6a["totArea"] || 0x0,
-                    sale_price: _0x192c6a["sale_price"] / 0x2710,
-                    rent_price: _0x192c6a[_0x29357f(0x1a7)] ? _0x192c6a[_0x29357f(0x1a7)] / 0x2710 : 0x0,
-                    reg_date: _0x192c6a["reg_date"],
-                    additional_note: _0x29357f(0x1f7) + (_0x192c6a[_0x29357f(0x1c0)] || "") + "\x22>" + _0x474311 + _0x29357f(0x205),
-                    view_count: _0x192c6a[_0x29357f(0x1d2)],
-                    public_fg: _0x29357f(0x1c5) + _0x192c6a[_0x29357f(0x1da)] + _0x29357f(0x195) + _0xecef45 + _0x29357f(0x1bf) + _0x192c6a[_0x29357f(0x1be)] + _0x29357f(0x213) + _0x192c6a[_0x29357f(0x1be)] + _0x29357f(0x1fa) + _0x192c6a[_0x29357f(0x1be)] + _0x29357f(0x1e2),
-                    management: _0x29357f(0x1c4) + _0x192c6a[_0x29357f(0x1be)] + _0x29357f(0x1b6) + _0x192c6a[_0x29357f(0x1be)] + _0x29357f(0x198),
+                    estate_no: item.estate_no,
+                    image: image,
+                    address_total: descBtn,
+                    estate_type: item.estate_type,
+                    sale_type: item.sale_type,
+                    // totArea: item.totArea ? item.totArea + "㎡(" + convertedM2 + "평)" : 0 + "㎡(0평)",
+                    totArea: item.totArea || 0,
+                    // price: `${formatPrice(item.sale_price, "all", true)}${item.rent_price ? " / " + formatPrice(item.rent_price, "all", true) : ""}`,
+                    sale_price: item.sale_price / 10000,
+                    //rent_price: item.rent_price ? item.rent_price / 10000 : 0,
+                    rent_price: rentPrice,
+                    reg_date: item.reg_date,
+                    additional_note: `<span data-bs-toggle="tooltip" title="${item.additional_note || ""}">${shortNote}</span>`,
+                    view_count: item.view_count,
+                    public_fg: `
+                        <div class="dropdown d-inline-block">
+                            <button class="public-change-btn btn btn-soft-primary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-public_fg="${item.public_fg}">
+                                ${public_name}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <button class="dropdown-item change-public-btn" data-public_fg="Y" data-no="${item.estate_no}">
+                                        공개
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item change-public-btn" data-public_fg="N" data-no="${item.estate_no}">
+                                        비공개
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item change-public-btn" data-public_fg="C" data-no="${item.estate_no}">
+                                        거래완료
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>`,
+                    management: `
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-soft-primary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ri-more-fill align-middle"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a href="/front/views/mypage/mypage_sale_detail.html?no=${item.estate_no}" class="dropdown-item">
+                                        <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                        상세
+                                    </a>
+                                </li>
+                                <li>
+                                    <button data-no="${item.estate_no}" class="delete-btn dropdown-item">
+                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                        삭제
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>`,
                 };
             });
-            _0x1f87f7 ? _0x1f87f7({ data: _0x84d337 }) : _0x26de04[_0x4f7d4b(0x1c6)]()[_0x4f7d4b(0x1c1)][_0x4f7d4b(0x1c7)](_0x84d337)[_0x4f7d4b(0x204)](), $(_0x4f7d4b(0x194))["tooltip"]();
+
+            if (callback) {
+                callback({ data: formattedData });
+            } else {
+                table.clear().rows.add(formattedData).draw();
+            }
+
+            // 툴팁 초기화
+            $('[data-bs-toggle="tooltip"]').tooltip();
         })
-        [_0x128f9e(0x1ce)]((_0x10447d) => {
-            const _0x4bbadb = _0x128f9e;
-            console[_0x4bbadb(0x193)](_0x4bbadb(0x1a8), _0x10447d);
-            if (_0x1f87f7) _0x1f87f7({ data: [] });
+        .catch((error) => {
+            console.error("AJAX 요청 중 오류 발생:", error);
+            if (callback) callback({ data: [] });
         });
 }
-async function sale_delete(_0x58bd60) {
-    const _0x26a1ef = a29_0x52cb,
-        _0xdb43da = await sweetConfirm(_0x26a1ef(0x1cb), "", "w");
-    if (!_0xdb43da) return;
-    const _0x27c6e9 = localStorage[_0x26a1ef(0x1a0)](_0x26a1ef(0x217)) ?? "kr",
-        _0xebe935 = { ...userInfo(), langCode: _0x27c6e9, rcvNo: _0x58bd60 },
-        _0x309950 = await callApi(_0x26a1ef(0x1b4), _0x26a1ef(0x197), _0xebe935);
-    if (!_0x309950) return;
-    const { status: _0x501d76, message: _0x3fe3de } = _0x309950;
-    if (_0x3fe3de === _0x26a1ef(0x1ea)) {
-        const _0x365061 = await sweetAlertForReturn("처리\x20되었습니다.", "", "s");
-        if (!_0x365061) return;
-        loadTableData(null, (_0x158b9f) => {
-            const _0xd4dd4 = _0x26a1ef,
-                _0xfd45ad = $(_0xd4dd4(0x210))[_0xd4dd4(0x1d5)]();
-            _0xfd45ad["clear"]()[_0xd4dd4(0x1c1)]["add"](_0x158b9f[_0xd4dd4(0x1f3)])["draw"]();
+
+/**
+ * 삭제처리 함수
+ * @param {*} rcvNo
+ * @returns
+ */
+async function sale_delete(rcvNo) {
+    const confirm = await sweetConfirm("삭제 하시겠습니까?", "", "w");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+
+    const dataObj = {
+        ...userInfo(),
+        langCode,
+        rcvNo: rcvNo,
+    };
+
+    const result = await callApi("POST", "/front/back/mypage/sale_delete.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
         });
     } else {
-        const _0x5ec6e4 = await sweetAlertForReturn(_0x26a1ef(0x1e0), "", "e");
-        if (!_0x5ec6e4) return;
+        const confirm = await sweetAlertForReturn("삭제를 실패했습니다.", "", "e");
+        if (!confirm) return;
     }
 }
-function a29_0x52cb(_0xea7aae, _0xf174e7) {
-    const _0x27c8d7 = a29_0x27c8();
-    return (
-        (a29_0x52cb = function (_0x52cb35, _0x222b43) {
-            _0x52cb35 = _0x52cb35 - 0x193;
-            let _0x406cac = _0x27c8d7[_0x52cb35];
-            return _0x406cac;
-        }),
-        a29_0x52cb(_0xea7aae, _0xf174e7)
-    );
-}
-function a29_0x27c8() {
-    const _0x440e97 = [
-        "9333758aquZWD",
-        "<video\x20mute\x20width=\x22100%\x22\x20class=\x22img-fluid\x20mx-auto\x20rounded\x22\x20controlslist=\x22nodownload\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<source\x20src=\x22",
-        "empty",
-        "가격<br>(만\x20원)",
-        "data",
-        "fileType",
-        "18780sdUnkj",
-        "image",
-        "<span\x20data-bs-toggle=\x22tooltip\x22\x20title=\x22",
-        "video",
-        "form-control-sm",
-        "\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20비공개\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22C\x22\x20data-no=\x22",
-        "value",
-        "1918474hnWgao",
-        "address_detail",
-        "매물<br>번호",
-        "index",
-        "search",
-        "estate_type",
-        "<img\x20src=\x22",
-        "<select\x20class=\x22form-select\x20select-box\x20w150\x22><option\x20value=\x22\x22>전체</option></select>",
-        "draw",
-        "</span>",
-        "change",
-        "sale_type",
-        ".dt-search\x20input",
-        "find",
-        "/index",
-        "columns",
-        ".dt-search",
-        "button.public-change-btn",
-        "log",
-        "header",
-        "#ajax-datatables",
-        "</option>",
-        "address_jibun",
-        "\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20공개\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22N\x22\x20data-no=\x22",
-        "4251093LTAtrS",
-        "처리\x20되었습니다.",
-        "중개사\x20회원\x20전용\x20페이지입니다.",
-        "langCode",
-        "input-box\x20w350",
-        "error",
-        "[data-bs-toggle=\x22tooltip\x22]",
-        "\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20",
-        ".change-public-btn",
-        "/front/back/mypage/sale_delete.php",
-        "\x22\x20class=\x22delete-btn\x20dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-delete-bin-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20삭제\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>",
-        "substring",
-        "3415904HMuyyt",
-        ".change-public-select",
-        "click",
-        "then",
-        "totArea",
-        "management",
-        "getItem",
-        "type",
-        "...",
-        "sort",
-        "map",
-        "imageToken",
-        "1260inbiJR",
-        "rent_price",
-        "AJAX\x20요청\x20중\x20오류\x20발생:",
-        "api",
-        "val",
-        "length",
-        "trigger",
-        "data-no",
-        "paging-list\x20pt-0\x20gap-1",
-        "4WWqdlK",
-        "user_role",
-        "keyup",
-        "every",
-        "등록일",
-        "POST",
-        "5AiXRVK",
-        "\x22\x20class=\x22dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-eye-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20상세\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20data-no=\x22",
-        "1xtsyUU",
-        ".delete-btn",
-        "002",
-        "<a\x20class=\x22link-dark\x20link-body-emphasis\x20link-offset-2\x20text-decoration-underline\x20link-underline-opacity-25\x20link-underline-opacity-75-hover\x22\x20href=\x22mypage_sale_detail.html?no=",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22\x22>전체</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22Y\x22>공개</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22N\x22>비공개</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22C\x22>거래완료</option>",
-        "href",
-        "3021882EZZMiw",
-        "estate_no",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22dropdown-menu\x20dropdown-menu-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22Y\x22\x20data-no=\x22",
-        "additional_note",
-        "rows",
-        "each",
-        "/front/back/mypage/sale_public_change.php",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-soft-primary\x20btn-sm\x20dropdown\x22\x20type=\x22button\x22\x20data-bs-toggle=\x22dropdown\x22\x20aria-expanded=\x22false\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-more-fill\x20align-middle\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22dropdown-menu\x20dropdown-menu-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22mypage_sale_detail.html?no=",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22public-change-btn\x20btn\x20btn-soft-primary\x20btn-sm\x20dropdown\x22\x20type=\x22button\x22\x20data-bs-toggle=\x22dropdown\x22\x20aria-expanded=\x22false\x22\x20data-public_fg=\x22",
-        "clear",
-        "add",
-        "text-center\x20align-content-center",
-        "addClass",
-        "append",
-        "삭제\x20하시겠습니까?",
-        ".pagination",
-        "<select\x20class=\x22change-public-select\x20form-select\x22\x20style=\x22\x22><option\x20value=\x22\x22>공개(전체)</option></select>",
-        "catch",
-        "33yTxMxt",
-        "data-public_fg",
-        "prependTo",
-        "view_count",
-        "loading",
-        "\x22\x20class=\x22rounded-1\x22\x20alt=\x22\x22\x20width=\x22100\x22\x20onerror=\x22this.onerror=null;this.src=\x27/front/assets/image/building_empty.png\x27;\x22>",
-        "DataTable",
-        "월세<br>(만\x20원)",
-        "column",
-        "사진/동영상",
-        "거래완료",
-        "public_fg",
-        "appendTo",
-        "sale_price",
-        "unique",
-        "\x22\x20type=\x22video/mp4\x22\x20class=\x22h-100\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Your\x20browser\x20does\x20not\x20support\x20the\x20video\x20tag.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</video>",
-        "<img\x20src=\x22/front/assets/image/building_empty.png\x22\x20class=\x22rounded-1\x22\x20width=\x22100\x22\x20alt=\x22\x22\x20title=\x22\x22>",
-        "삭제를\x20실패했습니다.",
-        "attr",
-        "\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20거래완료\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>",
-        "trim",
-        "거래<br>종류",
-        "매물<br>종류",
-        "비공개",
-        "text-start\x20align-content-center",
-        "5652360BMIYdD",
-        "조회수",
-        "SUCCESS",
-        "text",
-        "removeClass",
-        "통신\x20실패!!!",
-        "imageArray",
-    ];
-    a29_0x27c8 = function () {
-        return _0x440e97;
+
+/**
+ * 공개 상태 변경하는 함수
+ * @param {*} val = 변경할 상태값
+ * @returns
+ */
+async function public_fg_change(val, no) {
+    const confirm = await sweetConfirm("상태를 변경 하시겠습니까?", "", "q");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+
+    const dataObj = {
+        ...userInfo(),
+        langCode,
+        public_fg: encodeURIComponent(val),
+        rcv_no: no,
     };
-    return a29_0x27c8();
-}
-async function public_fg_change(_0x54fe9a, _0x4715a3) {
-    const _0xef445c = a29_0x52cb,
-        _0x39158d = await sweetConfirm("상태를\x20변경\x20하시겠습니까?", "", "q");
-    if (!_0x39158d) return;
-    const _0x18be63 = localStorage[_0xef445c(0x1a0)](_0xef445c(0x217)) ?? "kr",
-        _0x328ba0 = { ...userInfo(), langCode: _0x18be63, public_fg: encodeURIComponent(_0x54fe9a), rcv_no: _0x4715a3 },
-        _0x42a1c8 = await callApi(_0xef445c(0x1b4), _0xef445c(0x1c3), _0x328ba0);
-    if (!_0x42a1c8) return;
-    const { status: _0x46a2a7, message: _0x3b4eed } = _0x42a1c8;
-    if (_0x3b4eed === _0xef445c(0x1ea)) {
-        const _0x136e69 = await sweetAlertForReturn(_0xef445c(0x215), "", "s");
-        if (!_0x136e69) return;
-        loadTableData(null, (_0x11df1e) => {
-            const _0x4562db = _0xef445c,
-                _0x268949 = $(_0x4562db(0x210))[_0x4562db(0x1d5)]();
-            _0x268949[_0x4562db(0x1c6)]()[_0x4562db(0x1c1)][_0x4562db(0x1c7)](_0x11df1e[_0x4562db(0x1f3)])[_0x4562db(0x204)]();
+
+    const result = await callApi("POST", "/front/back/mypage/sale_public_change.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
         });
     } else {
-        const _0xf782a6 = await sweetAlertForReturn("변경에\x20실패했습니다.", "", "e");
-        if (!_0xf782a6) return;
+        const confirm = await sweetAlertForReturn("변경에 실패했습니다.", "", "e");
+        if (!confirm) return;
     }
 }

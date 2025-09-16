@@ -17,7 +17,7 @@ try {
         FROM
             type_master
         WHERE group_code = 'ESTATE_TYPE'
-        AND context_type = 'sale'
+        -- AND context_type = 'sale'
         AND use_fg = 'Y'
 
         UNION ALL
@@ -26,7 +26,7 @@ try {
             type_code, type_name, 'SALE_TYPE' AS group_type
         FROM
             type_master
-        WHERE group_code = 'SALE_TYPE'
+        WHERE group_code = 'TRANSACTION_TYPE'  -- WHERE group_code = 'SALE_TYPE'
         AND use_fg = 'Y'
 
         ORDER BY group_type ASC, type_code ASC;

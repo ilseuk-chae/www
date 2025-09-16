@@ -784,12 +784,12 @@
   /*margin-left: 634px;*/
 }
 .realmap-estate-group {
-  /*margin-left: 174px; /* map-sale-group과의 간격을 조정 */
+  /*margin-left: 174px; /* realmap-sale-group과의 간격을 조정 */
   margin-left: 54px;
 }
 .realmap-estate-group.active{
-  /*margin-left: 624px;  map-sale-group과의 간격을 조정 */
-  margin-left: 504px; /* map-sale-group과의 간격을 조정 */
+  /*margin-left: 624px;  realmap-sale-group과의 간격을 조정 */
+  margin-left: 504px; /* realmap-sale-group과의 간격을 조정 */
 }
 
 .realmap-estate-group button {

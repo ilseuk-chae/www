@@ -1,1 +1,717 @@
-const a18_0x1c11e0=a18_0x2d87;(function(_0x261e15,_0x1933f6){const _0x5bdad0=a18_0x2d87,_0x41a1db=_0x261e15();while(!![]){try{const _0x341406=parseInt(_0x5bdad0(0x1ea))/0x1*(-parseInt(_0x5bdad0(0x1ab))/0x2)+parseInt(_0x5bdad0(0x173))/0x3+-parseInt(_0x5bdad0(0x1bd))/0x4+-parseInt(_0x5bdad0(0x1c5))/0x5+parseInt(_0x5bdad0(0x1b2))/0x6*(-parseInt(_0x5bdad0(0x1ba))/0x7)+parseInt(_0x5bdad0(0x184))/0x8+parseInt(_0x5bdad0(0x185))/0x9;if(_0x341406===_0x1933f6)break;else _0x41a1db['push'](_0x41a1db['shift']());}catch(_0xaf1cd5){_0x41a1db['push'](_0x41a1db['shift']());}}}(a18_0x5e4e,0x479d2),$(document)[a18_0x1c11e0(0x16c)](async function(){const _0x15cbe1=a18_0x1c11e0;estate_type_get(),sale_type_get(),sido_get();var _0x596ef5=document[_0x15cbe1(0x1ac)]('price_slider'),_0x17c5b4=document[_0x15cbe1(0x1ac)](_0x15cbe1(0x186));set_pice_slider(_0x596ef5),set_area_slider(_0x17c5b4),initializeDataTable(''),$(_0x15cbe1(0x1aa))['on'](_0x15cbe1(0x1d9),function(){loadTableData(null,_0x525230=>{const _0x40cc9b=a18_0x2d87,_0x1a0a53=$(_0x40cc9b(0x1e8))[_0x40cc9b(0x16f)]();_0x1a0a53[_0x40cc9b(0x183)]()[_0x40cc9b(0x1a7)][_0x40cc9b(0x181)](_0x525230[_0x40cc9b(0x178)])['draw']();});}),$(_0x15cbe1(0x1eb))['on'](_0x15cbe1(0x1d9),function(){const _0x4c7288=_0x15cbe1;_0x596ef5['noUiSlider'][_0x4c7288(0x1c7)]([0x0,0x2710]),_0x17c5b4[_0x4c7288(0x1c9)]['set']([0x0,0x2710]),$(_0x4c7288(0x1b6))[_0x4c7288(0x167)](''),$('#sgg')[_0x4c7288(0x167)](''),$(_0x4c7288(0x165))[_0x4c7288(0x1dd)](_0x4c7288(0x1bb))[_0x4c7288(0x18c)](),$('#estate_type')[_0x4c7288(0x167)](''),$('#sale_type')[_0x4c7288(0x167)](''),loadTableData(null,_0x296559=>{const _0x281f67=_0x4c7288,_0x479f84=$(_0x281f67(0x1e8))[_0x281f67(0x16f)]();_0x479f84[_0x281f67(0x183)]()[_0x281f67(0x1a7)][_0x281f67(0x181)](_0x296559['data'])[_0x281f67(0x1d5)]();});}),$(document)['on'](_0x15cbe1(0x1d9),_0x15cbe1(0x1dc),function(){const _0x475207=_0x15cbe1,_0x10bb70=$(this)[_0x475207(0x170)](_0x475207(0x18e));wanted_delete(_0x10bb70);}),$(document)['on']('click',_0x15cbe1(0x1c8),function(){const _0x20e501=_0x15cbe1,_0x538ecd=$(this)[_0x20e501(0x170)](_0x20e501(0x1cf)),_0x4ba6bf=$(this)[_0x20e501(0x170)](_0x20e501(0x171));public_fg_change(_0x538ecd,_0x4ba6bf);}),$(_0x15cbe1(0x1b6))['on'](_0x15cbe1(0x1e7),function(){const _0x17541c=$(this)['val']();sgg_get(_0x17541c);});}));function a18_0x2d87(_0x2ffc3a,_0x31ead5){const _0x5e4ef8=a18_0x5e4e();return a18_0x2d87=function(_0x2d8776,_0x3339a4){_0x2d8776=_0x2d8776-0x163;let _0x9fec8a=_0x5e4ef8[_0x2d8776];return _0x9fec8a;},a18_0x2d87(_0x2ffc3a,_0x31ead5);}function initializeDataTable(){const _0x3cb409=a18_0x1c11e0;let _0x537a85=new DataTable(_0x3cb409(0x1e8),{'language':{'url':'/assets/libs/datatables/lang/ko.json'},'initComplete':function(){const _0x51ff2b=_0x3cb409;let _0x17fd0d=this['api']();$('.dt-search')[_0x51ff2b(0x1b8)]('input-group');let _0x307c92=$(_0x51ff2b(0x1b4))['addClass'](_0x51ff2b(0x1b0)),_0x48303f=$(_0x51ff2b(0x189))[_0x51ff2b(0x169)](_0x51ff2b(0x19a))['on']('change',function(){const _0x4517b2=_0x51ff2b;let _0x1379b4=$(this)[_0x4517b2(0x167)]();_0x307c92[_0x4517b2(0x1b7)]('keyup');});_0x17fd0d[_0x51ff2b(0x1e2)]()[_0x51ff2b(0x1e3)](function(){const _0x41e186=_0x51ff2b;this[_0x41e186(0x1be)]()!==0x1&&this[_0x41e186(0x1be)]()!==0x6&&this[_0x41e186(0x1be)]()!==0x7&&this['index']()!==0x9&&this['index']()!==0xa&&_0x48303f['append'](_0x41e186(0x1d4)+this[_0x41e186(0x1be)]()+'\x22>'+$(this[_0x41e186(0x190)]())['text']()+_0x41e186(0x199));}),_0x307c92['on'](_0x51ff2b(0x1ae),function(){const _0x3568c6=_0x51ff2b;let _0x43341a=this[_0x3568c6(0x17f)],_0x2acaf4=_0x48303f[_0x3568c6(0x167)]();_0x2acaf4?_0x17fd0d[_0x3568c6(0x16e)](_0x2acaf4)['search'](_0x43341a)[_0x3568c6(0x1d5)]():_0x17fd0d[_0x3568c6(0x19b)](_0x43341a)['draw']();}),_0x17fd0d[_0x51ff2b(0x1e2)]()[_0x51ff2b(0x1e3)](function(){const _0x70cdfa=_0x51ff2b;var _0x1173e1=this;if(_0x1173e1[_0x70cdfa(0x1be)]()===0x9){var _0x5298d3=$(_0x70cdfa(0x1b3))[_0x70cdfa(0x1c3)]($(_0x1173e1[_0x70cdfa(0x190)]())[_0x70cdfa(0x1de)]())['on'](_0x70cdfa(0x1e7),function(){loadTableData(_0x537a85);});_0x1173e1[_0x70cdfa(0x178)]()[_0x70cdfa(0x1a9)]()[_0x70cdfa(0x17a)]()['each'](function(_0x878b55,_0x5c8129){const _0x4282f1=_0x70cdfa,_0x468aea=$(_0x878b55)[_0x4282f1(0x1dd)](_0x4282f1(0x1a1));if(_0x468aea[_0x4282f1(0x1df)]&&!_0x468aea[_0x4282f1(0x196)]('ul')[_0x4282f1(0x1df)]){const _0x4562d4=_0x468aea[_0x4282f1(0x192)]()[_0x4282f1(0x1e0)](),_0x51ae7a=_0x468aea[_0x4282f1(0x170)](_0x4282f1(0x1cf));if(_0x4562d4){const _0x1c6a76=_0x4282f1(0x1c4);_0x5298d3[_0x4282f1(0x174)](_0x1c6a76);}}});}});},'scrollX':!![],'processing':!![],'destroy':!![],'ajax':function(_0x41377d,_0x38830f,_0x41ecd3){loadTableData(_0x537a85,_0x38830f);},'columns':[{'data':_0x3cb409(0x191),'title':'번호'},{'data':'image','title':'사진','orderable':![],'searchable':![]},{'data':'sido','title':_0x3cb409(0x1d2)},{'data':_0x3cb409(0x1da),'title':_0x3cb409(0x179)},{'data':_0x3cb409(0x180),'title':_0x3cb409(0x1a0)},{'data':_0x3cb409(0x175),'title':_0x3cb409(0x1c0)},{'data':'sale_price','title':'가격','orderable':![],'searchable':![]},{'data':_0x3cb409(0x176),'title':'면적','searchable':![]},{'data':_0x3cb409(0x1d8),'title':_0x3cb409(0x18f)},{'data':_0x3cb409(0x1d6),'title':'공개','orderable':![],'searchable':![]},{'data':_0x3cb409(0x1e4),'title':'관리','orderable':![],'searchable':![]}],'order':[],'columnDefs':[{'className':'text-start\x20align-content-center','targets':[0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7,0x8]},{'width':0x64,'targets':[0x9]},{'className':'text-center\x20align-content-center','targets':[0x9,0xa]}]});}function loadTableData(_0x4b5cf9,_0x2ea67b){const _0x4f8cb3=a18_0x1c11e0;let _0x325fd0=$(_0x4f8cb3(0x17b))['val']()||'';const _0x179b45={...adminUserInfo(),'public_fg':_0x325fd0,'sido':encodeURIComponent($(_0x4f8cb3(0x1b6))[_0x4f8cb3(0x167)]()),'sgg':encodeURIComponent($(_0x4f8cb3(0x165))[_0x4f8cb3(0x167)]()),'estate_type':encodeURIComponent($(_0x4f8cb3(0x1bf))[_0x4f8cb3(0x167)]()),'sale_type':encodeURIComponent($(_0x4f8cb3(0x1cc))[_0x4f8cb3(0x167)]()),'min_price':encodeURIComponent($('#input_price_start')[_0x4f8cb3(0x167)]()),'max_price':encodeURIComponent($(_0x4f8cb3(0x18b))[_0x4f8cb3(0x167)]()),'min_area':encodeURIComponent($(_0x4f8cb3(0x1c1))['val']()),'max_area':encodeURIComponent($('#input_area_end')['val']())};callApi(_0x4f8cb3(0x19d),_0x4f8cb3(0x195),_0x179b45,_0x4f8cb3(0x1b1))[_0x4f8cb3(0x19f)](_0x3c4e9f=>{const _0x1bbae6=_0x4f8cb3;if(!_0x3c4e9f){console[_0x1bbae6(0x1ca)](_0x1bbae6(0x1db));if(_0x2ea67b)_0x2ea67b({'data':[]});return;}const {status:_0x4eb7d4,message:_0x1549af,responseData:_0x4f2723}=_0x3c4e9f;if(!_0x4f2723){console[_0x1bbae6(0x1ca)](_0x1549af);if(_0x2ea67b)_0x2ea67b({'data':[]});return;}const _0x32277b=_0x4f2723['map']((_0x254939,_0x2f8577)=>{const _0x2b6cff=_0x1bbae6,_0x305dac=_0x4f2723[_0x2b6cff(0x1df)]-_0x2f8577;let _0x3dd677;switch(_0x254939[_0x2b6cff(0x1d6)]){case'Y':_0x3dd677='공개';break;case'N':_0x3dd677='비공개';break;case'C':_0x3dd677=_0x2b6cff(0x1d1);break;default:_0x3dd677='공개';break;}let _0x4ae725='';return _0x254939[_0x2b6cff(0x163)][_0x2b6cff(0x1df)]>0x0&&(_0x4ae725=_0x2b6cff(0x1e1)+encodeURIComponent(_0x254939[_0x2b6cff(0x163)][0x0][_0x2b6cff(0x188)])+_0x2b6cff(0x1e5)),{'wanted_no':_0x254939[_0x2b6cff(0x191)],'image':_0x4ae725,'sido':_0x254939[_0x2b6cff(0x164)],'sgg':_0x254939[_0x2b6cff(0x1da)],'estate_type':_0x254939[_0x2b6cff(0x180)],'sale_type':_0x254939['sale_type'],'sale_price':''+formatPrice(_0x254939['sale_price'])+(_0x254939[_0x2b6cff(0x187)]?_0x2b6cff(0x18d)+(_0x254939['rent_price']==0x0?0x0:formatPrice(_0x254939[_0x2b6cff(0x187)])):''),'area':comma(_0x254939['area'])+'㎡','phone':_0x254939[_0x2b6cff(0x1a8)],'reg_date':_0x254939[_0x2b6cff(0x1d8)],'public_fg':_0x2b6cff(0x19e)+_0x254939[_0x2b6cff(0x1d6)]+_0x2b6cff(0x198)+_0x3dd677+_0x2b6cff(0x1a2)+_0x254939[_0x2b6cff(0x191)]+'\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20공개\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22N\x22\x20data-estate_no=\x22'+_0x254939[_0x2b6cff(0x191)]+_0x2b6cff(0x17c)+_0x254939[_0x2b6cff(0x191)]+_0x2b6cff(0x19c),'management':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-soft-danger\x20btn-sm\x20dropdown\x22\x20type=\x22button\x22\x20data-bs-toggle=\x22dropdown\x22\x20aria-expanded=\x22false\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-more-fill\x20align-middle\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22dropdown-menu\x20dropdown-menu-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22/admin/views/re_manage/re_put_detail.html?no='+_0x254939['wanted_no']+'\x22\x20class=\x22dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-eye-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20상세\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20data-no=\x22'+_0x254939[_0x2b6cff(0x191)]+_0x2b6cff(0x1ad)};});_0x2ea67b?_0x2ea67b({'data':_0x32277b}):_0x4b5cf9[_0x1bbae6(0x183)]()['rows']['add'](_0x32277b)[_0x1bbae6(0x1d5)](),$(_0x1bbae6(0x1af))[_0x1bbae6(0x1e9)]();})[_0x4f8cb3(0x177)](_0x4cc862=>{const _0x4ded98=_0x4f8cb3;console[_0x4ded98(0x16b)](_0x4ded98(0x168),_0x4cc862);if(_0x2ea67b)_0x2ea67b({'data':[]});});}async function wanted_delete(_0x2163d6){const _0x29b45f=a18_0x1c11e0,_0x49de3e=await sweetConfirm(_0x29b45f(0x197),'','w');if(!_0x49de3e)return;const _0x3505a5=localStorage[_0x29b45f(0x1a6)](_0x29b45f(0x1ce))??'kr',_0x5ba6db=adminUserInfo(),_0x2c86ff={..._0x5ba6db,'langCode':_0x3505a5,'rcvNo':_0x2163d6},_0x4e1828=await callApi(_0x29b45f(0x19d),_0x29b45f(0x1c6),_0x2c86ff);if(!_0x4e1828)return;const {status:_0x26a9a2,message:_0x162ca6}=_0x4e1828;if(_0x162ca6===_0x29b45f(0x1b9)){const _0x7ed21e=await sweetAlertForReturn(_0x29b45f(0x1a4),'','s');if(!_0x7ed21e)return;loadTableData(null,_0x209fd9=>{const _0x5df651=_0x29b45f,_0x1d384c=$(_0x5df651(0x1e8))[_0x5df651(0x16f)]();_0x1d384c['clear']()[_0x5df651(0x1a7)][_0x5df651(0x181)](_0x209fd9['data'])[_0x5df651(0x1d5)]();});}else{const _0x29213c=await sweetAlertForReturn(_0x29b45f(0x1d3),'','e');if(!_0x29213c)return;}}async function public_fg_change(_0x415c25,_0x68d792){const _0x3f0700=a18_0x1c11e0,_0x494c86=await sweetConfirm('상태를\x20변경\x20하시겠습니까?','','q');if(!_0x494c86)return;const _0x5c9a20=localStorage[_0x3f0700(0x1a6)](_0x3f0700(0x1ce))??'kr',_0x25d357=adminUserInfo(),_0x53848c={..._0x25d357,'langCode':_0x5c9a20,'public_fg':encodeURIComponent(_0x415c25),'rcvNo':_0x68d792},_0x27b56c=await callApi(_0x3f0700(0x19d),_0x3f0700(0x1b5),_0x53848c);if(!_0x27b56c)return;const {status:_0x58a643,message:_0x3d42ba}=_0x27b56c;if(_0x3d42ba===_0x3f0700(0x1b9)){const _0x4faa3d=await sweetAlertForReturn('처리\x20되었습니다.','','s');if(!_0x4faa3d)return;loadTableData(null,_0xcd0b92=>{const _0x10073b=_0x3f0700,_0x5297fb=$(_0x10073b(0x1e8))[_0x10073b(0x16f)]();_0x5297fb[_0x10073b(0x183)]()[_0x10073b(0x1a7)][_0x10073b(0x181)](_0xcd0b92[_0x10073b(0x178)])[_0x10073b(0x1d5)]();});}else{const _0x1efebb=await sweetAlertForReturn(_0x3f0700(0x194),'','e');if(!_0x1efebb)return;}}async function estate_type_get(){const _0x29b182=a18_0x1c11e0,_0x3b2ac1=adminUserInfo(),_0x12a48e={..._0x3b2ac1},_0x5e9027=await callApi(_0x29b182(0x19d),_0x29b182(0x1c2),_0x12a48e);if(!_0x5e9027)return;const {status:_0x5ca812,messagem:_0x508ffe,responseData:_0x5cb921}=_0x5e9027;if(_0x5cb921[_0x29b182(0x1df)]>0x0){_0x5cb921[_0x29b182(0x17a)]((_0x3d827b,_0xab9cd2)=>{const _0xe8ec17=_0x29b182;if(_0x3d827b[_0xe8ec17(0x1d0)]<_0xab9cd2[_0xe8ec17(0x1d0)])return-0x1;if(_0x3d827b[_0xe8ec17(0x1d0)]>_0xab9cd2[_0xe8ec17(0x1d0)])return 0x1;return 0x0;});const _0x579ee0=_0x5cb921['map'](function(_0x5e6fb6){const _0xc42604=_0x29b182;return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22'+_0x5e6fb6[_0xc42604(0x17e)]+_0xc42604(0x1bc)+_0x5e6fb6[_0xc42604(0x166)]+'\x22>'+_0x5e6fb6[_0xc42604(0x1d0)]+_0xc42604(0x199);})[_0x29b182(0x16a)]('');$('#estate_type')[_0x29b182(0x1cd)](_0x579ee0);}}async function sale_type_get(){const _0x517ca9=a18_0x1c11e0,_0x142149=adminUserInfo(),_0x28d928={..._0x142149},_0x34d4d6=await callApi(_0x517ca9(0x19d),'/admin/back/04-estate/sale_type_get.php',_0x28d928);if(!_0x34d4d6)return;const {status:_0x397752,messagem:_0x41cb11,responseData:_0x2889d0}=_0x34d4d6;if(_0x2889d0[_0x517ca9(0x1df)]>0x0){const _0x5967b5=_0x2889d0[_0x517ca9(0x1a5)](function(_0x483cb1){const _0x3af63d=_0x517ca9;return _0x3af63d(0x172)+_0x483cb1[_0x3af63d(0x17e)]+'\x22>'+_0x483cb1['type_name']+_0x3af63d(0x199);})[_0x517ca9(0x16a)]('');$('#sale_type')[_0x517ca9(0x1cd)](_0x5967b5);}}async function sido_get(){const _0x1c3900=a18_0x1c11e0,_0x86c1e0=adminUserInfo(),_0x4f5799={..._0x86c1e0},_0x141cad=await callApi(_0x1c3900(0x19d),'/admin/back/04-estate/sido_get.php',_0x4f5799);if(!_0x141cad)return;const {status:_0x1b79c7,messagem:_0x749bac,responseData:_0x308db9}=_0x141cad;if(_0x308db9['length']>0x0){const _0xbbb5e1=_0x308db9[_0x1c3900(0x1a5)](function(_0x25ee8c){const _0x41ba46=_0x1c3900;return _0x41ba46(0x172)+_0x25ee8c['sido_cd']+'\x22>'+_0x25ee8c[_0x41ba46(0x182)]+'</option>';})['join']('');$('#sido')['append'](_0xbbb5e1);}}async function sgg_get(_0x1b3c37){const _0x38c881=a18_0x1c11e0,_0x1534a7=adminUserInfo(),_0x45e556={..._0x1534a7,'sido_cd':encodeURIComponent(_0x1b3c37)},_0x97fbac=await callApi('POST',_0x38c881(0x193),_0x45e556);if(!_0x97fbac)return;const {status:_0x36ea9f,messagem:_0x549941,responseData:_0x4e89a2}=_0x97fbac;if(_0x4e89a2[_0x38c881(0x1df)]>0x0){$(_0x38c881(0x165))[_0x38c881(0x1de)](),$(_0x38c881(0x165))['append']('<option\x20value=\x22\x22\x20selected>시/도를\x20선택하세요</option>');const _0x544413=_0x4e89a2[_0x38c881(0x1a5)](function(_0x49c20f){const _0x38a93e=_0x38c881;return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22'+_0x49c20f[_0x38a93e(0x1d7)]+'\x22>'+_0x49c20f[_0x38a93e(0x18a)]+_0x38a93e(0x199);})['join']('');$('#sgg')[_0x38c881(0x1cd)](_0x544413);}}function set_pice_slider(_0x1d6302){const _0x277a36=a18_0x1c11e0;noUiSlider[_0x277a36(0x16d)](_0x1d6302,{'start':[0x0,0x186a0],'connect':!![],'range':{'min':0x0,'max':0x186a0},'format':wNumb({'decimals':0x0,'suffix':''}),'step':0x64,'keyboardSupport':!![],'keyboardDefaultStep':0xa,'keyboardPageMultiplier':0x64});const _0x1ce03f=document[_0x277a36(0x1ac)](_0x277a36(0x1e6)),_0x350718=document['getElementById']('input_price_end');_0x1ce03f&&_0x350718&&_0x1d6302&&(_0x1d6302[_0x277a36(0x1c9)]['on'](_0x277a36(0x17d),function(_0x13cc6f,_0x297f34){const _0xdd2cb2=_0x277a36,_0x2c7e92=_0x13cc6f[_0x297f34];_0x297f34?_0x350718[_0xdd2cb2(0x17f)]=_0x2c7e92:_0x1ce03f[_0xdd2cb2(0x17f)]=_0x2c7e92;}),_0x1ce03f['addEventListener'](_0x277a36(0x1e7),function(){const _0x132130=_0x277a36;_0x1d6302[_0x132130(0x1c9)][_0x132130(0x1c7)]([this[_0x132130(0x17f)],null]);}),_0x350718[_0x277a36(0x1cb)](_0x277a36(0x1e7),function(){const _0x212e14=_0x277a36;_0x1d6302[_0x212e14(0x1c9)][_0x212e14(0x1c7)]([null,this[_0x212e14(0x17f)]]);}));}function a18_0x5e4e(){const _0x35c688=['catch','data','시/군/구','sort','.change-public-select','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20비공개\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22C\x22\x20data-estate_no=\x22','update','type_code','value','estate_type','add','locallow_nm','clear','1163232OLKwqn','13044033LOJThI','area_slider','rent_price','imageToken','<select\x20class=\x22form-select\x20form-select-sm\x22><option\x20value=\x22\x22>전체</option></select>','locatadd_nm','#input_price_end','remove','\x20/\x20월\x20','data-no','등록일자','header','wanted_no','text','/admin/back/04-estate/sgg_get.php','변경에\x20실패했습니다.','/admin/back/04-estate/put_list.php','closest','삭제\x20하시겠습니까?','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','</option>','.dt-search','search','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20거래완료\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','POST','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22public-change-btn\x20btn\x20btn-soft-danger\x20btn-sm\x20dropdown\x22\x20type=\x22button\x22\x20data-bs-toggle=\x22dropdown\x22\x20aria-expanded=\x22false\x22\x20data-public_fg=\x22','then','매물종류','button.public-change-btn','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22dropdown-menu\x20dropdown-menu-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22Y\x22\x20data-estate_no=\x22','input_area_end','처리\x20되었습니다.','map','getItem','rows','phone','unique','#search_btn','6RecxPc','getElementById','\x22\x20class=\x22delete-btn\x20dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-delete-bin-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20삭제\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','keyup','[data-bs-toggle=\x22tooltip\x22]','form-control\x20form-control-sm','loading','90qZSDGt','<select\x20class=\x22change-public-select\x20form-select\x20form-select-sm\x22\x20style=\x22\x22><option\x20value=\x22\x22>공개(전체)</option></select>','.dt-search\x20input','/admin/back/04-estate/put_public_fg_change.php','#sido','trigger','addClass','SUCCESS','98014qPRjbb','option:not(:first)','\x22\x20name=\x22','2288624uysCMg','index','#estate_type','거래종류','#input_area_start','/admin/back/04-estate/estate_type_get.php','appendTo','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22\x22>공개(전체)</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22Y\x22>공개</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22N\x22>비공개</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22C\x22>거래완료</option>','2566125bmZbyl','/admin/back/04-estate/put_delete.php','set','.change-public-btn','noUiSlider','log','addEventListener','#sale_type','append','langCode','data-public_fg','type_name','거래완료','시/도','삭제를\x20실패했습니다.','<option\x20value=\x22','draw','public_fg','sgg_cd','reg_date','click','sgg','통신\x20실패!!!','.delete-btn','find','empty','length','trim','<img\x20src=\x22/admin/back/04-estate/estate_images.php?token=','columns','every','management','\x22\x20alt=\x22\x22\x20width=\x22100\x22>','input_price_start','change','#ajax-datatables','tooltip','153455ggYYdn','#reset_btn','imageArray','sido','#sgg','group_code','val','AJAX\x20요청\x20중\x20오류\x20발생:','prependTo','join','error','ready','create','column','DataTable','attr','data-estate_no','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22','1363095vdkcvi','html','sale_type','area'];a18_0x5e4e=function(){return _0x35c688;};return a18_0x5e4e();}function set_area_slider(_0x1b30b8){const _0x4069cb=a18_0x1c11e0;noUiSlider[_0x4069cb(0x16d)](_0x1b30b8,{'start':[0x0,0x2710],'connect':!![],'step':0x64,'keyboardSupport':!![],'keyboardDefaultStep':0x1f4,'keyboardPageMultiplier':0x14,'keyboardMultiplier':0xa,'range':{'min':0x0,'max':0x2710},'format':wNumb({'decimals':0x0,'suffix':''})});const _0x424814=document[_0x4069cb(0x1ac)]('input_area_start'),_0x258942=document[_0x4069cb(0x1ac)](_0x4069cb(0x1a3));_0x424814&&_0x258942&&_0x1b30b8&&(_0x1b30b8['noUiSlider']['on']('update',function(_0x2b1c4d,_0x345a41){const _0x1326f6=_0x4069cb;_0x2b1c4d=_0x2b1c4d[_0x345a41],_0x345a41?_0x258942[_0x1326f6(0x17f)]=_0x2b1c4d:_0x424814[_0x1326f6(0x17f)]=_0x2b1c4d;}),_0x424814['addEventListener'](_0x4069cb(0x1e7),function(){const _0x3e87f8=_0x4069cb;_0x1b30b8[_0x3e87f8(0x1c9)][_0x3e87f8(0x1c7)]([this['value'],null]);}),_0x258942[_0x4069cb(0x1cb)](_0x4069cb(0x1e7),function(){const _0xb35fc6=_0x4069cb;_0x1b30b8[_0xb35fc6(0x1c9)][_0xb35fc6(0x1c7)]([null,this['value']]);}));}
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(document).ready(async function () {
+    // 필터(매물종류)
+    estate_type_get();
+
+    // 필터(거래종류)
+    sale_type_get();
+
+    // 필터(시/도)
+    sido_get();
+
+    // 필터(가격대)
+    var priceSlider = document.getElementById("price_slider");
+    var areaSlider = document.getElementById("area_slider");
+    set_pice_slider(priceSlider);
+    set_area_slider(areaSlider);
+
+    // DataTables 초기화
+    initializeDataTable("");
+
+    // [Event] 검색 버튼 클릭
+    $("#search_btn").on("click", function () {
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
+        });
+    });
+
+    // [Event] 초기화 버튼 클릭
+    $("#reset_btn").on("click", function () {
+        // animatedSlider.noUiSlider.set(0);
+        priceSlider.noUiSlider.set([0, 10000]);
+        areaSlider.noUiSlider.set([0, 10000]);
+        $("#sido").val("");
+        $("#sgg").val("");
+        $("#sgg").find("option:not(:first)").remove();
+        $("#estate_type").val("");
+        $("#sale_type").val("");
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
+        });
+    });
+
+    // [Event] 삭제 버튼 클릭
+    $(document).on("click", ".delete-btn", function () {
+        const no = $(this).attr("data-no");
+        wanted_delete(no);
+    });
+
+    // [Event] 공개 상태 변경
+    $(document).on("click", ".change-public-btn", function () {
+        const val = $(this).attr("data-public_fg");
+        const no = $(this).attr("data-estate_no");
+        public_fg_change(val, no);
+    });
+
+    $("#sido").on("change", function () {
+        const sido_cd = $(this).val();
+        sgg_get(sido_cd);
+    });
+});
+
+// =============================================================================
+// table 관련 함수
+// =============================================================================
+/**
+ * DataTables 초기화
+ */
+function initializeDataTable() {
+    let table = new DataTable("#ajax-datatables", {
+        language: {
+            url: "/assets/libs/datatables/lang/ko.json",
+        },
+        initComplete: function () {
+            let api = this.api();
+
+            // ====================================================================================================
+            // 검색박스 및 선택박스 생성 시작 =====================================================================
+            $(".dt-search").addClass("input-group");
+            let searchBox = $(".dt-search input").addClass("form-control form-control-sm");
+            let columnSelect = $('<select class="form-select form-select-sm"><option value="">전체</option></select>')
+                .prependTo(".dt-search")
+                .on("change", function () {
+                    let selectedColumn = $(this).val();
+                    searchBox.trigger("keyup");
+                });
+
+            // 각 컬럼 이름으로 옵션 추가
+            api.columns().every(function () {
+                // 특정 컬럼 제외
+                if (this.index() !== 1 && this.index() !== 6 && this.index() !== 7 && this.index() !== 9 && this.index() !== 10) {
+                    columnSelect.append('<option value="' + this.index() + '">' + $(this.header()).text() + "</option>");
+                }
+            });
+
+            // 검색박스 이벤트 핸들러 설정
+            searchBox.on("keyup", function () {
+                let searchTerm = this.value;
+                let selectedColumn = columnSelect.val();
+
+                if (selectedColumn) {
+                    api.column(selectedColumn).search(searchTerm).draw();
+                } else {
+                    api.search(searchTerm).draw();
+                }
+            });
+            // 검색박스 및 선택박스 생성 끝 =====================================================================
+            // ====================================================================================================
+
+            // ====================================================================================================
+            // 특정 컬럼의 헤더에 선택박스 추가 시작 =================================================================
+            api.columns().every(function () {
+                var column = this;
+                // 10번째 컬럼(인덱스 10)이 선택박스가 되도록 설정
+                if (column.index() === 9) {
+                    // 선택박스를 생성하고, 클래스와 기본 옵션을 설정합니다.
+                    var select = $('<select class="change-public-select form-select form-select-sm" style=""><option value="">공개(전체)</option></select>')
+                        .appendTo($(column.header()).empty()) // 생성한 선택박스를 해당 컬럼의 헤더에 추가하고 기존 내용을 비웁니다.
+                        .on("change", function () {
+                            loadTableData(table); // 선택된 값으로 데이터를 다시 로드
+                        });
+
+                    // // 중복된 값 없이 고유한 값만 저장하기 위한 Set
+                    // var uniqueValues = new Set();
+
+                    // 해당 컬럼의 데이터에서 고유한 값들을 가져와 선택박스에 옵션으로 추가합니다.
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            const button = $(d).find("button.public-change-btn"); // 공개 컬럼의 첫 번째 버튼을 가져옵니다.
+                            if (button.length && !button.closest("ul").length) {
+                                // 버튼이 존재하고, ul의 자식이 아닌지 확인합니다.
+                                const text = button.text().trim();
+                                const flag = button.attr("data-public_fg");
+
+                                if (text) {
+                                    // if (text && !uniqueValues.has(flag)) {
+                                    // uniqueValues.add(flag);
+                                    // select.append('<option value="' + flag + '">' + text + "</option>"); // 각 고유 값을 선택박스의 옵션으로 추가합니다.
+                                    const selectOptions = `
+                                    <option value="">공개(전체)</option>
+                                    <option value="Y">공개</option>
+                                    <option value="N">비공개</option>
+                                    <option value="C">거래완료</option>`;
+                                    select.html(selectOptions);
+                                }
+                            }
+                        });
+                }
+            });
+            // 특정 컬럼의 헤더에 선택박스 추가 끝 =================================================================
+        },
+        scrollX: true, // 가로 스크롤 활성화
+        processing: true, // 처리 중 메시지 활성화
+        // serverSide: true, // 서버 사이드 처리를 활성화
+        // colReorder: true,    // 컬럼 이동 활성화
+        destroy: true, // 테이블 파괴 가능
+        // lengthChange: false,
+        ajax: function (data, callback, settings) {
+            loadTableData(table, callback);
+        },
+        columns: [
+            // { data: "no", title: "no" }, // 첫 번째 열로 순서를 추가
+            { data: "wanted_no", title: "번호" }, // 첫 번째 열로 순서를 추가
+            { data: "image", title: "사진", orderable: false, searchable: false },
+            { data: "sido", title: "시/도" },
+            { data: "sgg", title: "시/군/구" },
+            { data: "estate_type", title: "매물종류" },
+            { data: "sale_type", title: "거래종류" },
+            { data: "sale_price", title: "가격", orderable: false, searchable: false },
+            { data: "area", title: "면적", searchable: false },
+            { data: "reg_date", title: "등록일자" },
+            // { data: "noti_count", title: "알림발송수", searchable: false },
+            // { data: "view_count", title: "조회수", searchable: false },
+            { data: "public_fg", title: "공개", orderable: false, searchable: false },
+            { data: "management", title: "관리", orderable: false, searchable: false },
+        ],
+        // rowReorder: {
+        //     selector: "td:nth-child(1)", // 첫 번째 열을 기준으로 row 재정렬
+        // },
+        order: [], // 기본 정렬 비활성화
+        columnDefs: [
+            // { className: "text-start", targets: [0] }, // 첫 번째 열에 좌측 정렬 클래스 추가
+            { className: "text-start align-content-center", targets: [0, 1, 2, 3, 4, 5, 6, 7, 8] }, // 모든 열에 좌측 정렬 클래스 추가
+            { width: 100, targets: [9] },
+            { className: "text-center align-content-center", targets: [9, 10] }, // 10 번째 열에 우측 정렬 클래스 추가
+            // { className: "text-end align-content-center", targets: [9] }, // 10 번째 열에 우측 정렬 클래스 추가
+        ],
+    });
+}
+
+/**
+ * 테이블 데이터 불러오는 함수
+ * @param {*} table
+ * @param {*} callback
+ */
+function loadTableData(table, callback) {
+    let filterValue = $(".change-public-select").val() || "";
+    const dataObj = {
+        ...adminUserInfo(),
+        public_fg: filterValue,
+        sido: encodeURIComponent($("#sido").val()),
+        sgg: encodeURIComponent($("#sgg").val()),
+        estate_type: encodeURIComponent($("#estate_type").val()),
+        sale_type: encodeURIComponent($("#sale_type").val()),
+        min_price: encodeURIComponent($("#input_price_start").val()),
+        max_price: encodeURIComponent($("#input_price_end").val()),
+        min_area: encodeURIComponent($("#input_area_start").val()),
+        max_area: encodeURIComponent($("#input_area_end").val()),
+    };
+    callApi("POST", "/admin/back/04-estate/put_list.php", dataObj, "loading")
+        .then((result) => {
+            if (!result) {
+                console.log("통신 실패!!!");
+                if (callback) callback({ data: [] });
+                return;
+            }
+
+            const { status, message, responseData } = result;
+
+            if (!responseData) {
+                console.log(message);
+                if (callback) callback({ data: [] });
+                return;
+            }
+
+            // 데이터를 올바르게 변환하여 DataTables에 전달합니다.
+            const formattedData = responseData.map((item, index) => {
+                // 순서(DESC)
+                const reversedOrder = responseData.length - index;
+
+                // 공개 상태
+                let public_name;
+                switch (item.public_fg) {
+                    case "Y":
+                        public_name = "공개";
+                        break;
+                    case "N":
+                        public_name = "비공개";
+                        break;
+                    case "C":
+                        public_name = "거래완료";
+                        break;
+                    default:
+                        public_name = "공개";
+                        break;
+                }
+
+                // 이미지 처리
+                let image = "";
+                if (item.imageArray.length > 0) {
+                    image = `<img src="/admin/back/04-estate/estate_images.php?token=${encodeURIComponent(item.imageArray[0].imageToken)}" alt="" width="100">`;
+                }
+
+                // 기타메모 5자 이내만 보여지도록
+                // const shortNote = item.additional_note.length > 5 ? item.additional_note.substring(0, 5) + "..." : item.additional_note;
+
+                // m2 -> 평
+                // const convertedM2 = convertToPyeong(item.platArea);
+
+                return {
+                    // no: reversedOrder,
+                    wanted_no: item.wanted_no,
+                    image: image,
+                    sido: item.sido,
+                    sgg: item.sgg,
+                    estate_type: item.estate_type,
+                    sale_type: item.sale_type,
+                    // sale_price: comma(item.sale_price) + "만" + (item.rent_price ? " / 월" + comma(item.rent_price) + "만" : ""),
+                    // sale_price: formatPrice(item.sale_price) + (item.rent_price ? " / 월" + formatPrice(item.rent_price) : ""),
+                    sale_price: `${formatPrice(item.sale_price)}${item.rent_price ? " / 월 " + (item.rent_price == 0 ? 0 : formatPrice(item.rent_price)) : ""}`,
+                    area: comma(item.area) + "㎡",
+                    phone: item.phone,
+                    // noti_count: comma(item.noti_count),
+                    // view_count: comma(item.view_count),
+                    reg_date: item.reg_date,
+                    public_fg: `
+                    <div class="dropdown d-inline-block">
+                        <button class="public-change-btn btn btn-soft-danger btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-public_fg="${item.public_fg}">
+                            ${public_name}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <button class="dropdown-item change-public-btn" data-public_fg="Y" data-estate_no="${item.wanted_no}">
+                                    공개
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item change-public-btn" data-public_fg="N" data-estate_no="${item.wanted_no}">
+                                    비공개
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item change-public-btn" data-public_fg="C" data-estate_no="${item.wanted_no}">
+                                    거래완료
+                                </button>
+                            </li>
+                        </ul>
+                    </div>`,
+                    management: `
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-soft-danger btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ri-more-fill align-middle"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a href="/admin/views/re_manage/re_put_detail.html?no=${item.wanted_no}" class="dropdown-item">
+                                    <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                    상세
+                                </a>
+                            </li>
+                            <li>
+                                <button data-no="${item.wanted_no}" class="delete-btn dropdown-item">
+                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                    삭제
+                                </button>
+                            </li>
+                        </ul>
+                    </div>`,
+                };
+            });
+
+            if (callback) {
+                callback({ data: formattedData });
+            } else {
+                table.clear().rows.add(formattedData).draw();
+            }
+
+            // 툴팁 초기화
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        })
+        .catch((error) => {
+            console.error("AJAX 요청 중 오류 발생:", error);
+            if (callback) callback({ data: [] });
+        });
+}
+
+/**
+ * 삭제처리 함수
+ * @param {*} rcvNo
+ * @returns
+ */
+async function wanted_delete(rcvNo) {
+    const confirm = await sweetConfirm("삭제 하시겠습니까?", "", "w");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        rcvNo: rcvNo,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/put_delete.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
+        });
+    } else {
+        const confirm = await sweetAlertForReturn("삭제를 실패했습니다.", "", "e");
+        if (!confirm) return;
+    }
+}
+
+/**
+ * 공개 상태 변경하는 함수
+ * @param {*} val = 변경할 상태값
+ * @returns
+ */
+async function public_fg_change(val, no) {
+    const confirm = await sweetConfirm("상태를 변경 하시겠습니까?", "", "q");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        public_fg: encodeURIComponent(val),
+        rcvNo: no,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/put_public_fg_change.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
+        });
+    } else {
+        const confirm = await sweetAlertForReturn("변경에 실패했습니다.", "", "e");
+        if (!confirm) return;
+    }
+}
+
+// =============================================================================
+// 검색 필터 관련 함수
+// =============================================================================
+/**
+ * 매물종류 가져오는 함수
+ * @returns
+ */
+async function estate_type_get() {
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/estate_type_get.php", dataObj);
+
+    if (!result) return;
+
+    const { status, messagem, responseData } = result;
+
+    if (responseData.length > 0) {
+        // type_name 기준으로 오름차순 정렬
+        /*
+        responseData.sort((a, b) => {
+            if (a.type_name < b.type_name) return -1;
+            if (a.type_name > b.type_name) return 1;
+            return 0;
+        });
+
+        const optionHtml = responseData
+            .map(function (e) {
+                return `
+                <option value="${e.type_code}" name="${e.group_code}">${e.type_name}</option>`;
+            })
+            .join("");
+
+        $("#estate_type").append(optionHtml);
+        */
+        populateOptions2(
+            "#estate_type", // selector: 옵션을 추가할 select 태그의 ID
+            responseData,   // data: API 응답으로 받은 데이터 배열
+            "type_code",    // valueKey: option 태그의 value 속성으로 사용할 데이터의 키
+            "type_name",    // textKey: option 태그의 텍스트로 표시할 데이터의 키
+            "type_code"     // sortKey: type_name 기준으로 오름차순 정렬
+        );
+    }
+}
+
+/**
+ * 거래종류 가져오는 함수
+ * @returns
+ */
+async function sale_type_get() {
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/sale_type_get.php", dataObj);
+
+    if (!result) return;
+
+    const { status, messagem, responseData } = result;
+
+    if (responseData.length > 0) {
+        // // type_name 기준으로 오름차순 정렬
+        // responseData.sort((a, b) => {
+        //     if (a.type_name < b.type_name) return -1;
+        //     if (a.type_name > b.type_name) return 1;
+        //     return 0;
+        // });
+
+        const optionHtml = responseData
+            .map(function (e) {
+                return `
+                <option value="${e.type_code}">${e.type_name}</option>`;
+            })
+            .join("");
+
+        $("#sale_type").append(optionHtml);
+    }
+}
+function populateOptions2(selector, data, valueKey, textKey, sortKey = textKey) { // sortKey 추가, 기본값은 textKey
+    if (data.length > 0) {
+        // 정렬 키를 기준으로 정렬
+        // 숫자 정렬이 필요하다면 Number()로 변환 후 비교
+        data.sort((a, b) => {
+            const valA = a[sortKey];
+            const valB = b[sortKey];
+
+            // 만약 sortKey가 숫자 형태라면 숫자로 변환하여 비교
+            if (!isNaN(Number(valA)) && !isNaN(Number(valB))) {
+                return Number(valA) - Number(valB); // 숫자 오름차순
+            } else {
+                return String(valA).localeCompare(String(valB)); // 문자열 사전식 오름차순
+            }
+        });
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        $(selector).append(optionHtml);
+    }
+}
+/**
+ * 시/도 가져오는 함수
+ * @returns
+ */
+async function sido_get() {
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/sido_get.php", dataObj);
+
+    if (!result) return;
+
+    const { status, messagem, responseData } = result;
+
+    if (responseData.length > 0) {
+        // // type_name 기준으로 오름차순 정렬
+        // responseData.sort((a, b) => {
+        //     if (a.type_name < b.type_name) return -1;
+        //     if (a.type_name > b.type_name) return 1;
+        //     return 0;
+        // });
+
+        const optionHtml = responseData
+            .map(function (e) {
+                return `
+                <option value="${e.sido_cd}">${e.locallow_nm}</option>`;
+            })
+            .join("");
+
+        $("#sido").append(optionHtml);
+    }
+}
+
+/**
+ * 시/군/구 가져오는 함수
+ * @returns
+ */
+async function sgg_get(sido_cd) {
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+        sido_cd: encodeURIComponent(sido_cd),
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/sgg_get.php", dataObj);
+
+    if (!result) return;
+
+    const { status, messagem, responseData } = result;
+
+    if (responseData.length > 0) {
+        // #sgg 요소의 기존 옵션을 제거합니다.
+        $("#sgg").empty();
+
+        // 기본 옵션을 다시 추가합니다.
+        $("#sgg").append('<option value="" selected>시/도를 선택하세요</option>');
+
+        const optionHtml = responseData
+            .map(function (e) {
+                return `
+                <option value="${e.sgg_cd}">${e.locatadd_nm}</option>`;
+            })
+            .join("");
+
+        $("#sgg").append(optionHtml);
+    }
+}
+
+/**
+ * 가격대 필터 셋팅 함수
+ * @param {*} slider
+ */
+function set_pice_slider(slider) {
+    // range - 가격대 //
+    noUiSlider.create(slider, {
+        start: [0, 100000000], //  초기 시작값 설정
+        connect: true, // 슬라이더 핸들 사이를 채움
+        range: {
+            min: 0, // 슬라이더 최소값
+            max: 100000000, // 슬라이더 최대값
+        },
+        format: wNumb({
+            decimals: 0, // 소수점 자릿수 설정
+            suffix: "", // 접미사 설정 (여기서는 빈 문자열)
+        }),
+        step: 1000, // 슬라이더 스텝 크기 설정
+        keyboardSupport: true, // 키보드 지원 활성화
+        keyboardDefaultStep: 100, // 키보드 화살표 키 기본 스탭 크기
+        keyboardPageMultiplier: 1000, // Page Up/Down 키에 대한 배수(기본 스텝 크기 기준)
+        // keyboardMultiplier: 10, // Shift 키와 함께 사용할 때 배수(기본 스텝 크기 기준)
+        // 툴팁 단위설정
+        // tooltips: [
+        //     {
+        //         to: function (value) {
+        //             return value + " 만";
+        //         },
+        //     },
+        //     {
+        //         to: function (value) {
+        //             return value + " 만";
+        //         },
+        //     },
+        // ],
+    });
+
+    // 인풋박스와 연동
+    const inputNumber = document.getElementById("input_price_start");
+    const inputNumber2 = document.getElementById("input_price_end");
+
+    if (inputNumber && inputNumber2 && slider) {
+        slider.noUiSlider.on("update", function (values, handle) {
+            const value = values[handle];
+            if (handle) {
+                inputNumber2.value = value;
+            } else {
+                inputNumber.value = value;
+            }
+        });
+
+        inputNumber.addEventListener("change", function () {
+            slider.noUiSlider.set([this.value, null]);
+        });
+
+        inputNumber2.addEventListener("change", function () {
+            slider.noUiSlider.set([null, this.value]);
+        });
+    }
+    // 툴팁 항상 생성하기
+    // mergeTooltips(slider, 100000, " - ");
+}
+
+/**
+ * 면적 필터 셋팅 함수
+ * @param {*} slider
+ */
+function set_area_slider(slider) {
+    // range - 면적 //
+    noUiSlider.create(slider, {
+        start: [0, 1000000], //  초기 시작값 설정
+        connect: true, // 슬라이더 핸들 사이를 채움
+        // 툴팁 단위설정
+        // tooltips: [
+        //     {
+        //         to: function (value) {
+        //             return value + " 만";
+        //         },
+        //     },
+        //     {
+        //         to: function (value) {
+        //             return value + " 만";
+        //         },
+        //     },
+        // ],
+        step: 100, // 슬라이더 스텝 크기 설정
+        keyboardSupport: true, // 키보드 지원 활성화
+        keyboardDefaultStep: 500, // 키보드 화살표 키 기본 스탭 크기
+        keyboardPageMultiplier: 20, // Page Up/Down 키에 대한 배수(기본 스텝 크기 기준)
+        keyboardMultiplier: 10, // Shift 키와 함께 사용할 때 배수(기본 스텝 크기 기준)
+        range: {
+            min: 0, // 슬라이더 최소값
+            max: 1000000, // 슬라이더 최대값
+        },
+        format: wNumb({
+            decimals: 0, // 소수점 자릿수 설정
+            suffix: "", // 접미사 설정 (여기서는 빈 문자열)
+        }),
+    });
+
+    // 인풋박스와 연동inputNumber
+    const inputNumber = document.getElementById("input_area_start");
+    const inputNumber2 = document.getElementById("input_area_end");
+    inputNumber &&
+        inputNumber2 &&
+        slider &&
+        (slider.noUiSlider.on("update", function (e, i) {
+            e = e[i];
+            i ? (inputNumber2.value = e) : (inputNumber.value = e);
+        }),
+        inputNumber.addEventListener("change", function () {
+            slider.noUiSlider.set([this.value, null]);
+        }),
+        inputNumber2.addEventListener("change", function () {
+            slider.noUiSlider.set([null, this.value]);
+        }));
+
+    // 툴팁 항상 생성하기
+    // mergeTooltips(slider, 100000, " - ");
+}

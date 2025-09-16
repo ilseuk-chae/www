@@ -50,7 +50,7 @@ try {
         AND a.estate_type = b.type_code
     
         INNER JOIN type_master AS c
-        ON c.group_code = 'SALE_TYPE'
+        ON c.group_code = 'TRANSACTION_TYPE'  -- ON c.group_code = 'SALE_TYPE'
         AND a.sale_type = c.type_code
 
         LEFT JOIN bjd_master AS d
@@ -124,6 +124,13 @@ try {
     // }
     // echo $debug_sql;
     // exit;
+
+    //$debug_sql = $sql;
+    // foreach ($params as $i => $param) {
+    //     $debug_sql = preg_replace('/\?/', "'$param'", $debug_sql, 1);
+    // }
+    //var_dump($debug_sql);
+    //exit;
 
     // SQL 문장을 준비합니다.
     $stmt = mysqli_prepare($conn, $sql);

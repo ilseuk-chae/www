@@ -552,6 +552,7 @@ function initAction() {
             $(".map-history").removeClass("active");
             $(".map-sale-group").removeClass("active");
             $(".map-estate-group").removeClass("active");
+            $(".map-exchange-group").removeClass("active");
             $(".map-price-group").removeClass("active");
             $(".map-bg").addClass("full");
             $("#rvWrapper").addClass("full");
@@ -561,6 +562,7 @@ function initAction() {
             $(".map-history").addClass("active");
             $(".map-sale-group").addClass("active");
             $(".map-estate-group").addClass("active");
+            $(".map-exchange-group").addClass("active");
             $(".map-price-group").addClass("active");
             $(".map-bg").removeClass("full");
             $("#rvWrapper").removeClass("full");
@@ -740,6 +742,14 @@ function initAction() {
     });
     // 지도 - sale 선택 20250627
     $(".map-sale-group button").on("click", function() {
+        // 클릭된 버튼의 active 클래스를 토글합니다.
+        // active 클래스가 없으면 추가하고, 있으면 제거합니다.
+        $(this).toggleClass("active");
+        estateNewList();
+    });
+
+    // 지도 - sale 선택 20250627
+    $(".map-exchange-group button").on("click", function() {
         // 클릭된 버튼의 active 클래스를 토글합니다.
         // active 클래스가 없으면 추가하고, 있으면 제거합니다.
         $(this).toggleClass("active");
@@ -1619,6 +1629,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                     let compareCheckbox = "";
                     let sateTypeHtml = "";
                     let priceHtml = "";
+                    /*
                     switch (data.sale_type) {
                         case "임대":
                             sateTypeHtml = `<span class="label-default bg-violet1">임대</span>`;
@@ -1633,7 +1644,24 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                             priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
                             break;
                     }
-
+                    */
+                    switch (data.sale_type) {
+                        case "매매":
+                            sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
+                            priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
+                            break;
+                        case "전세":
+                        case "임대(전세)":
+                            sateTypeHtml = `<span class="label-default bg-violet1">임대(전세)</span>`;
+                            priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
+                            break;
+                        case "월세":
+                        case "임대(월세)":
+                            sateTypeHtml = `<span class="label-default bg-indigo1">임대(월세)</span>`;
+                            //priceHtml = `<span class="text-nowrap">${formatPrice(data.rent_price, "all", true)}</span> / <span class="text-nowrap">${formatPrice(data.deposit_price, "all", true)}</span>`;
+                            priceHtml = `<span class="text-nowrap">${formatPrice(data.sale_price, "all", true)}</span> / <span class="text-nowrap">${formatPrice(data.rent_price, "all", true)}</span>`;
+                            break;
+                    }
                     let estateHtml = data.estate_type;
                     
                     let addressHtml = "";  //지번 주소
@@ -1654,6 +1682,15 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                             areaHtml = formatArea(data.totArea);
                     }
 
+                    let exchange_Html = "";
+                    switch (data.exchange_fg) {
+                        case "Y":
+                            exchange_Html = `<span class="label-default bg-blue1">교환가능</span>`;;
+                            break;
+                        default:
+                            exchange_Html = "";
+                    }
+                   
                     let image = "";
                     if (data.imageArray.length > 0) {
                         const imageUrl = `/front/back/00-include/image.php?token=${encodeURIComponent(data.imageArray[0].imageToken)}`;
@@ -1682,6 +1719,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                                         ${compareCheckbox}
                                         ${sateTypeHtml}
                                         ${data.estate_type}
+                                        ${exchange_Html}
                                     </div>
                                     ${estateNoHtml}
                                 </h2>
@@ -1806,7 +1844,7 @@ async function estateDetail(estateNo) {
                 lng: responseData.lng, // 요소의 너비
                 animate: true, 
             };
-            setMapCenterAndZoom (2, dataObj);
+            setMapCenterAndZoom (3, dataObj);
             const coords = { lat: responseData.lat, lng: responseData.lng };
             handleMapClick(coords);
         })
@@ -1827,6 +1865,7 @@ async function renderEstateDetail(data) {
     // 2. 매물번호, 매물타입, 거래타입 정보 업데이트
     let sateTypeHtml = "";
     let priceHtml = "";
+    /*
     switch (data.sale_type) {
         case "임대":
             sateTypeHtml = `<span class="label-default bg-violet1">임대</span>`;
@@ -1841,7 +1880,35 @@ async function renderEstateDetail(data) {
             priceHtml = `교환 ${formatPrice(data.sale_price, "all", true)}원`;
             break;
     }
-    $("#map_sell_view .msv-info dt").html(`${sateTypeHtml} ${data.estate_type}`);
+    */
+    switch (data.sale_type) {
+        case "매매":
+            sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
+            priceHtml = `매매 ${formatPrice(data.sale_price, "all", true)}원`;
+            break;
+        case "전세":
+        case "임대(전세)":
+            sateTypeHtml = `<span class="label-default bg-violet1">임대(전세)</span>`;
+            priceHtml = `임대(전세) ${formatPrice(data.sale_price, "all", true)}원`;
+                break;
+        case "월세":
+        case "임대(월세)":
+            sateTypeHtml = `<span class="label-default bg-indigo1">임대(월세)</span>`;
+            //priceHtml = `임대(월세) ${formatPrice(data.rent_price, "all", true)}원 / 보증금 ${formatPrice(data.deposit_price, "all", true)}원`;
+            priceHtml = `임대(월세) ${formatPrice(data.sale_price, "all", true)}원 / 보증금 ${formatPrice(data.rent_price, "all", true)}원`;
+            break;
+    }
+
+    let exchange_Html = "";
+    switch (data.exchange_fg) {
+        case "Y":
+            exchange_Html = `<span class="label-default bg-blue1">교환가능</span>`;;
+            break;
+        default:
+            exchange_Html = "";
+    }
+    
+    $("#map_sell_view .msv-info dt").html(`${sateTypeHtml} ${data.estate_type} ${exchange_Html}`);
     $("#map_sell_view .msv-info dd .estate-no").text(data.estate_no);
     $("#map_sell_view .msv-info dd .estate-no").attr("data-lat", data.lat);
     $("#map_sell_view .msv-info dd .estate-no").attr("data-lng", data.lng);
@@ -1867,7 +1934,9 @@ async function renderEstateDetail(data) {
         { name: "notes", title: "참고사항", value: data.notes || "" },
         { name: "estate_type", title: "매물구분", value: data.estate_type || "" },
         { name: "sale_type", title: "거래종류", value: data.sale_type || "" },
-        { name: "price", title: "가격", value: data.sale_type == "매매" || data.sale_type == "교환" ? `${formatPrice(data.sale_price, "all", true)}` : `${formatPrice(data.sale_price, "all", true)} / ${formatPrice(data.rent_price, "all", true)}` },
+        //{ name: "price", title: "가격", value: data.sale_type == "매매" || data.sale_type == "교환" ? `${formatPrice(data.sale_price, "all", true)}` : `${formatPrice(data.sale_price, "all", true)} / ${formatPrice(data.rent_price, "all", true)}` },
+        //{ name: "price", title: "가격", value: data.sale_type == "매매" || data.sale_type == "전세" ? `${formatPrice(data.sale_price, "all", true)}` : `${formatPrice(data.rent_price, "all", true)} / ${formatPrice(data.deposit_price, "all", true)}` },
+        { name: "price", title: "가격", value: data.sale_type == "매매" || data.sale_type == "전세" ? `${formatPrice(data.sale_price, "all", true)}` : `${formatPrice(data.sale_price, "all", true)} / ${formatPrice(data.rent_price, "all", true)}` },
         //{ name: "platArea", title: "토지면적", value: `${data.platArea ? parseFloat(data.platArea).toFixed(2) + "㎡" : ""}` },
         //{ name: "archArea", title: "건축면적", value: `${data.archArea ? parseFloat(data.archArea).toFixed(2) + "㎡" : ""}` },
         //{ name: "totArea", title: "총면적", value: `${data.totArea ? parseFloat(data.totArea).toFixed(2) + "㎡" : ""}` },
@@ -1980,7 +2049,7 @@ async function make_compareList(compareList) {
     
      // Promise.all을 사용하여 두 매물의 상세 정보를 동시에 가져옵니다.
     
-    try {
+    try { // 첫 번째 try-catch: Promise.all 자체의 실패 (네트워크, 파싱 등) 처리
         const apiCalls = [];
         // compareList.data에 있는 각 매물에 대해 API 호출 Promise를 생성하여 배열에 추가
         for (let i = 0; i < compareList.data.length; i++) {
@@ -1991,33 +2060,46 @@ async function make_compareList(compareList) {
         }
         // 모든 API 호출을 동시에 실행하고 응답을 기다립니다.
         const responses = await Promise.all(apiCalls);
-
         // comparisonData 배열 초기화 (함수 스코프에 선언된 전역 또는 상위 스코프 변수여야 함)
         comparisonData = []; 
 
-        // 각 응답을 순회하며 성공 여부 확인 및 데이터 저장
-        for (let i = 0; i < responses.length; i++) {
-            const response = responses[i];
-            const estateIndex = i + 1; // 몇 번째 매물인지 표시하기 위함 (1부터 시작)
+        try { // 두 번째 try-catch: 개별 응답의 유효성 검사 중 발생할 수 있는 잠재적 오류 처리
+            // 예를 들어, response 자체가 null이거나 responseData가 없는 등의 예상치 못한 경우
+            // 각 응답을 순회하며 성공 여부 확인 및 데이터 저장
+            for (let i = 0; i < responses.length; i++) {
+                const response = responses[i];
+                const estateIndex = i + 1;
 
-            if (response && response.statusCode === 200 && response.message === "SUCCESS") {
-                comparisonData.push(response.responseData);
-            } else {
-                console.error(`${estateIndex}번째 매물 상세 정보 로드 실패:`, response);
-                sweetAlertMessage(`${estateIndex}번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.`, "", "e");
-                $('#compareModal').hide();
-                return; // 실패 시 즉시 중단
+                if (response && response.statusCode === 200 && response.message === "SUCCESS") {
+                    // response.responseData가 null/undefined일 가능성이 있다면 여기서도 체크
+                    if (response.responseData) {
+                        comparisonData.push(response.responseData);
+                    } else {
+                        throw new Error(`응답 데이터가 유효하지 않습니다 (매물 #${estateIndex})`);
+                    }
+                } else {
+                    // 이 부분은 현재 onedol님 코드가 이미 명확하게 에러를 처리하고 있으므로
+                    // 굳이 throw 해서 catch로 보내지 않고 여기서 직접 처리해도 무방합니다.
+                    console.error(`${estateIndex}번째 매물 상세 정보 로드 실패:`, response);
+                    sweetAlertMessage(`${estateIndex}번째 매물 정보를 불러오지 못했습니다. 비교를 중단합니다.`, "", "e");
+                    $('#compareModal').hide();
+                    return; // 실패 시 즉시 중단
+                }
             }
-        }
-        
-        // 모든 매물의 상세 데이터를 성공적으로 가져왔으므로, 이제 비교 테이블을 채웁니다.
-        renderComparisonTable(comparisonData); // comparisonData 배열을 넘깁니다.
-        adjustComparisonModalHeight();
-        adjustComparisonModalWidth(comparisonData.length); // 실제 비교 매물 개수를 넘깁니다.
+            // 모든 매물의 상세 데이터를 성공적으로 가져왔으므로, 이제 비교 테이블을 채웁니다.
+            renderComparisonTable(comparisonData);
+            adjustComparisonModalHeight();
+            adjustComparisonModalWidth(comparisonData.length);
 
-    } catch (error) {
+        } catch (innerError) { // 두 번째 try-catch 블록에서 발생한 에러 처리
+            console.error("개별 매물 응답 처리 중 오류 발생:", innerError);
+            sweetAlertMessage("매물 상세 정보를 처리하는 중 오류가 발생했습니다.", "", "e");
+            $('#compareModal').hide();
+        }
+
+    } catch (outerError) {
         //console.error("매물 상세 정보 로드 중 오류 발생:", error);
-        sweetAlertMessage("매물 상세 정보를 불러오는 중 오류가 발생했습니다.","","e");
+        sweetAlertMessage("매물 상세 정보를 불러오는 중 오류가 발생했습니다.","","outerError");
         $('#compareModal').hide();
     }
 }
@@ -2043,7 +2125,9 @@ function renderComparisonTable(comparisonData) {
         { label: "참고사항", prop: "notes", type: "text", compare: "N", formatter: (val) => val || ""},
         { label: "매물구분", prop: "estate_type", type: "text", compare: "N", formatter: (val) => val || "" },
         { label: "거래종류", prop: "sale_type", type: "text", compare: "N", formatter: (val) => val || "" },
-        { label: "가격", prop: "sale_price", type: "number", compare: "Y", formatter: (salePrice, data) => data.sale_type == "매매" || data.sale_type == "교환" ? `${formatPrice(salePrice, "all", true)}` : `${formatPrice(salePrice, "all", true)} / ${formatPrice(data.rent_price, "all", true)}`},
+        //{ label: "가격", prop: "sale_price", type: "number", compare: "Y", formatter: (salePrice, data) => data.sale_type == "매매" || data.sale_type == "교환" ? `${formatPrice(salePrice, "all", true)}` : `${formatPrice(salePrice, "all", true)} / ${formatPrice(data.rent_price, "all", true)}`},
+        //{ label: "가격", prop: "sale_price", type: "number", compare: "Y", formatter: (salePrice, data) => data.sale_type == "매매" || data.sale_type == "전세" ? `${formatPrice(salePrice, "all", true)}` : `${formatPrice(data.rent_price, "all", true)} / ${formatPrice(data.deposit_price, "all", true)}`},
+        { label: "가격", prop: "sale_price", type: "number", compare: "Y", formatter: (salePrice, data) => data.sale_type == "매매" || data.sale_type == "전세" ? `${formatPrice(salePrice, "all", true)}` : `${formatPrice(salePrice, "all", true)} / ${formatPrice(data.rent_price, "all", true)}`},
         { label: "토지면적", prop: "platArea", type: "number", compare: "Y", formatter: (val) => val ? formatArea(val) : "" },
         { label: "건축면적", prop: "archArea", type: "number", compare: "Y", formatter: (val) => val ? formatArea(val) : "" },
         { label: "총면적", prop: "totArea", type: "number", compare: "Y", formatter: (val) => val ? formatArea(val) : "" },
@@ -2071,13 +2155,19 @@ function renderComparisonTable(comparisonData) {
     // (위에서 제시된 comparisonFields 배열을 여기에 붙여넣거나, 전역 변수로 선언)
 
     // 1. sale_type 값에 따라 반환될 HTML 정보(클래스, 텍스트)를 매핑하는 객체를 정의합니다.
+    //const saleTypeInfoMap = {
+    //    "임대": { colorClass: "bg-violet1", text: "임대" },
+    //    "매매": { colorClass: "bg-green1", text: "매매" },
+    //    "교환": { colorClass: "bg-indigo1", text: "교환" },
+        // 필요하다면 다른 sale_type도 여기에 추가할 수 있습니다.
+    //};
     const saleTypeInfoMap = {
-        "임대": { colorClass: "bg-violet1", text: "임대" },
+        "전세": { colorClass: "bg-violet1", text: "임대(전세)" },
         "매매": { colorClass: "bg-green1", text: "매매" },
-        "교환": { colorClass: "bg-indigo1", text: "교환" },
+        "월세": { colorClass: "bg-indigo1", text: "임대(월세)" },
         // 필요하다면 다른 sale_type도 여기에 추가할 수 있습니다.
     };
-
+    
     // 2. 각 sale_type에 해당하는 HTML 문자열을 생성하는 헬퍼 함수를 정의합니다.
     const getSaleTypeHtml = (saleType) => {
         const info = saleTypeInfoMap[saleType];
@@ -2116,8 +2206,10 @@ function renderComparisonTable(comparisonData) {
     for (let i = 0; i < comparisonData.length; i++) {
         const itemData = comparisonData[i];
         const itemIndex = i + 1; // compare_item1, compare_item2, ...
-        const sateTypeHtml = sateTypeHtmls[i] || ''; // 미리 계산된 sale_type HTML
+        let exchange_Html = "";
 
+        const sateTypeHtml = sateTypeHtmls[i] || ''; // 미리 계산된 sale_type HTML
+        
         // property-value-item 클래스를 사용하여 요소 생성
         const $headerItem = $(`<div class="property-value-item" id="compare_item${itemIndex}"></div>`);
         switch (i) {
@@ -2133,9 +2225,17 @@ function renderComparisonTable(comparisonData) {
             default:
                 $headerItem.css('background-color', '#ffffff'); // 그 외는 흰색 (안전장치)
         }
+
+        switch (itemData.exchange_fg) {
+            case "Y":
+                exchange_Html = `<span class="label-default bg-blue1">교환가능</span>`;
+                break;
+            default:
+                exchange_Html = "";
+        }
         
         // 내용 채우기
-        $headerItem.html(`${sateTypeHtml} ${itemData.estate_type} (매물번호 : ${itemData.estate_no})`);
+        $headerItem.html(`${sateTypeHtml} ${itemData.estate_type} (매물번호 : ${itemData.estate_no}) ${exchange_Html}`);
         
         $headerPropertyValues.append($headerItem); // 생성된 아이템을 property-values에 추가
     }
@@ -2536,7 +2636,7 @@ function swiper_image(imageArray) {
  * 필터 관련 함수 초기화
  */
 function initFilters() {
-    // 필터(매물종류, 거래방식)
+    // 필터(매물종류, 거래종류)
     getFilterTypes();
 
     // 필터(가격대)
@@ -2565,7 +2665,8 @@ function collectFilterParams() {
 function collectMultiFilterParams() {
     return {
         estateType: getEstateListFilterParams(), 
-        saleType: getSaleListFilterParams(),     
+        saleType: getSaleListFilterParams(),  
+        exchange: getExchangeFilterParams(),   
         minPrice: $("#input_price_start").val(),
         maxPrice: $("#input_price_end").val(),
     };
@@ -2578,6 +2679,16 @@ function getSaleListFilterParams() {
         sale_value.push(saleTypeToValue(btn_text)); // 버튼의 텍스트 값을 가져와 배열에 추가
     });
     return sale_value;
+}
+
+// 교환가능 필터 파라미터 Y: 교환 가능만, N: 전체 (여기서는 빈 문자열이 전체를 의미합니다.)
+function getExchangeFilterParams() {
+    let exchange_value = "";
+    // .length 속성을 사용하여 active 클래스를 가진 버튼이 하나라도 존재하는지 확인합니다.
+    if ($('.map-exchange-group button.active').length > 0) {
+        exchange_value = "Y";
+    }
+    return exchange_value;
 }
 
 function getEstateListFilterParams() {
@@ -2598,6 +2709,7 @@ function getEstateListFilterParams() {
         estate_value.push("007");
         estate_value.push("008");
         estate_value.push("009");
+        estate_value.push("010");  // 분양권 추가
         estate_value.push("999");
     } else {
         // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
@@ -2626,6 +2738,7 @@ function getEstateListFilterParams() {
  *  sale 타입을 값으로변경하는 함수
  * @param {string} saleType - sale 타입 
  */
+/*
 function saleTypeToValue(saleType) {
     let saleValue;
     switch (saleType) {
@@ -2636,6 +2749,27 @@ function saleTypeToValue(saleType) {
             saleValue = "002";
             break;
         case "교환":
+            saleValue = "003";
+            break;
+        default:
+            console.error("유효하지 않은 거래종류입니다.");
+            break;
+    }
+    return saleValue;
+}
+*/
+function saleTypeToValue(saleType) {
+    let saleValue;
+    switch (saleType) {
+        case "매매":
+            saleValue = "001";
+            break;
+        case "전세":
+        case "임대(전세)":
+            saleValue = "002";
+            break;
+        case "월세":
+        case "임대(월세)":
             saleValue = "003";
             break;
         default:
@@ -2681,6 +2815,9 @@ function estateTypeToValue(estateType) {
         case "빌라/주택":
             estateValue = "009";
             break;
+        case "분양권":
+            estateValue = "010";
+            break;
         case "기타":
             estateValue = "999";
             break;
@@ -2705,7 +2842,7 @@ function resetFilters() {
 }
 
 /**
- * 필터 - 매물종류, 거래방식 가져오는 함수
+ * 필터 - 매물종류, 거래종류 가져오는 함수
  * @returns
  */
 async function getFilterTypes() {
@@ -3201,18 +3338,31 @@ function createClusteredMarker(data) {
     return marker; // 마커를 반환하여 클러스터러에 추가
 
     let priceHtml = "";
+    //switch (data.sale_type) {
+    //    case "임대":
+    //        priceHtml = `${formatPrice(data.rent_price, "only-uk")}`;
+    //        break;
+    //    case "매매":
+    //        priceHtml = `${formatPrice(data.sale_price, "only-uk")}`;
+    //        break;
+    //    case "교환":
+    //        priceHtml = `${formatPrice(data.sale_price, "only-uk")}`;
+    //        break;
+    //}
+
     switch (data.sale_type) {
-        case "임대":
+        case "임대(전세)":
+        case "전세":
             priceHtml = `${formatPrice(data.rent_price, "only-uk")}`;
             break;
         case "매매":
             priceHtml = `${formatPrice(data.sale_price, "only-uk")}`;
             break;
-        case "교환":
+        case "임대(월세)":
+        case "월세":
             priceHtml = `${formatPrice(data.sale_price, "only-uk")}`;
             break;
     }
-
     // // Create the custom overlay content (cluster design)
     // var clusterContent = `
     //     <ul class="text-center bg-white border border-danger overflow-hidden" style="min-width:55px; border-radius:10px;">
@@ -3332,7 +3482,7 @@ function createClustererAll(type) {
             },
         ],
     });
-    // 클러스터러를 매물 및 매매 타입에 따라 저장
+    // 클러스터러를 매물 및 매매 종류에 따라 저장
     clusterersByType[key] = clusterer;
     initClusterEvent(clusterer);
 
@@ -3385,7 +3535,7 @@ function createClusterer(estateType) {
         ],
     });
 
-    // 클러스터러를 매물 및 매매 타입에 따라 저장
+    // 클러스터러를 매물 및 매매 종류에 따라 저장
     clusterersByType[key] = clusterer;
 
     kakao.maps.event.addListener(clusterer, "clustered", function (clusters) {
@@ -3492,6 +3642,7 @@ function initClusterEvent(clusterer) {
             $(".map-history").addClass("active");
             $(".map-sale-group").addClass("active");
             $(".map-estate-group").addClass("active");
+            $(".map-exchange-group").addClass("active");
             $(".map-price-group").addClass("active");
             $(".map-bg").removeClass("full");
             $("#rvWrapper").removeClass("full");

@@ -50,7 +50,7 @@ $(document).ready(function () {
  */
 function initFilters() {
     estate_type_get(); // 필터(매물종류)
-    sale_type_get(); // 필터(거래방식)
+    sale_type_get(); // 필터(거래종류)
     sido_get(); // 필터(시/도)
 
     // 필터(가격대)
@@ -108,7 +108,7 @@ function initializeDataTable() {
             { data: "sido", title: "시/도" }, // 시/도 컬럼
             { data: "sgg", title: "시/군/구" }, // 시/군/구 컬럼
             { data: "estate_type", title: "매물종류" },
-            { data: "sale_type", title: "거래방식", render: (data) => `<span class="label-default ${getBadgeClass(data)}">${data}</span>` },
+            { data: "sale_type", title: "거래종류", render: (data) => `<span class="label-default ${getBadgeClass(data)}">${data}</span>` },
             { data: "exchange_fg", title: "교환", render: (data) => (data === "Y" ? "가능" : "불가능") },
             { data: "area", title: "면적 (평)", render: (data, type, row) => `${data}㎡(${convertToPyeong(data)}평)` },
             { data: "sale_price", title: "희망가격", 
@@ -390,7 +390,7 @@ function resetFilters() {
 }
 
 /**
- * 거래방식에 따른 배지 클래스 반환
+ * 거래종류에 따른 배지 클래스 반환
  */
 function getBadgeClass(saleType) {
     return saleType === "매매" ? "bg-green1" : saleType === "전세" ? "bg-violet1" : saleType === "월세" ? "bg-indigo1" : "";
@@ -409,7 +409,8 @@ async function estate_type_get() {
 
     callApiAbort("/front/back/find/estate_type_get.php", "POST", dataObj, "estate_type_get")
         .then((response) => {
-            populateOptions("#estate_type", response.responseData, "type_code", "type_name");
+            //populateOptions("#estate_type", response.responseData, "type_code", "type_name");
+            populateOptions2("#estate_type", response.responseData, "type_code", "type_name", "type_code");
         })
         .catch((error) => {
             console.error("API 호출 실패", error);
@@ -435,7 +436,8 @@ async function sale_type_get() {
 
     callApiAbort("/front/back/find/sale_type_get.php", "POST", dataObj, "sale_type_get")
         .then((response) => {
-            populateOptions("#sale_type", response.responseData, "type_code", "type_name");
+            //populateOptions("#sale_type", response.responseData, "type_code", "type_name");
+            populateOptions2("#sale_type", response.responseData, "type_code", "type_name", "type_code");
         })
         .catch((error) => {
             console.error("API 호출 실패", error);
@@ -935,7 +937,26 @@ function populateOptions(selector, data, valueKey, textKey) {
         $(selector).append(optionHtml);
     }
 }
+function populateOptions2(selector, data, valueKey, textKey, sortKey = textKey) { // sortKey 추가, 기본값은 textKey
+    if (data.length > 0) {
+        // 정렬 키를 기준으로 정렬
+        // 숫자 정렬이 필요하다면 Number()로 변환 후 비교
+        data.sort((a, b) => {
+            const valA = a[sortKey];
+            const valB = b[sortKey];
 
+            // 만약 sortKey가 숫자 형태라면 숫자로 변환하여 비교
+            if (!isNaN(Number(valA)) && !isNaN(Number(valB))) {
+                return Number(valA) - Number(valB); // 숫자 오름차순
+            } else {
+                return String(valA).localeCompare(String(valB)); // 문자열 사전식 오름차순
+            }
+        });
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        $(selector).append(optionHtml);
+    }
+}
 /**
  * 슬라이더를 생성하는 함수
  * @param {Object} slider noUiSlider 객체

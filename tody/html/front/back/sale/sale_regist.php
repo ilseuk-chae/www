@@ -6,6 +6,8 @@ header("Content-Type: application/json; charset=utf-8");
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+//ini_set('log_errors', 1); // 오류를 로그 파일에 기록
+//ini_set('error_log', '/var/www/tody/php_error_custom.log'); // 임시로 별도의 로그 파일 지정
 // print_r($_FILES["files"]);
 // exit;
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php');
@@ -19,6 +21,7 @@ $address_jibun = isset($_POST['address_jibun']) && $_POST['address_jibun'] !== '
 $address_detail = isset($_POST['address_detail']) && $_POST['address_detail'] !== '' ? urldecode($_POST['address_detail']) : null;
 $estate_type = isset($_POST['estate_type']) && $_POST['estate_type'] !== '' ? urldecode($_POST['estate_type']) : null;
 $sale_type = isset($_POST['sale_type']) && $_POST['sale_type'] !== '' ? urldecode($_POST['sale_type']) : null;
+$exchange_fg = isset($_POST['exchange_fg']) && $_POST['exchange_fg'] !== '' ? urldecode($_POST['exchange_fg']) : 'N';
 $lndcgrCode = isset($_POST['lndcgrCode']) && $_POST['lndcgrCode'] !== '' ? urldecode($_POST['lndcgrCode']) : null;
 $lndcgrCodeNm = isset($_POST['lndcgrCodeNm']) && $_POST['lndcgrCodeNm'] !== '' ? urldecode($_POST['lndcgrCodeNm']) : null;
 $prposArea = isset($_POST['prposArea']) && $_POST['prposArea'] !== '' ? urldecode($_POST['prposArea']) : null;
@@ -66,7 +69,7 @@ $representativeImages = isset($_POST['representativeImages']) ? json_decode($_PO
 $validations = [
     ['value' => $address_primary, 'type' => 'string', 'message' => '주소를 확인해주세요.'],
     ['value' => $estate_type, 'type' => 'string', 'message' => '매물종류를 확인해주세요.'],
-    ['value' => $sale_type, 'type' => 'string', 'message' => '거래방식을 확인해주세요.'],
+    ['value' => $sale_type, 'type' => 'string', 'message' => '거래종류를 확인해주세요.'],
     ['value' => $sale_price, 'type' => 'int', 'message' => '가격을 확인해주세요.'],
     ['value' => $description, 'type' => 'string', 'message' => '매물설명을 확인해주세요.'],
 ];
@@ -79,7 +82,7 @@ foreach ($validations as $validation) {
     }
 }
 
-if ($sale_type === '002') {
+if ($sale_type === '003') { // 월세
     $validationResult = validateInput($rent_price, 'int', '월세를 확인해주세요.');
     if ($rent_price != $validationResult) {
         responseApi(400, $validationResult, null);
@@ -126,9 +129,11 @@ if ($files) {
         }
     }
 } else {
-    $errorMessage = '이미지/영상 파일을 확인해주세요.';
-    responseApi(400, $errorMessage, null);
-    exit;
+    if (empty($originArray)) {
+        $errorMessage = '이미지/영상은 최소 1장 이상 등록해야 합니다.';
+        responseApi(400, $errorMessage, null);
+        exit;
+    }
 }
 
 mysqli_autocommit($conn, FALSE);  // 자동 커밋 비활성화
@@ -142,7 +147,7 @@ try {
     #######################################################
     $sql =
         "INSERT INTO estate_listings (
-            pnu, postal_code, address_jibun, address_road, address_detail, estate_type, sale_type, 
+            pnu, postal_code, address_jibun, address_road, address_detail, estate_type, sale_type, exchange_fg,
             lndcgrCode, lndcgrCodeNm, prposArea, prposAreaNm,
             strctCd, strctCdNm, etcStrct, useAprDay, 
             mainPurpsCd, mainPurpsCdNm, realPurpsNm,
@@ -153,7 +158,7 @@ try {
             road_conditions, power, floor_height, water,
             latitude, longitude, reg_no
         ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?,
             ?, ?, ?, ?,
             ?, ?, ?,
@@ -168,7 +173,7 @@ try {
 
     // 조건 추가
     $params = [
-        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, 
+        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, $exchange_fg,
         $lndcgrCode, $lndcgrCodeNm, $prposArea, $prposAreaNm, 
         $strctCd, $strctCdNm, $etcStrct, $useAprDay, 
         $mainPurpsCd, $mainPurpsCdNm, $realPurpsNm, 
@@ -179,10 +184,14 @@ try {
         $road_conditions, $power, $floor_height, $water,
         $latitude, $longitude, $user_no
     ];
-    $types = 'sssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi';
+    $types = 'ssssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi';
+   #$types = 'sssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi';
+    
 
     // print_r($params);exit;
     // echo get_bound_query($sql, $params);exit;
+    //var_dump($sql);
+
     executeQuery($conn, $sql, $types, $params);
 
     $estate_no = mysqli_insert_id($conn);

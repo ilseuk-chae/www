@@ -61,6 +61,7 @@ try {
             el.realPurpsNm,
             el.maintenance_price,
             el.loan_price,
+            el.exchange_fg,
             DATE_FORMAT(el.useAprDay, '%Y-%m-%d') AS useAprDay, 
             el.car_parking,
             el.description,
@@ -90,7 +91,7 @@ try {
         AND el.estate_type = tm.type_code
 
         INNER JOIN type_master AS tm2
-        ON tm2.group_code = 'SALE_TYPE'
+        ON tm2.group_code = 'TRANSACTION_TYPE'  -- ON tm2.group_code = 'SALE_TYPE'
         AND el.sale_type = tm2.type_code
 
         INNER JOIN user_master AS um
@@ -138,6 +139,7 @@ try {
                 'totArea' => $row['totArea'],
                 'sale_price' => $row['sale_price'],
                 'rent_price' => $row['rent_price'],
+                'exchange_fg' => $row['exchange_fg'],
                 'deposit_price' => $row['deposit_price'],
                 'lndcgrCodeNm' => $row['lndcgrCodeNm'],
                 'prposAreaNm' => $row['prposAreaNm'],

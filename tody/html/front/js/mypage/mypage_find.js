@@ -1,1 +1,413 @@
-(function(_0x4fc012,_0x40589a){const _0x2a4856=a23_0x40d4,_0x23058c=_0x4fc012();while(!![]){try{const _0x192029=-parseInt(_0x2a4856(0x124))/0x1+parseInt(_0x2a4856(0x136))/0x2+-parseInt(_0x2a4856(0x139))/0x3+-parseInt(_0x2a4856(0xf6))/0x4+parseInt(_0x2a4856(0x114))/0x5+parseInt(_0x2a4856(0x129))/0x6*(-parseInt(_0x2a4856(0xfd))/0x7)+parseInt(_0x2a4856(0xdd))/0x8;if(_0x192029===_0x40589a)break;else _0x23058c['push'](_0x23058c['shift']());}catch(_0x11b2b7){_0x23058c['push'](_0x23058c['shift']());}}}(a23_0x1748,0xb58b3),$(function(){const _0x335728=a23_0x40d4;if(!userInfo()){alert(_0x335728(0xd8)),location['href']=_0x335728(0x105);return;}initMenu(),initializeDataTable(),initEvents();}));function initEvents(){const _0x2aa81=a23_0x40d4;$(document)['on']('click',_0x2aa81(0xfa),function(){const _0x55384d=_0x2aa81,_0xe24ff5=$(this)[_0x55384d(0xf8)](_0x55384d(0xfb));wanted_delete(_0xe24ff5);}),$(document)['on'](_0x2aa81(0xec),'.change-public-btn',function(){const _0x363986=_0x2aa81,_0x1abda0=$(this)[_0x363986(0xf8)](_0x363986(0x12f)),_0x1aa68d=$(this)['attr'](_0x363986(0x133));public_fg_change(_0x1abda0,_0x1aa68d);});}function initializeDataTable(){const _0x37cb6d=a23_0x40d4;let _0x4ac06b=new DataTable(_0x37cb6d(0x12d),{'language':{'url':_0x37cb6d(0x120)},'drawCallback':function(){addPaginationClasses();},'initComplete':function(){const _0x59af40=_0x37cb6d;let _0x21fb2a=this[_0x59af40(0xf5)]();$(_0x59af40(0xda))[_0x59af40(0x109)](_0x59af40(0x118));let _0x107475=$(_0x59af40(0xd6))[_0x59af40(0x109)](_0x59af40(0x115))[_0x59af40(0xe3)](_0x59af40(0xfc))[_0x59af40(0xf8)]('type',_0x59af40(0x135)),_0x5b48f0=$(_0x59af40(0x122))[_0x59af40(0x113)](_0x59af40(0xda))['on'](_0x59af40(0xfe),function(){const _0x539a16=_0x59af40;let _0x6513b9=$(this)[_0x539a16(0x11b)]();_0x107475[_0x539a16(0x108)](_0x539a16(0x117));});_0x21fb2a[_0x59af40(0xd4)]()['every'](function(){const _0x3be4f4=_0x59af40;this[_0x3be4f4(0x110)]()!==0x5&&this[_0x3be4f4(0x110)]()!==0x6&&this['index']()!==0x7&&this[_0x3be4f4(0x110)]()!==0x8&&this['index']()!==0xa&&this['index']()!==0xb&&_0x5b48f0['append']('<option\x20value=\x22'+this['index']()+'\x22>'+$(this[_0x3be4f4(0xe5)]())[_0x3be4f4(0x135)]()+'</option>');}),_0x107475['on']('keyup',function(){const _0x3d06dc=_0x59af40;let _0x179445=this[_0x3d06dc(0xe4)],_0x3c569c=_0x5b48f0[_0x3d06dc(0x11b)]();_0x3c569c?_0x21fb2a[_0x3d06dc(0x10c)](_0x3c569c)[_0x3d06dc(0xeb)](_0x179445)[_0x3d06dc(0xf4)]():_0x21fb2a['search'](_0x179445)[_0x3d06dc(0xf4)]();}),_0x21fb2a[_0x59af40(0xd4)]()[_0x59af40(0x121)](function(){const _0x584185=_0x59af40;var _0x35af33=this;if(_0x35af33['index']()===0xa){var _0x5abe23=$(_0x584185(0x119))['appendTo']($(_0x35af33[_0x584185(0xe5)]())[_0x584185(0x11c)]())['on']('change',function(){loadTableData(_0x4ac06b);});_0x35af33[_0x584185(0xe6)]()['unique']()['sort']()[_0x584185(0x111)](function(_0x235152,_0x10399c){const _0x57ae41=_0x584185,_0x567ee1=$(_0x235152)['find'](_0x57ae41(0x100));if(_0x567ee1[_0x57ae41(0x102)]&&!_0x567ee1[_0x57ae41(0xf1)]('ul')['length']){const _0x5676cf=_0x567ee1['text']()[_0x57ae41(0xd9)](),_0x260027=_0x567ee1['attr']('data-public_fg');if(_0x5676cf){const _0x1cb112=_0x57ae41(0xdf);_0x5abe23[_0x57ae41(0x116)](_0x1cb112);}}});}}),addPaginationClasses();},'scrollX':!![],'processing':!![],'responsive':!![],'destroy':!![],'ajax':function(_0x15b12b,_0x5d6d31,_0x387e55){loadTableData(_0x4ac06b,_0x5d6d31);},'columns':[{'data':_0x37cb6d(0x131),'title':'번호'},{'data':_0x37cb6d(0x134),'title':'시/도'},{'data':_0x37cb6d(0x104),'title':_0x37cb6d(0xf7)},{'data':'estate_type','title':_0x37cb6d(0x11d)},{'data':_0x37cb6d(0x11e),'title':_0x37cb6d(0xff)},{'data':'min_price','title':_0x37cb6d(0x127),'searchable':![]},{'data':_0x37cb6d(0xde),'title':_0x37cb6d(0xe2),'searchable':![]},{'data':_0x37cb6d(0xf3),'title':_0x37cb6d(0x10b),'searchable':![]},{'data':_0x37cb6d(0x125),'title':_0x37cb6d(0x123),'searchable':![]},{'data':_0x37cb6d(0x12c),'title':_0x37cb6d(0xdb)},{'data':_0x37cb6d(0x130),'title':'공개','orderable':![],'searchable':![]},{'data':_0x37cb6d(0x12e),'title':'관리','orderable':![],'searchable':![]}],'order':[],'columnDefs':[{'className':_0x37cb6d(0x103),'targets':[0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7,0x8,0x9]},{'width':0x64,'targets':[0xa]},{'className':_0x37cb6d(0x12b),'targets':[0xa,0xb]},{'responsivePriority':0x1,'targets':0x2},{'responsivePriority':0x2,'targets':-0x1},{'targets':[0x1,0x4,0x5,0x6,0x7,0x8,0x9,0xa,0xb],'visible':!![],'responsivePriority':0x2711}]});}function addPaginationClasses(){setTimeout(function(){const _0x49e604=a23_0x40d4,_0x42a89a=$(_0x49e604(0xed));_0x42a89a[_0x49e604(0x102)]&&_0x42a89a[_0x49e604(0x109)](_0x49e604(0x11a));},0x0);}function a23_0x1748(){const _0x3fbf84=['keyup','flex-nowrap\x20input-group','<select\x20class=\x22change-public-select\x20form-select\x22\x20style=\x22\x22><option\x20value=\x22\x22>공개(전체)</option></select>','paging-list\x20pt-0\x20gap-1','val','empty','매물종류','sale_type','/front/back/mypage/find_list.php','/assets/libs/datatables/lang/ko.json','every','<select\x20class=\x22select-box\x20w150\x22><option\x20value=\x22\x22>전체</option></select>','면적\x20최대<br>(단위:\x20㎡)','62685ylLdFO','max_area','\x22\x20class=\x22delete-btn\x20dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-delete-bin-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20삭제\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','가격대\x20최소<br>(단위:\x20만원)','비공개','572046teXDQg','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20거래완료\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</ul>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','text-center\x20align-content-center','reg_date','#ajax-datatables','management','data-public_fg','public_fg','wanted_no','clear','data-wanted_no','sido','text','317748iDpxxf','loading','responseData','909312prWtpc','add','catch','columns','langCode','.dt-search\x20input','삭제\x20하시겠습니까?','로그인\x20후\x20이용\x20가능합니다.','trim','.dt-search','등록일자','변경에\x20실패했습니다.','19295440RtPzmT','max_price','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22\x22>공개(전체)</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22Y\x22>공개</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22N\x22>비공개</option>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<option\x20value=\x22C\x22>거래완료</option>','거래완료','rows','가격대\x20최대<br>(단위:\x20만원)','removeClass','value','header','data','SUCCESS','phone','/front/back/mypage/find_delete.php','map','search','click','.pagination','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22dropdown-menu\x20dropdown-menu-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22Y\x22\x20data-wanted_no=\x22','then','error','closest','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20비공개\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22C\x22\x20data-wanted_no=\x22','min_area','draw','api','4640872RFdgID','시/군/구','attr','getItem','.delete-btn','data-no','form-control-sm','91qXPqti','change','거래종류','button.public-change-btn','estate_type','length','text-start\x20align-content-center','sgg','/index','tooltip','DataTable','trigger','addClass','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20공개\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22dropdown-item\x20change-public-btn\x22\x20data-public_fg=\x22N\x22\x20data-wanted_no=\x22','면적\x20최소<br>(단위:\x20㎡)','column','POST','AJAX\x20요청\x20중\x20오류\x20발생:','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','index','each','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22public-change-btn\x20btn\x20btn-soft-primary\x20btn-sm\x20dropdown\x22\x20type=\x22button\x22\x20data-bs-toggle=\x22dropdown\x22\x20aria-expanded=\x22false\x22\x20data-public_fg=\x22','prependTo','4691195WiRPJF','input-box\x20w350','html'];a23_0x1748=function(){return _0x3fbf84;};return a23_0x1748();}function a23_0x40d4(_0x1a6496,_0x3d8d9a){const _0x1748ad=a23_0x1748();return a23_0x40d4=function(_0x40d4ca,_0x3afd7d){_0x40d4ca=_0x40d4ca-0xd2;let _0x55ef7c=_0x1748ad[_0x40d4ca];return _0x55ef7c;},a23_0x40d4(_0x1a6496,_0x3d8d9a);}function loadTableData(_0x8e5f2f,_0x486034){const _0x4d2b68=a23_0x40d4;let _0x1f41c9=$('.change-public-select')['val']()||'';const _0x147a37={...userInfo(),'public_fg':_0x1f41c9};callApi(_0x4d2b68(0x10d),_0x4d2b68(0x11f),_0x147a37,_0x4d2b68(0x137))[_0x4d2b68(0xef)](_0x599e58=>{const _0x440f0a=_0x4d2b68;if(!_0x599e58){console['log']('통신\x20실패!!!');if(_0x486034)_0x486034({'data':[]});return;}const _0x2661e6=_0x599e58[_0x440f0a(0x138)];if(!_0x2661e6){if(_0x486034)_0x486034({'data':[]});return;}const _0x374fdd=_0x2661e6[_0x440f0a(0xea)]((_0x172e65,_0x5e8bcd)=>{const _0x12750b=_0x440f0a,_0x10f1a2=_0x2661e6[_0x12750b(0x102)]-_0x5e8bcd;let _0x2fce88;switch(_0x172e65[_0x12750b(0x130)]){case'Y':_0x2fce88='공개';break;case'N':_0x2fce88=_0x12750b(0x128);break;case'C':_0x2fce88=_0x12750b(0xe0);break;default:_0x2fce88='공개';break;}return{'wanted_no':_0x172e65[_0x12750b(0x131)],'sido':_0x172e65[_0x12750b(0x134)],'sgg':_0x172e65[_0x12750b(0x104)],'estate_type':_0x172e65[_0x12750b(0x101)],'sale_type':_0x172e65[_0x12750b(0x11e)],'min_price':comma(_0x172e65['min_price']),'max_price':comma(_0x172e65[_0x12750b(0xde)]),'min_area':comma(_0x172e65['min_area']),'max_area':comma(_0x172e65[_0x12750b(0x125)]),'phone':_0x172e65[_0x12750b(0xe8)],'reg_date':_0x172e65['reg_date'],'public_fg':_0x12750b(0x112)+_0x172e65[_0x12750b(0x130)]+_0x12750b(0x10f)+_0x2fce88+_0x12750b(0xee)+_0x172e65[_0x12750b(0x131)]+_0x12750b(0x10a)+_0x172e65[_0x12750b(0x131)]+_0x12750b(0xf2)+_0x172e65[_0x12750b(0x131)]+_0x12750b(0x12a),'management':'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dropdown\x20d-inline-block\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-soft-primary\x20btn-sm\x20dropdown\x22\x20type=\x22button\x22\x20data-bs-toggle=\x22dropdown\x22\x20aria-expanded=\x22false\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-more-fill\x20align-middle\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<ul\x20class=\x22dropdown-menu\x20dropdown-menu-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22/front/views/find/find_view.html?viewNo='+_0x172e65['wanted_no']+'\x22\x20class=\x22dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-eye-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20상세\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22/front/views/find/find_modify.html?viewNo='+_0x172e65[_0x12750b(0x131)]+'\x22\x20class=\x22dropdown-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22ri-pencil-fill\x20align-bottom\x20me-2\x20text-muted\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20수정\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20data-no=\x22'+_0x172e65[_0x12750b(0x131)]+_0x12750b(0x126)};});_0x486034?_0x486034({'data':_0x374fdd}):_0x8e5f2f[_0x440f0a(0x132)]()[_0x440f0a(0xe1)][_0x440f0a(0xd2)](_0x374fdd)[_0x440f0a(0xf4)](),$('[data-bs-toggle=\x22tooltip\x22]')[_0x440f0a(0x106)]();})[_0x4d2b68(0xd3)](_0x3e0f90=>{const _0x3d44e5=_0x4d2b68;console[_0x3d44e5(0xf0)](_0x3d44e5(0x10e),_0x3e0f90);if(_0x486034)_0x486034({'data':[]});});}async function wanted_delete(_0x2d31c2){const _0x493ecd=a23_0x40d4,_0x567c98=await sweetConfirm(_0x493ecd(0xd7),'','w');if(!_0x567c98)return;const _0x16ab5f=localStorage[_0x493ecd(0xf9)](_0x493ecd(0xd5))??'kr',_0x2d8bec={...userInfo(),'langCode':_0x16ab5f,'rcvNo':_0x2d31c2},_0x3a0fe7=await callApi(_0x493ecd(0x10d),_0x493ecd(0xe9),_0x2d8bec);if(!_0x3a0fe7)return;const {status:_0x598ce4,message:_0x4a0af7}=_0x3a0fe7;if(_0x4a0af7===_0x493ecd(0xe7)){const _0x52eea0=await sweetAlertForReturn('처리\x20되었습니다.','','s');if(!_0x52eea0)return;loadTableData(null,_0x7a9d81=>{const _0x265c0d=_0x493ecd,_0x3f4f02=$(_0x265c0d(0x12d))[_0x265c0d(0x107)]();_0x3f4f02[_0x265c0d(0x132)]()[_0x265c0d(0xe1)][_0x265c0d(0xd2)](_0x7a9d81[_0x265c0d(0xe6)])[_0x265c0d(0xf4)]();});}else{const _0x488a76=await sweetAlertForReturn('삭제를\x20실패했습니다.','','e');if(!_0x488a76)return;}}async function public_fg_change(_0x20b1e2,_0x34a3a7){const _0x372921=a23_0x40d4,_0x2de73e=await sweetConfirm('상태를\x20변경\x20하시겠습니까?','','q');if(!_0x2de73e)return;const _0x245a15=localStorage[_0x372921(0xf9)](_0x372921(0xd5))??'kr',_0x476bf9={...userInfo(),'langCode':_0x245a15,'public_fg':encodeURIComponent(_0x20b1e2),'wanted_no':_0x34a3a7},_0x172a10=await callApi(_0x372921(0x10d),'/front/back/mypage/find_public_change.php',_0x476bf9);if(!_0x172a10)return;const {status:_0x3454c6,message:_0x4da24a}=_0x172a10;if(_0x4da24a===_0x372921(0xe7)){const _0x5aca0c=await sweetAlertForReturn('처리\x20되었습니다.','','s');if(!_0x5aca0c)return;loadTableData(null,_0x52b6a3=>{const _0x29fa99=_0x372921,_0x5b6a57=$('#ajax-datatables')['DataTable']();_0x5b6a57['clear']()['rows'][_0x29fa99(0xd2)](_0x52b6a3[_0x29fa99(0xe6)])['draw']();});}else{const _0x14993c=await sweetAlertForReturn(_0x372921(0xdc),'','e');if(!_0x14993c)return;}}
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(function () {
+    if (!userInfo()) {
+        alert("로그인 후 이용 가능합니다.");
+        location.href = "/index";
+        return;
+    }
+    initMenu();
+    initializeDataTable();
+    initEvents();
+});
+
+// 이벤트 초기화 함수
+function initEvents() {
+    // [Event] 삭제 버튼 클릭
+    $(document).on("click", ".delete-btn", function () {
+        const no = $(this).attr("data-no");
+        wanted_delete(no);
+    });
+
+    // [Event] 공개 상태 변경
+    $(document).on("click", ".change-public-btn", function () {
+        const val = $(this).attr("data-public_fg");
+        const no = $(this).attr("data-wanted_no");
+        public_fg_change(val, no);
+    });
+}
+
+// =============================================================================
+// table 관련 함수
+// =============================================================================
+/**
+ * DataTables 초기화
+ */
+function initializeDataTable() {
+    let table = new DataTable("#ajax-datatables", {
+        language: {
+            url: "/assets/libs/datatables/lang/ko.json",
+        },
+        drawCallback: function () {
+            addPaginationClasses();
+        },
+        initComplete: function () {
+            let api = this.api();
+
+            // 검색박스 및 선택박스 생성
+            $(".dt-search").addClass("flex-nowrap input-group");
+            let searchBox = $(".dt-search input").addClass("input-box w350").removeClass("form-control-sm").attr("type", "text");
+            let columnSelect = $('<select class="select-box w150"><option value="">전체</option></select>')
+                .prependTo(".dt-search")
+                .on("change", function () {
+                    let selectedColumn = $(this).val();
+                    searchBox.trigger("keyup");
+                });
+
+            // 각 컬럼 이름으로 옵션 추가
+            api.columns().every(function () {
+                if (this.index() !== 5 && this.index() !== 6 && this.index() !== 7 && this.index() !== 8 && this.index() !== 10 && this.index() !== 11) {
+                    // 특정 컬럼 제외 (예: 사진, 공개, 관리)
+                    columnSelect.append('<option value="' + this.index() + '">' + $(this.header()).text() + "</option>");
+                }
+            });
+
+            // 검색박스 이벤트 핸들러 설정
+            searchBox.on("keyup", function () {
+                let searchTerm = this.value;
+                let selectedColumn = columnSelect.val();
+
+                if (selectedColumn) {
+                    api.column(selectedColumn).search(searchTerm).draw();
+                } else {
+                    api.search(searchTerm).draw();
+                }
+            });
+
+            // 특정 컬럼의 헤더에 선택박스 추가
+            api.columns().every(function () {
+                var column = this;
+                // 10번째 컬럼(인덱스 9)이 선택박스가 되도록 설정
+                if (column.index() === 10) {
+                    // 선택박스를 생성하고, 클래스와 기본 옵션을 설정합니다.
+                    var select = $('<select class="change-public-select form-select" style=""><option value="">공개(전체)</option></select>')
+                        .appendTo($(column.header()).empty()) // 생성한 선택박스를 해당 컬럼의 헤더에 추가하고 기존 내용을 비웁니다.
+                        .on("change", function () {
+                            loadTableData(table); // 선택된 값으로 데이터를 다시 로드
+
+                            // 선택박스가 변경되었을 때, 선택된 값으로 컬럼을 검색하도록 설정
+                            // var val = $.fn.dataTable.util.escapeRegex($(this).val()); // 선택된 값에서 특수 문자를 이스케이프 처리합니다.
+                            // console.log(val);
+                            // column.search(val ? "^" + val + "$" : "", true, false).draw(); // 선택된 값으로 컬럼을 검색하고 테이블을 다시 그립니다.
+                            // let val = $(this).val();
+                            // $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                            //     console.log($.fn.dataTable);
+                            //     var publicName = $(data[12]).find(".public-change-btn").text().trim();
+                            //     return val === "" || publicName === val;
+                            // });
+                            // table.draw(); // 선택된 값으로 컬럼을 검색하고 테이블을 다시 그립니다.
+                            // $.fn.dataTable.ext.search.pop();
+                        });
+
+                    // 해당 컬럼의 데이터에서 고유한 값들을 가져와 선택박스에 옵션으로 추가합니다.
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            const button = $(d).find("button.public-change-btn"); // 공개 컬럼의 첫 번째 버튼을 가져옵니다.
+                            if (button.length && !button.closest("ul").length) {
+                                // 버튼이 존재하고, ul의 자식이 아닌지 확인합니다.
+                                const text = button.text().trim();
+                                const flag = button.attr("data-public_fg");
+
+                                if (text) {
+                                    // select.append('<option value="' + flag + '">' + text + "</option>"); // 각 고유 값을 선택박스의 옵션으로 추가합니다.
+                                    const selectOptions = `
+                                                <option value="">공개(전체)</option>
+                                                <option value="Y">공개</option>
+                                                <option value="N">비공개</option>
+                                                <option value="C">거래완료</option>`;
+                                    select.html(selectOptions);
+                                }
+                            }
+                        });
+                }
+            });
+
+            addPaginationClasses(); // 초기화 시점에 페이지네이션 클래스 추가
+        },
+        scrollX: true, // 가로 스크롤 활성화
+        processing: true, // 처리 중 메시지 활성화
+        responsive: true, // 반응형 테이블 설정
+        // serverSide: true, // 서버 사이드 처리를 활성화
+        // colReorder: true,    // 컬럼 이동 활성화
+        destroy: true, // 테이블 파괴 가능
+        // lengthChange: false,
+        ajax: function (data, callback, settings) {
+            loadTableData(table, callback);
+        },
+        columns: [
+            // { data: "no", title: "no" }, // 첫 번째 열로 순서를 추가
+            { data: "wanted_no", title: "번호" }, // 첫 번째 열로 순서를 추가
+            { data: "sido", title: "시/도" },
+            { data: "sgg", title: "시/군/구" },
+            { data: "estate_type", title: "매물종류" },
+            { data: "sale_type", title: "거래종류" },
+            { data: "min_price", title: "가격대 최소<br>(단위: 만원)", searchable: false },
+            { data: "max_price", title: "가격대 최대<br>(단위: 만원)", searchable: false },
+            { data: "min_area", title: "면적 최소<br>(단위: ㎡)", searchable: false },
+            { data: "max_area", title: "면적 최대<br>(단위: ㎡)", searchable: false },
+            { data: "reg_date", title: "등록일자" },
+            // { data: "noti_count", title: "알림발송수", searchable: false },
+            // { data: "view_count", title: "조회수", searchable: false },
+            { data: "public_fg", title: "공개", orderable: false, searchable: false },
+            { data: "management", title: "관리", orderable: false, searchable: false },
+        ],
+        // rowReorder: {
+        //     selector: "td:nth-child(1)", // 첫 번째 열을 기준으로 row 재정렬
+        // },
+        order: [], // 기본 정렬 비활성화
+        columnDefs: [
+            // { className: "text-start", targets: [0] }, // 첫 번째 열에 좌측 정렬 클래스 추가
+            { className: "text-start align-content-center", targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }, // 모든 열에 좌측 정렬 클래스 추가
+            { width: 100, targets: [10] },
+            { className: "text-center align-content-center", targets: [10, 11] }, // 10 번째 열에 우측 정렬 클래스 추가
+            // { className: "text-end align-content-center", targets: [14] }, // 10 번째 열에 우측 정렬 클래스 추가
+            { responsivePriority: 1, targets: 2 }, // 첫 번째 열 우선순위 설정
+            { responsivePriority: 2, targets: -1 }, // 마지막 열 우선순위 설정
+            {
+                targets: [1, 4, 5, 6, 7, 8, 9, 10, 11],
+                visible: true, // 기본적으로 모든 열을 보이게 설정
+                responsivePriority: 10001, // 특정 열의 우선순위를 가장 낮게 설정하여 작은 화면에서 숨김 처리
+            },
+        ],
+    });
+}
+
+/**
+ * 페이지네이션에 클래스 추가 함수
+ */
+function addPaginationClasses() {
+    setTimeout(function () {
+        const pagination = $(".pagination");
+        if (pagination.length) {
+            pagination.addClass("paging-list pt-0 gap-1");
+        }
+    }, 0);
+}
+
+/**
+ * 테이블 데이터 불러오는 함수
+ * @param {*} table
+ * @param {*} callback
+ */
+function loadTableData(table, callback) {
+    let filterValue = $(".change-public-select").val() || "";
+    const dataObj = {
+        ...userInfo(),
+        public_fg: filterValue,
+        // sido: encodeURIComponent($("#sido").val()),
+        // sgg: encodeURIComponent($("#sgg").val()),
+        // estate_type: encodeURIComponent($("#estate_type").val()),
+        // sale_type: encodeURIComponent($("#sale_type").val()),
+        // min_price: encodeURIComponent($("#input_price_start").val()),
+        // max_price: encodeURIComponent($("#input_price_end").val()),
+        // min_area: encodeURIComponent($("#input_area_start").val()),
+        // max_area: encodeURIComponent($("#input_area_end").val()),
+    };
+    callApi("POST", "/front/back/mypage/find_list.php", dataObj, "loading")
+        .then((result) => {
+            if (!result) {
+                console.log("통신 실패!!!");
+                if (callback) callback({ data: [] });
+                return;
+            }
+
+            const responseData = result.responseData;
+
+            if (!responseData) {
+                if (callback) callback({ data: [] });
+                return;
+            }
+
+            // 데이터를 올바르게 변환하여 DataTables에 전달합니다.
+            const formattedData = responseData.map((item, index) => {
+                // 순서(DESC)
+                const reversedOrder = responseData.length - index;
+
+                // const descBtn = `<a class="link-dark link-body-emphasis link-offset-2 text-decoration-underline link-underline-opacity-25 link-underline-opacity-75-hover" href="mypage_sale_detail.html?no=${item.estate_no}">${item.address_total}</a>`;
+
+                // 공개 상태
+                let public_name;
+                switch (item.public_fg) {
+                    case "Y":
+                        public_name = "공개";
+                        break;
+                    case "N":
+                        public_name = "비공개";
+                        break;
+                    case "C":
+                        public_name = "거래완료";
+                        break;
+                    default:
+                        public_name = "공개";
+                        break;
+                }
+
+                // 이미지 처리
+                // let image = "";
+                // if (item.imageArray.length > 0) {
+                // image = `<img src="/admin/back/04-estate/estate_images.php?token=${encodeURIComponent(item.imageArray[0].imageToken)}" alt="" width="100">`;
+                // }
+
+                // 기타메모 5자 이내만 보여지도록
+                // const shortNote = item.additional_note.length > 5 ? item.additional_note.substring(0, 5) + "..." : item.additional_note;
+
+                return {
+                    // no: reversedOrder,
+                    wanted_no: item.wanted_no,
+                    sido: item.sido,
+                    sgg: item.sgg,
+                    estate_type: item.estate_type,
+                    sale_type: item.sale_type,
+                    min_price: comma(item.min_price),
+                    max_price: comma(item.max_price),
+                    min_area: comma(item.min_area),
+                    max_area: comma(item.max_area),
+                    phone: item.phone,
+                    // noti_count: comma(item.noti_count),
+                    // view_count: comma(item.view_count),
+                    reg_date: item.reg_date,
+                    public_fg: `
+                        <div class="dropdown d-inline-block">
+                            <button class="public-change-btn btn btn-soft-primary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-public_fg="${item.public_fg}">
+                                ${public_name}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <button class="dropdown-item change-public-btn" data-public_fg="Y" data-wanted_no="${item.wanted_no}">
+                                        공개
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item change-public-btn" data-public_fg="N" data-wanted_no="${item.wanted_no}">
+                                        비공개
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item change-public-btn" data-public_fg="C" data-wanted_no="${item.wanted_no}">
+                                        거래완료
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>`,
+                    management: `
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-soft-primary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ri-more-fill align-middle"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a href="/front/views/find/find_view.html?viewNo=${item.wanted_no}" class="dropdown-item">
+                                        <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                        상세
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/front/views/find/find_modify.html?viewNo=${item.wanted_no}" class="dropdown-item">
+                                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                                        수정
+                                    </a>
+                                </li>
+                                <li>
+                                    <button data-no="${item.wanted_no}" class="delete-btn dropdown-item">
+                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                        삭제
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>`,
+                };
+            });
+
+            if (callback) {
+                callback({ data: formattedData });
+            } else {
+                table.clear().rows.add(formattedData).draw();
+            }
+
+            // 툴팁 초기화
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        })
+        .catch((error) => {
+            console.error("AJAX 요청 중 오류 발생:", error);
+            if (callback) callback({ data: [] });
+        });
+}
+
+/**
+ * 삭제처리 함수
+ * @param {*} rcvNo
+ * @returns
+ */
+async function wanted_delete(rcvNo) {
+    const confirm = await sweetConfirm("삭제 하시겠습니까?", "", "w");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+
+    const dataObj = {
+        ...userInfo(),
+        langCode,
+        rcvNo: rcvNo,
+    };
+
+    const result = await callApi("POST", "/front/back/mypage/find_delete.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
+        });
+    } else {
+        const confirm = await sweetAlertForReturn("삭제를 실패했습니다.", "", "e");
+        if (!confirm) return;
+    }
+}
+
+/**
+ * 공개 상태 변경하는 함수
+ * @param {*} val = 변경할 상태값
+ * @returns
+ */
+async function public_fg_change(val, no) {
+    const confirm = await sweetConfirm("상태를 변경 하시겠습니까?", "", "q");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+
+    const dataObj = {
+        ...userInfo(),
+        langCode,
+        public_fg: encodeURIComponent(val),
+        wanted_no: no,
+    };
+
+    const result = await callApi("POST", "/front/back/mypage/find_public_change.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
+        });
+    } else {
+        const confirm = await sweetAlertForReturn("변경에 실패했습니다.", "", "e");
+        if (!confirm) return;
+    }
+}

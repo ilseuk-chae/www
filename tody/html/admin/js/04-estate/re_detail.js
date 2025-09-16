@@ -1,1 +1,241 @@
-function a14_0x43af(_0x294452,_0x4a29dc){const _0xb2294=a14_0xb229();return a14_0x43af=function(_0x43af65,_0x5e541a){_0x43af65=_0x43af65-0xbc;let _0x2654f0=_0xb2294[_0x43af65];return _0x2654f0;},a14_0x43af(_0x294452,_0x4a29dc);}const a14_0x338856=a14_0x43af;(function(_0x47a918,_0x2ab1a0){const _0x42a547=a14_0x43af,_0x5d7954=_0x47a918();while(!![]){try{const _0x40adfb=-parseInt(_0x42a547(0xf2))/0x1*(-parseInt(_0x42a547(0xe1))/0x2)+parseInt(_0x42a547(0xd2))/0x3+parseInt(_0x42a547(0xca))/0x4*(-parseInt(_0x42a547(0xce))/0x5)+parseInt(_0x42a547(0xe5))/0x6*(-parseInt(_0x42a547(0xc0))/0x7)+parseInt(_0x42a547(0xee))/0x8+-parseInt(_0x42a547(0xea))/0x9+parseInt(_0x42a547(0xc6))/0xa*(parseInt(_0x42a547(0xc1))/0xb);if(_0x40adfb===_0x2ab1a0)break;else _0x5d7954['push'](_0x5d7954['shift']());}catch(_0x1320dd){_0x5d7954['push'](_0x5d7954['shift']());}}}(a14_0xb229,0xaf2e1),$(document)[a14_0x338856(0xef)](async function(){const _0x563347=a14_0x338856;re_detail_info(),$(_0x563347(0xcf))['on'](_0x563347(0xde),function(){const _0x1a0db8=$('#estate_no')['text']();estate_delete(_0x1a0db8);}),$(_0x563347(0xd7))['on'](_0x563347(0xde),function(){const _0x251bc2=_0x563347,_0x3770d9=$(this)[_0x251bc2(0xbc)](_0x251bc2(0xdb));public_fg_change(_0x3770d9);});}));async function re_detail_info(){const _0x4c4a49=a14_0x338856,_0x5d09fd=localStorage[_0x4c4a49(0xe0)](_0x4c4a49(0xe6))??'kr',_0x9dc98a=adminUserInfo(),_0x27b055=getParameter('no');console['log'](_0x27b055);const _0x4289c8={..._0x9dc98a,'langCode':_0x5d09fd,'no':encodeURIComponent(_0x27b055)},_0x3f0b21=await callApi('POST',_0x4c4a49(0xbd),_0x4289c8);if(!_0x3f0b21)return;const {status:_0x3d72e2,message:_0x34069f,responseData:_0x3fad7f}=_0x3f0b21;bindJsonData(_0x3fad7f);const {agency_name:_0x3f6e9f,latitude:_0x128798,longitude:_0x566e47,public_fg:_0x4aa069,imageArray:_0x5c0524}=_0x3fad7f;$(_0x4c4a49(0xec))[_0x4c4a49(0xed)](_0x3f6e9f),swiper_image(_0x5c0524),mapInit(_0x128798,_0x566e47);const _0x3a893c=$(_0x4c4a49(0xd1));switch(_0x4aa069){case'Y':_0x3a893c[_0x4c4a49(0xed)]('공개');break;case'N':_0x3a893c[_0x4c4a49(0xed)](_0x4c4a49(0xf0));break;case'C':_0x3a893c['text']('거래완료');break;default:_0x3a893c['text']('공개');}_0x3a893c[_0x4c4a49(0xbc)](_0x4c4a49(0xdb),_0x4aa069);}function mapInit(_0x3288ef,_0xd6924c){const _0x54df06=a14_0x338856;if(!_0x3288ef||!_0xd6924c)return;var _0x2dd775=document[_0x54df06(0xdd)](_0x54df06(0xdf)),_0x1bc67f={'center':new kakao[(_0x54df06(0xdc))][(_0x54df06(0xd8))](_0x3288ef,_0xd6924c),'level':0x3},_0x4b91fb=new kakao[(_0x54df06(0xdc))][(_0x54df06(0xe3))](_0x2dd775,_0x1bc67f),_0x228c73=new kakao[(_0x54df06(0xdc))][(_0x54df06(0xf4))]({'position':_0x4b91fb[_0x54df06(0xf9)]()});_0x228c73['setMap'](_0x4b91fb);}function a14_0xb229(){const _0x476d08=['.change-public-btn','LatLng','.sale-nav-slider','html','data-public_fg','maps','getElementById','click','kakaoMap','getItem','12916UPVDCh','/admin/back/04-estate/estate_public_fg_change.php','Map','image','210bKNbUt','langCode','.swiper-button-prev','fileType','.sale-thumbnail-slider\x20.swiper-wrapper','8800074HEXwnx','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','#agency_name','text','6143656QPiChT','ready','비공개','reload','70lCnHuJ','imageToken','Marker','video','변경에\x20실패했습니다.','SUCCESS','처리\x20되었습니다.','getCenter','attr','/admin/back/04-estate/estate_info.php','<video\x20muted\x20width=\x22100%\x22\x20class=\x22img-fluid\x20mx-auto\x20rounded\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<source\x20src=\x22','<img\x20src=\x22','175609MrPcaa','269929OzcLaw','/admin/back/04-estate/estate_delete.php','map','삭제를\x20실패했습니다.','join','690EiwsLF','상태를\x20변경\x20하시겠습니까?','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22swiper-slide\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22nav-slide-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','POST','62276tJCoxU','href','<img\x20src=\x22/front/assets/image/building_empty.png\x22\x20alt=\x22\x22\x20class=\x22img-fluid\x20d-block\x22\x20/>','.sale-thumbnail-slider','185KWZhPa','#delete_btn','\x22\x20alt=\x22\x22\x20class=\x22img-fluid\x20d-block\x22\x20onerror=\x22this.onerror=null;this.src=\x27/front/assets/image/building_empty.png\x27;\x22\x20>','#public_fg','708639DhUlTR','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22swiper-slide\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x22\x20type=\x22video/mp4\x22\x20class=\x22h-100\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Your\x20browser\x20does\x20not\x20support\x20the\x20video\x20tag.\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</video>','삭제\x20하시겠습니까?','/admin/back/04-estate/estate_images.php?token='];a14_0xb229=function(){return _0x476d08;};return a14_0xb229();}function swiper_image(_0x2d0a51){const _0x400e01=a14_0x338856,_0x3270d2=$(_0x400e01(0xe9)),_0x248727=$('.sale-nav-slider\x20.swiper-wrapper'),_0x4354d9=_0x2d0a51[_0x400e01(0xc3)]((_0x1e3ff8,_0xefe987)=>{const _0x340907=_0x400e01;let _0x4bf08e='';const _0x57bc52=_0x340907(0xd6)+encodeURIComponent(_0x1e3ff8[_0x340907(0xf3)]);if(_0x1e3ff8['fileType']===_0x340907(0xe4))_0x4bf08e=_0x340907(0xbf)+_0x57bc52+'\x22\x20alt=\x22\x22\x20class=\x22img-fluid\x20d-block\x22\x20onerror=\x22this.onerror=null;this.src=\x27/front/assets/image/building_empty.png\x27;\x22\x20>';else _0x1e3ff8['fileType']===_0x340907(0xf5)?_0x4bf08e='<video\x20controls\x20width=\x22100%\x22\x20class=\x22img-fluid\x20mx-auto\x20rounded\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<source\x20src=\x22'+_0x57bc52+_0x340907(0xd4):_0x4bf08e=_0x340907(0xcc);const _0x3b9567=_0x340907(0xd3)+_0x4bf08e+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20';return _0x3b9567;})[_0x400e01(0xc5)](''),_0x1c5f3d=_0x2d0a51[_0x400e01(0xc3)]((_0x3dba13,_0x34761c)=>{const _0x59b124=_0x400e01;let _0xa8b30f='';const _0x20ec3f='/admin/back/04-estate/estate_images.php?token='+encodeURIComponent(_0x3dba13[_0x59b124(0xf3)]);if(_0x3dba13['fileType']===_0x59b124(0xe4))_0xa8b30f=_0x59b124(0xbf)+_0x20ec3f+_0x59b124(0xd0);else _0x3dba13[_0x59b124(0xe8)]===_0x59b124(0xf5)?_0xa8b30f=_0x59b124(0xbe)+_0x20ec3f+_0x59b124(0xd4):_0xa8b30f=_0x59b124(0xcc);const _0x55620e=_0x59b124(0xc8)+_0xa8b30f+_0x59b124(0xeb);return _0x55620e;})['join']('');_0x3270d2[_0x400e01(0xda)](_0x4354d9),_0x248727[_0x400e01(0xda)](_0x1c5f3d);var _0x38ffda=new Swiper(_0x400e01(0xd9),{'loop':!0x1,'spaceBetween':0xa,'slidesPerView':0x4,'freeMode':!0x0,'watchSlidesProgress':!0x0}),_0x1da825=new Swiper(_0x400e01(0xcd),{'loop':!0x1,'spaceBetween':0x18,'navigation':{'nextEl':'.swiper-button-next','prevEl':_0x400e01(0xe7)},'thumbs':{'swiper':_0x38ffda}});}async function estate_delete(_0x1069a1){const _0x383bd1=a14_0x338856,_0x5d3437=await sweetConfirm(_0x383bd1(0xd5),'','w');if(!_0x5d3437)return;const _0xa8b964=localStorage['getItem'](_0x383bd1(0xe6))??'kr',_0x3f45d5=adminUserInfo(),_0x2a8811={..._0x3f45d5,'langCode':_0xa8b964,'rcvNo':_0x1069a1},_0x44e0f2=await callApi(_0x383bd1(0xc9),_0x383bd1(0xc2),_0x2a8811);if(!_0x44e0f2)return;const {status:_0x4acfba,message:_0x4c9429}=_0x44e0f2;if(_0x4c9429===_0x383bd1(0xf7)){const _0x1a99d2=await sweetAlertForReturn('처리\x20되었습니다.','','s');if(!_0x1a99d2)return;location[_0x383bd1(0xcb)]='/admin/views/re_manage/re_listings.html';}else{const _0x3ec0fc=await sweetAlertForReturn(_0x383bd1(0xc4),'','e');if(!_0x3ec0fc)return;}}async function public_fg_change(_0x3fb444){const _0x377072=a14_0x338856,_0x457ba3=await sweetConfirm(_0x377072(0xc7),'','q');if(!_0x457ba3)return;const _0x44285c=localStorage[_0x377072(0xe0)](_0x377072(0xe6))??'kr',_0x110ebe=adminUserInfo(),_0x2543f1=getUrlParameter('no'),_0x4481ef={..._0x110ebe,'langCode':_0x44285c,'public_fg':encodeURIComponent(_0x3fb444),'estate_no':_0x2543f1},_0x140bee=await callApi(_0x377072(0xc9),_0x377072(0xe2),_0x4481ef);if(!_0x140bee)return;const {status:_0x1953e5,message:_0x190d4d}=_0x140bee;if(_0x190d4d===_0x377072(0xf7)){const _0x3c064b=await sweetAlertForReturn(_0x377072(0xf8),'','s');if(!_0x3c064b)return;location[_0x377072(0xf1)]();}else{const _0x3eb770=await sweetAlertForReturn(_0x377072(0xf6),'','e');if(!_0x3eb770)return;}}
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(document).ready(async function () {
+    // 매물 상세 정보 불러오기
+    re_detail_info();
+
+    // [Event] 삭제 버튼 클릭
+    $("#delete_btn").on("click", function () {
+        const no = $("#estate_no").text();
+        estate_delete(no);
+    });
+
+    // [Event] 공개 상태 변경
+    $(".change-public-btn").on("click", function () {
+        const val = $(this).attr("data-public_fg");
+        public_fg_change(val);
+    });
+});
+
+// =============================================================================
+// 매물 관련 함수
+// =============================================================================
+/**
+ * 매물정보 가져오는 함수
+ * @returns
+ */
+async function re_detail_info() {
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const itemNo = getParameter("no");
+    console.log(itemNo);
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        no: encodeURIComponent(itemNo),
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/estate_info.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message, responseData } = result;
+
+    // 매물정보 바인딩
+    bindJsonData(responseData);
+
+    const { agency_name, latitude, longitude, public_fg, imageArray } = responseData;
+
+    // 상호명
+    $("#agency_name").text(agency_name);
+
+    // 이미지
+    swiper_image(imageArray);
+
+    // 지도 초기화
+    mapInit(latitude, longitude);
+
+    // 공개상태
+    const public_selector = $("#public_fg");
+    switch (public_fg) {
+        case "Y":
+            public_selector.text("공개");
+            break;
+        case "N":
+            public_selector.text("비공개");
+            break;
+        case "C":
+            public_selector.text("거래완료");
+            break;
+        default:
+            public_selector.text("공개");
+    }
+    public_selector.attr("data-public_fg", public_fg);
+}
+
+/**
+ * 카카오맵 초기화 및 위치 설정
+ * @param {*} latitude = 위도
+ * @param {*} longitude = 경도
+ * @returns
+ */
+function mapInit(latitude, longitude) {
+    if (!latitude || !longitude) return;
+
+    var container = document.getElementById("kakaoMap"); //지도를 담을 영역의 DOM 레퍼런스
+    var options = {
+        //지도를 생성할 때 필요한 기본 옵션
+        center: new kakao.maps.LatLng(latitude, longitude), //지도의 중심좌표.
+        level: 3, //지도의 레벨(확대, 축소 정도)
+    };
+
+    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+    // 지도를 클릭한 위치에 표출할 마커입니다
+    var marker = new kakao.maps.Marker({
+        // 지도 중심좌표에 마커를 생성합니다
+        position: map.getCenter(),
+    });
+    // 지도에 마커를 표시합니다
+    marker.setMap(map);
+}
+
+/**
+ * 매물 이미지 swiper 요소로 추가하는 함수
+ * @param {*} imageArray = 이미지 배열
+ */
+function swiper_image(imageArray) {
+    const thumbSelector = $(".sale-thumbnail-slider .swiper-wrapper");
+    const thumbNavSelector = $(".sale-nav-slider .swiper-wrapper");
+
+    const imageHtml = imageArray
+        .map((item, index) => {
+            let image = "";
+            const imageUrl = `/admin/back/04-estate/estate_images.php?token=${encodeURIComponent(item.imageToken)}`;
+            if (item.fileType === "image") {
+                image = `<img src="${imageUrl}" alt="" class="img-fluid d-block" onerror="this.onerror=null;this.src='/front/assets/image/building_empty.png';" >`;
+            } else if (item.fileType === "video") {
+                image = `<video controls width="100%" class="img-fluid mx-auto rounded">
+                            <source src="${imageUrl}" type="video/mp4" class="h-100">
+                            Your browser does not support the video tag.
+                        </video>`;
+            } else {
+                image = '<img src="/front/assets/image/building_empty.png" alt="" class="img-fluid d-block" />';
+            }
+
+            const itemHtml = `
+            <div class="swiper-slide">
+                ${image}
+            </div>
+        `;
+            return itemHtml;
+        })
+        .join("");
+    const imageNavHtml = imageArray
+        .map((item, index) => {
+            let image = "";
+            const imageUrl = `/admin/back/04-estate/estate_images.php?token=${encodeURIComponent(item.imageToken)}`;
+            if (item.fileType === "image") {
+                image = `<img src="${imageUrl}" alt="" class="img-fluid d-block" onerror="this.onerror=null;this.src='/front/assets/image/building_empty.png';" >`;
+            } else if (item.fileType === "video") {
+                image = `<video muted width="100%" class="img-fluid mx-auto rounded">
+                            <source src="${imageUrl}" type="video/mp4" class="h-100">
+                            Your browser does not support the video tag.
+                        </video>`;
+            } else {
+                image = '<img src="/front/assets/image/building_empty.png" alt="" class="img-fluid d-block" />';
+            }
+
+            const itemHtml = `
+                <div class="swiper-slide">
+                    <div class="nav-slide-item">
+                        ${image}
+                    </div>
+                </div>
+            `;
+            return itemHtml;
+        })
+        .join("");
+
+    thumbSelector.html(imageHtml);
+    thumbNavSelector.html(imageNavHtml);
+
+    var productNavSlider = new Swiper(".sale-nav-slider", { loop: !1, spaceBetween: 10, slidesPerView: 4, freeMode: !0, watchSlidesProgress: !0 }),
+        productThubnailSlider = new Swiper(".sale-thumbnail-slider", {
+            loop: !1,
+            spaceBetween: 24,
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            thumbs: { swiper: productNavSlider },
+        });
+}
+
+/**
+ * 삭제처리 함수
+ * @param {*} rcvNo
+ * @returns
+ */
+async function estate_delete(rcvNo) {
+    const confirm = await sweetConfirm("삭제 하시겠습니까?", "", "w");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        rcvNo: rcvNo,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/estate_delete.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+        location.href = "/admin/views/re_manage/re_listings.html";
+    } else {
+        const confirm = await sweetAlertForReturn("삭제를 실패했습니다.", "", "e");
+        if (!confirm) return;
+    }
+}
+
+/**
+ * 공개 상태 변경하는 함수
+ * @param {*} val = 변경할 상태값
+ * @returns
+ */
+async function public_fg_change(val) {
+    const confirm = await sweetConfirm("상태를 변경 하시겠습니까?", "", "q");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+    const adminInfo = adminUserInfo(); // 관리자 정보
+    const estate_no = getUrlParameter("no");
+
+    const dataObj = {
+        ...adminInfo,
+        langCode,
+        public_fg: encodeURIComponent(val),
+        estate_no,
+    };
+
+    const result = await callApi("POST", "/admin/back/04-estate/estate_public_fg_change.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+        location.reload();
+    } else {
+        const confirm = await sweetAlertForReturn("변경에 실패했습니다.", "", "e");
+        if (!confirm) return;
+    }
+}

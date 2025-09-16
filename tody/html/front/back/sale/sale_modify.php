@@ -20,6 +20,7 @@ $address_jibun = isset($_POST['address_jibun']) && $_POST['address_jibun'] !== '
 $address_detail = isset($_POST['address_detail']) && $_POST['address_detail'] !== '' ? urldecode($_POST['address_detail']) : null;
 $estate_type = isset($_POST['estate_type']) && $_POST['estate_type'] !== '' ? urldecode($_POST['estate_type']) : null;
 $sale_type = isset($_POST['sale_type']) && $_POST['sale_type'] !== '' ? urldecode($_POST['sale_type']) : null;
+$exchange_fg = isset($_POST['exchange_fg']) && $_POST['exchange_fg'] !== '' ? urldecode($_POST['exchange_fg']) : 'N';
 $lndcgrCode = isset($_POST['lndcgrCode']) && $_POST['lndcgrCode'] !== '' ? urldecode($_POST['lndcgrCode']) : null;
 $lndcgrCodeNm = isset($_POST['lndcgrCodeNm']) && $_POST['lndcgrCodeNm'] !== '' ? urldecode($_POST['lndcgrCodeNm']) : null;
 $prposArea = isset($_POST['prposArea']) && $_POST['prposArea'] !== '' ? urldecode($_POST['prposArea']) : null;
@@ -71,7 +72,7 @@ $validations = [
     ['value' => $estate_no, 'type' => 'int', 'message' => '올바르지 않은 요청입니다.'],
     ['value' => $address_primary, 'type' => 'string', 'message' => '주소를 확인해주세요.'],
     ['value' => $estate_type, 'type' => 'string', 'message' => '매물종류를 확인해주세요.'],
-    ['value' => $sale_type, 'type' => 'string', 'message' => '거래방식을 확인해주세요.'],
+    ['value' => $sale_type, 'type' => 'string', 'message' => '거래종류를 확인해주세요.'],
     ['value' => $sale_price, 'type' => 'int', 'message' => '가격을 확인해주세요.'],
     ['value' => $description, 'type' => 'string', 'message' => '매물설명을 확인해주세요.'],
 ];
@@ -84,7 +85,7 @@ foreach ($validations as $validation) {
     }
 }
 
-if ($sale_type === '002') {
+if ($sale_type === '003') { // 월세
     $validationResult = validateInput($rent_price, 'int', '월세를 확인해주세요.');
     if ($rent_price != $validationResult) {
         responseApi(400, $validationResult, null);
@@ -160,6 +161,7 @@ try {
             address_detail = ?, 
             estate_type = ?, 
             sale_type = ?,
+            exchange_fg = ?,
             lndcgrCode = ?, 
             lndcgrCodeNm = ?, 
             prposArea = ?, 
@@ -200,7 +202,7 @@ try {
 
     // 조건 추가
     $params = [
-        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, 
+        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, $exchange_fg, 
         $lndcgrCode, $lndcgrCodeNm, $prposArea, $prposAreaNm, 
         $strctCd, $strctCdNm, $etcStrct, $useAprDay, 
         $mainPurpsCd, $mainPurpsCdNm, $realPurpsNm, 
@@ -214,7 +216,7 @@ try {
     ];
     // echo get_bound_query($sql, $params);exit;
 
-    $types = 'sssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi' . 'ii';
+    $types = 'ssssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi' . 'ii';
     executeQuery($conn, $sql, $types, $params);
 
 

@@ -39,7 +39,7 @@ $validations = [
     ['value' => $sido, 'type' => 'int', 'message' => '주소를 확인해주세요.'],
     ['value' => $sgg, 'type' => 'int', 'message' => '주소를 확인해주세요.'],
     ['value' => $estate_type, 'type' => 'string', 'message' => '매물종류를 확인해주세요.'],
-    ['value' => $sale_type, 'type' => 'string', 'message' => '거래방식을 확인해주세요.'],
+    ['value' => $sale_type, 'type' => 'string', 'message' => '거래종류를 확인해주세요.'],
     ['value' => $sale_price, 'type' => 'int', 'message' => '가격대를 확인해주세요.'],
     ['value' => $area, 'type' => 'int', 'message' => '면적을 확인해주세요.'],
     ['value' => $phone, 'type' => 'phone', 'message' => '연락처를 확인해주세요.'],

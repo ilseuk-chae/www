@@ -23,7 +23,7 @@ $sale_type = isset($_POST['saleType']) && is_array($_POST['saleType'])
     ? $_POST['saleType'] 
     : []; // 배열로 처리
 #$estate_type = isset($_POST['estateType']) ? urldecode($_POST['estateType']) : '';
-#$sale_type = isset($_POST['saleType']) ? urldecode($_POST['saleType']) : '';
+$exchange_fg = isset($_POST['exchange']) ? urldecode($_POST['exchange']) : '';
 $min_price = isset($_POST['minPrice']) && is_numeric(urldecode($_POST['minPrice'])) 
     ? (float)urldecode($_POST['minPrice']) * 10000 
     : 0;
@@ -87,6 +87,7 @@ try {
             el.platArea,
             el.description,
             el.feature,
+            el.exchange_fg,
             DATE_FORMAT(el.reg_date, '%Y-%m-%d') AS reg_date, 
 
             tm.type_name AS estate_type,
@@ -103,7 +104,7 @@ try {
         AND el.estate_type = tm.type_code
 
         INNER JOIN type_master AS tm2
-        ON tm2.group_code = 'SALE_TYPE'
+        ON tm2.group_code = 'TRANSACTION_TYPE' -- ON tm2.group_code = 'SALE_TYPE'
         AND el.sale_type = tm2.type_code
 
         INNER JOIN user_master AS um
@@ -179,6 +180,14 @@ try {
                 $types .= 's';
             }
 
+            // 교환 필터 추가
+            // $exchange_fg 값이 'Y'일 때만 필터 조건을 추가합니다.
+            if (!empty($exchange_fg)) { // $exchange_fg가 비어있지 않은 경우에만 조건을 추가
+                $sql .= " AND el.exchange_fg = ?";
+                $params[] = $exchange_fg;
+                $types .= 's';
+            }
+
             // 가격 범위 필터 추가
             $sql .= " AND el.sale_price BETWEEN ? AND ?";
             $params[] = $min_price;
@@ -217,6 +226,7 @@ try {
                 'lng' => $row['longitude'],
                 'estate_type' => $row['estate_type'],
                 'sale_type' => $row['sale_type'],
+                'exchange_fg' => $row['exchange_fg'],
                 'agency_name' => $row['agency_name'],
                 'data.exclusive_building' => 'N',
                 'imageArray' => array()

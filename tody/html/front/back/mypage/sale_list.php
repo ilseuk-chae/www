@@ -46,6 +46,7 @@ try {
             el.address_road,
             el.address_detail,
             el.public_fg,
+            el.exchange_fg,
             DATE_FORMAT(el.reg_date, '%Y-%m-%d') AS reg_date, 
 
             tm.type_name AS estate_type,
@@ -62,7 +63,7 @@ try {
         AND el.estate_type = tm.type_code
 
         INNER JOIN type_master AS tm2
-        ON tm2.group_code = 'SALE_TYPE'
+        ON tm2.group_code = 'TRANSACTION_TYPE'    -- ON tm2.group_code = 'SALE_TYPE'
         AND el.sale_type = tm2.type_code
 
         INNER JOIN user_master AS um

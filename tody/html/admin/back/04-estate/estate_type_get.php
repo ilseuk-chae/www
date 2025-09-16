@@ -18,10 +18,11 @@ try {
         FROM
             type_master
         WHERE group_code = 'ESTATE_TYPE'
-        AND context_type = 'sale'
-        AND use_fg = 'Y';
+        -- AND context_type = 'sale'
+        AND use_fg = 'Y'
+        ORDER BY type_code ASC;
         ";
-
+    
     // SQL 문장을 준비합니다.
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
