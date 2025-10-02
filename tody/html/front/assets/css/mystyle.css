@@ -1015,10 +1015,155 @@
   font-size: 12px;
 }
 
-
 /* ⭐⭐ modal-dialog의 높이/너비/스크롤을 강력하게 오버라이드 ⭐⭐ */
-
-
 .my-card-body{
   padding: 12px;
+}
+
+/* 이미지 썸네일 스타일 */
+.image-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  display: block; /* 이미지 밑에 생기는 기본 공백 제거 */
+  margin: 0;
+  padding: 0;
+}
+
+/* ⭐⭐ swiper-slide에 relative 포지션을 추가하고, width를 고정합니다. ⭐⭐ */
+.file-upload-swiper .swiper-slide {
+  position: relative !important; ; /* 자식 요소의 absolute positioning을 위한 컨텍스트 */
+  width: 100px !important; /* 이미지 너비와 동일하게 설정 */
+  height: 100px; /* 이미지 높이와 동일하게 설정 */
+  flex-shrink: 0;
+  margin-right: 10px; /*margin: 0;*/
+  padding: 0 !important; 
+  overflow: visible; /* x-mark 버튼이 살짝 밖으로 나가도 잘리지 않도록 */
+}
+.file-upload-swiper .swiper-slide img.image-thumbnail {
+  /* width: calc(100% - 10px); 5px 패딩 두 번 (좌우) = 10px 제외 */
+  /*height: calc(100% - 10px);  5px 패딩 두 번 (상하) = 10px 제외 */
+  width: 100%; /* 슬라이드의 100%를 채웁니다. */
+  height: 100%; /* 슬라이드의 100%를 채웁니다. */
+  object-fit: cover;
+}
+.close-btn-box {
+  position: absolute;
+  top: 0px; /* 상단에서 이미지/슬라이드 경계에 붙임 */
+  right: 0px; /* 오른쪽에서 이미지/슬라이드 경계에 붙임 */
+  z-index: 10; 
+  background-color: white; 
+  border: 1px solid grey;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ⭐⭐ 아이콘 색상 및 크기 조정 ⭐⭐ */
+.close-btn-box .fa-sharp { /* Font Awesome 아이콘에 적용 */
+    color: black; /* 검정색 X 표시 유지 */
+    font-size: 14px; /* 아이콘 크기 유지 */
+}
+.required {
+  color: red;
+  margin-left: 3px; /* 별표와 글자 사이 간격 조절 */
+  vertical-align: super; /* 별표를 살짝 위로 올릴 때 사용 (선택 사항) */
+}
+/* 이미지 전체화면 팝업 오버레이 */
+.image-fullscreen-popup {
+  position: fixed; /* 화면에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* 어두운 반투명 배경 */
+  display: flex;
+  justify-content: center; /* 이미지를 가로 중앙 정렬 */
+  align-items: center;     /* 이미지를 세로 중앙 정렬 */
+  z-index: 9999;           /* 다른 요소들 위에 표시 */
+  cursor: zoom-out;        /* 닫을 수 있음을 암시 */
+}
+
+/* 팝업 내부 내용 컨테이너 */
+.image-fullscreen-popup .popup-content {
+  position: relative;
+  max-width: 95%; /* 팝업 최대 너비 */
+  max-height: 95%; /* 팝업 최대 높이 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 팝업 이미지 */
+.image-fullscreen-popup .popup-image {
+  max-width: 100%; /* 부모 컨테이너에 맞춰 최대 크기 */
+  max-height: 100%;
+  object-fit: contain; /* 이미지 비율 유지하며 컨테이너에 맞춤 */
+  border-radius: 5px; /* 모서리 살짝 둥글게 */
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); /* 이미지 주위에 빛 효과 */
+}
+
+/* 팝업 닫기 버튼 */
+.image-fullscreen-popup .close-popup-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5); /* 읽기 쉽도록 그림자 추가 */
+  z-index: 10000; /* 닫기 버튼이 다른 요소 위에 오도록 */
+}
+
+.image-fullscreen-popup .close-popup-btn:hover {
+  color: #ccc;
+}
+/* ⭐⭐⭐ 갤러리 내비게이션 버튼 스타일 ⭐⭐⭐ */
+.image-fullscreen-popup .gallery-nav-btn {
+  position: absolute; /* 팝업 내용 기준 절대 위치 */
+  top: 50%;
+  transform: translateY(-50%); /* 버튼 중앙 정렬 */
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 50px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  z-index: 9999; /* 이미지보다 위에 오도록 */
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.image-fullscreen-popup .gallery-nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.image-fullscreen-popup .prev-btn {
+  left: 20px; /* 왼쪽에서 20px 떨어진 위치 */
+}
+
+.image-fullscreen-popup .next-btn {
+  right: 20px; /* 오른쪽에서 20px 떨어진 위치 */
+}
+
+/* 숨겨진 버튼 스타일 */
+.image-fullscreen-popup .gallery-nav-btn.hidden {
+  display: none;
+}
+
+/* ⭐⭐⭐ 이미지 개수 표시 스타일 ⭐⭐⭐ */
+.image-fullscreen-popup .image-count {
+  position: absolute;
+  bottom: 20px;
+  color: #fff;
+  font-size: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 9999;
 }

@@ -2093,7 +2093,7 @@ function handleMapContentClass() {
         if (isMobileView) { // 이전에 모바일 뷰였다면
             // .map-content에 active 클래스 추가
             $(".map-content").addClass("active");
-            console.log("창 너비 > 991px: .map-content에 active 클래스 추가");
+            //console.log("창 너비 > 991px: .map-content에 active 클래스 추가");
             isMobileView = false; // PC 뷰로 전환
         }
     } else {
@@ -2102,7 +2102,7 @@ function handleMapContentClass() {
             // .map-content에서 active 클래스 제거 (필요하다면)
             // onedol님의 요청에 따라 이 부분에서는 active를 제거하지 않았습니다.
             // $(".map-content").removeClass("active");
-            console.log("창 너비 <= 991px: .map-content 클래스 유지 (또는 제거 로직 필요시 추가)");
+            //console.log("창 너비 <= 991px: .map-content 클래스 유지 (또는 제거 로직 필요시 추가)");
             isMobileView = true; // 모바일 뷰로 전환
         }
     }

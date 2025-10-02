@@ -924,6 +924,10 @@
         <!-- turf.js -->
         <script src="/front/js/realPrice/turf.min.js"></script>
 
+        <!-- ⭐⭐ Moment.js 라이브러리 로드 ⭐⭐ -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+    
         <!-- custom -->
         <script src="/front/assets/js/common.js"></script>
         <script src="/front/js/00-include/layout.js"></script>
@@ -937,25 +941,27 @@
         <script src="/front/js/realPrice/textDrawer.js"></script>
         <script src="/front/js/realPrice/roadView.js"></script>
         
-         <!-- map 위치를 저장 위해 추가    -->
+        <!-- map 위치를 저장 위해 추가    -->
         <script src="/front/assets/js/myMap.js"></script>
         <script src="/front/js/sell/map.js"></script>
-        
+     
+        <!-- 기존 memo 관련    
+        <script src="/front/js/memo/memo.js"></script>-->
+        <!-- 변경 memo 관련 -->   
+        <script src="/front/js/memo/memo2.js"></script>
+        <!-- memo_register.js 파일 로드 (jQuery와 Bootstrap JS 로드 후) -->
+        <script src="/front/js/memo/memo_register.js"></script>
+        <!-- memo_modify.js 파일 로드  -->
+        <script src="/front/js/memo/memo_modify.js"></script>
+
+
         <!-- 단위변환을 위해 추가    -->
         <script src="/front/js/sell/tab.js"></script>
         <script src="/front/js/sell/sell.js"></script>
         <!-- active menu를 위해 추가    -->
         <script src="/front/assets/js/myscript.js"></script>
 
-        <!-- 기존 memo 관련    
-        <script src="/front/js/memo/memo.js"></script>-->
-        <!-- 변경 memo 관련 -->   
-        <script src="/front/js/memo/memo2.js"></script>
-       
-        <!-- memo_register.js 파일 로드 (jQuery와 Bootstrap JS 로드 후) -->
-        <script src="/front/js/memo/memo_register.js"></script>
-        <!-- memo_modify.js 파일 로드  -->
-        <script src="/front/js/memo/memo_modify.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
         
         <!-- 계산기 menu를 위해 추가    -->
         <div id="toolModal" class="toolmodal" style="display: none;">

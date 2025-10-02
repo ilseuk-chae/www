@@ -688,6 +688,72 @@ function callApi(type, url, dataObj = {}, loading) {
         });
     });
 }
+function callApi2(type, url, dataObj = {}, loading) {
+    return new Promise((resolve, reject) => { // Promise가 reject도 처리할 수 있도록 선언
+        // GET 요청일 경우 dataObj를 쿼리 스트링으로 변환
+        if (type.toUpperCase() === "GET" && Object.keys(dataObj).length > 0) {
+            const queryParams = new URLSearchParams(dataObj).toString();
+            url += `?${queryParams}`;
+        }
+
+        // dataObj가 FormData 객체인지 확인합니다.
+        const isFormData = dataObj instanceof FormData;
+
+        // $.ajax에 전달할 옵션 객체를 준비합니다.
+        const ajaxOptions = {
+            type,
+            url,
+            // 서버 응답이 JSON임을 기대하는 것은 유지 (파일 전송과 응답 타입은 다름)
+            // 단, 파일 업로드 후 응답이 JSON이 아닐 경우 이 dataType 설정은 문제가 될 수 있습니다.
+            // 만약 서버 응답이 텍스트라면 'text'로 변경하거나, 서버 응답 Content-Type에 맞춰 생략하는 것도 방법입니다.
+            dataType: "json",
+            beforeSend: function (xhr) {
+                if (loading === "loading") {
+                    $("html").attr("data-preloader", "enable");
+                }
+            },
+            success: (result) => {
+                resolve(result); // 성공 시 resolve로 결과 전달
+            },
+            // 이곳에 reject를 사용하는 error 콜백을 넣어주시면 됩니다!
+            error: (xhr, status, error) => {
+                // 에러 응답이 JSON 형태일 경우 responseJSON을 사용하고,
+                // 그렇지 않거나 특정 오류일 경우 새로운 Error 객체를 생성하여 reject 합니다.
+                // onedol님의 기존 로직을 최대한 유지하면서 resolve(responseJSON) 대신 reject를 사용합니다.
+                if (xhr.responseJSON) {
+                    reject(xhr.responseJSON);
+                } else {
+                    reject(new Error(`API 호출 중 에러 발생: ${status} - ${error}`));
+                }
+            },
+            complete: function (xhr, status) {
+                $("html").attr("data-preloader", "disable");
+            },
+        };
+
+        // POST 요청일 때만 data를 설정하고, FormData 여부에 따라 processData와 contentType을 조절합니다.
+        if (type.toUpperCase() === "POST") {
+            if (isFormData) {
+                // FormData 객체일 경우 특별 처리
+                ajaxOptions.data = dataObj;
+                ajaxOptions.processData = false; // jQuery가 데이터를 직렬화하지 않도록
+                ajaxOptions.contentType = false; // jQuery가 Content-Type을 자동으로 설정하지 않도록
+            } else {
+                // 일반적인 POST 요청 (예: JSON 또는 form-urlencoded 데이터를 보내는 경우)
+                ajaxOptions.data = dataObj;
+                // 일반 객체를 보내는 경우 processData와 contentType은 jQuery 기본값으로 (true, application/x-www-form-urlencoded)
+                // 만약 이 경우 JSON 데이터를 보내고 싶다면
+                // ajaxOptions.contentType = "application/json";
+                // ajaxOptions.data = JSON.stringify(dataObj);
+                // 로 변경해야 합니다.
+            }
+        }
+        // GET 요청은 URL 쿼리 스트링에 데이터가 이미 포함되었으므로 data 옵션은 설정하지 않습니다.
+
+        // 최종 설정된 옵션으로 $.ajax 호출
+        $.ajax(ajaxOptions);
+    });
+}
 
 /**
  * 서버로부터 Ajax 요청을 통해 데이터를 받아오는 함수

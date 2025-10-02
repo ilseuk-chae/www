@@ -1040,12 +1040,10 @@ function initSearchEvents() {
         let places = null; // places 변수를 null로 초기화합니다.
     
         // 2. placesString이 유효한 값인 경우에만 JSON.parse를 시도합니다.
-        // JSON.parse 과정에서 오류가 발생할 수 있으므로 try-catch 문으로 감싸줍니다.
         if (placesString) {
             try {
                 places = JSON.parse(placesString);
             } catch (e) {
-                console.error("세션 스토리지 데이터 파싱 오류:", e);
                 // 파싱 오류 발생 시 places를 null로 유지하여 다음 조건문에서 처리되도록 합니다.
                 places = null;
             }
@@ -1230,7 +1228,6 @@ function initListEvents() {
 
     $('.mcs-list').on('click', '.check-box-orange-s', function(e) {
         e.stopPropagation(); // 클릭 이벤트가 <dl>로 버블링되는 것을 막습니다.
-        // 이 핸들러에서는 이것만 하면 됩니다.
         // 체크박스 상태 변경 로직은 아래의 'change' 핸들러에서 처리됩니다.
     });
 
@@ -1245,26 +1242,21 @@ function initListEvents() {
     
         if (parentDl.length) {
             // --- 여기에 상세정보 표시 닫기 로직 추가 ---
-            // 1. 만약 상세정보를 담는 div가 id="map_sell_view" 라면:
-            // 상세정보 표시 닫기 로직
             $(".map-sell-view").removeClass("active");
 
             const estateNo = Number(parentDl.data('estate-no')); // <-- 여기를 Number()로 감쌉니다.
             // 매물 유형과 주소 정보 추출
             const saleType = parentDl.find('h2 .label-default').text().trim(); // 매물 유형 (예: 매매, 임대, 전세)
             // estateType (예: 상가, 건물, 토지)을 추출하는 새로운 로직
-            // h2 내부의 첫 번째 div (d-flex align-items-center gap-1)를 찾고
-            // 그 div의 contents 중에서 span.label-default 다음의 텍스트 노드를 찾습니다.
+            
             const estateCategoryDiv = parentDl.find('h2 > div.d-flex.align-items-center.gap-1');
             let estateType = '';
             if (estateCategoryDiv.length) {
-                // div 내부의 모든 자식 노드를 순회하며 텍스트 노드를 찾습니다.
                 // label-default 다음의 텍스트 노드가 우리가 찾는 estate_type 입니다.
                 estateCategoryDiv.contents().each(function() {
                     if (this.nodeType === 3) { // 텍스트 노드인 경우
                         const textContent = $(this).text().trim();
                         if (textContent.length > 0) {
-                            // 첫 번째 유효한 텍스트 노드를 estateType으로 간주
                             // 이 로직은 sateTypeHtml 다음에 바로 data.estate_type 텍스트가 올 때 유효합니다.
                             estateType = textContent;
                             return false; // each 루프 종료
@@ -1520,12 +1512,7 @@ async function estateList(searchNo = "", propertyNo = "") {
                             <dd>${image}</dd>
                         </dl>`;
                 });
-
-                // if (responseData.length < 100) {
-                //     $("#more_btn").hide();
-                // }
             }
-
             // 기존 리스트를 부드럽게 사라지게 처리
             li.children("dl")
                 .fadeOut(100)
@@ -1629,22 +1616,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                     let compareCheckbox = "";
                     let sateTypeHtml = "";
                     let priceHtml = "";
-                    /*
-                    switch (data.sale_type) {
-                        case "임대":
-                            sateTypeHtml = `<span class="label-default bg-violet1">임대</span>`;
-                            priceHtml = `<span class="text-nowrap">${formatPrice(data.sale_price, "all", true)}</span> / <span class="text-nowrap">${formatPrice(data.rent_price, "all", true)}</span>`;
-                            break;
-                        case "매매":
-                            sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
-                            priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
-                            break;
-                        case "교환":
-                            sateTypeHtml = `<span class="label-default bg-indigo1">교환</span>`;
-                            priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
-                            break;
-                    }
-                    */
+                    
                     switch (data.sale_type) {
                         case "매매":
                             sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
@@ -1740,9 +1712,6 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                         </dl>`;
                 });
 
-                // if (responseData.length < 100) {
-                //     $("#more_btn").hide();
-                // }
             }
 
             // 기존 리스트를 부드럽게 사라지게 처리
@@ -1758,8 +1727,6 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                         .hide() // 먼저 숨긴 상태에서
                         .delay(150) // 항목마다 100ms씩 지연
                         .fadeIn(400); // 순차적으로 부드럽게 나타나게 설정
-                    // --- 여기가 updateCompareList()를 호출할 정확한 위치입니다. ---
-                    // DOM 업데이트가 완료되고 새로운 dl 요소들이 화면에 추가된 직후입니다.
                     updateCompareList();
                     // -----------------------------------------------------------
                 });
@@ -1781,8 +1748,6 @@ function updateCompareList(){
         }
     });
     // 2. compareList.data를 재구성합니다.
-    //    - 화면에 없는 매물은 제거하고
-    //    - 화면에 있는 매물은 하이라이트를 다시 적용합니다.
     const updatedCompareListData = [];
     compareList.data.forEach(compareItem => {
         const estateNo = compareItem.estateNo;
@@ -1793,13 +1758,12 @@ function updateCompareList(){
             $(`.mcs-list dl[data-estate-no="${estateNo}"]`).addClass('dl-highlight-border');
 
             // 또한, 해당 매물의 체크박스도 'checked' 상태로 설정해야 합니다.
-            // (이전 상태가 유지되지 않을 수 있으므로)
+           
             $(`.mcs-list dl[data-estate-no="${estateNo}"] .check-box-orange-s input[type="checkbox"]`).prop('checked', true);
 
         } else {
             // 화면에 없는 매물은 compareList에서 제거됨 (updatedCompareListData에 추가되지 않음)
-            // 이 경우 해당 매물의 체크박스가 혹시라도 체크되어 있다면 해제해야 하지만,
-            // 어차피 화면에 없으므로 DOM 조작은 필요 없습니다.
+            
         }
     });
 
@@ -1865,22 +1829,7 @@ async function renderEstateDetail(data) {
     // 2. 매물번호, 매물타입, 거래타입 정보 업데이트
     let sateTypeHtml = "";
     let priceHtml = "";
-    /*
-    switch (data.sale_type) {
-        case "임대":
-            sateTypeHtml = `<span class="label-default bg-violet1">임대</span>`;
-            priceHtml = `임대 ${formatPrice(data.rent_price, "all", true)}원 / 보증금 ${formatPrice(data.deposit_price, "all", true)}원`;
-            break;
-        case "매매":
-            sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
-            priceHtml = `매매 ${formatPrice(data.sale_price, "all", true)}원`;
-            break;
-        case "교환":
-            sateTypeHtml = `<span class="label-default bg-indigo1">교환</span>`;
-            priceHtml = `교환 ${formatPrice(data.sale_price, "all", true)}원`;
-            break;
-    }
-    */
+    
     switch (data.sale_type) {
         case "매매":
             sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
@@ -2034,9 +1983,7 @@ async function make_compareList(compareList) {
     }
 
     // make_compareList가 fadeIn 콜백 내부에서 호출되므로,
-    // 여기서 다시 $('#compareModal').show(); 를 호출할 필요가 없습니다.
-    // $('#compareModal').show(); // 이 줄은 제거하거나 주석 처리해도 됩니다.
-
+   
     // 비교 테이블의 `property-value-item`과 `property-compare` 초기화
     $('#compareModal .property-value-item').empty();
     $('#compareModal .property-compare').empty();
@@ -2046,9 +1993,6 @@ async function make_compareList(compareList) {
 
     const estateDetailApiUrl = "/front/back/sell/estate_detail.php";
 
-    
-     // Promise.all을 사용하여 두 매물의 상세 정보를 동시에 가져옵니다.
-    
     try { // 첫 번째 try-catch: Promise.all 자체의 실패 (네트워크, 파싱 등) 처리
         const apiCalls = [];
         // compareList.data에 있는 각 매물에 대해 API 호출 Promise를 생성하여 배열에 추가
@@ -2065,7 +2009,6 @@ async function make_compareList(compareList) {
 
         try { // 두 번째 try-catch: 개별 응답의 유효성 검사 중 발생할 수 있는 잠재적 오류 처리
             // 예를 들어, response 자체가 null이거나 responseData가 없는 등의 예상치 못한 경우
-            // 각 응답을 순회하며 성공 여부 확인 및 데이터 저장
             for (let i = 0; i < responses.length; i++) {
                 const response = responses[i];
                 const estateIndex = i + 1;
@@ -2152,15 +2095,9 @@ function renderComparisonTable(comparisonData) {
       ];
 
     // comparisonFields 배열은 이 함수 외부 또는 함수 내부에 정의되어 있어야 합니다.
-    // (위에서 제시된 comparisonFields 배열을 여기에 붙여넣거나, 전역 변수로 선언)
-
+    
     // 1. sale_type 값에 따라 반환될 HTML 정보(클래스, 텍스트)를 매핑하는 객체를 정의합니다.
-    //const saleTypeInfoMap = {
-    //    "임대": { colorClass: "bg-violet1", text: "임대" },
-    //    "매매": { colorClass: "bg-green1", text: "매매" },
-    //    "교환": { colorClass: "bg-indigo1", text: "교환" },
-        // 필요하다면 다른 sale_type도 여기에 추가할 수 있습니다.
-    //};
+    
     const saleTypeInfoMap = {
         "전세": { colorClass: "bg-violet1", text: "임대(전세)" },
         "매매": { colorClass: "bg-green1", text: "매매" },
@@ -2183,8 +2120,6 @@ function renderComparisonTable(comparisonData) {
     const sateTypeHtmls = comparisonData.map(data => getSaleTypeHtml(data.sale_type));
 
     // 4. 생성된 배열의 값을 각각의 변수에 할당합니다.
-    //    comparisonData.length가 2인 경우 sateTypeHtmls[2]는 undefined가 되므로,
-    //    || '' (OR 연산자)를 사용하여 기본값으로 빈 문자열을 할당하여 안전성을 높입니다.
     const sateTypeHtml1 = sateTypeHtmls[0] || '';
     const sateTypeHtml2 = sateTypeHtmls[1] || '';
     const sateTypeHtml3 = sateTypeHtmls[2] || ''; // comparisonData.length가 2일 경우 ''이 할당됨
@@ -2333,7 +2268,7 @@ function renderComparisonTable(comparisonData) {
 
 
     // --- 1. 각 매물(data)에 대한 평 단가와 제곱미터 단가를 계산하는 헬퍼 함수 ---
-    // 이 함수는 comparisonData 배열의 각 항목에 대해 호출되어, 해당 항목의 단가를 계산합니다.
+    
     const calculateUnitPrice = (data) => {
         let denominator = 0; // 평 단가 계산용 분모 (평)
         let denominatorSqm = 0; // 제곱미터 단가 계산용 분모 (제곱미터)
@@ -2521,10 +2456,6 @@ function adjustComparisonModalWidth(compare_length) {
             // 비교 매물이 3개 이상일 경우 너비 계산
             newWidth = `${600 + (compare_length - 2) * 250}px`;
         }
-        // compare_length가 2인 경우는 newWidth가 이미 '560px'이므로 별도의 조건 필요 없음.
-        // compare_length가 2보다 작은 경우 (0 또는 1)는 명시된 요구사항이 없으나,
-        // 현재 로직으로는 역시 '560px'이 될 것입니다.
-
         modalContent.style.width = newWidth;
     } else {
         // 모달 요소가 없음을 콘솔에 경고하여 디버깅에 도움을 줄 수 있습니다.
@@ -2738,26 +2669,7 @@ function getEstateListFilterParams() {
  *  sale 타입을 값으로변경하는 함수
  * @param {string} saleType - sale 타입 
  */
-/*
-function saleTypeToValue(saleType) {
-    let saleValue;
-    switch (saleType) {
-        case "매매":
-            saleValue = "001";
-            break;
-        case "임대":
-            saleValue = "002";
-            break;
-        case "교환":
-            saleValue = "003";
-            break;
-        default:
-            console.error("유효하지 않은 거래종류입니다.");
-            break;
-    }
-    return saleValue;
-}
-*/
+
 function saleTypeToValue(saleType) {
     let saleValue;
     switch (saleType) {
@@ -3112,13 +3024,7 @@ function placesSearchCB(data, status, pagination) {
 function displayPlaces(places) {
     const { listEl } = getSearchElements();
     let fragment = document.createDocumentFragment();
-    // menuEl = document.getElementById("menu_wrap"),
-    // bounds = new kakao.maps.LatLngBounds(),
-    // listStr = "";
-
-    // 검색 결과 목록에 추가된 항목들을 제거합니다
-    // removeAllChildNods(listEl);
-
+    
     // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker(markers);
 
@@ -3338,18 +3244,7 @@ function createClusteredMarker(data) {
     return marker; // 마커를 반환하여 클러스터러에 추가
 
     let priceHtml = "";
-    //switch (data.sale_type) {
-    //    case "임대":
-    //        priceHtml = `${formatPrice(data.rent_price, "only-uk")}`;
-    //        break;
-    //    case "매매":
-    //        priceHtml = `${formatPrice(data.sale_price, "only-uk")}`;
-    //        break;
-    //    case "교환":
-    //        priceHtml = `${formatPrice(data.sale_price, "only-uk")}`;
-    //        break;
-    //}
-
+    
     switch (data.sale_type) {
         case "임대(전세)":
         case "전세":
@@ -4741,7 +4636,17 @@ async function openMemoFunction(memoData, clientX, clientY, isRegisterMode) { //
 
         // 4. 로직 초기화 (폼 채우기, 이벤트 바인딩 등)
         if (typeof initLogicFunction === 'function') {
-            await  initLogicFunction();
+             // ⭐⭐⭐ 핵심 수정: 인자를 제대로 전달합니다! ⭐⭐⭐
+             if (isRegisterMode) {
+                // initMemoRegisterModalLogic이 $modal만 받는다고 가정
+                await initMemoRegisterModalLogic($modal);
+            } else {
+                // initMemoModifyModalLogic이 memoCurrentData와 $modal을 받는다고 가정
+                // $modal.data()에서 데이터를 가져와 전달합니다.
+                const memoCurrentDataFromModal = $modal.data(dataKey); // 방금 저장한 데이터를 다시 가져옴
+                await initMemoModifyModalLogic(memoCurrentDataFromModal, $modal); 
+
+            } 
         }
 
         // ⭐ hidden.bs.modal 핸들러는 그대로 유지 (모달이 닫힐 때 modal-pre-hidden 복원) ⭐
@@ -4753,9 +4658,7 @@ async function openMemoFunction(memoData, clientX, clientY, isRegisterMode) { //
         });
         
     } catch (error) {
-       // $.fx.off = false; // 오류 발생 시에도 애니메이션 복원
-        //console.error("모달 로드 실패:", error);
-        sweetAlertMessage("모달 화면을 불러오는 데 실패했습니다.", "","e");
+       sweetAlertMessage("모달 화면을 불러오는 데 실패했습니다.", "","e");
     }
 }
 // ⭐⭐ memo 관련 모달만 위한 새로운 reset 함수 ⭐⭐
@@ -4851,7 +4754,7 @@ function handleMapTouchStart(event) {
                     sweetAlertMessage("해당 위치에 대한 토지/건물 정보가 명확하지 않아 메모를 등록할 수 없습니다. 지도에 정보가 표시된 영역에서 다시 시도해주세요.","","w");
                 }
             }).catch(error => {
-                console.error("폴리곤 정보 가져오기 오류:", error);
+                //console.error("폴리곤 정보 가져오기 오류:", error);
                 sweetAlertMessage("정보를 가져오는 중 오류가 발생했습니다. 다시 시도해주세요.","","e");
             });
             
@@ -4873,10 +4776,6 @@ function handleMapTouchMove(event) {
     isLongPress = false;
 }
 
-
-// === `getPolygonInfoForCoords` 함수 재수정 ===
-// 이 함수는 `getLandBuildingPolygon`이 반환하는 데이터의 구조를
-// `getLandInfo` 및 `getBuilindInfo` 함수가 처리하는 구조에 맞게 유추하여 작성되었습니다.
 /**
  * 주어진 좌표에 대한 대표 폴리곤 정보 (PNU, Type)를 비동기적으로 가져오는 함수.
  * `getLandBuildingPolygon`을 호출하여 받은 원시 데이터를 직접 파싱하여 PNU와 Type을 추출합니다.
@@ -4887,22 +4786,13 @@ function handleMapTouchMove(event) {
 async function getPolygonInfoForCoords(coords) {
     try {
         // 1. `getLandBuildingPolygon` 호출하여 원시 데이터 가져오기
-        // 이 함수가 getLandInfo와 getBuilindInfo에 전달되는 `result` 객체를 생성하는 것으로 가정합니다.
-        // 즉, getLandBuildingPolygon의 반환값이 { buildingPolygon, buildingPolygon2, landPolygon }이 아니라
-        // `getLandInfo`가 받는 `result` 형태 (ex: {response: {status, result:{featureCollection}}})와 유사할 것입니다.
         const polygonRawData = await getLandBuildingPolygon(coords); 
-        // 여기서 polygonRawData는 getLandInfo 또는 getBuilindInfo 함수가 받을 수 있는 형태여야 합니다.
-        // 예를 들어, getLandBuildingPolygon이 서버로부터의 전체 응답 객체를 반환한다면 다음과 같을 수 있습니다.
-        // {
-        //   landInfoResponse: { response: { status: "OK", result: { featureCollection: { features: [...], bbox: [...] } } } },
-        //   buildingInfoResponse: { features: [...], buildingId: "..." }
-        // }
         
         let pnu = null;
         let type = null;
 
         // 2. landPolygon 정보 추출 및 PNU/Type 결정
-        // getLandInfo의 로직을 참고하여 landInfoResponse에서 PNU와 Type을 찾습니다.
+        
         if (polygonRawData && polygonRawData.landInfoResponse && polygonRawData.landInfoResponse.response.status === "OK") {
             const landFeatures = polygonRawData.landInfoResponse.response.result.featureCollection.features;
             if (landFeatures && landFeatures.length > 0) {
@@ -4913,8 +4803,6 @@ async function getPolygonInfoForCoords(coords) {
         }
 
         // 3. buildingPolygon 정보 추출 및 PNU/Type 결정 (건물 정보가 더 우선순위를 가지도록)
-        // getBuilindInfo의 로직을 참고하여 buildingInfoResponse에서 PNU와 Type을 찾습니다.
-        // uniqueFeaturesMap을 사용하셨으므로, 여러 건물 중 첫 번째 건물을 대표로 가정합니다.
         const processBuildingData = (buildingData) => {
             if (buildingData && buildingData.features && buildingData.features.length > 0) {
                 // 중복 제거 없이 첫 번째 유효한 건물 feature를 찾음
@@ -4929,29 +4817,14 @@ async function getPolygonInfoForCoords(coords) {
         };
 
         // buildingPolygon과 buildingPolygon2 모두 확인
-        // 만약 건물 정보가 있다면 해당 건물 정보를 우선적으로 사용합니다.
-        // onedol님의 `getBuilindInfo`는 `buildingInfos.buildingPolygon`과 `buildingInfos.buildingPolygon2`를 인자로 받는데,
-        // `getLandBuildingPolygon`의 반환값 형태를 정확히 알 수 없어 임시 변수명 `polygonRawData.buildingInfoResponse`로 가정합니다.
-        // 실제 `getLandBuildingPolygon`이 어떤 형태의 객체를 반환하여
-        // `getBuilindInfo({ buildingPolygon, buildingPolygon2 })`에 전달되는지 확인이 필요합니다.
         
-        // 예시: getLandBuildingPolygon이 { land: {...}, building1: {...}, building2: {...}} 형태라고 가정하고,
-        // building1과 building2가 `getBuilindInfo`에 전달되는 `features` 배열을 직접 포함하고 있다고 가정합니다.
         if (polygonRawData.building1 && processBuildingData(polygonRawData.building1)) {
             // building1에서 정보를 찾았으면 통과
         } else if (polygonRawData.building2 && processBuildingData(polygonRawData.building2)) {
             // building1에서 못 찾았으면 building2에서 시도
         }
         
-        // --- `getLandBuildingPolygon`의 실제 반환값 구조에 맞게 이 부분 조정 필요 ---
-        // onedol님이 이 함수 내부에서 `getLandBuildingPolygon`의 반환값을 `polygons`라는 이름으로 받고
-        // { buildingPolygon, buildingPolygon2, landPolygon }으로 구조 분해 할당하는 것으로 보아
-        // `getLandBuildingPolygon`이 이 세 객체를 속성으로 가진 단일 객체를 반환하는 것으로 유추했습니다.
-        // 그렇다면, `getLandInfo`와 `getBuilindInfo`가 받는 인자 또한 해당 속성들이 직접 인자로 전달되거나,
-        // 혹은 `result`나 `buildingInfos`처럼 wrapping된 객체 형태로 전달될 것입니다.
-
-        // 예를 들어, getLandBuildingPolygon이 { buildingPolygon: { features: [...] }, landPolygon: { response: {...} } } 형태로 반환한다면:
-        // land part:
+        
         if (polygonRawData.landPolygon && polygonRawData.landPolygon.response && polygonRawData.landPolygon.response.status === "OK") {
             const landFeatures = polygonRawData.landPolygon.response.result.featureCollection.features;
             if (landFeatures && landFeatures.length > 0) {
@@ -5024,19 +4897,9 @@ function setMapToCurrentLocationAndZoom(targetLevel, animation = true) {
                 // 2. 원하는 줌 레벨 설정
                 map.setLevel(targetLevel);
 
-                // (선택 사항) 지도 이동 시 애니메이션 적용 여부
-                // setCenter와 setLevel은 기본적으로 애니메이션을 지원하므로, 따로 설정하지 않아도 됩니다.
-                // 만약 애니메이션 제어가 필요하다면, 옵션 객체를 넘겨줄 수 있습니다.
-                // 예: map.setCenter(locPosition, { animation: animation });
-                // 예: map.setLevel(targetLevel, { animate: animation });
-
-                //console.log(`지도를 현재 위치(위도: ${lat}, 경도: ${lng})로 이동하고 줌 레벨을 ${targetLevel}로 설정했습니다.`);
             },
             function(error) {
-                // 위치 가져오기 실패 시 에러 처리
-                console.error("위치 정보를 가져오는데 실패했습니다.", error);
-                // 사용자에게 알림 (예: "위치 정보를 가져올 수 없습니다. 기본 위치로 지도를 표시합니다.")
-                // 혹은 기본 위치(예: 서울 시청)로 지도를 이동시키는 로직을 여기에 추가할 수 있습니다.
+                
                 alert("위치 정보를 가져오는 데 실패했습니다. 브라우저의 위치 권한을 확인해주세요.");
 
                 // 실패 시 특정 기본 위치로 지도를 이동
@@ -5055,10 +4918,7 @@ function setMapToCurrentLocationAndZoom(targetLevel, animation = true) {
         // Geolocation API를 지원하지 않는 경우 처리
         console.error("이 브라우저는 Geolocation API를 지원하지 않습니다.");
         alert("이 브라우저에서는 위치 정보를 사용할 수 없습니다.");
-        // 역시 기본 위치로 지도를 이동시키는 로직을 여기에 추가할 수 있습니다.
-        //const defaultPosition = new kakao.maps.LatLng(37.566826, 126.9786567); // 서울 시청
-        //map.setCenter(defaultPosition);
-        //map.setLevel(targetLevel);
+        
     }
 }
 /**

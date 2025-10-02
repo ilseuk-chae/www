@@ -35,7 +35,8 @@ $(document).ready(function () {
         handleUrlChange();
     });
 
-    initMemo(); // memo 초기화    
+    initMemo(); // memo 초기화   
+    //loadAdministrativeDistrictData(); // 행정구역 GeoJSON 데이터 로드 
 });
 
 function initProj4() {
@@ -327,6 +328,10 @@ function handleMapEvents() {
             // 주변 시설 정보 가져오기
             searchArroundPlaces(coords);
         }
+        if (level < 7) {
+            // 읍면동 경계
+            //handleAddressMapClick(coords);
+        }
 
     });
 
@@ -402,13 +407,265 @@ function handleMapEvents() {
 });
 }
 
+
+// 전역 변수 (또는 모듈 스코프)
+let administrativeDistrictGeoJSON = null; // 로드된 GeoJSON 데이터를 저장할 변수
+let currentAdministrativePolygons = []; // 지도에 그려진 동/면 폴리곤 객체를 관리할 배열
+
+const GEOJSON_DATA_KEY = 'administrativeDistrictsGeoJsonData'; // GeoJSON 데이터를 저장할 키
+const GEOJSON_VERSION_KEY = 'administrativeDistrictsGeoJsonVersion'; // GeoJSON 버전 정보를 저장할 키
+
+// 서버로부터 최신 GeoJSON 버전 정보를 가져오는 함수 (서버 구현에 따라 달라집니다)
+async function getLatestGeoJsonVersionFromServer() {
+    // 예시 1: 별도 API 엔드포인트에서 버전 가져오기
+    // const response = await fetch('/api/geojson/version');
+    // const data = await response.json();
+    // return data.version; // 예: "1.0.1"
+
+    // 예시 2: HTML meta 태그에서 버전 가져오기
+    // const meta = document.querySelector('meta[name="geojson-version"]');
+    // return meta ? meta.content : null;
+
+    // 예시 3: 개발 시 임시로 사용할 버전
+    return "1.0.3"; // <<< 실제 배포 시에는 반드시 서버에서 가져오도록 수정해야 합니다!
+}
+
+// GeoJSON 데이터를 비동기적으로 로드하는 함수
+// 이 함수는 앱이 처음 시작될 때 한 번 호출하거나, 필요할 때마다 호출하여 데이터를 캐싱합니다.
+// 행정구역 GeoJSON 데이터 준비 및 로드
+// GeoJSON 데이터를 비동기적으로 로드하고 IndexedDB (localforage)에 캐싱하는 함수
+async function loadAdministrativeDistrictData() {
+    // 1. 메모리 캐시 확인 (가장 빠른 경로)
+    if (administrativeDistrictGeoJSON) {
+        //console.log("행정구역 GeoJSON 데이터 (메모리에서) 바로 반환합니다.");
+        return administrativeDistrictGeoJSON;
+    }
+
+    // 2. 서버에서 최신 버전 정보 가져오기
+    const serverVersion = await getLatestGeoJsonVersionFromServer();
+    if (!serverVersion) {
+        console.error("서버로부터 GeoJSON 버전 정보를 가져오지 못했습니다. 캐싱 로직을 건너뜁니다.");
+        // 버전 정보를 가져오지 못하면 그냥 네트워크에서 로드하거나, 오류 처리
+        return await fetchAndCacheGeoJson(); // 아래 별도 함수 참조
+    }
+
+    // 3. IndexedDB (localforage)에서 캐시된 데이터 및 버전 확인
+    let cachedData = null;
+    let cachedVersion = null;
+    try {
+        cachedData = await localforage.getItem(GEOJSON_DATA_KEY);
+        cachedVersion = await localforage.getItem(GEOJSON_VERSION_KEY);
+    } catch (e) {
+        console.error("IndexedDB에서 캐시 데이터/버전 로드 중 오류 발생:", e);
+        // 오류 발생 시 네트워크에서 다시 시도
+    }
+
+    // 4. 버전 비교 및 데이터 로드 결정
+    if (cachedData && cachedVersion === serverVersion) {
+        // 캐시된 데이터가 있고, 버전도 서버와 동일하면 캐시 사용
+        administrativeDistrictGeoJSON = cachedData;
+        return administrativeDistrictGeoJSON;
+    } else {
+        // 캐시 데이터가 없거나, 캐시 버전이 서버 버전과 다르면 (오래되었거나 업데이트 필요)
+        return await fetchAndCacheGeoJson(serverVersion); // 새 데이터를 가져와 캐시
+    }
+}
+
+// GeoJSON을 네트워크에서 가져오고 IndexedDB에 저장하는 별도 함수
+async function fetchAndCacheGeoJson(versionToCache) {
+    try {
+        console.log("행정구역 GeoJSON 데이터 네트워크에서 fetching합니다...");
+        const response = await fetch('/front/assets/data/korea_administrative_districts_eupmyeondong.geojson');
+        // 응답이 유효한지 먼저 확인 (HTTP 상태 코드 200번대인지)
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("서버 응답 오류 (HTTP Status):", response.status, response.statusText, errorText);
+            return null;
+        }
+    
+        const rawResponseText = await response.text();
+        //console.log("map.js:519 서버에서 받은 원본 응답 텍스트:", rawResponseText);
+
+        // ✨ 핵심: 응답 텍스트가 비어있는지 확인하는 로직 추가
+        if (!rawResponseText || rawResponseText.trim().length === 0) {
+            //console.error("GeoJSON 데이터 로드 중 오류: 서버 응답 본문이 비어있습니다. 파일이 없거나 내용이 손상되었을 수 있습니다.");
+            return null;
+        }
+
+         const fetchedData = JSON.parse(rawResponseText); // 이제 빈 문자열로 인한 오류는 여기서 걸러짐
+
+        administrativeDistrictGeoJSON = fetchedData;
+        await localforage.setItem(GEOJSON_DATA_KEY, fetchedData);
+        if (versionToCache) {
+            await localforage.setItem(GEOJSON_VERSION_KEY, versionToCache);
+        }
+
+        return administrativeDistrictGeoJSON;
+    } catch (error) {
+        
+        if (response) {
+        //    console.error("오류 발생 시점의 HTTP 상태:", response.status, response.statusText);
+        } else {
+        //    console.error("fetch() 요청 자체가 실패하여 response 객체가 생성되지 않았습니다.");
+        }
+        return null;
+    }
+}
+
+///currentAdministrativePolygons 배열을 사용하여 이전에 그려진 동/면 폴리곤을 지우고 새로운 폴리곤을 그립니다.
+function clearAdministrativePolygons() {
+    currentAdministrativePolygons.forEach(polygon => polygon.setMap(null));
+    currentAdministrativePolygons = [];
+}
+
+/**
+ * 특정 동/면의 GeoJSON 데이터를 파싱하여 카카오맵에 폴리곤으로 그립니다.
+ * @param {string} dongName - 그릴 동/면의 이름 (예: "금곡동")
+ * @param {kakao.maps.Map} mapInstance - 폴리곤을 그릴 카카오맵 인스턴스
+ */
+async function drawAdministrativeDistrictPolygon(dongName, mapInstance) {
+    clearAdministrativePolygons(); // 기존 동/면 폴리곤을 먼저 지웁니다.
+
+    const geojsonData = await loadAdministrativeDistrictData(); // GeoJSON 데이터 로드 (캐싱 로직 포함)
+    if (!geojsonData) {
+        return;
+    }
+
+    // 1. dongName이 제대로 넘어오는지 확인
+    // GeoJSON 데이터에서 dongName에 해당하는 feature를 찾습니다.
+    const targetFeature = geojsonData.features.find(
+        feature => feature.properties.EMD_KOR_NM === dongName
+    );
+
+    // 2. targetFeature가 제대로 찾아지는지 확인
+    if (!targetFeature) {
+        console.warn(`[drawAdmin] GeoJSON 데이터에서 '${dongName}'에 해당하는 행정구역을 찾을 수 없습니다. (EMD_KOR_NM 불일치)`);
+        // 찾을 수 없는 경우, 해당 지역에 대한 로그를 남기고 함수 종료
+        return;
+    }
+    // 3. geometry 정보의 유효성 확인
+    if (!targetFeature.geometry) {
+        console.warn(`[drawAdmin] '${dongName}'의 geometry 정보가 없습니다.`);
+        return;
+    }
+    if (!targetFeature.geometry.coordinates || targetFeature.geometry.coordinates.length === 0) {
+        console.warn(`[drawAdmin] '${dongName}'의 geometry 좌표 데이터가 비어있습니다.`);
+        return;
+    }
+
+    // geometry 타입과 좌표가 제대로 파싱되는지 확인 (디버깅 메시지)
+    // 카카오맵 Polygon 객체 생성을 위한 path 데이터 정의
+    // Polygon 타입과 MultiPolygon 타입의 파싱 로직을 분리합니다.
+    if (targetFeature.geometry.type === 'Polygon') {
+        const paths = []; // kakao.maps.LatLng[] 형태
+        const coordinatesArray = targetFeature.geometry.coordinates[0]; // GeoJSON Polygon의 외부 링
+
+        if (coordinatesArray) {
+            coordinatesArray.forEach(coord => {
+                // GeoJSON은 일반적으로 [경도, 위도] 순서입니다. Kakao Maps LatLng는 (위도, 경도) 순서입니다.
+                paths.push(new kakao.maps.LatLng(coord[1], coord[0]));
+            });
+        } else {
+            console.error("[drawAdmin] Polygon type but coordinates[0] is null or undefined.");
+            return;
+        }
+
+        // 폴리곤을 닫힌 형태로 만들기: 마지막 좌표가 첫 번째 좌표와 다르면 추가
+        if (paths.length >= 3) {
+            const firstCoord = paths[0];
+            const lastCoord = paths[paths.length - 1];
+            if (firstCoord.getLat() !== lastCoord.getLat() || firstCoord.getLng() !== lastCoord.getLng()) {
+                paths.push(firstCoord);
+                console.warn(`[drawAdmin] Polygon이 닫힌 형태로 생성되지 않아 첫 번째 좌표를 추가했습니다.`);
+            }
+        } else if (paths.length > 0) {
+            console.warn(`[drawAdmin] Polygon의 좌표 수가 부족하여 그릴 수 없습니다. (좌표 수: ${paths.length})`);
+            return;
+        } else {
+             console.warn(`[drawAdmin] ${dongName} Polygon을 그릴 Path 데이터가 없습니다.`);
+             return;
+        }
+
+        // Polygon 객체 생성
+        const polygon = new kakao.maps.Polygon({
+            path: paths, // LatLng[] 형태
+            strokeWeight: 3,
+            strokeColor: '#FF00FF', // 기본 보라색
+            strokeOpacity: 0.8,
+            fillColor: '#FF00FF',
+            fillOpacity: 0.1,
+            zIndex: 1
+        });
+        polygon.setMap(mapInstance);
+        currentAdministrativePolygons.push(polygon);
+        
+        
+    } else if (targetFeature.geometry.type === 'MultiPolygon') {
+        // GeoJSON MultiPolygon은 여러 개의 독립적인 Polygon으로 구성될 수 있으므로,
+        // 각 내부 Polygon에 대해 개별적인 kakao.maps.Polygon 객체를 생성하여 지도에 추가합니다.
+
+        targetFeature.geometry.coordinates.forEach((singlePolygonCoords, multiPolygonIndex) => {
+            const polygonPathForKakao = []; // LatLng[][] 형태: [ [outer_ring_LatLng[]], [inner_ring1_LatLng[]], ... ]
+
+            // singlePolygonCoords는 하나의 GeoJSON Polygon의 coordinates (예: [[outer_ring], [inner_ring1]])
+            singlePolygonCoords.forEach((ringCoords, ringIndex) => {
+                const currentRingLatLngs = []; // 각 링의 LatLng[]
+
+                ringCoords.forEach((coord, coordIndex) => {
+                    // 유효성 검사: 각 개별 좌표의 숫자 및 범위 유효성
+                    if (!Array.isArray(coord) || coord.length < 2 || isNaN(coord[0]) || isNaN(coord[1])) {
+                        // 문제가 있는 좌표는 추가하지 않고 건너뜁니다.
+                        return;
+                    }
+                    // GeoJSON: [경도, 위도] -> Kakao LatLng: (위도, 경도)
+                    currentRingLatLngs.push(new kakao.maps.LatLng(coord[1], coord[0]));
+                });
+
+                // 링이 최소 3개의 유효한 좌표를 가지고 있다면 polygonPathForKakao에 추가
+                if (currentRingLatLngs.length >= 3) {
+                    // 링을 닫힌 형태로 만들기 (첫 좌표와 마지막 좌표가 다를 경우)
+                    const firstCoord = currentRingLatLngs[0];
+                    const lastCoord = currentRingLatLngs[currentRingLatLngs.length - 1];
+                    if (firstCoord.getLat() !== lastCoord.getLat() || firstCoord.getLng() !== lastCoord.getLng()) {
+                        currentRingLatLngs.push(firstCoord);
+                        console.warn(`[drawAdmin] MultiPolygon ${multiPolygonIndex}번째 폴리곤의 ${ringIndex}번째 링이 닫히지 않아 첫 번째 좌표를 추가했습니다.`);
+                    }
+                    polygonPathForKakao.push(currentRingLatLngs);
+                } else if (currentRingLatLngs.length > 0) {
+                    console.warn(`[drawAdmin] MultiPolygon ${multiPolygonIndex}번째 폴리곤의 ${ringIndex}번째 링의 좌표 수가 부족하여 무시됩니다. (좌표 수: ${currentRingLatLngs.length})`);
+                }
+            });
+
+            // 하나의 GeoJSON 내부 Polygon에 대해 kakao.maps.Polygon 객체 생성
+            if (polygonPathForKakao.length > 0) {
+                const polygon = new kakao.maps.Polygon({
+                    path: polygonPathForKakao, // LatLng[][] 형태 (외부 링과 내부 링/홀을 포함)
+                    strokeWeight: 2,
+                    strokeColor: '#FF00FF',
+                    strokeOpacity: 0.8,
+                    fillColor: '#FF00FF',
+                    fillOpacity: 0.0,
+                    zIndex: 1
+                });
+
+                polygon.setMap(mapInstance);
+                currentAdministrativePolygons.push(polygon);
+                
+            } else {
+                console.warn(`[drawAdmin] ${dongName} MultiPolygon 내부 ${multiPolygonIndex}번째 폴리곤을 그릴 Path 데이터가 없습니다.`);
+            }
+        });
+    } else {
+        console.warn("[drawAdmin] 지원되지 않는 Geometry Type:", targetFeature.geometry.type);
+        return;
+    }
+}
 /**
  * 지도 클릭 시 건물과 토지 정보를 동시에 가져오는 함수
  20250811 add*/
 async function handleMapClick(coords) {
     if (isLoading) return; // 이전 작업이 완료되지 않았으면 새로운 작업을 시작하지 않음
 
-    //console.log("지도 클릭 좌표: ", coords);
     try {
         isLoading = true; // 작업 시작 플래그 설정
         
@@ -448,6 +705,48 @@ async function handleMapClick(coords) {
             $("#click_location").val(jibunAddr); // 
         }
        
+    } catch (error) {
+        console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
+    } finally {
+        isLoading = false; // 작업 완료 플래그 해제
+    }
+}
+
+async function handleAddressMapClick(coords) {
+    //if (isLoading) return; // 이전 작업이 완료되지 않았으면 새로운 작업을 시작하지 않음
+
+    try {
+        
+        isLoading = true; // 작업 시작 플래그 설정
+        //20250917 add 시험용 추후 동별경계선 그리기
+
+        const addressResult = await searchDetailAddrFromCoordsMy(coords);
+        if (addressResult && addressResult.status === kakao.maps.services.Status.OK && addressResult.result && addressResult.result[0]) {
+            const result = addressResult.result[0];
+            let jibunAddr = result.address ? result.address.address_name : '';
+            $("#click_location").val(jibunAddr); // 
+
+            // 동/면 이름 추출 (예: '수원시 팔달구 매산로1가' -> '매산로1가' 또는 '팔달구')
+            // 카카오 Geocoder API의 `coord2RegionCode` 결과나 `address_name`의 파싱 규칙에 따라 달라질 수 있습니다.
+            // 여기서는 'region_3depth_name'을 사용하거나, 'address_name'을 파싱하는 예시를 보여드립니다.
+            let dongName = '';
+            if (result.address && result.address.region_3depth_name) {
+                const parts = result.address.region_3depth_name.split(' ');
+                if (parts.length >= 1) {
+                    dongName = parts[0]; // '표선면 표선리" 에서 '표선면' 추출 예시
+                }
+            } else if (jibunAddr) {
+                const parts = jibunAddr.split(' ');
+                if (parts.length >= 3) {
+                    dongName = parts[2]; // '서울특별시 강남구 신사동' 에서 '신사동' 추출 예시
+                }
+            }
+
+            if (dongName) {
+                await drawAdministrativeDistrictPolygon(dongName, map); // 추출된 동 이름으로 폴리곤 그리기
+            }
+        }
+        
     } catch (error) {
         console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
     } finally {
@@ -1040,7 +1339,7 @@ function addContentsMarker(data, estateTypeClass) {
 
     // iwContent에 클릭 이벤트 추가
     iwContent.addEventListener("click", function () {
-        console.log("아이템 클릭됨:", data); // 로그 출력
+        //console.log("아이템 클릭됨:", data); // 로그 출력
     });
 
     // 커스텀 오버레이를 생성합니다
@@ -1276,7 +1575,6 @@ async function fetchMemoList() {
 
         if (statusCode === 200 && message === "SUCCESS") {
             // API 호출 성공 및 데이터 처리 성공
-            // console.log("메모 목록 데이터:", responseData); // 개발자 도구에서 데이터 확인용
             return responseData; // 실제 메모 목록 데이터 (배열 형태) 반환
         } else {
             // API는 응답했지만, 백엔드에서 처리 실패 메시지를 반환한 경우
@@ -1284,8 +1582,6 @@ async function fetchMemoList() {
             return []; // 실패 시 빈 배열 반환
         }
     } catch (error) {
-        //console.error("메모 목록 가져오기 실패:", error); // 현재 이렇게 출력되고 뒤에 내용이 없는 상황
-        
         sweetAlertMessage("메모 목록 가져오는 중 문제가 발생했습니다. 콘솔을 확인해주세요.","","e");
         return [];
     }
@@ -1315,20 +1611,16 @@ async function displayMemoOnMap(updatedMemoData = null) {
             //console.log("fetchMemoList에서 가져온 메모가 없습니다. 지도에 표시할 오버레이가 없습니다.");
             return;
         }
-        console.log(`fetchMemoList에서 ${memoList.length}개의 메모를 가져왔습니다.`);
-
+        
         memoList.forEach((memo, index) => {
             if (typeof memo.latitude !== 'number' || typeof memo.longitude !== 'number') {
                 console.error(`메모 ${index} (${memo.memo_no})의 위경도 값이 유효한 숫자가 아닙니다.`, memo.latitude, memo.longitude);
                 return;
             }
-            //console.log(`메모 ${index} (${memo.memo_no}) - Latitude: ${memo.latitude}, Longitude: ${memo.longitude}`);
-
+            
             const position = new kakao.maps.LatLng(memo.latitude, memo.longitude);
 
             // 이미지 마커 URL (기본 이미지 또는 memo 객체에 image_url 필드가 있다면 사용)
-            // memo_listings 테이블에 이미지 URL 컬럼 (예: image_url varchar(255))이 필요합니다.
-            // PHP select 절에도 ml.image_url 추가 필요.
             let markerImageUrl;
             if (memo.complete === 'Y') {
                 markerImageUrl = '/front/assets/image/markerStar_orange2.png';
@@ -1499,11 +1791,6 @@ async function updateSingleMemoOnMap(memoData) {
     // 1. 기존 CustomOverlay 찾기 (memo_no 기준으로)
     const existingOverlayIndex = currentMemoOverlays.findIndex(overlay => {
         // 오버레이 content 내부에 memo_no가 있는 요소를 찾기 위해 DOM을 파싱해야 할 수 있음
-        // 또는 CustomOverlay 생성 시 data-memo-no 속성을 HTML content에 추가하고 여기서 파싱
-        // 가장 좋은 방법: currentMemoOverlays 배열에 CustomOverlay와 memo_no를 함께 저장
-        // currentMemoOverlays = [{ overlay: customOverlay, memoNo: memo.memo_no }, ...]
-        
-        // 예시 (HTML content 파싱 필요)
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = overlay.getContent();
         return tempDiv.querySelector(`#marker-${memoData.memo_no}`);
@@ -1513,7 +1800,7 @@ async function updateSingleMemoOnMap(memoData) {
         // 2. 기존 오버레이 제거
         currentMemoOverlays[existingOverlayIndex].setMap(null);
         currentMemoOverlays.splice(existingOverlayIndex, 1);
-        console.log(`기존 메모 ${memoData.memo_no} 오버레이 제거.`);
+       
     }
 
     // 3. 업데이트된 데이터로 새로운 마커/오버레이 생성 (기존 displayMemoOnMap 루프 내부 로직 재활용)
@@ -1619,13 +1906,9 @@ async function updateSingleMemoOnMap(memoData) {
         }
     }, 0); 
 
-    console.log(`메모 ${memoData.memo_no} 오버레이 업데이트 완료.`);
 }
 // 기존 오버레이를 모두 지우는 함수
 function removeExistingMemoOverlays() {
-    //for (let i = 0; i < currentMemoOverlays.length; i++) {
-    //    currentMemoOverlays[i].setMap(null); // 지도에서 오버레이 제거
-    //}
     currentMemoOverlays.forEach(overlay => overlay.setMap(null));
     currentMemoOverlays = []; // 배열 초기화
 }
@@ -1636,7 +1919,6 @@ function removeExistingMemoOverlays() {
  */
 function collectFilterMemo() {
     
-    // ⭐️ complete 필드의 값을 PHP 스크립트가 기대하는 'Y' 또는 'N' 문자열로 변환합니다. ⭐️
     const completeStatus = $("#opt_complet").is(':checked') ? 'Y' : 'N';
     return {
         complete: completeStatus,

@@ -26,14 +26,14 @@
                 <div class="col-4">
                     <div class="form-floating">
                         <input type="text" id="memo_name" class="form-control" placeholder="이름" minlength="1" maxlength="50" />
-                        <label for="memo_name">이름</label>
+                        <label for="memo_name">이름<span class="required">*</span></label>
                     </div>
                 </div>
 
                 <div class="col-5">
                     <div class="form-floating">
                         <input type="tel" id="memo_phone" class="form-control" placeholder="연락처" oninput="allowOnlyNumbers(this, 11)" />
-                        <label for="memo_phone">연락처</label>
+                        <label for="memo_phone">연락처<span class="required">*</span></label>
                     </div>
                 </div>
 
@@ -67,11 +67,28 @@
                     </div>
                 </div>
 
-                <div class="col-12 " style="margin-top : 2px"    > <!-- ⭐mt-2 이 부분 추가: 마진 top 2 추가하여 위 textarea와 간격 확보 ⭐ -->
+                <div class="col-12 " style="margin-top : 5px"    > <!-- ⭐mt-2 이 부분 추가: 마진 top 2 추가하여 위 textarea와 간격 확보 ⭐ -->
                     <div class="form-floating">
                         <!-- ⭐ 위치 정보를 표시할 태그 추가 ⭐ -->
-                        <p id="memo_location_info" class="form-control-plaintext text-muted" style="font-size: 0.9em; padding-top: 1px; padding-bottom: ipx; min-height: 50px;">
+                        <p id="memo_location_info" class="form-control-plaintext text-muted" style="font-size: 0.9em; padding-top: 1px; padding-bottom: ipx; min-height: 15px; max-height: 50px;">
                         </p>
+                    </div>
+                </div>
+                <div>
+                    <div class="fw-file">
+                        <div class="plus-desc-box d-flex gap-3">
+                            <div class="plus-btn mb-3">
+                                <label type="button" for="register_file_input" class="d-flex justify-content-center align-items-center" style="height: 25px; width: 25px; background-color :rgb(238, 250, 215)"><i class="fa-light fa-2x fa-plus"></i></label>
+                                <input class="form-control d-none" value="" id="register_file_input" type="file" accept="image/png, image/gif, image/jpeg" multiple />
+                            </div>
+                            <div class="file-desc col d-flex flex-column">
+                                <span> ※ 이미지(jpg, jpeg, png)파일을 추가할 수 있습니다.(최대 4장) </span>
+                            </div>
+                        </div>
+                        <!-- ⭐⭐⭐ 이 부분을 추가/수정해주세요! ⭐⭐⭐ -->
+                        <div class="swiper file-upload-swiper"> <!-- 고유한 클래스 'file-upload-swiper' 추가 -->
+                            <div class="swiper-wrapper"></div>
+                        </div>
                     </div>
                 </div>
             </div>

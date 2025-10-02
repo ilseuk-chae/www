@@ -196,6 +196,7 @@ function validateInput($input, $type, $errorMessage, $options = array())
                 // return "파일 사이즈는 1KB 이상 10MB 이하만 가능합니다.";
             }
 
+            return true; 
             $filtered = $input;
             break;
         default:

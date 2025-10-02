@@ -538,7 +538,7 @@ function upload_file_one($file, $filePath, $uuidFg = 'N')
     if ($file['size'] <= 0) {
         $result_array['result'] = 'error';
         $result_array['message'] = 'File size is zero or negative';
-        exit;
+        return $result_array; // 함수 내 즉시 종료 대신 return 권장
     }
 
     // UUID로 파일 이름 생성
@@ -593,6 +593,67 @@ function upload_file_one($file, $filePath, $uuidFg = 'N')
     }
 }
 
+function upload_file_one2($file, $filePath, $uuidFg = 'N')
+{
+    $result_array = array();
+
+    // 1. 파일 크기 체크
+    if ($file['size'] <= 0) {
+        $result_array['result'] = 'error';
+        $result_array['message'] = 'File size is zero or negative';
+        return $result_array;
+    }
+
+    // 2. UUID로 고유 파일명 생성
+    $uuid = generate_uuid();
+    $file_extension = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+    $saveFileName = $uuid . '.' . $file_extension;
+
+    // 3. 서버 내 절대 업로드 최상위 경로
+    $uploadRoot = "/home/project/tody/upload/";
+
+    // 4. 서버 최종 절대 업로드 디렉토리 경로 조합
+    $uploadDir = $uploadRoot . $filePath;
+
+    // 5. 업로드 최상위 경로 존재 여부 체크
+    if (!file_exists($uploadRoot)) {
+        $result_array['result'] = 'error';
+        $result_array['message'] = 'Upload root path does not exist';
+        return $result_array;
+    }
+
+    // 6. 최종 업로드 디렉토리 없으면 생성
+    if (!file_exists($uploadDir)) {
+        if (!mkdir($uploadDir, 0777, true)) {
+            $result_array['result'] = 'error';
+            $result_array['message'] = 'Failed to create upload directory';
+            return $result_array;
+        }
+    }
+
+    // 7. 저장할 최종 절대 경로 결정
+    if ($uuidFg == 'Y') {
+        $uploadFile = $uploadDir . $saveFileName;
+    } else {
+        $uploadFileName = basename($file['name']);
+        $uploadFile = $uploadDir . $uploadFileName;
+    }
+
+    // 8. 실제 파일 업로드 처리
+    if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
+        // 9. 웹에서 접근 가능한 상대 경로 생성
+        $webRelativePath = rtrim($filePath, '/') . '/';
+        $webRelativePath .= ($uuidFg == 'Y') ? $saveFileName : $uploadFileName;
+
+        $result_array['result'] = 'success';
+        $result_array['file_path'] = $webRelativePath; // 상대 경로만 반환
+        return $result_array;
+    } else {
+        $result_array['result'] = 'error';
+        $result_array['message'] = 'Failed to move uploaded file';
+        return $result_array;
+    }
+}
 
 function upload_file_temp($file, $uploadFolder)
 {

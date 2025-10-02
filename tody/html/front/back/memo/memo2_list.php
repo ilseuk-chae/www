@@ -121,7 +121,12 @@ try {
 
             mc.idx AS comment_no,
             mc.comment,
-            DATE_FORMAT(mc.reg_date, '%Y-%m-%d') AS comment_date
+            DATE_FORMAT(mc.reg_date, '%Y-%m-%d') AS comment_date,
+
+            mf.idx AS file_id,
+            mf.file_name AS file_original_name, -- 컬럼명 중복 피하기 위해 변경
+            mf.file_path,
+            mf.reg_date AS file_reg_date -- 필요하다면 파일 등록일도 가져옴
 
         FROM memo2_listings AS ml
 
@@ -133,8 +138,16 @@ try {
         ON ml.estate_no = el.idx
 
         LEFT JOIN memo_comment AS mc
-        ON ml.idx = mc.memo_no ";
-    
+        ON ml.idx = mc.memo_no
+
+        -- memo_files 테이블 LEFT JOIN 추가
+        LEFT JOIN memo_files AS mf
+        ON ml.my_idx = mf.memo_idx AND ml.reg_no = mf.user_no  -- 파일은 해당 유저의 메모만 가져오도록 조건 추가
+        ";
+
+    //var_dump($sql); // Debug: Check the constructed SQL query
+    //exit;
+
     $sql .= $where_clause;
     
     // Order By clause
@@ -169,15 +182,48 @@ try {
                 'complete' => $row['complete'],
                 'address_jibun' => $row['address_jibun'],
                 'address_road' => $row['address_road'],
-                'comments' => []
+                'comments' => [],
+                'files' => [] // ⭐파일 정보를 담을 배열 추가⭐
             ];
         }
 
-        if (!empty($row['comment'])) {
+        // 댓글 정보 그룹화 (기존 로직 유지)
+        if (!empty($row['comment_no']) && !in_array($row['comment_no'], array_column($memo_data[$memo_no]['comments'], 'comment_no'))) {
             $memo_data[$memo_no]['comments'][] = [
                 'comment_no' => $row['comment_no'],
                 'comment' => $row['comment'],
                 'comment_date' => $row['comment_date']
+            ];
+        }
+        // ⭐⭐ 파일 정보 그룹화 ⭐⭐
+        // 파일 ID가 있고, 이미 해당 파일이 추가되지 않았다면 추가
+        if (!empty($row['file_id']) && !in_array($row['file_id'], array_column($memo_data[$memo_no]['files'], 'file_id'))) {
+            $db_file_path = $row['file_path'];
+
+            $filesystem_upload_base_path = '/home/project/tody/upload/'; 
+            $web_url_prefix = '/uploads/';
+
+            $relativePath = str_replace($filesystem_upload_base_path, '', $db_file_path);
+            $imgSrc = $web_url_prefix . ltrim($relativePath, '/'); 
+
+            $fileType = 'unknown'; 
+            if (file_exists($db_file_path)) {
+                $fileMimeType = mime_content_type($db_file_path);
+                if ($fileMimeType !== false) {
+                    if (strpos($fileMimeType, 'image') !== false) { $fileType = 'image'; }
+                    //elseif (strpos($fileMimeType, 'video') !== false) { $fileType = 'video'; }
+                    else { $fileType = 'other'; }
+                }
+            } else {
+                error_log("File not found on disk: " . $db_file_path); // 파일을 못 찾을 경우 로그 남김
+                $fileType = 'not_found';
+            }
+
+            $memo_data[$memo_no]['files'][] = [
+                'file_id' => $row['file_id'],
+                'imgSrc' => $imgSrc,
+                'fileType' => $fileType,
+                'file_name' => $row['file_original_name'] // SQL에서 가져온 파일 원본 이름 사용
             ];
         }
     }
