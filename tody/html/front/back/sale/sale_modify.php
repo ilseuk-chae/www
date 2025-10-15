@@ -20,7 +20,8 @@ $address_jibun = isset($_POST['address_jibun']) && $_POST['address_jibun'] !== '
 $address_detail = isset($_POST['address_detail']) && $_POST['address_detail'] !== '' ? urldecode($_POST['address_detail']) : null;
 $estate_type = isset($_POST['estate_type']) && $_POST['estate_type'] !== '' ? urldecode($_POST['estate_type']) : null;
 $sale_type = isset($_POST['sale_type']) && $_POST['sale_type'] !== '' ? urldecode($_POST['sale_type']) : null;
-$exchange_fg = isset($_POST['exchange_fg']) && $_POST['exchange_fg'] !== '' ? urldecode($_POST['exchange_fg']) : 'N';
+$exchange_fg = isset($_POST['exchange_fg']) && $_POST['exchange_fg'] !== '' ? urldecode($_POST['exchange_fg']) : 'N';  
+$urgent_sale_fg = isset($_POST['urgent_sale_fg']) && $_POST['urgent_sale_fg'] !== '' ? urldecode($_POST['urgent_sale_fg']) : 'N';
 $lndcgrCode = isset($_POST['lndcgrCode']) && $_POST['lndcgrCode'] !== '' ? urldecode($_POST['lndcgrCode']) : null;
 $lndcgrCodeNm = isset($_POST['lndcgrCodeNm']) && $_POST['lndcgrCodeNm'] !== '' ? urldecode($_POST['lndcgrCodeNm']) : null;
 $prposArea = isset($_POST['prposArea']) && $_POST['prposArea'] !== '' ? urldecode($_POST['prposArea']) : null;
@@ -162,6 +163,7 @@ try {
             estate_type = ?, 
             sale_type = ?,
             exchange_fg = ?,
+            urgent_sale_fg = ?,
             lndcgrCode = ?, 
             lndcgrCodeNm = ?, 
             prposArea = ?, 
@@ -202,7 +204,7 @@ try {
 
     // 조건 추가
     $params = [
-        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, $exchange_fg, 
+        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, $exchange_fg, urgent_sale_fg,
         $lndcgrCode, $lndcgrCodeNm, $prposArea, $prposAreaNm, 
         $strctCd, $strctCdNm, $etcStrct, $useAprDay, 
         $mainPurpsCd, $mainPurpsCdNm, $realPurpsNm, 
@@ -216,7 +218,7 @@ try {
     ];
     // echo get_bound_query($sql, $params);exit;
 
-    $types = 'ssssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi' . 'ii';
+    $types = 'sssssssss' . 'ssss' . 'ssss' . 'sss' . 'sssss' . 'iiii' . 'ddii' . 'ddd' . 'ddds' . 'ddi' . 'ii';
     executeQuery($conn, $sql, $types, $params);
 
 

@@ -24,6 +24,7 @@ $sale_type = isset($_POST['saleType']) && is_array($_POST['saleType'])
     : []; // 배열로 처리
 #$estate_type = isset($_POST['estateType']) ? urldecode($_POST['estateType']) : '';
 $exchange_fg = isset($_POST['exchange']) ? urldecode($_POST['exchange']) : '';
+$urgent_sale_fg = isset($_POST['urgentsale']) ? urldecode($_POST['urgentsale']) : '';
 $min_price = isset($_POST['minPrice']) && is_numeric(urldecode($_POST['minPrice'])) 
     ? (float)urldecode($_POST['minPrice']) * 10000 
     : 0;
@@ -88,6 +89,7 @@ try {
             el.description,
             el.feature,
             el.exchange_fg,
+            el.urgent_sale_fg,
             DATE_FORMAT(el.reg_date, '%Y-%m-%d') AS reg_date, 
 
             tm.type_name AS estate_type,
@@ -188,6 +190,14 @@ try {
                 $types .= 's';
             }
 
+            // 급매물 필터 추가
+            // $urgent_sale_fg 값이 'Y'일 때만 필터 조건을 추가합니다.
+            if (!empty($urgent_sale_fg)) { // $urgent_sale_fg가 비어있지 않은 경우에만 조건을 추가
+                $sql .= " AND el.urgent_sale_fg = ?";
+                $params[] = $urgent_sale_fg;
+                $types .= 's';
+            }
+
             // 가격 범위 필터 추가
             $sql .= " AND el.sale_price BETWEEN ? AND ?";
             $params[] = $min_price;
@@ -227,6 +237,7 @@ try {
                 'estate_type' => $row['estate_type'],
                 'sale_type' => $row['sale_type'],
                 'exchange_fg' => $row['exchange_fg'],
+                'urgent_sale_fg' => $row['urgent_sale_fg'],
                 'agency_name' => $row['agency_name'],
                 'data.exclusive_building' => 'N',
                 'imageArray' => array()

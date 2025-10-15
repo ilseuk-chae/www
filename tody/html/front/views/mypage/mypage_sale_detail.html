@@ -226,16 +226,6 @@
                             <input type="hidden" id="longitude" name="longitude" />
                             <input type="hidden" id="pnu" name="pnu" />
                         </div>
-                        <!--
-                        <div>
-                            <h2 class="label-text">거래종류</h2>
-                            <p>
-                                <select name="" id="sale_type" class="form-select select-box" required>
-                                    <option value="">거래종류를 선택하세요</option>
-                                </select>
-                            </p>
-                        </div>
-                        -->
                         <div>
                             <h2 class="label-text">거래종류</h2>
                             <div class="d-flex align-items-center gap-2" style="margin-top: 15px;"> <!-- Flexbox 컨테이너 추가 -->
@@ -244,11 +234,18 @@
                                     <!-- 옵션 내용 -->
                                 </select>
                         
-                                <!-- 교환가능 체크박스 -->
-                                <p class="check-box-red mb-0"> <!-- p 태그의 기본 하단 마진(margin-bottom) 제거를 위해 mb-0 추가 -->
-                                    <input type="checkbox" name="opt" id="exchange_fg" />
-                                    <label for="exchange_fg">교환가능</label>
-                                </p>
+                                <div class="d-flex flex-column gap-1"> 
+                                    <p class="check-box-red mb-0" style ="margin-top:5px;">
+                                        <input type="checkbox" name="opt" id="exchange_fg" />
+                                        <label for="exchange_fg">교환가능</label>
+                                    </p>
+                                    
+                                    <p class="check-box-red mb-0" style ="margin-top:3px;">
+                                        <input type="checkbox" name="opt" id="urgent_sale_fg" />
+                                        <label for="urgent_sale_fg">급매물</label>
+                                    </p>
+                                </div>
+                                
                             </div>
                         </div>
 

@@ -408,12 +408,20 @@ function initAction() {
 
     // 지도 - 옵션 - 도구사용 //
     $("#mapOptionToolOpen").click(function () {
-        $(".mo-tool").fadeIn(400, "easeOutQuad");
+        //$(".mo-tool").fadeIn(400, "easeOutQuad");
+        $(this).toggleClass("active"); // active 클래스를 토글합니다.
+        if ($(this).hasClass("active")) {
+            $(".mo-tool").fadeIn(100, "easeOutQuad");
+        }
+        else {
+            $(".mo-tool").fadeOut(400, "easeOutQuad");
+        }
+
     });
     $(".mo-tool > dl > dd > button").click(function () {
         $(".mo-tool").fadeOut(400, "easeOutQuad");
         $(".mo-tool-option").fadeOut(400, "easeOutQuad");
-        // $(".mo-tool-draw-option").fadeOut(400, "easeOutQuad");
+        $("#mapOptionToolOpen").removeClass("active");
     });
 
     // 지도 - 옵션 - 메모관리 //
@@ -436,7 +444,6 @@ function initAction() {
             removeExistingMemoOverlays();
         }
     });
-
     // ⭐ opt_complet (거래완료 포함) 체크박스 변경 시 ⭐
     $("#opt_complet").on("change", function() {
         // 메모 목록을 다시 불러와 지도에 표시합니다.
@@ -449,11 +456,149 @@ function initAction() {
         displayMemoOnMap();
     });
 
-    $(".mo-memo > dl > dd > button").click(function () {
+    $(".mo-memo > dl > dd > button").click(function () {  // 메모관리 닫기(X) `버튼 클릭 시
         //$("#mapOptionMemoOpen2").removeClass("active");
         $(".mo-memo").fadeOut(400, "easeOutQuad");
     });
+
+    // 지도 - 옵션 - 검색조건 //
+    $("#mapOptionSearch").click(function () {
+        $(this).toggleClass("active"); // active 클래스를 토글합니다.
+        if ($(this).hasClass("active")) {
+            $(".mo-search").fadeIn(100, "easeOutQuad");
+            $("#opt_estate").prop("checked", true).trigger("change");
+            $("#opt_sale").prop("checked", true).trigger("change");
+            $("#opt_exchange").prop("checked", true).trigger("change");
+            $("#opt_urgent").prop("checked", true).trigger("change");
+            $("#opt_price").prop("checked", true).trigger("change");
+            // 검색조건 전체초기화  <==> 현재 화면 상태반영
+            $("#estatgroup_all").addClass("active");
+            $("#estatgroup_store").addClass("active");
+            $("#estatgroup_office").addClass("active");
+            $("#estatgroup_factoty").addClass("active");
+            $("#estatgroup_knowledge").addClass("active");
+            $("#estatgroup_building").addClass("active");
+            $("#estatgroup_land").addClass("active");
+            $("#estatgroup_apartment").addClass("active");
+            $("#estatgroup_offficetel").addClass("active");
+            $("#estatgroup_house").addClass("active");
+            $("#estatgroup_ownership").addClass("active");
+
+            $("#salegroup_sale").addClass("active");
+            $("#salegroup_charter").addClass("active");
+            $("#salegroup_monthlyrent").addClass("active");
+
+            $("#exchangegroup").removeClass("active");
+            $("#urgentsalegroup").removeClass("active");
+            $("#pricegroup").removeClass("active");
+        }
+        else {
+            $("#mapOptionSearch").removeClass("active");
+            $(".mo-search").fadeOut(400, "easeOutQuad");
+        }
+    });
+    // ⭐ opt_all (전체조건) 체크박스 변경 시 ⭐
+    $("#opt_all").on("change", function() {
+        // 조건관련 버튼을 표시합니다.
+        if ($(this).prop("checked")) {
+            $(".map-estate-group").fadeIn(100, "easeOutQuad");
+            $(".map-sale-group").fadeIn(100, "easeOutQuad");
+            $(".map-exchange-group").fadeIn(100, "easeOutQuad");
+            $(".map-urgentsale-group").fadeIn(100, "easeOutQuad");
+            $(".map-price-group").fadeIn(100, "easeOutQuad");
+
+            $("#opt_estate").prop("checked", true);
+            $("#opt_sale").prop("checked", true);
+            $("#opt_exchange").prop("checked", true);
+            $("#opt_urgent").prop("checked", true);
+            $("#opt_price").prop("checked", true);
+
+        } else {
+            $(".map-estate-group").fadeOut(100, "easeOutQuad");
+            $(".map-sale-group").fadeOut(100, "easeOutQuad");
+            $(".map-exchange-group").fadeOut(100, "easeOutQuad");
+            $(".map-urgentsale-group").fadeOut(100, "easeOutQuad");
+            $(".map-price-group").fadeOut(100, "easeOutQuad");
+
+            $("#opt_estate").prop("checked", false);
+            $("#opt_sale").prop("checked", false);
+            $("#opt_exchange").prop("checked", false);
+            $("#opt_urgent").prop("checked", false);
+            $("#opt_price").prop("checked", false);
+
+        }
+    });
+    // ⭐ opt_estate (매물종류) 체크박스 변경 시 ⭐
+    $("#opt_estate").on("change", function() {
+        // 매물종류 버튼을 표시합니다.
+        if ($(this).prop("checked")) {
+            $(".map-estate-group").fadeIn(100, "easeOutQuad");
+            if( $("#opt_sale").prop("checked") && $("#opt_estate").prop("checked") && $("#opt_exchange").prop("checked") && $("#opt_urgent").prop("checked") && $("#opt_price").prop("checked")){
+                $("#opt_all").prop("checked", true);
+            }
+        } else {
+            $(".map-estate-group").fadeOut(100, "easeOutQuad");
+            $("#opt_all").prop("checked", false);
+        }
+    });
+    // ⭐ opt_sale (거래종류) 체크박스 변경 시 ⭐
+    $("#opt_sale").on("change", function() {
+        // 거래종류 버튼을 표시합니다.
+        if ($(this).prop("checked")) {
+            $(".map-sale-group").fadeIn(100, "easeOutQuad");
+            if( $("#opt_sale").prop("checked") && $("#opt_estate").prop("checked") && $("#opt_exchange").prop("checked") && $("#opt_urgent").prop("checked") && $("#opt_price").prop("checked")){
+                $("#opt_all").prop("checked", true);
+            }
+        } else {
+            $(".map-sale-group").fadeOut(100, "easeOutQuad");
+            $("#opt_all").prop("checked", false);
+        }
+    });
+    // ⭐ opt_exchange (교환여부) 체크박스 변경 시 ⭐
+    $("#opt_exchange").on("change", function() {
+        // 교환여부 버튼을 표시합니다.
+        if ($(this).prop("checked")) {
+            $(".map-exchange-group").fadeIn(100, "easeOutQuad");
+            if( $("#opt_sale").prop("checked") && $("#opt_estate").prop("checked") && $("#opt_exchange").prop("checked") && $("#opt_urgent").prop("checked") && $("#opt_price").prop("checked")){
+                $("#opt_all").prop("checked", true);
+            }
+        } else {
+            $(".map-exchange-group").fadeOut(100, "easeOutQuad");
+            $("#opt_all").prop("checked", false);
+        }
+    });
+    // ⭐ opt_urgent (급매물) 체크박스 변경 시 ⭐
+    $("#opt_urgent").on("change", function() {
+        // 급매물 버튼을 표시합니다.
+        if ($(this).prop("checked")) {
+            $(".map-urgentsale-group").fadeIn(100, "easeOutQuad");
+            if( $("#opt_sale").prop("checked") && $("#opt_estate").prop("checked") && $("#opt_exchange").prop("checked") && $("#opt_urgent").prop("checked") && $("#opt_price").prop("checked")){
+                $("#opt_all").prop("checked", true);
+            }
+        } else {
+            $(".map-urgentsale-group").fadeOut(100, "easeOutQuad");
+            $("#opt_all").prop("checked", false);
+        }
+    });
+    // ⭐ opt_price (가격대) 체크박스 변경 시 ⭐
+    $("#opt_price").on("change", function() {
+        // 가격대 버튼을 표시합니다.
+        if ($(this).prop("checked")) {
+            $(".map-price-group").fadeIn(100, "easeOutQuad");
+            if( $("#opt_sale").prop("checked") && $("#opt_estate").prop("checked") && $("#opt_exchange").prop("checked") && $("#opt_urgent").prop("checked") && $("#opt_price").prop("checked")){
+                $("#opt_all").prop("checked", true);
+            }
+        } else {
+            $(".map-price-group").fadeOut(100, "easeOutQuad");
+            $("#opt_all").prop("checked", false);
+        }
+    });
     
+    $(".mo-search > dl > dd > button").click(function () { // 검색조건 닫기(X) `버튼 클릭 시
+        $(".mo-search").fadeOut(400, "easeOutQuad");
+        $("#mapOptionSearch").removeClass("active");
+    });
+
     // 모달 초기화 로직 (initMemoEvents() 함수 안이든, $(document).ready()의 한 부분으로)
     // 이 핸들러는 한 번만 바인딩되어야 합니다.
     $("#memoRegisterModal").off("hidden.bs.modal").on("hidden.bs.modal", function () { // .off() 추가
@@ -553,6 +698,7 @@ function initAction() {
             $(".map-sale-group").removeClass("active");
             $(".map-estate-group").removeClass("active");
             $(".map-exchange-group").removeClass("active");
+            $(".map-urgentsale-group").removeClass("active");
             $(".map-price-group").removeClass("active");
             $(".map-bg").addClass("full");
             $("#rvWrapper").addClass("full");
@@ -563,6 +709,7 @@ function initAction() {
             $(".map-sale-group").addClass("active");
             $(".map-estate-group").addClass("active");
             $(".map-exchange-group").addClass("active");
+            $(".map-urgentsale-group").addClass("active");
             $(".map-price-group").addClass("active");
             $(".map-bg").removeClass("full");
             $("#rvWrapper").removeClass("full");
@@ -748,8 +895,16 @@ function initAction() {
         estateNewList();
     });
 
-    // 지도 - sale 선택 20250627
+    // 지도 - exchange 선택 20250627
     $(".map-exchange-group button").on("click", function() {
+        // 클릭된 버튼의 active 클래스를 토글합니다.
+        // active 클래스가 없으면 추가하고, 있으면 제거합니다.
+        $(this).toggleClass("active");
+        estateNewList();
+    });
+
+    // 지도 - urgent sale 선택 20251014
+    $(".map-urgentsale-group button").on("click", function() {
         // 클릭된 버튼의 active 클래스를 토글합니다.
         // active 클래스가 없으면 추가하고, 있으면 제거합니다.
         $(this).toggleClass("active");
@@ -1246,9 +1401,10 @@ function initListEvents() {
 
             const estateNo = Number(parentDl.data('estate-no')); // <-- 여기를 Number()로 감쌉니다.
             // 매물 유형과 주소 정보 추출
-            const saleType = parentDl.find('h2 .label-default').text().trim(); // 매물 유형 (예: 매매, 임대, 전세)
-            // estateType (예: 상가, 건물, 토지)을 추출하는 새로운 로직
+            //const saleType = parentDl.find('h2 .label-default').text().trim(); // 매물 유형 (예: 매매, 임대, 전세)
+            const saleType = parentDl.find('h2 .label-default').text().trim(); // 매물 유형 (예: 매매, 임대, 전세)// estateType (예: 상가, 건물, 토지)을 추출하는 새로운 로직
             
+            /* 추후를 위해 남겨둠(20251013) 삭제하지마세요
             const estateCategoryDiv = parentDl.find('h2 > div.d-flex.align-items-center.gap-1');
             let estateType = '';
             if (estateCategoryDiv.length) {
@@ -1266,6 +1422,9 @@ function initListEvents() {
                     }
                 });
             }
+            */
+           // estateType (예: 상가, 건물, 토지)을 추출하는 로직
+            const estateType = parentDl.find('h2 > div.d-flex.align-items-center.gap-1 > .font13').text().trim();
 
             // 주소는 기존처럼 ms-md-auto 클래스에서 추출
             const address = parentDl.find('h2 .ms-md-auto').text().trim(); // 주소
@@ -1619,18 +1778,17 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                     
                     switch (data.sale_type) {
                         case "매매":
-                            sateTypeHtml = `<span class="label-default bg-green1">매매</span>`;
+                            sateTypeHtml = `<span class="label-default bg-green1 font11">매매</span>`;
                             priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
                             break;
                         case "전세":
                         case "임대(전세)":
-                            sateTypeHtml = `<span class="label-default bg-violet1">임대(전세)</span>`;
+                            sateTypeHtml = `<span class="label-default bg-violet1 font11">임대(전세)</span>`;
                             priceHtml = `${formatPrice(data.sale_price, "all", true)}`;
                             break;
                         case "월세":
                         case "임대(월세)":
-                            sateTypeHtml = `<span class="label-default bg-indigo1">임대(월세)</span>`;
-                            //priceHtml = `<span class="text-nowrap">${formatPrice(data.rent_price, "all", true)}</span> / <span class="text-nowrap">${formatPrice(data.deposit_price, "all", true)}</span>`;
+                            sateTypeHtml = `<span class="label-default bg-indigo1 font11">임대(월세)</span>`;
                             priceHtml = `<span class="text-nowrap">${formatPrice(data.sale_price, "all", true)}</span> / <span class="text-nowrap">${formatPrice(data.rent_price, "all", true)}</span>`;
                             break;
                     }
@@ -1662,6 +1820,14 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                         default:
                             exchange_Html = "";
                     }
+                    let urgent_sale_Html = "";
+                    switch (data.urgent_sale_fg) {
+                        case "Y":
+                            urgent_sale_Html = `<span class="label-default bg-red1 blink">급매물</span>`;;
+                            break;
+                        default:
+                            urgent_sale_Html = "";
+                    }
                    
                     let image = "";
                     if (data.imageArray.length > 0) {
@@ -1679,37 +1845,50 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                     } else {
                         image = '<img src="/front/assets/image/building_empty.png" width="100%" alt="" title="" />';
                     }
+                    let estateTypeHtml = "";
+                    estateTypeHtml =  `<span class="font13">${data.estate_type}</span>`;
+
                     compareCheckbox = `<div class="check-box-orange-s"><input type="checkbox" id="compareCheckbox_${data.estate_no}"><label for="compareCheckbox_${data.estate_no}">비교</label></div>`;
-                    let estateNoHtml=  `<label>매물번호:${data.estate_no}</label>`;
+                    //let estateNoHtml=  `<label>매물번호:${data.estate_no}</label>`;
+                    let estateNoHtmlContent = `<label>매물번호:${data.estate_no}</label>`; 
+
+                    let estateNoHtml = `<div class="ms-auto font13"> ${estateNoHtmlContent} </div>`;
                     //<h2 class="d-flex align-items-center gap-1">${compareCheckbox} ${sateTypeHtml} ${data.estate_type} ${addressHtml}</h2>
+
                     return `
-                        <dl class="${estateTypeClass}" data-estate-no="${data.estate_no}">
+                        <dl class="${estateTypeClass} d-flex flex-wrap" data-estate-no="${data.estate_no}">
+                            <h2 class="d-flex align-items-center justify-content-between w-100">
+                                <div class="d-flex align-items-center gap-1">
+                                    ${compareCheckbox}
+                                    ${sateTypeHtml}
+                                    ${estateTypeHtml}
+                                    ${exchange_Html}
+                                    ${urgent_sale_Html}
+                                </div>
+                                <div class="ms-auto font12">${estateNoHtml}</div>
+                            </h2>
                             <dt>
-                                
-                                <h2 class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center gap-1">
-                                        ${compareCheckbox}
-                                        ${sateTypeHtml}
-                                        ${data.estate_type}
-                                        ${exchange_Html}
-                                    </div>
-                                    ${estateNoHtml}
-                                </h2>
                                 <h2 class="d-flex align-items-center gap-1">${addressHtml}</h2>
                                 <ul>
                                     <li>${priceHtml}</li>
                                     <li class="text-nowrap">${areaHtml}</li>
                                 </ul>
-                                <div>
-                                    <p class="text-clamp">${data.description ? data.description : "매물설명 없음"}</p>
-                                </div>
-                                <dl>
-                                    <dt class="agency-name" data-estate-no="${data.estate_no}"><button type="button">${data.agency_name}</button></dt>
-                                    <dd>등록일. ${data.reg_date}</dd>
-                                </dl>
+                                <div><p class="text-clamp">${data.description ? data.description : "매물설명 없음"}</p></div>
                             </dt>
-                            <dd>${image}</dd>
-                        </dl>`;
+                            <dd class="col-md-4">${image}</dd>
+                        </dl>
+
+                        <dl class="d-flex flex-wrap" style="font-size: 12px; height: 20px; border-bottom: #e9e9e9 1px solid;">
+                            <h2 class="d-flex align-items-center justify-content-between w-100">
+                                <div class="d-flex align-items-center gap-1 font12">
+                                    <button type="button">상호명: ${data.agency_name}</button>
+                                </div>
+                                <div class="ms-auto font12">등록일: ${data.reg_date}&nbsp;${getRegistrationStatus(data.reg_date)}</div>
+                            </h2>
+                            <dt></dt>
+                            <dd></dd>
+                        </dl>
+                    `;
                 });
 
             }
@@ -1736,6 +1915,40 @@ async function estateNewList(searchNo = "", propertyNo = "") {
         });
     // 매물 리스트가 업데이트된 후 비교 목록을 갱신합니다.
     //updateCompareList();
+}
+
+/**
+ * 등록일을 기준으로 "신규등록" 또는 "x일 전 등록" 상태 텍스트를 반환합니다.
+ * @param {string} regDateString - "yyyy-mm-dd" 형식의 등록일 문자열입니다.
+ * @returns {string} - 상태 HTML 문자열 (예: '<span style="color: red;">7일 전 등록</span>')
+ */
+function getRegistrationStatus(regDateString) {
+    // 시스템에서 정해진 현재 시각을 기준으로 합니다.
+    const today = new Date('2025-10-13T14:17:39'); 
+    const regDate = new Date(regDateString);
+
+    // 날짜의 시간 부분을 00:00:00.000으로 설정하여 '일' 단위 비교의 정확성을 높입니다.
+    today.setHours(0, 0, 0, 0);
+    regDate.setHours(0, 0, 0, 0);
+
+    // 날짜 차이 계산 (밀리초 단위)
+    const diffTime = today.getTime() - regDate.getTime();
+    // 일(day) 단위로 변환합니다. Math.ceil을 사용하여 1일 미만의 차이도 1일로 간주합니다.
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    let statusHtml = '';
+
+    if (diffDays >= 0 && diffDays <= 3) {
+        // 등록일이 오늘(0일차) 포함 3일 이내일 경우
+        //statusHtml = `<span style="font-weight: bold; color: #17a2b8;">신규등록</span>`; // '신규등록'은 눈에 띄게 파란색으로 표시합니다.
+        statusHtml = `<span style="font-weight: bold; color:red">  신규등록</span>`; // '신규등록'은 눈에 띄게 파란색으로 표시합니다.
+    } else if (diffDays >= 4 && diffDays <= 10) {
+        // 등록일이 4일에서 10일 사이일 경우
+        statusHtml = `<span style="color: #17a2b8;; font-weight: bold;">  ${diffDays}일 전 등록</span>`;
+    }
+    // 10일 초과인 경우에는 statusHtml이 빈 문자열로 유지됩니다.
+
+    return statusHtml;
 }
 
 function updateCompareList(){
@@ -1856,8 +2069,17 @@ async function renderEstateDetail(data) {
         default:
             exchange_Html = "";
     }
+
+    let urgent_sale_Html = "";
+    switch (data.urgent_sale_fg) {
+        case "Y":
+            urgent_sale_Html = `<span class="label-default bg-red1 blink">급매물</span>`;;
+            break;
+        default:
+            urgent_sale_Html = "";
+    }
     
-    $("#map_sell_view .msv-info dt").html(`${sateTypeHtml} ${data.estate_type} ${exchange_Html}`);
+    $("#map_sell_view .msv-info dt").html(`${sateTypeHtml} ${data.estate_type} ${exchange_Html} ${urgent_sale_Html}`);
     $("#map_sell_view .msv-info dd .estate-no").text(data.estate_no);
     $("#map_sell_view .msv-info dd .estate-no").attr("data-lat", data.lat);
     $("#map_sell_view .msv-info dd .estate-no").attr("data-lng", data.lng);
@@ -1914,6 +2136,8 @@ async function renderEstateDetail(data) {
         { name: "floor_height", title: "건물층고", value: `${data.floor_height ? data.floor_height + "m" : ""}` },
         { name: "feature", title: "특장점", value: data.feature || "" },
         { name: "description", title: "상세 설명", value: data.description || "정보 없음" },
+        { name: "register_date", title: "등록일", value: `${data.reg_date || ""}&nbsp;${getRegistrationStatus(data.reg_date)}` },
+
         // {
         //     name: "agency_name",
         //     title: "중개사 상호",
@@ -2059,7 +2283,7 @@ function renderComparisonTable(comparisonData) {
     // label: HTML에 표시된 라벨 텍스트
     // prop: responseData 내의 해당 속성명
     // formatter: 값을 포맷팅할 함수 (선택 사항)
-    // compareType: 'text', 'number', 'image' 등 비교 방식
+    // compareType: 'text', 'number', 'image' 등 비교 방식(Y: 비교대상)
     const comparisonFields = [
         { label: "매물 사진", prop: "imageArray", type: "image", compare: "N", formatter: (imageArray, data) => imageArray && imageArray.length > 0 ? `/front/back/00-include/image.php?token=${encodeURIComponent(imageArray[0].imageToken)}` : '/front/assets/image/building_empty.png'},
         { label: "소재지(지번)", prop: "address_jibun", type: "text", compare: "N", formatter: (val) => cutAfterSuffix(val) || ""},
@@ -2092,6 +2316,7 @@ function renderComparisonTable(comparisonData) {
         { label: "건물층고", prop: "floor_height", type: "number", compare: "N", formatter: (val) => val ? val + "m" : "" },
         { label: "특장점", prop: "feature", type: "text", compare: "N", formatter: (val) => val || "" },
         { label: "상세 설명", prop: "description", type: "text", compare: "N", formatter: (val) => val || "정보 없음" },
+        { label: "등록일", prop: "reg_date", type: "text", compare: "N", formatter: (val) => val || "" },
       ];
 
     // comparisonFields 배열은 이 함수 외부 또는 함수 내부에 정의되어 있어야 합니다.
@@ -2099,9 +2324,9 @@ function renderComparisonTable(comparisonData) {
     // 1. sale_type 값에 따라 반환될 HTML 정보(클래스, 텍스트)를 매핑하는 객체를 정의합니다.
     
     const saleTypeInfoMap = {
-        "전세": { colorClass: "bg-violet1", text: "임대(전세)" },
+        "전세": { colorClass: "bg-violet1", text: "전세" }, //"임대(전세)"
         "매매": { colorClass: "bg-green1", text: "매매" },
-        "월세": { colorClass: "bg-indigo1", text: "임대(월세)" },
+        "월세": { colorClass: "bg-indigo1", text: "월세" }, //임대(월세)
         // 필요하다면 다른 sale_type도 여기에 추가할 수 있습니다.
     };
     
@@ -2142,6 +2367,7 @@ function renderComparisonTable(comparisonData) {
         const itemData = comparisonData[i];
         const itemIndex = i + 1; // compare_item1, compare_item2, ...
         let exchange_Html = "";
+        let urgent_sale_Html = "";
 
         const sateTypeHtml = sateTypeHtmls[i] || ''; // 미리 계산된 sale_type HTML
         
@@ -2163,14 +2389,22 @@ function renderComparisonTable(comparisonData) {
 
         switch (itemData.exchange_fg) {
             case "Y":
-                exchange_Html = `<span class="label-default bg-blue1">교환가능</span>`;
+                exchange_Html = `<span class="label-default bg-blue1">교환</span>`;
                 break;
             default:
                 exchange_Html = "";
         }
-        
+
+        switch (itemData.urgent_sale_fg) {
+            case "Y":
+                urgent_sale_Html = `<span class="label-default bg-red1 blink">급매</span>`;;
+                break;
+            default:
+                urgent_sale_Html = "";
+        }
+        const estate_html = truncateEstateType(itemData.estate_type);
         // 내용 채우기
-        $headerItem.html(`${sateTypeHtml} ${itemData.estate_type} (매물번호 : ${itemData.estate_no}) ${exchange_Html}`);
+        $headerItem.html(`${sateTypeHtml} ${estate_html} (번호:${itemData.estate_no}) ${exchange_Html} ${urgent_sale_Html}`);
         
         $headerPropertyValues.append($headerItem); // 생성된 아이템을 property-values에 추가
     }
@@ -2390,6 +2624,23 @@ function renderComparisonTable(comparisonData) {
     
 }
 
+/**
+ * 문자열이 특정 길이를 초과하면 잘라내고 줄임표를 붙입니다.
+ * @param {string} text - 원본 문자열
+ * @returns {string} - 처리된 문자열 (예: "지식산업센터" -> "지식산...", "오피스텔" -> "오피스텔")
+ */
+function truncateEstateType(text) {
+    if (!text) return ""; // null 또는 undefined인 경우 빈 문자열 반환
+
+    const maxLength = 4; // 최대 표시 글자 수 (이하: 그대로, 초과: 줄임표)
+    const displayLength = 3; // 줄임표 붙을 때 표시할 글자 수
+
+    if (text.length > maxLength) {
+        return text.substring(0, displayLength) + "..";
+    } else {
+        return text;
+    }
+}
 // ResizeObserver 인스턴스 (한 번만 생성)
 let modalHeightObserver = null;
 
@@ -2597,7 +2848,8 @@ function collectMultiFilterParams() {
     return {
         estateType: getEstateListFilterParams(), 
         saleType: getSaleListFilterParams(),  
-        exchange: getExchangeFilterParams(),   
+        exchange: getExchangeFilterParams(),
+        urgentsale: getUrgentSaleFilterParams(),
         minPrice: $("#input_price_start").val(),
         maxPrice: $("#input_price_end").val(),
     };
@@ -2620,6 +2872,16 @@ function getExchangeFilterParams() {
         exchange_value = "Y";
     }
     return exchange_value;
+}
+
+// 급매물 필터 파라미터 Y: 급매물만, N: 전체 (여기서는 빈 문자열이 전체를 의미합니다.)
+function getUrgentSaleFilterParams() {
+    let urgentsale_value = "";
+    // .length 속성을 사용하여 active 클래스를 가진 버튼이 하나라도 존재하는지 확인합니다.
+    if ($('.map-urgentsale-group button.active').length > 0) {
+        urgentsale_value = "Y";
+    }
+    return urgentsale_value;
 }
 
 function getEstateListFilterParams() {
@@ -3538,6 +3800,7 @@ function initClusterEvent(clusterer) {
             $(".map-sale-group").addClass("active");
             $(".map-estate-group").addClass("active");
             $(".map-exchange-group").addClass("active");
+            $(".map-urgentsale-group").addClass("active");
             $(".map-price-group").addClass("active");
             $(".map-bg").removeClass("full");
             $("#rvWrapper").removeClass("full");

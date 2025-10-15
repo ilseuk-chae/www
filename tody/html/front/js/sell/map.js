@@ -673,6 +673,10 @@ async function handleMapClick(coords) {
 
         // 폴리곤 정보 가져오기
         const polygons = await getLandBuildingPolygon(coords);
+        if (!polygons || (typeof polygons === 'object' && polygons.error === "Failed to retrieve land polygon data")) {
+            console.warn("해당 좌표에 대한 폴리곤 정보를 가져올 수 없습니다. 오류 메시지:", polygons.error || "알 수 없는 오류");
+            return;
+        }
         const { buildingPolygon, buildingPolygon2, landPolygon } = polygons;
 
         // 건물 정보와 토지 정보를 동시에 가져옴

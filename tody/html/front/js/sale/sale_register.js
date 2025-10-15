@@ -1345,6 +1345,7 @@ function getStringData() {
         mgmBldrgstPk: encodeURIComponent(($("#building_type").val() || "").trim()),
         // 체크박스가 체크되어 있으면 'Y', 아니면 'N'
         exchange_fg: $("#exchange_fg").is(":checked") ? "Y" : "N",
+        urgent_sale_fg:$("#urgent_sale_fg").is(":checked") ? "Y" : "N",
     };
 }
 

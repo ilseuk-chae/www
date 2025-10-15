@@ -54,7 +54,8 @@ try {
             a.additional_note,
             a.public_fg,
             a.view_count,
-
+            a.exchange_fg,
+            a.urgent_sale_fg,
     
             b.type_name AS estate_type,
             c.type_name AS sale_type,
@@ -145,6 +146,8 @@ try {
                 'estate_type' => $row['estate_type'],
                 'sale_type' => $row['sale_type'],
                 'agency_name' => $row['agency_name'],
+                'exchange_fg' => $row['exchange_fg'],
+                'urgent_sale_fg' => $row['urgent_sale_fg'],
                 'phone' => $row['phone'],
                 'imageArray' => array()
             );

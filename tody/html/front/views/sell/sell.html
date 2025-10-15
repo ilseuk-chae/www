@@ -201,35 +201,39 @@
                         <button type="button" id="roadviewControl" class="tooltip-target" onclick="setRoadviewRoad()">로드뷰</button>
                     </div>
                     
-                    <!-- 좌측 상단 - 매물유형 옆 매물유형  -->
+                    <!-- 좌측 상단 - 거래종류  -->
                         
                     <div id="mapSaleGroup" class="map-sale-group tooltip-target active">
-                        <button type="button" class="active">매매</button>
-                        <button type="button" class="active">임대(전세)</button>
-                        <button type="button" class="active">임대(월세)</button>
+                        <button type="button" id= "salegroup_sale" class="active">매매</button>
+                        <button type="button" id= "salegroup_charter"class="active">임대(전세)</button>
+                        <button type="button" id= "salegroup_monthlyrent"class="active">임대(월세)</button>
                     </div>
 
                     <div id="mapExchangeGroup" class="map-exchange-group tooltip-target active">
-                        <button type="button" >교환</button>
+                        <button type="button" id= "exchangegroup">교환</button>
+                    </div>
+
+                    <div id="mapUrgentSaleGroup" class="map-urgentsale-group tooltip-target active">
+                        <button type="button" id= "urgentsalegroup">급매</button>
                     </div>
                 
-                    <!-- 좌측 상단 - 이력 옆 매물유형  -->
+                    <!-- 좌측 상단 - 매물종류  -->
                     <div id="mapEstateGroup" class="map-estate-group tooltip-target active">
-                        <button type="button" class="active">전체</button>
-                        <button type="button" class="active">상가</button>
-                        <button type="button" class="active">사무실</button>
-                        <button type="button" class="active">공장/창고</button>
-                        <button type="button" class="active" style= "font-size : 10px">지식산업센터</button>
-                        <button type="button" class="active">건물</button>
-                        <button type="button" class="active">토지</button>
-                        <button type="button" class="active">아파트</button>
-                        <button type="button" class="active">오피스텔</button>
-                        <button type="button" class="active">빌라/주택</button>
-                        <button type="button" class="active">분양권</button>
+                        <button type="button" id= "estatgroup_all" class="active">전체</button>
+                        <button type="button" id= "estatgroup_store" class="active">상가</button>
+                        <button type="button" id= "estatgroup_office" class="active">사무실</button>
+                        <button type="button" id= "estatgroup_factoty" class="active">공장/창고</button>
+                        <button type="button" id= "estatgroup_knowledge" class="active" style= "font-size : 10px">지식산업센터</button>
+                        <button type="button" id= "estatgroup_building" class="active">건물</button>
+                        <button type="button" id= "estatgroup_land" class="active">토지</button>
+                        <button type="button" id= "estatgroup_apartment" class="active">아파트</button>
+                        <button type="button" id= "estatgroup_offficetel " class="active">오피스텔</button>
+                        <button type="button" id= "estatgroup_house" class="active">빌라/주택</button>
+                        <button type="button" id= "estatgroup_ownership" class="active">분양권</button>
                     </div>
                   
                     <div id="mapPriceGroup" class="map-price-group tooltip-target active">
-                        <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown"><i class="fa-light fa-sliders"></i>가격대</button>
+                        <button data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown" id= "pricegroup"><i class="fa-light fa-sliders"></i>가격대</button>
                     </div>
 
                     <!-- 좌측 상단 - 이력 옆 매물유형
@@ -377,6 +381,56 @@
                             </div>
                         </div>
                         
+                        <button type="button" id="mapOptionSearch" class="tooltip-target">
+                            <i class="mdi mdi-notebook-edit-outline"></i>
+                            <span>검색<br />조건</span>
+                        </button>
+                        <div class="mo-search">
+                            <dl>
+                                <dt>검색조건 표시설정</dt>
+                                <dd>
+                                    <button><i class="fa-light fa-xmark"></i></button>
+                                </dd>
+                            </dl>
+                            <div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_all" id="opt_all" checked />
+                                        <label for="opt_all">전체 조건</label>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_estate" id="opt_estate" checked />
+                                        <label for="opt_estate">매물종류</label>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_sale" id="opt_sale" checked />
+                                        <label for="opt_sale">거래종류</label>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_exchange" id="opt_exchange" checked />
+                                        <label for="opt_exchange">교환</label>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_urgent" id="opt_urgent" checked />
+                                        <label for="opt_urgent">급매물</label>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="check-box-red-s">
+                                        <input type="checkbox" name="opt_price" id="opt_price" checked />
+                                        <label for="opt_price">가격대</label>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                        
                     </div>
                     <!-- 우측 옵션 끝 -->

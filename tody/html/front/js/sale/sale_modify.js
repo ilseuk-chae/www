@@ -1485,8 +1485,8 @@ async function detailBind(data) {
                     $(`#${key}`).val(value !== null ? value : ""); // input 또는 textarea에 값을 설정
                 }, 1000);
             // **********************************************
-            // 여기! exchange_fg 체크박스 처리 로직을 추가합니다.
-            }else if (key === "exchange_fg") {
+            // 여기! exchange_fg ,urgent_sale_fg 체크박스 처리 로직을 추가합니다.
+            }else if ((key === "exchange_fg")  || (key === "urgent_sale_fg")) {
                 // jQuery의 .prop() 메서드를 사용하여 checked 상태를 설정합니다.
                 // value가 "Y"이면 체크하고, 그렇지 않으면 체크 해제합니다.
                 $element.prop("checked", value === "Y");
@@ -1729,6 +1729,7 @@ function getStringData() {
         mgmBldrgstPk: encodeURIComponent(($("#building_type").val() || "").trim()),
         // 체크박스가 체크되어 있으면 'Y', 아니면 'N'
         exchange_fg: $("#exchange_fg").is(":checked") ? "Y" : "N",
+        urgent_sale_fg:$("#urgent_sale_fg").is(":checked") ? "Y" : "N",
     };
 }
 

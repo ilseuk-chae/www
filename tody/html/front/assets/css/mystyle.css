@@ -647,11 +647,15 @@
   padding: 3px 5px;
   text-align: center;
 }
+
+#mapOptionSearch.active,
 #mapOptionMemoOpen2.active,
 #mapOptionTooltip.active {
   /*background-color: #ef8779; /* 활성화된 상태의 배경색 */
   border: 1px solid #ef8779; /* 활성화된 상태의 테두리 */
 }
+#mapOptionSearch.tooltip-target.active i,
+#mapOptionSearch.tooltip-target.active span,
 #mapOptionMemoOpen2.tooltip-target.active i,
 #mapOptionMemoOpen2.tooltip-target.active span,
 #mapOptionTooltip.tooltip-target.active i,
@@ -722,7 +726,70 @@
 .map-option .mo-memo > div > button span {
   display: flex;
 }
-
+/* search 스타일 커스터마이징  bootstrap용 */
+.map-option .mo-search {
+  display: none;
+  position: absolute;
+  width: 170px;
+  margin: -58px 0 0 -175px;
+  padding: 15px;
+  border: #e9e9e9 1px solid;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); /* opacity:0; */
+}
+.map-option .mo-search > dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.map-option .mo-search > dl dt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.map-option .mo-search > dl dd button {
+  cursor: pointer;
+}
+.map-option .mo-search > dl dd i {
+  font-size: 14px;
+  line-height: 14px;
+}
+.map-option .mo-search > div {
+  margin-top: 10px;
+}
+.map-option .mo-search > div > button,
+.map-option .mo-search > div div {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.5px;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.map-option .mo-search > div > button:hover,
+.map-option .mo-search > div > div:hover {
+  color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-search > div > button.active {
+  color: #fff;
+  background-color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-search > div > button i {
+  margin-right: 5px;
+}
+.map-option .mo-search > div > button span {
+  display: flex;
+}
 /* 기본 툴팁 컨테이너  bootstrap용 */
 .tooltip-inner {
   background-color: #333; /* 어두운 배경 */
@@ -1166,4 +1233,17 @@
   padding: 5px 10px;
   border-radius: 5px;
   z-index: 9999;
+}
+.map-content .mc-sell > .mcs-list > dl.no-width-limit > dt {
+  width: auto !important;      /* 68% 제한 해제 */
+  max-width: 100% !important;  /* 최대 너비 100% 허용 */
+  flex-shrink: 0 !important;   /* flex-shrink 가능 시 차단 */
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 2s linear infinite;
 }

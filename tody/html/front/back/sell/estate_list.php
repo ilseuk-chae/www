@@ -78,6 +78,7 @@ try {
             el.description,
             el.feature,
             el.exchange_fg,
+            el.urgent_sale_fg,
             DATE_FORMAT(el.reg_date, '%Y-%m-%d') AS reg_date, 
 
             tm.type_name AS estate_type,
@@ -189,6 +190,7 @@ try {
                 'estate_type' => $row['estate_type'],
                 'sale_type' => $row['sale_type'],
                 'exchange_fg' => $row['exchange_fg'],
+                'urgent_sale_fg' => $row['urgent_sale_fg'],
                 'agency_name' => $row['agency_name'],
                 'data.exclusive_building' => 'N',
                 'imageArray' => array()
