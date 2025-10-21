@@ -21,6 +21,7 @@ var textModule = null; // 텍스트 입력 모듈
 let landPolygons = []; // 지적도 폴리곤 배열
 let buildingPolygons = []; // 건물 폴리곤 배열
 let currentMemoOverlays = []; // 현재 지도에 표시된 메모 오버레이들을 저장할 배열
+const debugMode = false; // 디버그 모드 플래그
 
 $(document).ready(function () {
     initProj4(); // proj4 초기화
@@ -294,7 +295,7 @@ function handleMapEvents() {
     // [EVENT] 지도가 드래그된 후 이벤트 처리
     kakao.maps.event.addListener(map, "zoom_changed", async function () {
         const level = map.getLevel();
-        console.log("줌 레벨: ", level);
+        console.log("zoom_changed 레벨: ", level);
         updateURL({ curZoom: level, estateNo: "" });
     });
 
@@ -341,10 +342,19 @@ function handleMapEvents() {
         if (searchEstateNo) {
             return;
         }
+        if(debugMode) console.log("지도 타일 이미지 로드 완료 이벤트 발생: searchAgencyNo : list_fixed_chk", searchAgencyNo, list_fixed_chk);
+        
         // $(".mcs-list").empty();
         removeMarker(contentsMarkers);
         //estateList();
-        estateNewList();
+        if(!searchAgencyNo && !list_fixed_chk)
+        {
+            estateNewList();
+        }
+        else {  
+            estateNewList_toDispalyMapOnly();
+        }
+        
         if($("#mapOptionMemoOpen2").hasClass("active")) {
             displayMemoOnMap();
         }        
@@ -437,7 +447,7 @@ async function getLatestGeoJsonVersionFromServer() {
 async function loadAdministrativeDistrictData() {
     // 1. 메모리 캐시 확인 (가장 빠른 경로)
     if (administrativeDistrictGeoJSON) {
-        //console.log("행정구역 GeoJSON 데이터 (메모리에서) 바로 반환합니다.");
+        if(debugMode) console.log("행정구역 GeoJSON 데이터 (메모리에서) 바로 반환합니다.");
         return administrativeDistrictGeoJSON;
     }
 
@@ -474,7 +484,7 @@ async function loadAdministrativeDistrictData() {
 // GeoJSON을 네트워크에서 가져오고 IndexedDB에 저장하는 별도 함수
 async function fetchAndCacheGeoJson(versionToCache) {
     try {
-        console.log("행정구역 GeoJSON 데이터 네트워크에서 fetching합니다...");
+        if(debugMode) console.log("행정구역 GeoJSON 데이터 네트워크에서 fetching합니다...");
         const response = await fetch('/front/assets/data/korea_administrative_districts_eupmyeondong.geojson');
         // 응답이 유효한지 먼저 확인 (HTTP 상태 코드 200번대인지)
         if (!response.ok) {
@@ -484,7 +494,7 @@ async function fetchAndCacheGeoJson(versionToCache) {
         }
     
         const rawResponseText = await response.text();
-        //console.log("map.js:519 서버에서 받은 원본 응답 텍스트:", rawResponseText);
+        if(debugMode) console.log("서버에서 받은 원본 응답 텍스트:", rawResponseText);
 
         // ✨ 핵심: 응답 텍스트가 비어있는지 확인하는 로직 추가
         if (!rawResponseText || rawResponseText.trim().length === 0) {
@@ -1612,7 +1622,7 @@ async function displayMemoOnMap(updatedMemoData = null) {
         }
 
         if (memoList.length === 0) {
-            //console.log("fetchMemoList에서 가져온 메모가 없습니다. 지도에 표시할 오버레이가 없습니다.");
+            if(debugMode) console.log("fetchMemoList에서 가져온 메모가 없습니다. 지도에 표시할 오버레이가 없습니다.");
             return;
         }
         

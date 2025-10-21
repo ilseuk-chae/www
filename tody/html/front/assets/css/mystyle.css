@@ -578,6 +578,153 @@
   border-radius: 10px;
 }
 
+.mc-tab-menu5 {
+  display: Flex; /* Flex 컨테이너로 설정 */
+  align-items: center; /* 자식 요소들을 세로 중앙에 정렬 (label과 input의 높이가 다를 경우 보기 좋게) */
+  /*justify-content: center;*/
+  gap: 10px; /* label과 input 사이에 간격 추가 (선택 사항) */
+  /* 필요하다면 이 컨테이너의 전체 너비도 설정할 수 있습니다. 예: width: 100%; */
+  
+  padding: 4px 20px 2px 20px;
+  /* 임시로 배경과 테두리를 추가하여 패딩 적용 여부 확인 
+  background-color: lightgray;
+  border: 1px solid red;*/
+  border-radius: 10px;
+  font-size: 12px;
+}
+/* 1. "매물 목록" label 스타일 */
+.mc-tab-menu5 label#estate_list_title {
+  flex-grow: 1; /* <-- label이 남은 공간을 모두 차지하도록 합니다. */
+  width: auto; /* <-- 너비는 Flexbox에 의해 유연하게 조절되도록 합니다. */
+  flex-shrink: 0; /* label이 컨텐츠가 길어져도 최소 너비를 유지하게 할 때 사용 */
+  
+  /* label 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: flex;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  color:#888;
+  background-color: #f5f1fe;;
+  border-radius: 10px;
+  text-align: center;
+}
+/* 2. "중개사 해제" button 스타일 */
+.mc-tab-menu5 button#agency_reset_btn {
+  flex-shrink: 0; /* <-- 버튼이 줄어들지 않고 고정 너비를 유지하도록 합니다. */
+  width: 80px; /* <-- 버튼의 고정 너비 (원하시는 크기로 조절) */
+  margin-left: 5px;        /* <-- 이 줄을 추가하여 button과 그 이후 요소를 오른쪽 끝으로 밀어냅니다. */
+  /* button 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: none;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  /* label과 동일하게 컨테이너의 유효 높이에 맞춰 설정 */
+  height: 20px; 
+  /*line-height: 1.2; */
+
+  color: #888;
+  background-color: #f5f1fe;
+  border-radius: 10px;
+  border: none; /* 버튼 기본 테두리 제거 */
+  cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+}
+/* 3. "목록 고정" 체크박스와 라벨을 감싸는 div 스타일 */
+.mc-tab-menu5 .fix-list-wrapper {
+  flex-shrink: 0;           /* 줄어들지 않고 고정 너비 유지 */
+  margin-left: 10Px;        /* <-- 이 줄을 추가하여 오른쪽 끝으로 밀어냅니다. */
+  display: flex;            /* input과 label을 나란히 배치 */
+  align-items: center;      /* input과 label을 세로 중앙 정렬 */
+  gap: 5px;                 /* 체크박스와 "목록 고정" 라벨 사이의 간격 */
+
+  height: 20px; /* 컨테이너의 유효 높이에 맞춤 */
+
+  /* 필요한 경우 배경색이나 패딩을 추가할 수 있습니다. */
+  /* background-color: #e0e0e0; */
+  /* padding: 0 5px; */
+  border-radius: 10px; /* 부모 컨테이너와 일관된 스타일 */
+  background-color: #f5f1fe; /* 부모 컨테이너와 일관된 스타일 */
+}
+.mc-tab-menu5 button#agency_reset_btn:hover {
+  color: #ef8779; /* 버튼 호버 시 배경색 변경 (선택 사항) */
+}
+/* 4. 체크박스 input 스타일 (선택 사항) */
+.mc-tab-menu5 .fix-list-wrapper input[type="checkbox"] {
+  /* 체크박스 기본 스타일 조정 (필요한 경우) */
+  width: 14px; /* 높이에 맞춤 */
+  height: 14px; /* 높이에 맞춤 */
+  margin: 0; /* 기본 마진 제거 */
+  /* custom checkbox 스타일링을 원하면 추가 */
+}
+
+.mc-tab-menu5 .fix-list-wrapper label{
+  flex-shrink: 0; /* <-- 버튼이 줄어들지 않고 고정 너비를 유지하도록 합니다. */
+  width: 60px; /* <-- 버튼의 고정 너비 (원하시는 크기로 조절) */
+  
+  /* button 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: flex;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  /* label과 동일하게 컨테이너의 유효 높이에 맞춰 설정 */
+  height: 20px; 
+  /*line-height: 1.2; */
+  border-radius: 10px;
+  color: #888;
+  cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+}
+
+.mc-tab-menu5 button:hover {
+  color: #ef8779; /* 버튼 호버 시 배경색 변경 (선택 사항) */
+}
+
+/* .agency-name 안의 버튼 기본 스타일 */
+.agency-name button {
+  /* 버튼 내부의 텍스트 기본 색상을 설정하여, 일반 button:hover의 color를 무시하게 만듭니다. */
+  color: #333; /* 예를 들어, 기본 텍스트 색상을 어두운 회색으로 설정합니다. */
+  background-color: transparent; /* 버튼의 배경색도 명시적으로 설정하여 다른 규칙과 충돌 방지 */
+  border: none; /* 버튼의 테두리도 명시적으로 제거 */
+  padding: 0; /* padding도 0으로 명시적으로 설정 */
+  /* 다른 버튼 기본 스타일 재정의가 필요할 수 있습니다. */
+}
+
+.agency-name button:hover {
+  /* background-color: (있었다면 제거); */
+  /* color: (있었다면 제거); */
+  /* text-decoration: none; (있었다면 제거); */
+  cursor: pointer; /* 클릭 가능하다는 표시만 남겨두는 것은 좋습니다. */
+  color: #333; /* <-- 중요! hover 시에도 기본 텍스트 색상을 유지하도록 재정의 */
+  /* 다른 시각적 변화는 주지 않음 */
+}
+
+/* 상호명 부분 텍스트에 테두리 적용 */
+.agency-name-text {
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+  padding: 2px 4px;      /* 텍스트와 테두리 사이의 간격 (선택 사항) */
+  border-radius: 3px;    /* 테두리의 모서리를 둥글게 (선택 사항) */
+  display: inline-block; /* 패딩과 마진을 적용하려면 inline-block이 좋습니다. */
+  /* 필요하다면 배경색 등 다른 스타일도 추가할 수 있습니다. */
+  box-sizing: border-box;
+  line-height: 1;        
+  background-color: transparent; /* 기본 배경색을 투명하게 설정 */
+  color: #111; /* 기본 글자색 */
+}
+
+.agency-name-text:hover { /* 상호명 텍스트 부분에 마우스 올렸을 때의 스타일 */
+  /*background-color: #e0e0e0; /* 예시 */
+  color: #ef8779;
+  cursor: pointer; /* 클릭 가능한 모양으로 변경 */
+}
+/* ---------------------------------------------------- */
+/* "상호명:" 접두사 텍스트 (<span class="agency-text-prefix">) 에 대한 규칙 */
+/* ---------------------------------------------------- */
+.agency-text-prefix {
+  color: #555; /* "상호명:" 부분의 글자색을 명시적으로 설정합니다. */
+  margin-right: 5px; /* 상호명: 과 실제 상호명 사이 간격 */
+  /* hover 효과를 주지 않으므로 여기에 hover 규칙은 필요 없습니다. */
+}
+
 @media all and (max-width: 991px) {
   
   .mc-tab-menu3 {

@@ -1,5 +1,8 @@
 let searchPlacesExecuted = false; // searchPlaces() 함수가 실행되었는지 추적
 let searchEstateNo = false; // 매물번호로 검색했는지 플래그
+let searchAgencyNo = false; // 중개사로 검색했는지 플래그
+let list_fixed_chk = false; // 매물리스트 고정 플래그
+let fixed_list_obj=""; // 고정 매물 리스트 검색조건 객체
 let isKeyDown = false; // 이벤트 중복 방지 플래그
 // 전역 변수로 compareList 객체를 선언합니다.
 // 이 객체는 페이지의 어느 스크립트에서든 접근하고 수정할 수 있습니다.
@@ -380,9 +383,10 @@ async function initTooltip(){
 function handleUrlChangeForEstateNo() {
     const urlParams = new URLSearchParams(window.location.search);
     const estateNo = parseFloat(urlParams.get("estateNo")); // 숫자로 변환
+    if(debugMode) console.log("handleUrlChangeForEstateNo 호출됨(estateNo): ", estateNo);
     if (estateNo) {
         estateDetail(estateNo);
-    }
+    }    
 }
 
 /**************************************************
@@ -404,7 +408,7 @@ function initAction() {
         resizeTimer = setTimeout(function() {
             handleMapContentClass();
         },150); // 250ms(0.25초) 동안 추가적인 resize 이벤트가 없으면 함수 실행
-});
+    });
 
     // 지도 - 옵션 - 도구사용 //
     $("#mapOptionToolOpen").click(function () {
@@ -892,6 +896,7 @@ function initAction() {
         // 클릭된 버튼의 active 클래스를 토글합니다.
         // active 클래스가 없으면 추가하고, 있으면 제거합니다.
         $(this).toggleClass("active");
+        
         estateNewList();
     });
 
@@ -911,14 +916,15 @@ function initAction() {
         estateNewList();
     });
 
+    /*
     // 지도 - 매물상세 - 열기 //
     $(".mcs-list").on("click", "dl", function (e) {
         // 클릭한 대상이 agency-name이면 중단
-        if ($(e.target).closest(".agency-name").length) {
-            e.stopPropagation();
-            return;
-        }
-        
+    //    if ($(e.target).closest(".agency-name").length) {
+    //        e.stopPropagation();
+    //        return;
+    //    }
+        // dl 클릭 시 (단, agency-name 부분 제외) map-sell-view에 active 클래스 추가
         $(".map-sell-view").addClass("active");
 
         // $(".map-sell-view").animate({ marginLeft: "450px" }, 400, "easeOutQuad");
@@ -926,7 +932,7 @@ function initAction() {
         //     $(".map-sell-view").css({ zIndex: "100" });
         // }, 400);
     });
-
+    */
     // 지도 - 매물상세 - 닫기 //
     $(".msv-close button").click(function () {
         $(".map-sell-view").removeClass("active");
@@ -1057,8 +1063,49 @@ function initAction() {
         });
     });
 
+    $("#agency_reset_btn").on("click", function() {
+        // 1. 중개사 관련 필터 및 상태 초기화
+        //    이전에 설정된 특정 중개사 매물 필터를 해제합니다.
+        searchAgencyNo = false; // 전역 변수 `searchAgencyNo`를 false로 설정하여 중개사 필터 해제
+        
+        // 2. 제목을 "매물 목록"으로 초기화
+        //    이전에 "<행복공인중개사사무소> 등록 매물 목록"으로 바뀌었을 수 있는 제목을 원래대로 돌려놓습니다.
+        $("#estate_list_title").text("매물 목록");
     
+        // 3. 버튼 숨기기
+        //    이제 중개사 필터가 해제되었으므로, 이 버튼을 숨깁니다.
+        //    CSS display: none; 상태로 변경하여 시각적으로 숨깁니다.
+        $(this).css("display", "none"); // 또는 $(this).hide();
+    
+        // 4. URL 업데이트 (선택 사항)
+        //    만약 URL에 중개사 관련 estateNo나 agencyName 파라미터가 있었다면, 이를 제거하여 URL을 초기화할 수 있습니다.
+        //    updateURL 함수를 호출하면서 해당 파라미터를 빈 값으로 넘기거나, 제거하는 로직이 필요합니다.
+        //    예시: estateNo가 중개사 관련 파라미터로 사용되었다면 다음과 같이 제거합니다.
+        //    updateURL({ estateNo: "" }); // 이렇게 하면 estateNo를 빈 값으로 설정
+    
+        // 5. 전체 매물 목록 새로고침
+        //    필터가 초기화되었으니, 전체 매물 목록을 다시 불러옵니다.
+        //    estateNewList 함수에 빈 문자열을 전달하여 모든 매물을 불러오도록 합니다.
+        estateNewList(); // searchNo="", propertyNo="", agencyName="" 로 호출됨
+                         // 만약 특정 매물 목록 불러오기에 propertyNo만 사용된다면 estateNewList("", "")로 호출
+    
+        // 6. map-sell-view 상태 조정 (선택 사항)
+        //    필요에 따라 map-sell-view를 닫거나 다시 활성화/비활성화할 수 있습니다.
+        //    이전 코드에서 .agency-name 클릭 시 map-sell-view를 닫았으므로, 여기서는 기본적으로 닫혀있어야 할 것입니다.
+        //    $(".map-sell-view").removeClass("active"); // 혹시 열려있다면 닫기
+    });
+
+    $("#fix_list").on("click", function() {
+        const isChecked = $('#fix_list').prop('checked');
+        if(isChecked){
+            list_fixed_chk = true;
+        }
+        else{
+            list_fixed_chk = false;
+        }  
+    });
 }
+
 function updateMapContentIcons() {
     const $mapContent = $(".map-content");
     const $mapContentMoUp = $("#mapContentMoUp");
@@ -1141,7 +1188,7 @@ function initSearchEvents() {
             // Enter 키가 눌렸을 때
             if (e.key === "Enter") {
                 e.preventDefault(); // Enter 키로 인해 폼이 제출되는 것을 방지
-                // enterEvent(e, searchTerm, resultListItems, selectedIndex);   cis del 200701
+                enterEvent(e, searchTerm, resultListItems, selectedIndex);   //cis del 200701
                 resultListItems.eq(selectedIndex).click(); // selected된 리스트 항목 클릭 cis add 200701
                 return;
             }
@@ -1170,7 +1217,7 @@ function initSearchEvents() {
         const { resultListItems, searchInput } = getSearchElements();
         const searchTerm = searchInput.val().trim(); // 검색어 입력값
         const selectedIndex = resultListItems.index($(".selected")); // 현재 `selected` 클래스가 적용된 항목 찾기
-        //enterEvent(e, searchTerm, resultListItems, selectedIndex);    cis del 200701
+        enterEvent(e, searchTerm, resultListItems, selectedIndex);    //cis del 200701
         resultListItems.eq(selectedIndex).click(); // selected된 리스트 항목 클릭   cis add 200701
     });
 
@@ -1362,7 +1409,8 @@ function initListEvents() {
         estateNewList();
     });
 
-    // 매물 리스트 - 매물
+    // 매물 리스트 - 매물상세 열기 //
+    /*
     $(".mcs-list").on("click", "dl", function (e) {
         // 클릭한 대상이 agency-name이면 중단
         if ($(e.target).closest(".agency-name").length) {
@@ -1374,11 +1422,34 @@ function initListEvents() {
         updateURL({ estateNo: estateNo });
         // estateDetail(estateNo);
     });
+    */
+    $(".mcs-list").on("click", "dl", function (e) {
 
+        $(".map-sell-view").addClass("active");
+
+        const estateNo = $(this).attr("data-estate-no") || $(this).find('[data-estate-no]').attr("data-estate-no");
+        if ($(e.target).closest(".agency-name").length) {
+            e.stopPropagation();
+            // .agency-name 요소에서 텍스트를 정확히 가져옵니다.
+            const clickedAgencyElement = $(e.target).closest(".agency-name");
+            let agencyName = clickedAgencyElement.text(); // 또는 .find('button').text(); 등
+            agencyName = agencyName.replace("상호명:", "").trim(); // "상호명:" 제거 및 공백 제거
+            estateNewList("", estateNo, agencyName);    //매물번호에 해당하는 중계사 매물리스트
+            searchAgencyNo = true;
+            $(".map-sell-view").removeClass("active");
+            return;
+        }
+        else {
+            updateURL({ estateNo: estateNo });
+        }
+        //updateURL({ estateNo: estateNo });
+        // estateDetail(estateNo);
+    });
+    // 매물 리스트 - 중계사 사용안됨
     $(".mcs-list").on("click", ".agency_name", function () {
         const estateNo = $(this).attr("data-estate-no");
         //estateList("", estateNo);
-        estateNewList("", estateNo);        
+        estateNewList("", estateNo);    //중계사    
     });
 
     $('.mcs-list').on('click', '.check-box-orange-s', function(e) {
@@ -1473,10 +1544,12 @@ function initListEvents() {
         // handleUrlChangeForEstateNo();
     });
 
+    // 지도 - 매물상세 - 중계사 이름 클릭시
     $("#msv_content").on("click", ".agency_name", function () {
         const estateNo = $("#map_sell_view .msv-info .estate-no").text();
+        const agencyName = $(this).text();
         //estateList("", estateNo);
-        estateNewList("", estateNo);
+        estateNewList("", estateNo, agencyName);
     });
 }
 
@@ -1696,7 +1769,8 @@ async function estateList(searchNo = "", propertyNo = "") {
  * 매물 리스트 가져오는 함수(멀티필터)
  * @param {*} searchNo = 매물번호 검색
  */
-async function estateNewList(searchNo = "", propertyNo = "") {
+async function estateNewList(searchNo = "", propertyNo = "", agencyName ="") {
+    
     const filterObj = collectMultiFilterParams(); // 필터
 
     const li = $(".mcs-list");
@@ -1715,7 +1789,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
         neLat: neLatLng.getLat(),
         neLng: neLatLng.getLng(),
     };
-
+    fixed_list_obj = dataObj; // 전역변수에 할당(매물고정,중계사 고정, 사용)
     let liHtml = "";
 
     callApiAbort("/front/back/sell/estate_multfilter_list.php", "POST", dataObj, "estateNewList")
@@ -1724,6 +1798,13 @@ async function estateNewList(searchNo = "", propertyNo = "") {
 
             const { statusCode, message, responseData } = response;
             if (statusCode !== 200) return;
+            const totalCount = responseData.length;
+            if(propertyNo === "") {
+                $("#estate_list_title").text(`매물 목록 (${totalCount})`); //
+            }
+            else {
+                $("#estate_list_title").text(`<${agencyName}> 중개사 등록 목록 (${totalCount})`); //
+            }
 
             // 모든 클러스터러 초기화
             Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
@@ -1878,10 +1959,13 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                             <dd class="col-md-4">${image}</dd>
                         </dl>
 
-                        <dl class="d-flex flex-wrap" style="font-size: 12px; height: 20px; border-bottom: #e9e9e9 1px solid;">
-                            <h2 class="d-flex align-items-center justify-content-between w-100">
-                                <div class="d-flex align-items-center gap-1 font12">
-                                    <button type="button">상호명: ${data.agency_name}</button>
+                        <dl class="d-flex flex-wrap" style="font-size: 12px; height: 25px; margin-bottom: 3px; border-bottom: #e9e9e9 1px solid;" data-estate-no="${data.estate_no}">
+                            <h2 class="d-flex align-items-center justify-content-between w-100 ">
+                                <div class="d-flex align-items-center gap-1 font12 agency-name" >
+                                    <button type="button">
+                                        <span class="agency-text-prefix">상호명: </span>
+                                        <span class="agency-name-text">${data.agency_name}</span>
+                                    </button>
                                 </div>
                                 <div class="ms-auto font12">등록일: ${data.reg_date}&nbsp;${getRegistrationStatus(data.reg_date)}</div>
                             </h2>
@@ -1890,7 +1974,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
                         </dl>
                     `;
                 });
-
+                            // 
             }
 
             // 기존 리스트를 부드럽게 사라지게 처리
@@ -1915,6 +1999,77 @@ async function estateNewList(searchNo = "", propertyNo = "") {
         });
     // 매물 리스트가 업데이트된 후 비교 목록을 갱신합니다.
     //updateCompareList();
+    if(propertyNo === "") {
+        searchAgencyNo= false;
+        $("#estate_list_title").text("매물 목록"); //
+        // 버튼 숨기기
+        document.getElementById('agency_reset_btn').style.display = 'none';
+        document.getElementById('fix_list').style.display = 'flex';
+        document.getElementById('fix_list_label').style.display = 'flex';
+        
+    }
+    else {
+        searchAgencyNo= true;
+        $("#estate_list_title").text(`<${agencyName}> 중개사 등록 목록`); //
+        // 버튼 보이기
+        document.getElementById('agency_reset_btn').style.display = 'flex'; // display:flex 로 설정했으므로 flex로 보이게 함 
+        document.getElementById('fix_list').style.display = 'none';
+        document.getElementById('fix_list_label').style.display = 'none';
+        list_fixed_chk = false;
+        document.getElementById('fix_list').checked = false;
+    }
+}
+
+/**
+ * searchAgencyNo || list_fixed_chk 일때 매물 리스트 가져와 맵에만 클러스터러를 표시하는  함수(멀티필터)
+ * @param {*} searchNo = 매물번호 검색
+ */
+async function estateNewList_toDispalyMapOnly(searchNo = "") {
+    const dataObj = fixed_list_obj;
+    
+    let liHtml = "";
+
+    callApiAbort("/front/back/sell/estate_multfilter_list.php", "POST", dataObj, "estateNewList")
+        .then((response) => {
+            if (!response) return;
+
+            const { statusCode, message, responseData } = response;
+            if (statusCode !== 200) return;
+            const totalCount = responseData.length;
+            
+            // 모든 클러스터러 초기화
+            Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
+
+            
+            if (!Array.isArray(responseData) || responseData.length === 0) {
+                
+            } else {
+                // 리스트 생성 및 렌더링
+                liHtml = responseData.map(function (data, index) {
+                    if (searchNo && index === 0) {
+                        map.panTo(new kakao.maps.LatLng(data.lat, data.lng));
+                    }
+                    const zoomLevel = map.getLevel();
+                    // 1-1. 클러스터러 생성 또는 가져오기
+                    let clusterer = null;
+                    if (zoomLevel > 5) {
+                        clusterer = createClustererAll("all");
+                    } else {
+                        clusterer = createClusterer(data.estate_type, data.sale_type);
+                    }
+                    // 1-2. 마커 생성
+                    const marker = createClusteredMarker(data);
+                    // 1-3. 클러스터러에 마커 추가
+                    clusterer.addMarker(marker);
+
+                    return null; // 지도에만 매물 표시, 리스트는 생성하지 않음
+                });
+                            // 
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 }
 
 /**
@@ -1924,7 +2079,7 @@ async function estateNewList(searchNo = "", propertyNo = "") {
  */
 function getRegistrationStatus(regDateString) {
     // 시스템에서 정해진 현재 시각을 기준으로 합니다.
-    const today = new Date('2025-10-13T14:17:39'); 
+    const today = new Date(); 
     const regDate = new Date(regDateString);
 
     // 날짜의 시간 부분을 00:00:00.000으로 설정하여 '일' 단위 비교의 정확성을 높입니다.
@@ -2003,6 +2158,7 @@ async function estateDetail(estateNo) {
     const dataObj = {
         estate_no: estateNo,
     };
+    
     callApiAbort(url, "POST", dataObj, "estateDetail")
         .then(async (response) => {
             if (!response) return;
@@ -2168,7 +2324,8 @@ async function renderEstateDetail(data) {
         {
             name: "agency_name",
             title: "중개사 상호",
-            value: `${data.agency_name ? `<button type="button" class="p-0">${data.agency_name}</button>` : ""}`,
+            //value: `${data.agency_name ? `<button type="button" class="p-0">${data.agency_name}</button>` : ""}`,
+            value: `${data.agency_name ? `<button type="button" class="p-0"><span class="agency-name-text">${data.agency_name}</span></button>` : ""}`,
         },
         { name: "registered_broker_name", title: "중개사 대표", value: data.registered_broker_name || "" },
         { name: "broker_address", title: "중개사 주소", value: data.broker_address || "" },
@@ -3772,14 +3929,14 @@ function initClusterEvent(clusterer) {
             const clusterMarker = cluster.getClusterMarker();
             if (clusterMarker) {
                 const currentZIndex = parseInt(clusterMarker.getZIndex() || 0, 10); // 현재 z-index 값 읽기
-                //console.log("읽은 z-index:" + currentZIndex);
+                if(debugMode) console.log("읽은 z-index:" + currentZIndex);
                 if(currentZIndex >= globalClusterZIndex) {
                     globalClusterZIndex = currentZIndex + 1; // 전역 z-index 값을 현재 값보다 크게 설정
                 }
                 else {
                     globalClusterZIndex++; // 클릭할 때마다 전역 z-index 값 증가
                 }
-                //console.log("설정 z-index:" + globalClusterZIndex);
+                if(debugMode) console.log("설정 z-index:" + globalClusterZIndex);
                 clusterMarker.setZIndex(globalClusterZIndex); // z-index 값을 1 증가
             }
             // --- 클러스터 z-index 조절 로직 끝 ---
@@ -4679,22 +4836,25 @@ function removeMarker(markerGroup) {
  * url 파라미터 변경 함수
  * @param {*} paramsToUpdate = object
  */
+/*이 updateURL 함수는 현재 웹 페이지의 URL 쿼리 파라미터를 동적으로 업데이트하고, 변경된 URL을 브라우저의 히스토리에 추가하여 페이지 새로고침 없이 URL을 변경하며, 관련 쿠키까지 관리하는 역할을 합니다.
+*/
 async function updateURL(paramsToUpdate) {
+    if(debugMode) ("updateURL called with params:", paramsToUpdate);
     // 현재 URL을 가져옵니다
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
+    const url = new URL(window.location.href);              //현재 브라우저 주소창에 있는 전체 URL(예: https://example.com/page?param1=value1)을 가져와서 URL 객체로 만듭니다. 
+    const params = new URLSearchParams(url.search);         //URL 객체에서 쿼리 스트링 부분(예: ?param1=value1)만 추출하여 URLSearchParams 객체로 변환합니다. 이 객체를 사용하면 쿼리 파라미터를 쉽게 추가, 수정, 삭제할 수 있습니다.
 
     // 여러 파라미터를 업데이트합니다
-    for (const [key, value] of Object.entries(paramsToUpdate)) {
-        params.set(key, value);
-        setCookie(key, value); // 쿠키 업데이트
+    for (const [key, value] of Object.entries(paramsToUpdate)) {   //paramsToUpdate는 이 함수를 호출할 때 전달하는 객체, paramsToUpdate 객체의 각 키(key)와 값(value)을 순회하면서 다음 두 가지 작업을 수행
+        params.set(key, value);                                    //URLSearchParams 객체에 해당 key의 value를 설정합니다. 이미 존재하는 파라미터라면 값이 업데이트되고, 없으면 새로 추가됩니다.
+        setCookie(key, value);                                     //동일한 key와 value로 쿠키를 설정합니다.
     }
 
-    // 새로 수정된 query string을 URL에 반영합니다
+    // 새로 수정된 query string을 URL에 반영합니다                   //params(URLSearchParams 객체)에 변경된 모든 파라미터들을 다시 문자열 쿼리 스트링(예: ?estateNo=123&type=apartment)으로 변환하여 url 객체의 search 속성에 할당합니다.
     url.search = params.toString();
 
     // 변경된 URL을 브라우저 히스토리에 반영합니다
-    window.history.pushState({}, "", url); // URL을 변경하지만 페이지를 새로고침하지 않음
+    window.history.pushState({}, "", url);                         // URL을 변경하지만 페이지를 새로고침하지 않음
 
     // 변경된 URL을 감지하고 estateDetail 함수를 호출
     handleUrlChangeForEstateNo();
@@ -5011,13 +5171,11 @@ function handleMapTouchStart(event) {
                     }
                     
                     openMemoRegisterModal(latLngAtTouch, pnu, type, touchClientX, touchClientY);
-                    //console.log("길게 누르기 감지! 메모 등록 모달 호출됨:", coords, pnu, type);
                 } else {
                     console.warn("해당 좌표에 대한 메모 등록 정보를 가져올 수 없습니다. PNU 또는 Type이 누락되었거나 정보가 없습니다.");
                     sweetAlertMessage("해당 위치에 대한 토지/건물 정보가 명확하지 않아 메모를 등록할 수 없습니다. 지도에 정보가 표시된 영역에서 다시 시도해주세요.","","w");
                 }
             }).catch(error => {
-                //console.error("폴리곤 정보 가져오기 오류:", error);
                 sweetAlertMessage("정보를 가져오는 중 오류가 발생했습니다. 다시 시도해주세요.","","e");
             });
             
@@ -5118,7 +5276,7 @@ async function getPolygonInfoForCoords(coords) {
         if (pnu && type) {
             return { pnu: pnu, type: type };
         } else {
-            console.log("해당 좌표에 PNU 또는 Type 정보가 충분하지 않습니다:", { pnu, type });
+            if(debugMode) console.log("해당 좌표에 PNU 또는 Type 정보가 충분하지 않습니다:", { pnu, type });
             return null; // 정보가 부족하면 null 반환
         }
 
@@ -5223,12 +5381,12 @@ function setMapCenterAndZoom(targetLevel, options = {}) {
     // 1. 입력받은 위치(lat, lng)가 유효한지 확인
     if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
         targetPosition = new kakao.maps.LatLng(lat, lng);
-        //console.log(`지도를 입력받은 위치(위도: ${lat}, 경도: ${lng})로 이동합니다.`);
+        if(debugMode) console.log(`지도를 입력받은 위치(위도: ${lat}, 경도: ${lng})로 이동합니다.`);
     } else {
         // 2. 입력받은 위치가 없으면 현재 지도의 중앙을 유지합니다.
         //    map.getCenter()를 사용하면 현재 중앙 좌표를 얻을 수 있습니다.
         targetPosition = map.getCenter();
-        //console.log("입력받은 위치가 없어 지도의 현재 중앙을 유지합니다.");
+        if(debugMode) console.log("입력받은 위치가 없어 지도의 현재 중앙을 유지합니다.");
     }
 
     // 3. 지도의 중앙 설정 (애니메이션 적용 여부 옵션 활용)
@@ -5236,8 +5394,6 @@ function setMapCenterAndZoom(targetLevel, options = {}) {
 
     // 4. 원하는 줌 레벨 설정 (애니메이션 적용 여부 옵션 활용)
     map.setLevel(targetLevel);
-
-    //console.log(`지도의 줌 레벨을 ${targetLevel}로 설정했습니다.`);
 }
 
 /**
@@ -5265,7 +5421,6 @@ function updataePolygonToMap(targetLevel, options = {}) {
         //    map.getCenter()를 사용하면 현재 중앙 좌표를 얻을 수 있습니다.
         targetPosition = map.getCenter();
         return;
-        //console.log("입력받은 위치가 없어 지도의 현재 중앙을 유지합니다.");
     }
     clearAllPolygons();
     addPolygonsToMap(buildingPolygonPaths = [], landPolygonPaths = [])
@@ -5281,16 +5436,13 @@ function handleMapContentClass() {
         if (isMobileView) { // 이전에 모바일 뷰였다면
             // .map-content에 active 클래스 추가
             $(".map-content").addClass("active");
-            //console.log("창 너비 > 991px: .map-content에 active 클래스 추가");
             isMobileView = false; // PC 뷰로 전환
         }
     } else {
         // 창 너비가 991px 이하일 때 (모바일 뷰)
         if (!isMobileView) { // 이전에 PC 뷰였다면
             // .map-content에서 active 클래스 제거 (필요하다면)
-            // onedol님의 요청에 따라 이 부분에서는 active를 제거하지 않았습니다.
             // $(".map-content").removeClass("active");
-            //console.log("창 너비 <= 991px: .map-content 클래스 유지 (또는 제거 로직 필요시 추가)");
             isMobileView = true; // 모바일 뷰로 전환
         }
     }
