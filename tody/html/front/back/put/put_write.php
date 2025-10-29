@@ -5,12 +5,13 @@ header("Content-Type: application/json; charset=utf-8");
 
 // error_reporting(E_ALL);
 // ini_set("display_errors", 1);
-
+$globalAligoOn = false; // 알리고 전역 사용 여부(off=false, on=true)
 // print_r($_FILES["files"]);
 // exit;
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/authChk.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/sendAligo.php');
+include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/mailSend.php');
 
 $sido = isset($_POST['sido']) ? urldecode($_POST['sido']) : '';
 $sgg = isset($_POST['sgg']) ? urldecode($_POST['sgg']) : '';
@@ -138,7 +139,7 @@ try {
             AND (sgg_cd = ? OR sgg_cd = '' OR sgg_cd IS NULL)
             AND (estate_type = ? OR estate_type = '' OR estate_type IS NULL)
         )
-        SELECT a.mobile
+        SELECT a.mobile, a.email 
         FROM user_master AS a
         INNER JOIN user_notification_preferences AS b
             ON a.user_no = b.user_no
@@ -161,22 +162,62 @@ try {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     $detail = $protocol . $domain . '/front/views/put/put_view.html?viewNo=' . $put_no;
     
-    $paramList = [];
+    //$paramList = [];
+    $alimtalkParamList = []; // 알림톡 발송을 위한 리스트
+    $emailRecipientList = []; // 이메일 발송을 위한 리스트 (필요하다면 배열로 모아서 나중에 일괄 발송)
     while ($row = mysqli_fetch_assoc($result2)) {
-        $array = [
-            'phone' => $row['mobile'],
-            'subject' => "[토디] 팝니다 등록 알림",
-            'emtitle' => "",
-            'message' => "[토디] '팝니다'  등록 알림\n설정하신 지역의 '팝니다' 게시글이 등록되었습니다.\n\n{$detail}",
-            'button' => ''
-        ];
-        $paramList[] = $array;
-    }
-    $response = sendAlimtalk('TX_6344', $paramList);
+        // 1. 휴대폰 번호가 있다면 알림톡 발송 리스트에 추가
+        if (!empty($row['mobile'])) {
+            $array = [
+                'phone' => $row['mobile'],
+                'subject' => "[토디] 팝니다 등록 알림",
+                'emtitle' => "",
+                'message' => "[토디] '팝니다'  등록 알림\n설정하신 지역의 '팝니다' 게시글이 등록되었습니다.\n{$detail}",
+                'button' => ''
+            ];
+            //$paramList[] = $array;
+            $alimtalkParamList[] = $array;
+        }
 
-        
+        // 2. 이메일 주소가 있다면 이메일 발송 리스트에 추가 (또는 바로 발송)
+        if (!empty($row['email'])) {
+            $emailSubject = "[토디] 팝니다 등록 알림";
+            $emailMessage = "[토디] '팝니다' 등록 알림<br>설정하신 지역의 '팝니다' 게시글이 등록되었습니다.<br>{$detail}"; // HTML 이메일의 경우 <br> 사용
+
+            // 또는 이메일 주소를 리스트에 모아두었다가 나중에 일괄 처리
+            $emailRecipientList[] = [
+                'email' => $row['email'],
+                'subject' => $emailSubject,
+                'message' => $emailMessage,
+                'isHtml' => true // HTML 메일 여부
+            ];
+        }
+    }
+    // 3. 모아진 알림톡 리스트로 알림톡 발송
+    if (!empty($alimtalkParamList)  && $globalAligoOn) { // 현재 알리고 상태 off
+        //$response = sendAlimtalk('TX_6344', $paramList);
+        $response = sendAlimtalk('TX_6344', $alimtalkParamList);
+    } else {
+        $response = null;
+        error_log("No mobile numbers found for Alimtalk.  or Aligo is off.");
+    }
+    // 4. 모아진 이메일 리스트로 이메일 발송 (이전에 언급했던 sendEmail 함수를 가정)
+    
+    if (!empty($emailRecipientList)) {
+        foreach ($emailRecipientList as $recipient) {
+            // 실제 이메일 발송 함수 호출
+            $emailSent = sendMail($recipient['email'], $recipient['subject'], $recipient['message']);
+            if (!$emailSent) {
+                error_log("Failed to send email to: " . $recipient['email']);
+            }
+        }
+        error_log("Emails sent to " . count($emailRecipientList) . " recipients.");
+    } else {
+        error_log("No email addresses found for email sending.");
+    }
+            
     // 발송 성공 시
-    if ($response) {
+    if ($response || $emailSent === 'SUCCESS') { //if ($response) { 
         #######################################################
         # 3. 알림 발송 수 업데이트 
         #######################################################
@@ -193,7 +234,6 @@ try {
     } else {
         $num_rows = 0;
     }
-
 
     // 모든 작업 성공 시 커밋
     mysqli_commit($conn);

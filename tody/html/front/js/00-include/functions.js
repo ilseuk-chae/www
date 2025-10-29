@@ -808,6 +808,7 @@ function callApiFormData(type, url, dataObj = {}, loading) {
         });
     });
 }
+
 function callApiFormData2(type, url, dataObj = {}, loading) {
     return new Promise((resolve, reject) => {
         const isFormData = dataObj instanceof FormData;

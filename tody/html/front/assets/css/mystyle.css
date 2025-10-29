@@ -1394,3 +1394,21 @@
 .blink {
   animation: blink 2s linear infinite;
 }
+
+.alarm-wrapper{
+  flex-shrink: 0; /* <-- 버튼이 줄어들지 않고 고정 너비를 유지하도록 합니다. */
+  width: 60px; /* <-- 버튼의 고정 너비 (원하시는 크기로 조절) */
+  
+  /* button 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: flex;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  /* label과 동일하게 컨테이너의 유효 높이에 맞춰 설정 */
+  height: 20px; 
+  /*line-height: 1.2; */
+  border-radius: 10px;
+  color: #888;
+  cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+}

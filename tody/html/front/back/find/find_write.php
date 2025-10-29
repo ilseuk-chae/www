@@ -5,10 +5,12 @@ header("Content-Type: application/json; charset=utf-8");
 
 // error_reporting(E_ALL);
 // ini_set("display_errors", 1);
+$globalAligoOn = false; // 알리고 전역 사용 여부(off=false, on=true)
 
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/authChk.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/sendAligo.php');
+include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/mailSend.php');
 
 $sido = isset($_POST['sido']) ? urldecode($_POST['sido']) : '';
 $sgg = isset($_POST['sgg']) ? urldecode($_POST['sgg']) : '';
@@ -50,7 +52,7 @@ mysqli_autocommit($conn, FALSE);  // 자동 커밋 비활성화
 mysqli_begin_transaction($conn);  // 트랜잭션 시작
 
 try {
-    $user_no = get_user_no_for_hash($conn, $userNo);
+    $user_no = get_user_no_for_hash($conn, $userNo); // 사용자 번호 가져오기
  
     ##################### 1. 삽니다 등록 #####################
     $sql =
@@ -81,7 +83,7 @@ try {
             AND (sgg_cd = ? OR sgg_cd = '' OR sgg_cd IS NULL)
             AND (estate_type = ? OR estate_type = '' OR estate_type IS NULL)
         )
-        SELECT a.mobile
+        SELECT a.mobile, a.email 
         FROM user_master AS a
         INNER JOIN user_notification_preferences AS b
             ON a.user_no = b.user_no
@@ -96,29 +98,76 @@ try {
     $stmt2 = executeQuery($conn, $sql2, $types2, $params2);
     $result2 = mysqli_stmt_get_result($stmt2);
 
-    // 결과 개수 확인
+    // 결과 개수 확인 // 알림 발송 대상자 수 확인
     $num_rows = mysqli_num_rows($result2);
 
+    //dump_go($num_rows);
+    
     // 바로가기 주소
     $domain = $_SERVER['HTTP_HOST'];
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-    $detail = '\n' . $protocol . $domain . '/front/views/find/find_view.html?viewNo=' . $board_no;
+    $detail = $protocol . $domain . '/front/views/find/find_view.html?viewNo=' . $board_no;
 
-    $paramList = [];
+    //$paramList = [];
+    $alimtalkParamList = []; // 알림톡 발송을 위한 리스트
+    $emailRecipientList = []; // 이메일 발송을 위한 리스트 (필요하다면 배열로 모아서 나중에 일괄 발송)
     while ($row = mysqli_fetch_assoc($result2)) {
-        $array = [
-            'phone' => $row['mobile'],
-            'subject' => "[토디] 삽니다 등록 알림",
-            'emtitle' => "",
-            'message' => "[토디] '삽니다'  등록 알림\n설정하신 지역의 '삽니다' 게시글이 등록되었습니다.\n{$detail}",
-            'button' => ''
-        ];
-        $paramList[] = $array;
+        // 1. 휴대폰 번호가 있다면 알림톡 발송 리스트에 추가
+        if (!empty($row['mobile'])) {
+            $array = [
+                'phone' => $row['mobile'],
+                'subject' => "[토디] 삽니다 등록 알림",
+                'emtitle' => "",
+                'message' => "[토디] '삽니다'  등록 알림\n설정하신 지역의 '삽니다' 게시글이 등록되었습니다.\n{$detail}",
+                'button' => ''
+            ];
+        //$paramList[] = $array;
+        $alimtalkParamList[] = $array;
+        }
+        //dump_go($row['mobile']);
+        // 2. 이메일 주소가 있다면 이메일 발송 리스트에 추가 (또는 바로 발송)
+        if (!empty($row['email'])) {
+            $emailSubject = "[토디] 삽니다 등록 알림";
+            $emailMessage = "[토디] '삽니다' 등록 알림<br>설정하신 지역의 '삽니다' 게시글이 등록되었습니다.<br>{$detail}"; // HTML 이메일의 경우 <br> 사용
+
+            // 또는 이메일 주소를 리스트에 모아두었다가 나중에 일괄 처리
+            $emailRecipientList[] = [
+                'email' => $row['email'],
+                'subject' => $emailSubject,
+                'message' => $emailMessage,
+                'isHtml' => true // HTML 메일 여부
+            ];
+        }
     }
-    $response = sendAlimtalk('TX_6345', $paramList);
     
+    
+    // 3. 모아진 알림톡 리스트로 알림톡 발송
+    if (!empty($alimtalkParamList)  && $globalAligoOn) { // 현재 알리고 상태 off
+        //$response = sendAlimtalk('TX_6344', $paramList);
+        $response = sendAlimtalk('TX_6345', $alimtalkParamList);// 알림톡 발송
+    } else {
+        $response = null;
+        error_log("No mobile numbers found for Alimtalk.  or Aligo is off.");
+    }
+    // 4. 모아진 이메일 리스트로 이메일 발송 (이전에 언급했던 sendEmail 함수를 가정)
+    
+    if (!empty($emailRecipientList)) {
+        foreach ($emailRecipientList as $recipient) {
+            // 실제 이메일 발송 함수 호출
+            $emailSent = sendMail($recipient['email'], $recipient['subject'], $recipient['message']);
+            if (!$emailSent) {
+                error_log("Failed to send email to: " . $recipient['email']);
+            }
+        }
+        error_log("Emails sent to " . count($emailRecipientList) . " recipients.");
+    } else {
+        error_log("No email addresses found for email sending.");
+    }
+
+    //dump_go($response);
+
     // 발송 성공 시
-    if ($response) {
+    if ($response || $emailSent === 'SUCCESS') { //if ($response) { 
         #######################################################
         # 3. 알림 발송 수 업데이트 
         #######################################################
@@ -135,7 +184,6 @@ try {
     } else {
         $num_rows = 0;
     }
-
 
     // 모든 작업 성공 시 커밋
     mysqli_commit($conn);

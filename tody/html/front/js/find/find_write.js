@@ -282,6 +282,8 @@ async function sgg_get(sido_cd) {
 function findWrite() {
     // const dataObj = collectFilterParams();
 
+    let formData = new FormData();
+
     const dataObj = {
         ...userInfo(),
         sido: $("#sido").val() || "",
@@ -297,8 +299,20 @@ function findWrite() {
         description: encodeURIComponent($("#description").val() || ""),
     };
 
-    callApiAbort("/front/back/find/find_write.php", "POST", dataObj, "findWrite")
+    for (const key in dataObj) {
+        if (Object.hasOwnProperty.call(dataObj, key)) {
+            const value = dataObj[key];
+            formData.append(key, value);
+        }
+    }
+
+    //callApiAbort("/front/back/find/find_write.php", "POST", dataObj, "findWrite")
+    callApiFormData("POST", "/front/back/find/find_write.php", formData)
         .then((response) => {
+            if (!response) {
+                $("#modalFail").iziModal("open");
+                return;
+            }
             // API 호출 성공
             const { statusCode, message, responseData } = response;
             if (statusCode == 200 && message == "SUCCESS") {
@@ -311,7 +325,8 @@ function findWrite() {
                     location.href = "/front/views/mypage/mypage_find"; // 페이지 리로드
                 });
             } else {
-                $("#modalFail").iziModal("open");
+                sweetAlertMessage(message, "", "w");
+                //$("#modalFail").iziModal("open");
             }
         })
         .catch((error) => {

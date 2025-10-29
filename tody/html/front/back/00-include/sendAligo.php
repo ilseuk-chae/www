@@ -151,8 +151,9 @@ function sendAlimtalk($templete_cd, $paramList) {
     curl_setopt($oCurl, CURLOPT_POST, 1);
     curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($oCurl, CURLOPT_POSTFIELDS, http_build_query($_variables));
-    curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    
+    curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($oCurl, CURLOPT_TIMEOUT, 30);
+
     $ret = curl_exec($oCurl);
     $error_msg = curl_error($oCurl);
     curl_close($oCurl);
@@ -162,14 +163,31 @@ function sendAlimtalk($templete_cd, $paramList) {
     
     // JSON 문자열 배열 변환
     $retArr = json_decode($ret);
+    
+    //dump_go($retArr);
+    
     if ($retArr->code === -99) {
         // $result_array['msg'] = 'fail';
         return false;
         // echo 'send Failed';
     } else {
         // $result_array['msg'] = 'success';
-        return true;
+        //return true;
         // echo 'send Success';
+        
+        // code가 0이지만 실제 전송 성공 건수가 0일 경우도 있을 수 있음
+        // 또는 info 객체 자체가 없거나, fcnt가 0이 아닐 경우 등
+        if (isset($retArr->info) && isset($retArr->info->scnt) && $retArr->info->scnt > 0 && $retArr->info->fcnt === 0) {
+            return true; // Aligo 측에서도 성공으로 판단
+        } else if (isset($retArr->info) && isset($retArr->info->fcnt) && $retArr->info->fcnt > 0) {
+            // 실패 건수가 있으면 false 반환
+            error_log("Aligo send error: Some messages failed. RetArr: " . print_r($retArr, true));
+            return false;
+        } else {
+            // 그 외의 경우 (예: code 0 이지만 scnt가 0인 경우, info 객체 없음 등)
+            error_log("Aligo send ambiguity: RetArr: " . print_r($retArr, true));
+            return false;
+        }
     }
     // echo json_encode($result_array);
     

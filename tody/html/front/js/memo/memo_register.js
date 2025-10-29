@@ -107,7 +107,7 @@ async function initMemoRegisterModalLogic($modalContainer) {
     $memoEstateNo.val('');
     $memoContent.val('');
     $memoComplet.prop('checked', false); // 체크박스 초기화
-    $memoContentCharCount.text('0/250');
+    $memoContentCharCount.text('0');
     
     // memoContextData에서 받은 LatLng, PNU, Type 설정
     $memoRegisterLat.val(memoContextData ? memoContextData.latitude : '');
@@ -148,6 +148,13 @@ async function initMemoRegisterModalLogic($modalContainer) {
     } else {
         $swiperContainer.show(); // 파일이 있다면 Swiper를 보여줍니다.
     }
+
+    // --- 3. 글자 수 카운트 설정 ---
+    $memoContent.off('input').on('input', function() {
+        const currentLength = $(this).val().length;
+        $memoContentCharCount.text(currentLength);
+    });
+    $memoContentCharCount.text($memoContent.val().length);
 
     // ⭐⭐⭐ 파일 입력 변경 이벤트 바인딩 ⭐⭐⭐
     $fileInput.off("change").on("change", async function(e) {

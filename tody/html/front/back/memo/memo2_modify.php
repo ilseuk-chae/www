@@ -56,7 +56,7 @@ foreach ($validations as $validation) {
         continue;
     }
 
-    $validationResult = validateInput($validation['value'], $validation['type'], $validation['message'], $validation['options']);
+    $validationResult = validateInput2($validation['value'], $validation['type'], $validation['message'], $validation['options']);
     if ($validation['message'] == $validationResult) { // validateInput이 에러 메시지를 반환하는 방식
         responseApi(400, $validationResult, null);
         exit;

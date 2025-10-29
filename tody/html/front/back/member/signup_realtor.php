@@ -3,11 +3,14 @@ header("Access-Control-Allow-Headers: X-Requested-With, X-Prototype-Version");
 header("Content-Type: application/json; charset=utf-8");
 // header("Content-Type:text/html;charset=utf-8");
 
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
+//error_reporting(E_ALL);
+//ini_set("display_errors", 1);
+$globalAligoOn = false; // 알리고 전역 사용 여부(off=false, on=true)
 
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/dbconnect.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php');
+include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/sendAligo.php');
+include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/mailSend.php');
 
 $id = urldecode($_POST['id']);
 $password = urldecode($_POST['password']);
@@ -49,8 +52,11 @@ $validations = [
 ];
 
 // 유효성 검증
+
 foreach ($validations as $validation) {
+    // 1-1. 현재 처리 중인 $validation 내용을 로그로 확인
     $errorMessage = validateInput($validation['value'], $validation['type'], $validation['message'], isset($validation['options']) ? $validation['options'] : array());
+    
     if ($validation['message'] == $errorMessage) {
         responseApi(400, $errorMessage, null);
         exit;
@@ -123,7 +129,6 @@ try {
         throw new Exception('FAILED_TO_RETRIEVE_INSERT_ID', 500);
     }
 
-
     #######################################################
     # 2. 알림 플래그 저장 
     #######################################################
@@ -147,7 +152,6 @@ try {
     $types2 = 'isisis';
     executeQuery($conn, $sql2, $types2, $params2);
 
-
     // #######################################################
     // # 3. 유저넘버 hmac 업데이트 
     // #######################################################
@@ -163,7 +167,6 @@ try {
     $params3 = [$hashed_user_no, $user_no];
     executeQuery($conn, $sql3, 'ss', $params3);
 
-
     #######################################################
     # 4~5. 파일 이동 및 DB에 저장 
     #######################################################
@@ -176,7 +179,66 @@ try {
     if ($brokerage_cert) {
         handleFileUpload($brokerage_cert, $user_no, $id, 'brokerage');
     }
+    
+    #######################################################
+    # 2. 알림 발송 
+    # tody_email: info@2sproperty.com
+    # tody_mobile: 010-1234-5678(임시)
+    #######################################################
+    $tody_email= "info@2sproperty.com";
+    $tody_mobile = "010-1234-5678";  //추후 정상 번호로 변경 필요
+    // 바로가기 주소
+    $domain = $_SERVER['HTTP_HOST'];
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    //$detail = $protocol . $domain . '/admin/views/user_manage/realtor.html?viewNo=' . $user_no;
+    $alimtalkParamList = []; // 알림톡 발송을 위한 리스트
+    $emailRecipientList = []; // 이메일 발송을 위한 리스트 (필요하다면 배열로 모아서 나중에 일괄 발송)
+    // 1. 휴대폰 번호가 있다면 알림톡 발송 리스트에 추가
+    if (!empty($tody_mobile)) {
+        $array = [
+            'phone' => $tody_mobile,
+            'subject' => "[토디] 중계사 회원 등록 알림",
+            'emtitle' => "",
+            'message' => "[토디] '중계사 회원'  등록 알림\n새로운 중개사 회원이 등록되었습니다.\n",
+            'button' => ''
+        ];
+        //$paramList[] = $array;
+        $alimtalkParamList[] = $array;
+    }
+    // 2. 이메일 주소가 있다면 이메일 발송 리스트에 추가 (또는 바로 발송)
+    if (!empty($tody_email)) { 
+        $emailSubject = "[토디] 중계사 회원 등록 알림";
+        $emailMessage = "[토디] '중계사 회원' 등록 알림<br>새로운 중개사 회원이 등록되었습니다.<br>"; // HTML 이메일의 경우 <br> 사용
 
+        // 또는 이메일 주소를 리스트에 모아두었다가 나중에 일괄 처리
+        $emailRecipientList[] = [
+            'email' => $tody_email,
+            'subject' => $emailSubject,
+            'message' => $emailMessage,
+            'isHtml' => true // HTML 메일 여부
+        ];
+    }
+    // 3. 모아진 알림톡 리스트로 알림톡 발송
+    if (!empty($alimtalkParamList)  && $globalAligoOn) { // 현재 알리고 상태 off
+        //$response = sendAlimtalk('TX_6344', $paramList);
+        $response = sendAlimtalk('TX_6344', $alimtalkParamList);
+    } else {
+        $response = null;
+        error_log("No mobile numbers found for Alimtalk.  or Aligo is off.");
+    }
+    // 4. 모아진 이메일 리스트로 이메일 발송 (이전에 언급했던 sendEmail 함수를 가정)
+    
+    if (!empty($emailRecipientList)) {
+        foreach ($emailRecipientList as $recipient) {
+            // 실제 이메일 발송 함수 호출
+            $emailSent = sendMail($recipient['email'], $recipient['subject'], $recipient['message']);
+            if (!$emailSent) {
+                error_log("Failed to send email to: " . $recipient['email'] );           }
+        }
+        error_log("Emails sent to " . count($emailRecipientList) . " recipients.");
+    } else {
+        error_log("No email addresses found for email sending.");
+    }
 
     // 모든 SQL 작업이 성공적으로 완료되면 커밋
     mysqli_commit($conn);

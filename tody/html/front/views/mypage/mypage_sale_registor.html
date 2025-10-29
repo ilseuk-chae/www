@@ -197,7 +197,7 @@
                     <form class="sale-regist fw-size1 needs-validation" novalidate>
                         <div>
                             <div class="label-wrap">
-                                <h2 class="label-text">소재지</h2>
+                                <h2 class="label-text">소재지<span class="required">*</span></h2>
                             </div>
                             <div class="search-address-group mt-3">
                                 <!-- <span class="input-group">
@@ -215,7 +215,7 @@
                                     <!-- <div id="pagination" class="mcsb-pagination"></div> -->
                                 </div>
                             </div>
-                            <input type="text" id="address_primary" class="form-control input-box mt-3" name="address_primary" placeholder="기본주소를 입력하세요" value="" minlength="0" maxlength="200" required readonly />
+                            <input type="text" id="address_primary" class="form-control input-box mt-3" name="address_primary" placeholder="[필수]기본주소를 입력하세요" value="" minlength="0" maxlength="200" required readonly />
                             <input type="text" id="address_detail" class="form-control input-box w100p" name="address_detail" placeholder="상세주소를 입력하세요" value="" maxlength="200" />
 
                             <input type="hidden" id="address_road" name="address_road" />
@@ -240,10 +240,10 @@
                         </div>
                         -->
                         <div>
-                            <h2 class="label-text">거래종류</h2>
+                            <h2 class="label-text">거래종류<span class="required">*</span></h2>
                             <div class="d-flex align-items-center gap-2" style="margin-top: 15px;"> <!-- Flexbox 컨테이너 추가 -->
                                 <select name="" id="sale_type" class="form-select select-box" required>
-                                    <option value="">거래종류를 선택하세요</option>
+                                    <option value="">[필수]거래종류를 선택하세요</option>
                                     <!-- 옵션 내용 -->
                                 </select>
                         
@@ -263,10 +263,10 @@
                         </div>
 
                         <div>
-                            <h2 class="label-text">매물종류</h2>
+                            <h2 class="label-text">매물종류<span class="required">*</span></h2>
                             <p>
                                 <select name="" id="estate_type" class="form-select select-box" required>
-                                    <option value="">매물종류를 선택하세요</option>
+                                    <option value="">[필수]매물종류를 선택하세요</option>
                                     <!-- <option value="001">상가</option>
                                     <option value="002">사무실</option>
                                     <option value="003">공장/창고</option>
@@ -297,7 +297,7 @@
                             <h2 class="label-text">가격<span class="required">*</span></h2>
                             <div class="d-flex gap-2">
                                 <p class="input-group">
-                                    <input type="text" placeholder="금액" id="sale_price" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" required />
+                                    <input type="text" placeholder="[필수]금액" id="sale_price" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" required />
                                     <span class="input-group-text text-muted">만</span>
                                 </p>
                                 <p class="input-group rent-group">
@@ -502,9 +502,9 @@
                         </div>
 
                         <div>
-                            <h2 class="label-text">매물설명</h2>
+                            <h2 class="label-text">매물설명<span class="required">*</span></h2>
                             <p>
-                                <textarea placeholder="매물설명을 500자 이내로 입력하세요" id="description" class="form-control input-box" rows="5" value="" minlength="0" maxlength="1000" required></textarea>
+                                <textarea placeholder="[필수]매물설명을 500자 이내로 입력하세요" id="description" class="form-control input-box" rows="5" value="" minlength="0" maxlength="1000" required></textarea>
                             </p>
                         </div>
 
@@ -516,7 +516,7 @@
                                         <input class="form-control d-none" value="" id="file_input" type="file" accept="image/png, image/gif, image/jpeg, video/mpeg, video/mp4, video/mov, video/x-wav, video/avi, video/quicktime" multiple />
                                     </div>
                                     <div class="file-desc col d-flex flex-column">
-                                        <span> ※ 최소 1장 이상의 이미지는 필수입니다.</span>
+                                        <span style="color: red;"> ※ 최소 1장 이상의 이미지는 필수입니다. </span>
                                         <span> ※ 이미지: jpg, jpeg, png 파일을 허용합니다. </span>
                                         <span> ※ 동영상: mpeg, mp4, mov, wav, avi 파일을 허용합니다. </span>
                                         <span> ※ 파일 총 최대 용량 : 100MB </span>

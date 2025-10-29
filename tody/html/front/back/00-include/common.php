@@ -1,6 +1,6 @@
 <?php
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/validation.php');
-
+header("Content-Type: application/json; charset=utf-8");
 /**
  * Http Response 정보를 입력받아, 형태를 정의하고 반환하는 함수
  * 버전 : v0.1
@@ -1092,4 +1092,59 @@ function makeApiRequest($url, $queryParams) {
     }
 
     return json_decode($response, true); // JSON 문자열을 PHP 배열로 변환
+}
+
+function dump_go(...$vars_orig) { // <<<<< 이 부분을 이렇게 수정해주세요!
+    // dump_go 함수 본문은 그대로 두셔도 됩니다.
+    // ...
+    ob_start();
+
+    echo "=========== 디버그 메시지 (dump_go 함수 호출) ============\n";
+    echo "호출 위치: " . debug_backtrace()[0]['file'] . " (라인: " . debug_backtrace()[0]['line'] . ")\n";
+    echo "---------------------------------------------------\n";
+
+    // $vars_orig는 이제 인자 없이 호출되어도 항상 빈 배열이 됩니다.
+    // 따라서 아래 foreach 루프는 Undefined 변수나 null을 받지 않습니다.
+    foreach ($vars_orig as $index => $var) {
+        $display_index = is_numeric($index) ? ((int)$index + 1) : ("'" . $index . "'");
+        echo "--- 변수 " . $display_index . " ---\n";
+        var_dump($var);
+        echo "---------------------------\n";
+    }
+    echo "=================================================\n";
+
+    $dump_output = ob_get_clean();
+    error_log($dump_output);
+}
+
+function dump_die(...$vars_orig) { // "Dump and Die"
+    // 출력 버퍼링을 시작하여 var_dump의 출력을 캡처합니다.
+    ob_start();
+
+    echo "=========== 디버그 메시지 (dump_go 함수 호출) ============\n";
+    echo "호출 위치: " . debug_backtrace()[0]['file'] . " (라인: " . debug_backtrace()[0]['line'] . ")\n";
+    echo "---------------------------------------------------\n";
+
+    // $vars_orig는 이제 인자 없이 호출되어도 항상 빈 배열이 됩니다.
+    // 따라서 아래 foreach 루프는 Undefined 변수나 null을 받지 않습니다.
+    foreach ($vars_orig as $index => $var) {
+        $display_index = is_numeric($index) ? ((int)$index + 1) : ("'" . $index . "'");
+        echo "--- 변수 " . $display_index . " ---\n";
+        var_dump($var);
+        echo "---------------------------\n";
+    }
+    echo "=================================================\n";
+
+    $dump_output = ob_get_clean();
+    error_log($dump_output);
+    // 스크립트 실행을 완전히 중단합니다.
+    die("Debugging ended by DD function. Check error logs for details.");
+}
+function log_message($message) {
+    $logFile = '/home/project/tody/logs/app.log'; // 로그 파일 경로
+    $date = date('Y-m-d H:i:s'); // 현재 날짜와 시간
+    $formattedMessage = "[$date] $message" . PHP_EOL; // 포맷된 로그 메시지
+
+    // 로그 메시지를 파일에 추가
+    file_put_contents($logFile, $formattedMessage, FILE_APPEND);
 }

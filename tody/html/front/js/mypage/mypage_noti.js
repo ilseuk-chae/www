@@ -1,490 +1,581 @@
-function a26_0x3701() {
-    const _0x140fc0 = [
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22estate-type\x20input-box\x20w30p\x22\x20value=\x22",
-        "9535106ecIbFU",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22delete-btn\x22><i\x20class=\x22fa-solid\x20fa-circle-minus\x22></i></button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sido\x20input-box\x20w30p\x22\x20value=\x22",
-        "414mbBXSy",
-        "470px",
-        "처리\x20되었습니다.",
-        "1973695alyuzL",
-        "estate_type",
-        "remove",
-        ":checked",
-        "statusCode",
-        "error",
-        "parents",
-        "user_role",
-        "reload",
-        "/index",
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sgg\x20input-box\x20w30p\x22\x20value=\x22",
-        "002",
-        "/front/assets/lottie/loading.json",
-        "langCode",
-        "#put_rcv_fg",
-        "시/군/구\x20전체",
-        "#lottieLoading",
-        "type_code",
-        "responseData",
-        "removeClass",
-        "draw",
-        "div",
-        "1189552uuZTMs",
-        "47193IFciEQ",
-        "#modalFail",
-        "sido_cd",
-        "#lottieConfirm",
-        "7936998eGovdU",
-        "매물종류\x20전체",
-        "estate_type_get",
-        "#put_group_ul",
-        "/front/back/mypage/find_public_change.php",
-        "<option\x20value=\x22\x22>시/군/구\x20전체</option>",
-        "</option>",
-        "#find_add_btn",
-        "<option\x20value=\x22",
-        "join",
-        "change",
-        "_rcv_fg\x27]",
-        "length",
-        "finally",
-        "#save_btn",
-        "trigger",
-        "API\x20호출\x20실패",
-        "svg",
-        "/front/back/find/sido_get.php",
-        "add",
-        "변경에\x20실패했습니다.",
-        "empty",
-        "/front/assets/lottie/failed.json",
-        "setBottom",
-        ".find-group,\x20.put-group",
-        "input[type=\x27checkbox\x27][id=\x27",
-        "log",
-        "#ajax-datatables",
-        "append",
-        "text",
-        "then",
-        "001",
-        "open",
-        "rows",
-        "addClass",
-        "map",
-        "354592jONFrS",
-        "close",
-        "#modalLoading",
-        "003",
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sgg\x20input-box\x20w30p\x22\x20value=\x22",
-        "each",
-        "click",
-        "#modalCompletion",
-        "catch",
-        "#find_group_ul",
-        "iziModal",
-        "val",
-        "data-wanted_no",
-        "#modalConfirm",
-        "상태를\x20변경\x20하시겠습니까?",
-        "option:selected",
-        "82CTXIro",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22delete-btn\x22><i\x20class=\x22fa-solid\x20fa-circle-minus\x22></i></button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sido\x20input-box\x20w30p\x22\x20value=\x22",
-        "시/도를\x20선택해주세요.",
-        "data",
-        "reportValidity",
-        "closing",
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22estate-type\x20input-box\x20w30p\x22\x20value=\x22",
-        "POST",
-        ".change-public-btn",
-        ".estate-type",
-        "html",
-        "select.sido",
-        "#put_add_li",
-        "1391436Cnkdzu",
-        "sido_nm",
-        "sido",
-        "setCustomValidity",
-        "/front/back/find/sgg_get.php",
-        "querySelector",
-        "href",
-        "\x22\x20data-code=\x22",
-        "attr",
-        "#fail_message",
-        "type_name",
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</li>",
-        "locallow_nm",
-        "#find_rcv_fg",
-        "button.delete-btn",
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>",
-        "prepend",
-        "\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22delete-btn\x22><i\x20class=\x22fa-solid\x20fa-circle-minus\x22></i></button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sido\x20input-box\x20w30p\x22\x20value=\x22",
-        "setTop",
-        "/front/assets/lottie/save.json",
-        "checked",
-        "show",
-        "closest",
-        "#lottieCompletion",
-        ".sgg",
-        "data-code",
-        "find",
-        "clear",
-        "SUCCESS",
-        "prop",
-        "<h2>저장\x20중\x20<span>문제가</span>\x20발생했습니다.</h2>",
-        ".sido",
-        "</h2>",
-        "sgg_nm",
-        "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22estate-type\x20input-box\x20w30p\x22\x20value=\x22",
-        "<h2>",
-        "DataTable",
-    ];
-    a26_0x3701 = function () {
-        return _0x140fc0;
-    };
-    return a26_0x3701();
-}
-function a26_0x34ff(_0x32774e, _0x2ec2fd) {
-    const _0x370168 = a26_0x3701();
-    return (
-        (a26_0x34ff = function (_0x34ff8c, _0x208276) {
-            _0x34ff8c = _0x34ff8c - 0x94;
-            let _0x4363d3 = _0x370168[_0x34ff8c];
-            return _0x4363d3;
-        }),
-        a26_0x34ff(_0x32774e, _0x2ec2fd)
-    );
-}
-(function (_0x442338, _0x3aeb80) {
-    const _0x42203f = a26_0x34ff,
-        _0x528899 = _0x442338();
-    while (!![]) {
-        try {
-            const _0x5173bc =
-                parseInt(_0x42203f(0x9a)) / 0x1 +
-                (parseInt(_0x42203f(0x114)) / 0x2) * (parseInt(_0x42203f(0xdc)) / 0x3) +
-                parseInt(_0x42203f(0xdb)) / 0x4 +
-                parseInt(_0x42203f(0xc5)) / 0x5 +
-                -parseInt(_0x42203f(0xe0)) / 0x6 +
-                parseInt(_0x42203f(0xc0)) / 0x7 +
-                (parseInt(_0x42203f(0x104)) / 0x8) * (-parseInt(_0x42203f(0xc2)) / 0x9);
-            if (_0x5173bc === _0x3aeb80) break;
-            else _0x528899["push"](_0x528899["shift"]());
-        } catch (_0x3c8dc) {
-            _0x528899["push"](_0x528899["shift"]());
-        }
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(function () {
+    const user = userInfo();
+    if (!user) {
+        alert("로그인 후 이용 가능합니다.");
+        location.href = "/index";
+        return;
     }
-})(a26_0x3701, 0xb1f7b),
-    $(function () {
-        const _0x42cca0 = a26_0x34ff,
-            _0x1b3b57 = userInfo();
-        if (!_0x1b3b57) {
-            alert("로그인\x20후\x20이용\x20가능합니다."), (location[_0x42cca0(0xa0)] = _0x42cca0(0xce));
-            return;
+    if (user.user_role !== "003") {
+        $(".finance-group").remove();
+    }
+    if (user.user_role !== "002") {
+        $(".find-group, .put-group").remove();
+    }
+    initMenu();
+    initModal();
+    initSelect();
+    initEvents(user);
+    notification_get();
+});
+
+// 이벤트 초기화 함수
+function initEvents(user) {
+    // [Event] 구합니다 알림 체크 이벤트
+    $("#find_rcv_fg").on("change", function () {
+        if (!$(this).prop("checked")) {
+            // 체크박스의 부모 div 내의 모든 ul 요소를 숨기기
+            $(this).closest("div").find("ul").removeClass("show");
+        } else {
+            // 체크박스가 체크 해제된 경우 ul 요소를 다시 표시
+            $(this).closest("div").find("ul").addClass("show");
         }
-        _0x1b3b57[_0x42cca0(0xcc)] !== "003" && $(".finance-group")[_0x42cca0(0xc7)](), _0x1b3b57[_0x42cca0(0xcc)] !== "002" && $(_0x42cca0(0xf8))[_0x42cca0(0xc7)](), initMenu(), initModal(), initSelect(), initEvents(_0x1b3b57), notification_get();
     });
-function initEvents(_0x3c1617) {
-    const _0xb05563 = a26_0x34ff;
-    $(_0xb05563(0xa7))["on"](_0xb05563(0xea), function () {
-        const _0x59c89c = _0xb05563;
-        !$(this)[_0x59c89c(0xb7)]("checked") ? $(this)[_0x59c89c(0xb0)]("div")[_0x59c89c(0xb4)]("ul")[_0x59c89c(0xd8)](_0x59c89c(0xaf)) : $(this)[_0x59c89c(0xb0)]("div")[_0x59c89c(0xb4)]("ul")[_0x59c89c(0x102)](_0x59c89c(0xaf));
-    }),
-        $(_0xb05563(0xd3))["on"](_0xb05563(0xea), function () {
-            const _0xee595a = _0xb05563;
-            !$(this)["prop"](_0xee595a(0xae)) ? $(this)["closest"](_0xee595a(0xda))[_0xee595a(0xb4)]("ul")["removeClass"]("show") : $(this)[_0xee595a(0xb0)](_0xee595a(0xda))[_0xee595a(0xb4)]("ul")[_0xee595a(0x102)](_0xee595a(0xaf));
-        }),
-        $(document)["on"](_0xb05563(0xea), _0xb05563(0x98), async function () {
-            const _0x49a100 = _0xb05563,
-                _0x501407 = $(this)[_0x49a100(0x10f)](),
-                _0xd42e53 = await sgg_get(_0x501407),
-                _0xf54f1 = $(this)[_0x49a100(0xcb)]("li")[_0x49a100(0xb4)](_0x49a100(0xb2));
-            _0xf54f1[_0x49a100(0xf5)]()[_0x49a100(0xfc)](_0xd42e53);
-        }),
-        $(_0xb05563(0xe7))["on"](_0xb05563(0x10a), function () {
-            find_group_add();
-        }),
-        $(_0xb05563(0x10d))["on"](_0xb05563(0x10a), _0xb05563(0xa8), function () {
-            const _0x41dcd9 = $(this)["parents"]("li");
-            li_delete(_0x41dcd9);
-        }),
-        $("#put_add_btn")["on"]("click", function () {
-            put_group_add();
-        }),
-        $(_0xb05563(0xe3))["on"](_0xb05563(0x10a), _0xb05563(0xa8), function () {
-            const _0x46eb95 = _0xb05563,
-                _0x57aa93 = $(this)[_0x46eb95(0xcb)]("li");
-            li_delete(_0x57aa93);
-        }),
-        $(_0xb05563(0xee))["on"]("click", function () {
-            noti_save(_0x3c1617);
-        }),
-        $(document)["on"](_0xb05563(0x10a), _0xb05563(0x95), function () {
-            const _0x32a183 = _0xb05563,
-                _0x1c0672 = $(this)["attr"]("data-public_fg"),
-                _0x419680 = $(this)[_0x32a183(0xa2)](_0x32a183(0x110));
-            public_fg_change(_0x1c0672, _0x419680);
+
+    // [Event] 내놓습니다 알림 체크 이벤트
+    $("#put_rcv_fg").on("change", function () {
+        if (!$(this).prop("checked")) {
+            // 체크박스의 부모 div 내의 모든 ul 요소를 숨기기
+            $(this).closest("div").find("ul").removeClass("show");
+        } else {
+            // 체크박스가 체크 해제된 경우 ul 요소를 다시 표시
+            $(this).closest("div").find("ul").addClass("show");
+        }
+    });
+
+    // [EVENT] 변경 이벤트 - 시/도 필터
+    $(document).on("change", "select.sido", async function () {
+        const sidoCd = $(this).val();
+        const sidoOptions = await sgg_get(sidoCd); // 필터(시/군/구)
+
+        const sggSelector = $(this).parents("li").find(".sgg");
+        sggSelector.empty().append(sidoOptions);
+    });
+
+    // [EVENT] 구합니다 추가 버튼 클릭
+    $("#find_add_btn").on("click", function () {
+        find_group_add();
+    });
+
+    // [EVENT] 구합니다 제거 버튼 클릭
+    $("#find_group_ul").on("click", "button.delete-btn", function () {
+        const li = $(this).parents("li");
+        li_delete(li);
+    });
+
+    // [EVENT] 구합니다 추가 버튼 클릭
+    $("#put_add_btn").on("click", function () {
+        put_group_add();
+    });
+
+    // [EVENT] 구합니다 제거 버튼 클릭
+    $("#put_group_ul").on("click", "button.delete-btn", function () {
+        const li = $(this).parents("li");
+        li_delete(li);
+    });
+
+    // [Event] 저장하기 버튼 클릭
+    $("#save_btn").on("click", function () {
+        noti_save(user);
+    });
+
+    // [Event] 공개 상태 변경
+    $(document).on("click", ".change-public-btn", function () {
+        const val = $(this).attr("data-public_fg");
+        const no = $(this).attr("data-wanted_no");
+        public_fg_change(val, no);
+    });
+}
+
+/**
+ * 알림 설정 가져오는 함수
+ * @returns
+ */
+async function notification_get() {
+    const dataObj = { ...userInfo() };
+    const result = await callApi("POST", "/front/back/mypage/notification_get.php", dataObj);
+    if (!result) return;
+
+    const { existing_preferences, noti_lists } = result.responseData;
+    // 각 type_name에 해당하는 체크박스를 체크합니다.
+    existing_preferences.forEach(function (preference) {
+        if (preference.active_fg === "Y") {
+            $("input[type='checkbox'][id='" + preference.type_name + "_rcv_fg']")
+                .prop("checked", true)
+                .trigger("change");
+        }
+    });
+
+    if (!noti_lists || noti_lists.length === 0) {
+        return;
+    }
+
+    const findUl = $("#find_group_ul");
+    const putUl = $("#put_group_ul");
+
+    const { find, put } = noti_lists;
+
+    if (find && find.length > 0) {
+        const findLiHtml = find
+            .map(function ($data) {
+                return `
+                <li>
+                    <input type="text" class="sido input-box w30p" value="${$data.sido_nm}" data-code="${$data.sido_cd}" readonly disabled>
+                    <input type="text" class="sgg input-box w30p" value="${$data.sgg_nm || "시/군/구 전체"}" data-code="${$data.sgg_cd || ""}" readonly disabled>
+                    <input type="text" class="estate-type input-box w30p" value="${$data.type_name || "매물종류 전체"}" data-code="${$data.estate_type || ""}" readonly disabled>
+                    <button class="delete-btn"><i class="fa-solid fa-circle-minus"></i></button>
+                </li>`;
+            })
+            .join("");
+        findUl.prepend(findLiHtml);
+    }
+
+    if (put && put.length > 0) {
+        const putLiHtml = put
+            .map(function ($data) {
+                return `
+            <li>
+                <input type="text" class="sido input-box w30p" value="${$data.sido_nm}" data-code="${$data.sido_cd}" readonly disabled>
+                <input type="text" class="sgg input-box w30p" value="${$data.sgg_nm || "시/군/구 전체"}" data-code="${$data.sgg_cd || ""}" readonly disabled>
+                <input type="text" class="estate-type input-box w30p" value="${$data.type_name || "매물종류 전체"}" data-code="${$data.estate_type || ""}" readonly disabled>
+                <button class="delete-btn"><i class="fa-solid fa-circle-minus"></i></button>
+            </li>`;
+            })
+            .join("");
+        putUl.prepend(putLiHtml);
+    }
+}
+
+// =============================================================================
+// 선택박스 관련 함수
+// =============================================================================
+/**
+ * 선택박스 초기화
+ */
+async function initSelect() {
+    const typeOptions = await estate_type_get(); // 매물종류
+    $("#find_add_li").find(".estate-type").append(typeOptions);
+    $("#put_add_li").find(".estate-type").append(typeOptions);
+
+    const sidoOptions = await sido_get(); // 시/도
+    $("#find_add_li").find(".sido").append(sidoOptions);
+    $("#put_add_li").find(".sido").append(sidoOptions);
+}
+
+/**
+ * 매물종류 가져오는 함수
+ * @returns
+ */
+async function estate_type_get() {
+    const dataObj = {};
+    const result = await callApi("POST", "/front/back/find/estate_type_get.php", dataObj);
+    if (!result) return;
+
+    //const seletHtml = populateOptions(result.responseData, "type_code", "type_name");
+    const seletHtml = populateOptions2(result.responseData, "type_code", "type_name", "type_code");
+    return seletHtml;
+
+    callApiAbort("/front/back/find/estate_type_get.php", "POST", dataObj, "estate_type_get")
+        .then((response) => {
+            populateOptions($(".estate-type"), response.responseData, "type_code", "type_name");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {});
+}
+
+/**
+ * 시/도 가져오는 함수
+ * @returns
+ */
+async function sido_get() {
+    const dataObj = {};
+    const result = await callApi("POST", "/front/back/find/sido_get.php", dataObj);
+    if (!result) return;
+
+    const seletHtml = populateOptions(result.responseData, "sido_cd", "locallow_nm");
+    return seletHtml;
+
+    callApiAbort("/front/back/find/sido_get.php", "POST", dataObj, "sido_get")
+        .then((response) => {
+            const seletHtml = populateOptions(response.responseData, "sido_cd", "locallow_nm");
+            console.log(seletHtml);
+            return seletHtml;
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(async () => {
+            // sgg_get(sido);
         });
 }
-async function notification_get() {
-    const _0x383221 = a26_0x34ff,
-        _0x41b39b = { ...userInfo() },
-        _0x44f854 = await callApi("POST", "/front/back/mypage/notification_get.php", _0x41b39b);
-    if (!_0x44f854) return;
-    const { existing_preferences: _0x1bdcb5, noti_lists: _0x3c1d53 } = _0x44f854[_0x383221(0xd7)];
-    _0x1bdcb5["forEach"](function (_0x1c39ee) {
-        const _0x32daab = _0x383221;
-        _0x1c39ee["active_fg"] === "Y" &&
-            $(_0x32daab(0xf9) + _0x1c39ee[_0x32daab(0xa4)] + _0x32daab(0xeb))
-                [_0x32daab(0xb7)](_0x32daab(0xae), !![])
-                [_0x32daab(0xef)](_0x32daab(0xea));
-    });
-    if (!_0x3c1d53 || _0x3c1d53[_0x383221(0xec)] === 0x0) return;
-    const _0x5efc05 = $(_0x383221(0x10d)),
-        _0x431584 = $(_0x383221(0xe3)),
-        { find: _0x3acac4, put: _0x45d2e7 } = _0x3c1d53;
-    if (_0x3acac4 && _0x3acac4[_0x383221(0xec)] > 0x0) {
-        const _0x32af19 = _0x3acac4[_0x383221(0x103)](function (_0x214161) {
-            const _0x1baefd = _0x383221;
-            return (
-                _0x1baefd(0x115) +
-                _0x214161[_0x1baefd(0x9b)] +
-                _0x1baefd(0xa1) +
-                _0x214161[_0x1baefd(0xde)] +
-                _0x1baefd(0xcf) +
-                (_0x214161[_0x1baefd(0xbb)] || "시/군/구\x20전체") +
-                "\x22\x20data-code=\x22" +
-                (_0x214161["sgg_cd"] || "") +
-                _0x1baefd(0xbf) +
-                (_0x214161[_0x1baefd(0xa4)] || _0x1baefd(0xe1)) +
-                _0x1baefd(0xa1) +
-                (_0x214161[_0x1baefd(0xc6)] || "") +
-                _0x1baefd(0xa9)
-            );
-        })[_0x383221(0xe9)]("");
-        _0x5efc05[_0x383221(0xaa)](_0x32af19);
-    }
-    if (_0x45d2e7 && _0x45d2e7["length"] > 0x0) {
-        const _0x1cf6d3 = _0x45d2e7[_0x383221(0x103)](function (_0x57b018) {
-            const _0x21e1fa = _0x383221;
-            return (
-                _0x21e1fa(0xab) +
-                _0x57b018[_0x21e1fa(0x9b)] +
-                _0x21e1fa(0xa1) +
-                _0x57b018[_0x21e1fa(0xde)] +
-                "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sgg\x20input-box\x20w30p\x22\x20value=\x22" +
-                (_0x57b018[_0x21e1fa(0xbb)] || _0x21e1fa(0xd4)) +
-                _0x21e1fa(0xa1) +
-                (_0x57b018["sgg_cd"] || "") +
-                _0x21e1fa(0x11a) +
-                (_0x57b018[_0x21e1fa(0xa4)] || _0x21e1fa(0xe1)) +
-                _0x21e1fa(0xa1) +
-                (_0x57b018[_0x21e1fa(0xc6)] || "") +
-                "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>"
-            );
-        })[_0x383221(0xe9)]("");
-        _0x431584[_0x383221(0xaa)](_0x1cf6d3);
-    }
+
+/**
+ * 시/군/구 가져오는 함수
+ * @returns
+ */
+async function sgg_get(sidoCd) {
+    const dataObj = {
+        sido_cd: encodeURIComponent(sidoCd || getParameter("sido")),
+    };
+    const result = await callApi("POST", "/front/back/find/sgg_get.php", dataObj);
+    if (!result) return;
+
+    const seletHtml = '<option value="">시/군/구 전체</option>' + populateOptions(result.responseData, "sgg_cd", "locatadd_nm");
+    return seletHtml;
+
+    // const dataObj = {
+    //     sido_cd: encodeURIComponent(sidoCd || getParameter("sido")),
+    // };
+
+    // callApiAbort("/front/back/find/sgg_get.php", "POST", dataObj, "sgg_get")
+    //     .then((response) => {
+    //         sggSelector.empty().append('<option value="">선택하세요.</option>');
+    //         populateOptions(sggSelector, response.responseData, "sgg_cd", "locatadd_nm");
+    //     })
+    //     .catch((error) => {
+    //         console.error("API 호출 실패", error);
+    //     })
+    //     .finally(() => {});
 }
-async function initSelect() {
-    const _0x369c51 = a26_0x34ff,
-        _0x486d33 = await estate_type_get();
-    $("#find_add_li")[_0x369c51(0xb4)](_0x369c51(0x96))[_0x369c51(0xfc)](_0x486d33), $(_0x369c51(0x99))[_0x369c51(0xb4)](_0x369c51(0x96))[_0x369c51(0xfc)](_0x486d33);
-    const _0x152e67 = await sido_get();
-    $("#find_add_li")[_0x369c51(0xb4)](".sido")[_0x369c51(0xfc)](_0x152e67), $(_0x369c51(0x99))[_0x369c51(0xb4)](_0x369c51(0xb9))["append"](_0x152e67);
-}
-async function estate_type_get() {
-    const _0x3a8a77 = a26_0x34ff,
-        _0x5f2d5d = {},
-        _0x30745d = await callApi(_0x3a8a77(0x94), "/front/back/find/estate_type_get.php", _0x5f2d5d);
-    if (!_0x30745d) return;
-    const _0x14de9e = populateOptions(_0x30745d[_0x3a8a77(0xd7)], _0x3a8a77(0xd6), "type_name");
-    return _0x14de9e;
-    callApiAbort("/front/back/find/estate_type_get.php", "POST", _0x5f2d5d, _0x3a8a77(0xe2))
-        ["then"]((_0x5f08b3) => {
-            const _0x43f1cd = _0x3a8a77;
-            populateOptions($(_0x43f1cd(0x96)), _0x5f08b3[_0x43f1cd(0xd7)], _0x43f1cd(0xd6), _0x43f1cd(0xa4));
-        })
-        ["catch"]((_0x223597) => {
-            const _0x7ba9cd = _0x3a8a77;
-            console[_0x7ba9cd(0xca)](_0x7ba9cd(0xf0), _0x223597);
-        })
-        ["finally"](() => {});
-}
-async function sido_get() {
-    const _0x4f1c81 = a26_0x34ff,
-        _0x22eb49 = {},
-        _0x3da5fc = await callApi(_0x4f1c81(0x94), "/front/back/find/sido_get.php", _0x22eb49);
-    if (!_0x3da5fc) return;
-    const _0x3b829c = populateOptions(_0x3da5fc["responseData"], _0x4f1c81(0xde), _0x4f1c81(0xa6));
-    return _0x3b829c;
-    callApiAbort(_0x4f1c81(0xf2), _0x4f1c81(0x94), _0x22eb49, "sido_get")
-        [_0x4f1c81(0xfe)]((_0x261a17) => {
-            const _0xa736c9 = _0x4f1c81,
-                _0x49c144 = populateOptions(_0x261a17["responseData"], _0xa736c9(0xde), _0xa736c9(0xa6));
-            return console[_0xa736c9(0xfa)](_0x49c144), _0x49c144;
-        })
-        [_0x4f1c81(0x10c)]((_0x377b57) => {
-            const _0x225889 = _0x4f1c81;
-            console[_0x225889(0xca)](_0x225889(0xf0), _0x377b57);
-        })
-        [_0x4f1c81(0xed)](async () => {});
-}
-async function sgg_get(_0x3efb69) {
-    const _0x5349a3 = a26_0x34ff,
-        _0x33b8c8 = { sido_cd: encodeURIComponent(_0x3efb69 || getParameter(_0x5349a3(0x9c))) },
-        _0x60124 = await callApi(_0x5349a3(0x94), _0x5349a3(0x9e), _0x33b8c8);
-    if (!_0x60124) return;
-    const _0x5d226b = _0x5349a3(0xe5) + populateOptions(_0x60124[_0x5349a3(0xd7)], "sgg_cd", "locatadd_nm");
-    return _0x5d226b;
-}
+
+/**
+ * 구합니다 알림 구역 추가 함수
+ * @returns
+ */
 async function find_group_add() {
-    const _0x4167aa = a26_0x34ff,
-        _0x160221 = $("#find_add_li"),
-        _0x5cb7d2 = _0x160221[_0x4167aa(0xb4)](_0x4167aa(0xb9)),
-        _0x13f42f = _0x160221[_0x4167aa(0xb4)](".sgg"),
-        _0x466dcc = _0x160221[_0x4167aa(0xb4)](_0x4167aa(0x96)),
-        _0x178d63 = $(_0x4167aa(0x10d));
-    if (!_0x5cb7d2[_0x4167aa(0x10f)]()) {
-        _0x5cb7d2[0x0][_0x4167aa(0x9d)](_0x4167aa(0x116)), _0x5cb7d2[0x0][_0x4167aa(0x118)]();
+    const $findAddLi = $("#find_add_li");
+    const $sido = $findAddLi.find(".sido");
+    const $sgg = $findAddLi.find(".sgg");
+    const $type = $findAddLi.find(".estate-type");
+    const ul = $("#find_group_ul");
+
+    if (!$sido.val()) {
+        $sido[0].setCustomValidity(`시/도를 선택해주세요.`);
+        $sido[0].reportValidity(); // 직접 유효성 검사 메시지 표시
+        // sweetAlertMessage("시/도를 선택해주세요.");
         return;
     }
-    const _0x42083d = _0x5cb7d2[_0x4167aa(0xb4)](_0x4167aa(0x113)),
-        _0x356b7f = _0x13f42f[_0x4167aa(0xb4)](_0x4167aa(0x113)),
-        _0x38c0a6 = _0x466dcc[_0x4167aa(0xb4)](_0x4167aa(0x113)),
-        _0x41e934 =
-            _0x4167aa(0xc1) +
-            _0x42083d[_0x4167aa(0xfd)]() +
-            _0x4167aa(0xa1) +
-            _0x42083d[_0x4167aa(0x10f)]() +
-            "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sgg\x20input-box\x20w30p\x22\x20value=\x22" +
-            _0x356b7f[_0x4167aa(0xfd)]() +
-            _0x4167aa(0xa1) +
-            _0x356b7f[_0x4167aa(0x10f)]() +
-            _0x4167aa(0xbc) +
-            _0x38c0a6[_0x4167aa(0xfd)]() +
-            _0x4167aa(0xa1) +
-            _0x38c0a6[_0x4167aa(0x10f)]() +
-            _0x4167aa(0xa5);
-    _0x178d63[_0x4167aa(0xfc)](_0x41e934);
+
+    // 비동기 호출로 옵션 가져오기
+    // const [sidoOptions, typeOptions] = await Promise.all([sido_get(), estate_type_get()]);
+
+    const $sidoOption = $sido.find("option:selected");
+    const $sggOption = $sgg.find("option:selected");
+    const $typeOption = $type.find("option:selected");
+
+    // li 요소 HTML 생성
+    const liHtml = `
+        <li>
+            <input type="text" class="sido input-box w30p" value="${$sidoOption.text()}" data-code="${$sidoOption.val()}" readonly disabled>
+            <input type="text" class="sgg input-box w30p" value="${$sggOption.text()}" data-code="${$sggOption.val()}" readonly disabled>
+            <input type="text" class="estate-type input-box w30p" value="${$typeOption.text()}" data-code="${$typeOption.val()}" readonly disabled>
+            <button class="delete-btn"><i class="fa-solid fa-circle-minus"></i></button>
+        </li>`;
+
+    // li 요소 HTML 생성
+    // const liHtml = `
+    //     <li>
+    //         <button class="delete-btn"><i class="fa-solid fa-circle-minus"></i></button>
+    //         <select name="" class="sido select-box w30p">
+    //             ${$sido.html()}
+    //         </select>
+    //         <select name="" class="sgg select-box w30p">
+    //             ${$sgg.html()}
+    //         </select>
+    //         <select name="" class="estate-type select-box w30p">
+    //             ${$type.html()}
+    //         </select>
+    //     </li>`;
+
+    
+    ul.append(liHtml);
+    // 새 li 요소를 ul에 추가
+    //$sido.value = "시/도 선택";
+    //$sgg.value ="시/군/구 전체";
+    //$type.value ="매물종류 전체";
+    $sido.val("");
+    $sgg.val("");
+    $type.val("");
+
+    // // 새로 추가된 li를 jQuery 객체로 가져오기
+    // const $newLi = ul.find("li").last();
+
+    // // 새로 추가된 li 내의 select 요소에 접근
+    // const $selectSido = $newLi.find("select.sido");
+    // const $selectSgg = $newLi.find("select.sgg");
+    // const $selectType = $newLi.find("select.estate-type");
+
+    // // 새로 추가된 select 요소의 첫 번째 옵션을 선택
+    // if ($selectSido.find(`option[value="${$sido.val()}"]`).length) {
+    //     $selectSido.val($sido.val());
+    // }
+    // if ($selectSgg.find(`option[value="${$sgg.val()}"]`).length) {
+    //     $selectSgg.val($sgg.val());
+    // }
+    // if ($selectType.find(`option[value="${$type.val()}"]`).length) {
+    //     $selectType.val($type.val());
+    // }
+
+    // $sido.val("");
+    // $sgg.val("");
+    // $type.val("");
 }
+
+/**
+ * 내놓습니다 알림 구역 추가 함수
+ * @returns
+ */
 async function put_group_add() {
-    const _0x4de744 = a26_0x34ff,
-        _0x16aaf7 = $(_0x4de744(0x99)),
-        _0x59a8f5 = _0x16aaf7[_0x4de744(0xb4)](_0x4de744(0xb9)),
-        _0x52a0c5 = _0x16aaf7[_0x4de744(0xb4)](".sgg"),
-        _0x4c0d01 = _0x16aaf7[_0x4de744(0xb4)](".estate-type"),
-        _0x205cf6 = $("#put_group_ul");
-    if (!_0x59a8f5[_0x4de744(0x10f)]()) {
-        _0x59a8f5[0x0][_0x4de744(0x9d)](_0x4de744(0x116)), _0x59a8f5[0x0][_0x4de744(0x118)]();
+    const $findAddLi = $("#put_add_li");
+    const $sido = $findAddLi.find(".sido");
+    const $sgg = $findAddLi.find(".sgg");
+    const $type = $findAddLi.find(".estate-type");
+    const ul = $("#put_group_ul");
+
+    if (!$sido.val()) {
+        $sido[0].setCustomValidity(`시/도를 선택해주세요.`);
+        $sido[0].reportValidity(); // 직접 유효성 검사 메시지 표시
+        // sweetAlertMessage("시/도를 선택해주세요.");
         return;
     }
-    const _0x587a24 = _0x59a8f5[_0x4de744(0xb4)](_0x4de744(0x113)),
-        _0xbaf8d5 = _0x52a0c5[_0x4de744(0xb4)](_0x4de744(0x113)),
-        _0x46d7f2 = _0x4c0d01[_0x4de744(0xb4)](_0x4de744(0x113)),
-        _0x1e0eda =
-            "\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22delete-btn\x22><i\x20class=\x22fa-solid\x20fa-circle-minus\x22></i></button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22sido\x20input-box\x20w30p\x22\x20value=\x22" +
-            _0x587a24["text"]() +
-            _0x4de744(0xa1) +
-            _0x587a24["val"]() +
-            _0x4de744(0x108) +
-            _0xbaf8d5["text"]() +
-            "\x22\x20data-code=\x22" +
-            _0xbaf8d5[_0x4de744(0x10f)]() +
-            "\x22\x20readonly\x20disabled>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<input\x20type=\x22text\x22\x20class=\x22estate-type\x20input-box\x20w30p\x22\x20value=\x22" +
-            _0x46d7f2[_0x4de744(0xfd)]() +
-            "\x22\x20data-code=\x22" +
-            _0x46d7f2[_0x4de744(0x10f)]() +
-            _0x4de744(0xa5);
-    _0x205cf6[_0x4de744(0xfc)](_0x1e0eda);
+
+    // 비동기 호출로 옵션 가져오기
+    // const [sidoOptions, typeOptions] = await Promise.all([sido_get(), estate_type_get()]);
+
+    const $sidoOption = $sido.find("option:selected");
+    const $sggOption = $sgg.find("option:selected");
+    const $typeOption = $type.find("option:selected");
+
+    // li 요소 HTML 생성
+    const liHtml = `
+        <li>
+            <input type="text" class="sido input-box w30p" value="${$sidoOption.text()}" data-code="${$sidoOption.val()}" readonly disabled>
+            <input type="text" class="sgg input-box w30p" value="${$sggOption.text()}" data-code="${$sggOption.val()}" readonly disabled>
+            <input type="text" class="estate-type input-box w30p" value="${$typeOption.text()}" data-code="${$typeOption.val()}" readonly disabled>
+            <button class="delete-btn"><i class="fa-solid fa-circle-minus"></i></button>
+        </li>`;
+
+    // 새 li 요소를 ul에 추가
+    ul.append(liHtml);
+
+    $sido.val("");
+    $sgg.val("");
+    $type.val("");
 }
-function li_delete(_0x2d2908) {
-    _0x2d2908["remove"]();
+
+/**
+ * 구역 삭제 함수
+ * @param {*} li
+ */
+function li_delete(li) {
+    li.remove();
 }
-async function noti_save(_0x6f4688) {
-    const _0x3a7f1c = a26_0x34ff;
+
+/**
+ * 알림 등록 함수
+ * @param {*} user
+ * @returns
+ */
+async function noti_save(user) {
     try {
-        $(_0x3a7f1c(0x106))[_0x3a7f1c(0x10e)](_0x3a7f1c(0x100));
-        const _0x1143f5 = $("#event_rcv_fg")["is"](_0x3a7f1c(0xc8)) ? "Y" : "N",
-            _0x415097 = $(_0x3a7f1c(0xa7))["is"](":checked") ? "Y" : "N",
-            _0x119fcb = $(_0x3a7f1c(0xd3))["is"](_0x3a7f1c(0xc8)) ? "Y" : "N",
-            _0xc711f2 = $("#finance_rcv_fg")["is"](":checked") ? "Y" : "N";
-        let _0x35ea84 = {},
-            _0x69d673 = {};
-        _0x415097 === "Y" &&
-            $[_0x3a7f1c(0x109)]($(_0x3a7f1c(0x10d))[_0x3a7f1c(0xb4)]("li"), function (_0x4d81ea, _0x27264) {
-                const _0x1ab83c = _0x3a7f1c;
-                let _0x7d73e2 = $(_0x27264);
-                _0x35ea84[_0x4d81ea] = { sido: _0x7d73e2[_0x1ab83c(0xb4)](_0x1ab83c(0xb9))[_0x1ab83c(0xa2)](_0x1ab83c(0xb3)), sgg: _0x7d73e2[_0x1ab83c(0xb4)](_0x1ab83c(0xb2))[_0x1ab83c(0xa2)](_0x1ab83c(0xb3)), type: _0x7d73e2[_0x1ab83c(0xb4)](_0x1ab83c(0x96))[_0x1ab83c(0xa2)](_0x1ab83c(0xb3)) };
+        // 로딩 모달
+        $("#modalLoading").iziModal("open");
+
+        const event_rcv_fg = $("#event_rcv_fg").is(":checked") ? "Y" : "N";
+        const find_rcv_fg = $("#find_rcv_fg").is(":checked") ? "Y" : "N";
+        const put_rcv_fg = $("#put_rcv_fg").is(":checked") ? "Y" : "N";
+        const finance_rcv_fg = $("#finance_rcv_fg").is(":checked") ? "Y" : "N";
+
+        let find_array = {};
+        let put_array = {};
+        if (find_rcv_fg === "Y") {
+            $.each($("#find_group_ul").find("li"), function (index, li) {
+                // li를 jQuery 객체로 변환
+                let $li = $(li);
+
+                find_array[index] = {
+                    sido: $li.find(".sido").attr("data-code"),
+                    sgg: $li.find(".sgg").attr("data-code"),
+                    type: $li.find(".estate-type").attr("data-code"),
+                };
             });
-        _0x119fcb === "Y" &&
-            $[_0x3a7f1c(0x109)]($(_0x3a7f1c(0xe3))[_0x3a7f1c(0xb4)]("li"), function (_0x68bd8, _0x5ee52f) {
-                const _0x1aca0c = _0x3a7f1c;
-                let _0x2a2243 = $(_0x5ee52f);
-                _0x69d673[_0x68bd8] = { sido: _0x2a2243["find"](_0x1aca0c(0xb9))[_0x1aca0c(0xa2)](_0x1aca0c(0xb3)), sgg: _0x2a2243[_0x1aca0c(0xb4)](".sgg")[_0x1aca0c(0xa2)](_0x1aca0c(0xb3)), type: _0x2a2243[_0x1aca0c(0xb4)](_0x1aca0c(0x96))["attr"]("data-code") };
+        }
+
+        if (put_rcv_fg === "Y") {
+            $.each($("#put_group_ul").find("li"), function (index, li) {
+                // li를 jQuery 객체로 변환
+                let $li = $(li);
+
+                put_array[index] = {
+                    sido: $li.find(".sido").attr("data-code"),
+                    sgg: $li.find(".sgg").attr("data-code"),
+                    type: $li.find(".estate-type").attr("data-code"),
+                };
             });
-        let _0x11f4a7 = {};
-        if (_0x6f4688[_0x3a7f1c(0xcc)] === _0x3a7f1c(0xff)) _0x11f4a7 = { ..._0x6f4688, event_rcv_fg: _0x1143f5 };
-        else {
-            if (_0x6f4688[_0x3a7f1c(0xcc)] === _0x3a7f1c(0xd0)) _0x11f4a7 = { ..._0x6f4688, event_rcv_fg: _0x1143f5, find_rcv_fg: _0x415097, put_rcv_fg: _0x119fcb, find_array: _0x35ea84, put_array: _0x69d673 };
-            else _0x6f4688[_0x3a7f1c(0xcc)] === _0x3a7f1c(0x107) && (_0x11f4a7 = { ..._0x6f4688, event_rcv_fg: _0x1143f5, finance_rcv_fg: _0xc711f2 });
         }
-        const _0x38cf35 = await callApi("POST", "/front/back/mypage/notification_save.php", _0x11f4a7);
-        if (!_0x38cf35) return;
-        const { status: _0x3b9d24, message: _0x4c4885 } = _0x38cf35;
-        if (_0x38cf35 && _0x38cf35[_0x3a7f1c(0xc9)] === 0xc8 && _0x38cf35["message"] === _0x3a7f1c(0xb6))
-            $(_0x3a7f1c(0x10b))[_0x3a7f1c(0x10e)]("open"),
-                $("#modalCompletion")["on"](_0x3a7f1c(0x119), async function (_0x56b37c) {
-                    location["reload"]();
-                });
-        else {
-            const _0x1bc54a = _0x38cf35?.[_0x3a7f1c(0xc9)] === 0x190 ? _0x38cf35["message"] : "저장\x20중\x20<span>문제가</span>\x20발생했습니다.";
-            $("#fail_message")["html"](_0x3a7f1c(0xbd) + _0x1bc54a + _0x3a7f1c(0xba)),
-                $("#modalFail")["iziModal"](_0x3a7f1c(0x100)),
-                $(_0x3a7f1c(0xdd))["on"](_0x3a7f1c(0x119), async function (_0x2aa241) {
-                    const _0x53e96c = _0x3a7f1c;
-                    location[_0x53e96c(0xcd)]();
-                });
+
+        let dataObj = {};
+        if (user.user_role === "001") {
+            dataObj = {
+                ...user,
+                event_rcv_fg,
+            };
+        } else if (user.user_role === "002") {
+            dataObj = {
+                ...user,
+                event_rcv_fg,
+                find_rcv_fg,
+                put_rcv_fg,
+                find_array,
+                put_array,
+            };
+        } else if (user.user_role === "003") {
+            dataObj = {
+                ...user,
+                event_rcv_fg,
+                finance_rcv_fg,
+            };
         }
-    } catch (_0xab6ee9) {
-        console[_0x3a7f1c(0xfa)](_0xab6ee9), $(_0x3a7f1c(0xa3))[_0x3a7f1c(0x97)](_0x3a7f1c(0xb8)), $("#modalFail")[_0x3a7f1c(0x10e)]("open");
+
+        const result = await callApi("POST", "/front/back/mypage/notification_save.php", dataObj);
+
+        if (!result) return;
+
+        const { status, message } = result;
+
+        if (result && result.statusCode === 200 && result.message === "SUCCESS") {
+            $("#modalCompletion").iziModal("open");
+            $("#modalCompletion").on("closing", async function (event) {
+                location.reload();
+            });
+        } else {
+            const errorMessage = result?.statusCode === 400 ? result.message : "저장 중 <span>문제가</span> 발생했습니다.";
+
+            $("#fail_message").html(`<h2>${errorMessage}</h2>`);
+            $("#modalFail").iziModal("open");
+            $("#modalFail").on("closing", async function (event) {
+                location.reload();
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        $("#fail_message").html("<h2>저장 중 <span>문제가</span> 발생했습니다.</h2>");
+        $("#modalFail").iziModal("open");
     } finally {
-        $(_0x3a7f1c(0x106))["iziModal"](_0x3a7f1c(0x105));
+        $("#modalLoading").iziModal("close");
     }
 }
-async function public_fg_change(_0x10b41f, _0x396552) {
-    const _0x5377e2 = a26_0x34ff,
-        _0x26f1e4 = await sweetConfirm(_0x5377e2(0x112), "", "q");
-    if (!_0x26f1e4) return;
-    const _0x35bab0 = localStorage["getItem"](_0x5377e2(0xd2)) ?? "kr",
-        _0x47d2df = { ...userInfo(), langCode: _0x35bab0, public_fg: encodeURIComponent(_0x10b41f), wanted_no: _0x396552 },
-        _0x4d5547 = await callApi(_0x5377e2(0x94), _0x5377e2(0xe4), _0x47d2df);
-    if (!_0x4d5547) return;
-    const { status: _0x2954a7, message: _0x44ff24 } = _0x4d5547;
-    if (_0x44ff24 === _0x5377e2(0xb6)) {
-        const _0xd9944f = await sweetAlertForReturn(_0x5377e2(0xc4), "", "s");
-        if (!_0xd9944f) return;
-        loadTableData(null, (_0x3ede9c) => {
-            const _0xd6382 = _0x5377e2,
-                _0x2a82ca = $(_0xd6382(0xfb))[_0xd6382(0xbe)]();
-            _0x2a82ca[_0xd6382(0xb5)]()[_0xd6382(0x101)][_0xd6382(0xf3)](_0x3ede9c[_0xd6382(0x117)])[_0xd6382(0xd9)]();
+
+/**
+ * 공개 상태 변경하는 함수
+ * @param {*} val = 변경할 상태값
+ * @returns
+ */
+async function public_fg_change(val, no) {
+    const confirm = await sweetConfirm("상태를 변경 하시겠습니까?", "", "q");
+    if (!confirm) return;
+
+    const langCode = localStorage.getItem("langCode") ?? "kr"; // 언어
+
+    const dataObj = {
+        ...userInfo(),
+        langCode,
+        public_fg: encodeURIComponent(val),
+        wanted_no: no,
+    };
+
+    const result = await callApi("POST", "/front/back/mypage/find_public_change.php", dataObj);
+
+    if (!result) return;
+
+    const { status, message } = result;
+
+    if (message === "SUCCESS") {
+        const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
+        if (!confirm) return;
+
+        // 테이블 데이터만 다시 불러오기
+        loadTableData(null, (data) => {
+            const table = $("#ajax-datatables").DataTable();
+            table.clear().rows.add(data.data).draw();
         });
     } else {
-        const _0x2fae2b = await sweetAlertForReturn(_0x5377e2(0xf4), "", "e");
-        if (!_0x2fae2b) return;
+        const confirm = await sweetAlertForReturn("변경에 실패했습니다.", "", "e");
+        if (!confirm) return;
     }
 }
-function populateOptions(_0x3e3721, _0x29ade5, _0x3b5329) {
-    const _0x30e431 = a26_0x34ff;
-    if (_0x3e3721["length"] > 0x0) {
-        _0x3e3721["sort"]((_0x411d19, _0x26d235) => _0x411d19[_0x3b5329]["localeCompare"](_0x26d235[_0x3b5329]));
-        const _0x25bc6a = _0x3e3721["map"]((_0x1aad18) => _0x30e431(0xe8) + _0x1aad18[_0x29ade5] + "\x22>" + _0x1aad18[_0x3b5329] + _0x30e431(0xe6))["join"]("");
-        return _0x25bc6a;
+
+// =============================================================================
+// 헬퍼 함수
+// =============================================================================
+/**
+ * 선택자를 이용해 옵션을 채우는 함수
+ * @param {string} selector jQuery 선택자
+ * @param {Array} data 데이터 배열
+ * @param {string} valueKey 값 키
+ * @param {string} textKey 텍스트 키
+ */
+function populateOptions(data, valueKey, textKey) {
+    if (data.length > 0) {
+        // 텍스트 기준 오름차순
+        data.sort((a, b) => a[textKey].localeCompare(b[textKey]));
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        // selector.append(optionHtml);
+
+        return optionHtml;
     }
 }
+
+function populateOptions2(data, valueKey, textKey, sortKey = textKey) { // sortKey 추가, 기본값은 textKey
+    if (data.length > 0) {
+        // 정렬 키를 기준으로 정렬
+        // 숫자 정렬이 필요하다면 Number()로 변환 후 비교
+        data.sort((a, b) => {
+            const valA = a[sortKey];
+            const valB = b[sortKey];
+
+            // 만약 sortKey가 숫자 형태라면 숫자로 변환하여 비교
+            if (!isNaN(Number(valA)) && !isNaN(Number(valB))) {
+                return Number(valA) - Number(valB); // 숫자 오름차순
+            } else {
+                return String(valA).localeCompare(String(valB)); // 문자열 사전식 오름차순
+            }
+        });
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        return optionHtml;
+    }
+}
+
+/**
+ * 모달 초기화 함수
+ */
 function initModal() {
-    const _0x1ae13c = a26_0x34ff;
-    _0x59e23f(_0x1ae13c(0x111), _0x1ae13c(0xad), _0x1ae13c(0xdf)), _0x59e23f(_0x1ae13c(0x10b), "/front/assets/lottie/save.json", _0x1ae13c(0xb1)), _0x59e23f("#modalFail", _0x1ae13c(0xf6), "#lottieFail"), _0x59e23f(_0x1ae13c(0x106), _0x1ae13c(0xd1), _0x1ae13c(0xd5));
-    function _0x59e23f(_0x2e52f7, _0x216058, _0x441f93) {
-        const _0x45d423 = _0x1ae13c;
-        $(_0x2e52f7)[_0x45d423(0x10e)]({ width: _0x45d423(0xc3) }), $(_0x2e52f7)[_0x45d423(0x10e)](_0x45d423(0xac), 0x46), $(_0x2e52f7)["iziModal"](_0x45d423(0xf7), 0x46);
-        var _0x3135e5 = bodymovin["loadAnimation"]({ container: document[_0x45d423(0x9f)](_0x441f93), renderer: _0x45d423(0xf1), loop: !![], autoplay: !![], path: _0x216058 });
+    // 모달 - 저장확인
+    initializeModal("#modalConfirm", "/front/assets/lottie/save.json", "#lottieConfirm");
+    // 모달 - 완료
+    initializeModal("#modalCompletion", "/front/assets/lottie/save.json", "#lottieCompletion");
+    // 모달 - 실패
+    initializeModal("#modalFail", "/front/assets/lottie/failed.json", "#lottieFail");
+    // 모달 - 로딩
+    initializeModal("#modalLoading", "/front/assets/lottie/loading.json", "#lottieLoading");
+
+    // 모달 설정 함수
+    function initializeModal(modalId, lottiePath, lottieContainerId) {
+        $(modalId).iziModal({ width: "470px" });
+        $(modalId).iziModal("setTop", 70);
+        $(modalId).iziModal("setBottom", 70);
+
+        // Lottie 애니메이션 로드
+        var animation = bodymovin.loadAnimation({
+            container: document.querySelector(lottieContainerId),
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            path: lottiePath,
+        });
     }
 }

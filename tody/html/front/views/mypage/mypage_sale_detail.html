@@ -197,7 +197,7 @@
                     <form class="sale-regist fw-size1 needs-validation" novalidate>
                         <div>
                             <div class="label-wrap">
-                                <h2 class="label-text">소재지</h2>
+                                <h2 class="label-text">소재지<span class="required">*</span></h2>
                             </div>
                             <div class="search-address-group mt-3 d-none">
                                 <!-- <span class="input-group">
@@ -227,7 +227,7 @@
                             <input type="hidden" id="pnu" name="pnu" />
                         </div>
                         <div>
-                            <h2 class="label-text">거래종류</h2>
+                            <h2 class="label-text">거래종류<span class="required">*</span></h2>
                             <div class="d-flex align-items-center gap-2" style="margin-top: 15px;"> <!-- Flexbox 컨테이너 추가 -->
                                 <select name="" id="sale_type" class="form-select select-box" required>
                                     <option value="">거래종류를 선택하세요</option>
@@ -250,7 +250,7 @@
                         </div>
 
                         <div>
-                            <h2 class="label-text">매물종류</h2>
+                            <h2 class="label-text">매물종류<span class="required">*</span></h2>
                             <p>
                                 <select name="" id="estate_type" class="form-select select-box" required>
                                     <option value="">매물종류를 선택하세요</option>
@@ -268,7 +268,7 @@
                         </div>
 
                         <div class="rent-price">
-                            <h2 class="label-text">가격</h2>
+                            <h2 class="label-text">가격<span class="required">*</span></h2>
                             <div class="d-flex gap-2">
                                 <p class="input-group">
                                     <input type="text" placeholder="금액" id="sale_price" class="form-control input-box" value="" oninput="allowOnlyNumbers(this, 10, true)" maxlength="100000000" required />
@@ -476,7 +476,7 @@
                         </div>
 
                         <div>
-                            <h2 class="label-text">매물설명</h2>
+                            <h2 class="label-text">매물설명<span class="required">*</span></h2>
                             <p>
                                 <textarea placeholder="매물설명을 500자 이내로 입력하세요" id="description" class="form-control input-box" rows="5" value="" minlength="0" maxlength="1000" required></textarea>
                             </p>
@@ -490,7 +490,7 @@
                                         <input class="form-control d-none" value="" id="file_input" type="file" accept="image/png, image/gif, image/jpeg, video/mpeg, video/mp4, video/mov, video/x-wav, video/avi, video/quicktime" multiple />
                                     </div>
                                     <div class="file-desc col d-flex flex-column">
-                                        <span> ※ 최소 1장 이상의 이미지는 필수입니다. </span>
+                                        <span style="color: red;"> ※ 최소 1장 이상의 이미지는 필수입니다. </span>
                                         <span> ※ 이미지: jpg, jpeg, png 파일을 허용합니다. </span>
                                         <span> ※ 동영상: mpeg, mp4, mov, wav, avi 파일을 허용합니다. </span>
                                         <span> ※ 파일 총 최대 용량 : 100MB </span>

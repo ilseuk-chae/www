@@ -40,13 +40,13 @@ $validations = [
     //['value' => $estate_no, 'type' => 'int', 'message' => '매물번호를 확인해주세요.', 'options' => array()],
 ];
 foreach ($validations as $validation) {
-    $validationResult = validateInput($validation['value'], $validation['type'], $validation['message'], $validation['options']);
+    $validationResult = validateInput2($validation['value'], $validation['type'], $validation['message'], $validation['options']);
+     // 옵션 인자 전달 시 Undefined index 경고 방지를 위해 isset 확인 (첫 번째 방식)
     if ($validation['message'] == $validationResult) {
         responseApi(400, $validationResult, null);
         exit;
     }
 }
-
 
 // 메모 유효성 검사
 $errorMessage = "메모 내용이 255자 이내인지 확인해주세요.";
@@ -57,7 +57,6 @@ if ($content) {
         exit;
     }
 }
-
 // 파일 유효성 검사
 if ($files) {
     $errorMessage = '이미지 파일을 확인해주세요.';

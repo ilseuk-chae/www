@@ -6,10 +6,13 @@ header("Content-Type: application/json; charset=utf-8");
 // exit;
 // error_reporting(E_ALL);
 // ini_set("display_errors", 1);
+$globalAligoOn = false; // 알리고 전역 사용 여부(off=false, on=true)
 
 include_once '../00-include/common.php';
 include_once '../00-include/authChk.php';
 include_once '../00-include/validation.php';
+include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/sendAligo.php');
+include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/mailSend.php');
 
 $lang = $_POST['langCode'];
 $rcvUserNo = $_POST['rcvUser'];
@@ -28,6 +31,7 @@ $business_regist_code = urldecode($_POST['business_regist_code']);
 $status_code = urldecode($_POST['status_code']);
 $business_license = isset($_FILES['business_license']) ? $_FILES['business_license'] : null;
 $brokerage_cert = isset($_FILES['brokerage_cert']) ? $_FILES['brokerage_cert'] : null;
+$old_status_code = urldecode($_POST['old_status_code']);
 // print_r($business_license);
 // exit;
 // file upload error log 출력
@@ -250,6 +254,70 @@ try {
     }
 
     // 모든 작업 성공 시 커밋
+    $clean_old_status_code = trim($old_status_code, '"'); // 쌍따옴표 제거
+    if($clean_old_status_code === '006' && $status_code == '001') {  //006:승인대기, 001:승인
+        // 승인 알림톡 발송
+        //sendRealtorApprovalKakaoTalk($conn, $user_no, $id, $lang);
+        
+        #######################################################
+        # 2. 알림 발송 
+        #######################################################
+        // 바로가기 주소
+        $domain = $_SERVER['HTTP_HOST'];
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        //$detail = $protocol . $domain . '/admin/views/user_manage/realtor.html?viewNo=' . $user_no;
+        $alimtalkParamList = []; // 알림톡 발송을 위한 리스트
+        $emailRecipientList = []; // 이메일 발송을 위한 리스트 (필요하다면 배열로 모아서 나중에 일괄 발송)
+        // 1. 휴대폰 번호가 있다면 알림톡 발송 리스트에 추가
+        
+        if (!empty($mobile)) { // <-- if (!empty($row['mobile'])) {
+            $array = [
+                'phone' => $mobile,  // <-- $row['mobile'] 대신 $mobile 사용
+                'subject' => "[토디] 회원 가입 승인 알림",
+                'emtitle' => "",
+                'message' => "[토디] '회원 가입'  승인 알림\n안녕하세요. {$agency_name}님!\n 회원가입이 승인되었습니다.\n Tody에 회원가입 해주셔서 진심으로 감사드립니다~~\n",
+                'button' => ''
+            ];
+            //$paramList[] = $array;
+            $alimtalkParamList[] = $array;
+        }
+        // 2. 이메일 주소가 있다면 이메일 발송 리스트에 추가 (또는 바로 발송)
+        if (!empty($email)) { // <-- $row['email'] 대신 $email 사용
+            $emailSubject = "[토디] 회원 가입 승인 알림";
+            $emailMessage = "[토디] '회원 가입'  승인 알림<br>안녕하세요. '{$agency_name}'님!<br> 회원가입이 승인되었습니다.<br> Tody에 회원가입 해주셔서 진심으로 감사드립니다~~<br>";
+
+            // 또는 이메일 주소를 리스트에 모아두었다가 나중에 일괄 처리
+            $emailRecipientList[] = [
+                'email' => $email, // <-- $row['email'] 대신 $email 사용
+                'subject' => $emailSubject,
+                'message' => $emailMessage,
+                'isHtml' => true // HTML 메일 여부
+            ];
+        }
+        // 3. 모아진 알림톡 리스트로 알림톡 발송
+        if (!empty($alimtalkParamList)  && $globalAligoOn) { // 현재 알리고 상태 off
+            //$response = sendAlimtalk('TX_6344', $paramList);
+            $response = sendAlimtalk('TX_6344', $alimtalkParamList); //TX_6344는 추후 변경해야함
+        } else {
+            $response = null;
+            //error_log("No mobile numbers found for Alimtalk.  or Aligo is off.");
+        }
+        // 4. 모아진 이메일 리스트로 이메일 발송 (이전에 언급했던 sendEmail 함수를 가정)
+        
+        if (!empty($emailRecipientList)) {
+            foreach ($emailRecipientList as $recipient) {
+                // 실제 이메일 발송 함수 호출
+                $emailSent = sendMail($recipient['email'], $recipient['subject'], $recipient['message']);
+                if (!$emailSent) {
+                    error_log("Failed to send email to: " . $recipient['email']);
+                }
+            }
+            error_log("Emails sent to " . count($emailRecipientList) . " recipients.");
+        } else {
+            error_log("No email addresses found for email sending.");
+        }
+    }
+    
     mysqli_commit($conn);
     responseApi(200, 'SUCCESS', null);
 

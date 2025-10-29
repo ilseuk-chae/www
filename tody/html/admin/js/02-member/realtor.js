@@ -225,6 +225,7 @@ async function status_list() {
  * 회원 상세 정보 가져오는 함수
  * @param {*} rcvUser = 가져올 유저
  **/
+let old_status_code = "";
 async function user_info(rcvUser) {
     const langCode = localStorage.getItem("langCode") ?? "kr";
     const adminInfo = adminUserInfo();
@@ -244,7 +245,8 @@ async function user_info(rcvUser) {
         return;
     }
     bindJsonData(responseData);
-
+    
+    old_status_code = JSON.stringify(responseData.status_code); // 수정 전 데이터 저장
     // 사업자등록증
     const businessResult = await user_image(rcvUser, "business");
     if (businessResult) {
@@ -337,7 +339,7 @@ async function user_info_update(rcvUser) {
         return; // 유효성 검토 실패 시 중단
     }
 
-    console.log("validation ok");
+    //console.log("validation ok");
     // ####################################################################
     // 유효성 검사 종료
     // ####################################################################
@@ -364,6 +366,7 @@ async function user_info_update(rcvUser) {
         business_license_code: encodeURIComponent(elementValues.business_license_code),
         business_regist_code: encodeURIComponent(elementValues.business_regist_code),
         status_code: encodeURIComponent(elementValues.status_code),
+        old_status_code: encodeURIComponent(old_status_code),
     };
 
     for (const key in dataObj) {
