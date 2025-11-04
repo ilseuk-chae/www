@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_46110121",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "46110121", "EMD_ENG_NM": "Gwang-dong 3(sam)-ga", "EMD_KOR_NM": "광동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.389207221227139, 34.789512258567918 ], [ 126.389303900499243, 34.789455407256206 ], [ 126.388456607286031, 34.788695525274058 ], [ 126.387740287378023, 34.789245568778831 ], [ 126.388339794783533, 34.78979289479728 ], [ 126.389193411630018, 34.789552039626685 ], [ 126.389207221227139, 34.789512258567918 ] ] ] ] } }
+]
+}

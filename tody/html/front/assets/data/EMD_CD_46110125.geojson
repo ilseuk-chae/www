@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_46110125",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "46110125", "EMD_ENG_NM": "Haengbok-dong 2(i)-ga", "EMD_KOR_NM": "행복동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.386951015832651, 34.787339651297501 ], [ 126.386212051669972, 34.78668706125103 ], [ 126.38547662982667, 34.787235021041923 ], [ 126.386194365386288, 34.787896242685555 ], [ 126.386951015832651, 34.787339651297501 ] ] ] ] } }
+]
+}

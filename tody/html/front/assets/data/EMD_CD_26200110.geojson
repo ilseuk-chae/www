@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_26200110",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "26200110", "EMD_ENG_NM": "Yeongseon-dong 3(sam)-ga", "EMD_KOR_NM": "영선동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 129.039312773958841, 35.085434872918157 ], [ 129.040404474934206, 35.08746836035774 ], [ 129.04316132765851, 35.086460545343307 ], [ 129.042562376255432, 35.085348941880191 ], [ 129.043152934771285, 35.084061652230879 ], [ 129.042716854276932, 35.084182791850068 ], [ 129.039312773958841, 35.085434872918157 ] ] ] ] } }
+]
+}

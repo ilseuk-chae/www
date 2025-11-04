@@ -4,6 +4,7 @@ let searchAgencyNo = false; // 중개사로 검색했는지 플래그
 let list_fixed_chk = false; // 매물리스트 고정 플래그
 let fixed_list_obj=""; // 고정 매물 리스트 검색조건 객체
 let isKeyDown = false; // 이벤트 중복 방지 플래그
+
 // 전역 변수로 compareList 객체를 선언합니다.
 // 이 객체는 페이지의 어느 스크립트에서든 접근하고 수정할 수 있습니다.
 let compareList = {
@@ -5126,7 +5127,7 @@ let isLongPress = false;
 
 
 // ==== 카카오 맵 초기화 코드 어딘가에 추가 (이전과 동일) ====
-//const mapContainer = document.getElementById('map');
+mapContainer = document.getElementById('map_bg');
 if (mapContainer) {
     mapContainer.addEventListener('touchstart', handleMapTouchStart);
     mapContainer.addEventListener('touchend', handleMapTouchEnd);

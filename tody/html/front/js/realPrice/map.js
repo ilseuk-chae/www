@@ -31,6 +31,12 @@ let currentOverlays = []; // 현재 오버레이 목록을 저장
 let isMapClickable = true; // 지도 클릭 가능 여부
 let textModuleControl = null; // 텍스트 모듈
 let realPriceOverlays = []; // 실거래가 오버래이 저장 배열
+const flag = false; // 경계용 플래그  true:EPSG:5179 경계용, false:EPSG:4326 
+
+let hoverTimer = null;             // 마우스가 멈춰있는지 감지하는 타이머 ID
+let lastHoverLatLng = null;        // 마지막으로 마우스가 멈췄다고 감지된 LatLng
+const HOVER_DELAY_MS = 500;       // 마우스 멈춤 감지 시간 (1.초)
+let isHoverDrawingPending = false; // 현재 호버 폴리곤 그리기가 예약되었는지 여부
 
 $(document).ready(function () {
     initProj4();
@@ -143,7 +149,13 @@ $(document).ready(function () {
 
 function initProj4() {
     proj4.defs("EPSG:5186", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=600000 +ellps=GRS80 +units=m +no_defs");
-    proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
+    if(flag){
+        proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+    }
+    else{
+        //(org)
+        proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
+    }
     // proj4.defs("EPSG:5179", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +towgs84=0,0,0 +no_defs");
     proj4.defs("EPSG:5178", "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=600000 +y_0=200000 +ellps=GRS80 +units=m +no_defs");
     proj4.defs("EPSG:5176", "+proj=tmerc +lat_0=38 +lon_0=127.5 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs");
@@ -228,12 +240,19 @@ function handleMapEvents() {
 
     // [EVENT] 지도가 클릭 이벤트 처리
     kakao.maps.event.addListener(map, "click", async function (mouseEvent) {
+        // ⭐ 호버 타이머가 있다면 취소하고, 클릭 폴리곤 그리기를 실행
+        if (hoverTimer) {
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
+        }
+        isHoverDrawingPending = false; // pending 상태 초기화
         // 클릭 차단
         // if (!isMapClickable) return;
         if ($(".mo-tool-option button").hasClass("active")) return;
         if ($("#draw_toolbox a").hasClass("active")) return;
 
         // 좌표
+        const clickLatLng = mouseEvent.latLng;
         const lat = mouseEvent.latLng.Ma;
         const lng = mouseEvent.latLng.La;
         const coords = { lat: lat, lng: lng };
@@ -247,6 +266,9 @@ function handleMapEvents() {
             // 주변 시설 정보 가져오기
             searchArroundPlaces(coords);
         }
+        else {
+            //clickCoordTodisplayAddress(coords);
+        }
 
         // 주소 요청
         searchDetailAddrFromCoords(mouseEvent.latLng, function (result, status) {
@@ -259,6 +281,10 @@ function handleMapEvents() {
             // 지도 주소 정보 바인딩
             displayAddressInfo(result, status);
         });
+
+        // 신규 추가 행정 경계 폴리곤 클릭 처리 함수 호출
+        //console.log(`지도 클릭: 위도 ${clickLatLng.getLat()}, 경도 ${clickLatLng.getLng()}`);
+        await handleMapClickForPolygon(map, clickLatLng);
 
         // searchAddrFromCoords(mouseEvent.latLng, function (result, status) {
         //     let miniMapCoords = null;
@@ -278,6 +304,55 @@ function handleMapEvents() {
         // });
     });
 
+    // ⭐ 지도 마우스 이동(mousemove) 이벤트 리스너 등록
+    kakao.maps.event.addListener(map, 'mousemove', function(mouseEvent) {
+        const currentLatLng = mouseEvent.latLng;
+
+        // 마우스가 이전 위치와 충분히 다르게 움직였는지 확인 (미세한 떨림 방지)
+        // LatLng 객체 자체 비교는 부정확할 수 있으므로, 위경도 값의 차이로 판단
+        const hasMovedSignificantly = !lastHoverLatLng ||
+            Math.abs(currentLatLng.getLat() - lastHoverLatLng.getLat()) > 0.000001 || // 0.000001은 대략 0.1미터 미만의 거리
+            Math.abs(currentLatLng.getLng() - lastHoverLatLng.getLng()) > 0.000001;
+
+        if (hasMovedSignificantly) {
+            // 마우스가 움직였으므로 기존 타이머 취소
+            if (hoverTimer) {
+                clearTimeout(hoverTimer);
+                hoverTimer = null;
+            }
+            isHoverDrawingPending = false; // pending 상태 초기화
+
+            lastHoverLatLng = currentLatLng; // 새로운 현재 위치 저장
+
+            // 새로운 위치에서 1.5초 후 폴리곤을 그리기 위한 타이머 시작
+            hoverTimer = setTimeout(async () => {
+                if (!isHoverDrawingPending) { // 이전에 이미 그리기 요청이 대기 중이지 않은 경우에만
+                    
+                    isHoverDrawingPending = true; // 그리기 요청이 시작됨을 표시
+
+                    // 기존 폴리곤을 지우고 새로운 폴리곤을 그리는 로직 호출
+                    // (클릭 이벤트와 동일한 handleMapClickForPolygon 함수 재활용)
+                    // (또는 호버 전용 함수를 만들어 현재HoverPolygons에만 영향을 주게 할 수 있습니다.)
+                    await handleMapClickForPolygon(map, currentLatLng); // ⭐ 중요: 기존 함수 재활용
+
+                    isHoverDrawingPending = false; // 그리기 완료 또는 에러 발생 후 pending 해제
+                }
+                hoverTimer = null; // 타이머 실행 후 초기화
+            }, HOVER_DELAY_MS);
+        }
+    });
+
+    // ⭐ (선택 사항) 마우스가 지도를 벗어났을 때 타이머 취소
+    kakao.maps.event.addListener(map, 'mouseout', function() {
+        if (hoverTimer) {
+            clearTimeout(hoverTimer);
+            hoverTimer = null;
+        }
+        isHoverDrawingPending = false;
+        // ⭐ 마우스 아웃 시 호버 폴리곤을 지우고 싶다면 아래 코드 추가
+        // clearAdministrativePolygons(); // 모든 폴리곤 및 라벨 제거 (클릭 폴리곤도 지워짐)
+        // 또는 특정 호버 폴리곤만 제거하는 함수를 따로 구현 (예: clearHoverPolygons())
+    });
     // 지도에서 idle 이벤트가 발생할 때마다 오버레이를 갱신
     kakao.maps.event.addListener(map, "tilesloaded", async function () {
 
@@ -416,8 +491,8 @@ function groundOverlayFunc() {
  * @returns {Array} 중복되지 않는 경계 영역 배열
  */
 function getNonOverlappingBounds(boundsA, boundsB) {
-    console.log(boundsA);
-    console.log(boundsB);
+    //console.log(boundsA);
+    //console.log(boundsB);
 
     const nonOverlappingBounds = [];
     const swA = {
@@ -439,10 +514,10 @@ function getNonOverlappingBounds(boundsA, boundsB) {
     };
 
     // 로그로 각 좌표 확인
-    console.log("boundsA SouthWest:", swA.lat, swA.lng);
-    console.log("boundsA NorthEast:", neA.lat, neA.lng);
-    console.log("boundsB SouthWest:", swB.lat, swB.lng);
-    console.log("boundsB NorthEast:", neB.lat, neB.lng);
+    //console.log("boundsA SouthWest:", swA.lat, swA.lng);
+    //console.log("boundsA NorthEast:", neA.lat, neA.lng);
+    //console.log("boundsB SouthWest:", swB.lat, swB.lng);
+    //console.log("boundsB NorthEast:", neB.lat, neB.lng);
 
     // 하단 (boundsA의 남서쪽, boundsB의 남서쪽)
     if (swB.lat > swA.lat) {
@@ -485,7 +560,7 @@ function boundsIntersects(boundsA, boundsB) {
         boundsA.getSouthWest().getLng() > boundsB.getNorthEast().getLng()
     );
 
-    console.log("Bounds intersect:", intersecting);
+    //console.log("Bounds intersect:", intersecting);
     return intersecting;
 }
 
@@ -1006,7 +1081,7 @@ function calculateOverlap(landPolygons, ecologyPolygonsObject) {
             ecologyPolygons.forEach((ecologyPolygon) => {
                 // 각 ecologyPolygon이 유효한지 확인
                 if (!isValidPolygon(ecologyPolygon)) {
-                    console.warn("유효하지 않은 ecologyPolygon이 있습니다. 건너뜁니다.");
+                    //console.warn("유효하지 않은 ecologyPolygon이 있습니다. 건너뜁니다.");
                     return;
                 }
 
@@ -1020,7 +1095,7 @@ function calculateOverlap(landPolygons, ecologyPolygonsObject) {
                         intersectArea[index] += intersectionArea; // 면적을 누적
                     }
                 } catch (error) {
-                    console.error("폴리곤 비교 중 오류 발생:", error.message);
+                    //console.error("폴리곤 비교 중 오류 발생:", error.message);
                 }
             });
             // console.log("등급별 겹치는 면적:", totalIntersectionArea, "평방미터");
@@ -1138,6 +1213,7 @@ async function handleMapClick(coords) {
 
         if (!isMultiSelectMode) {
             addPolygonsToMap(buildingPolygons, landPolygons);
+            //clickCoordTodisplayAddress(coords);
        }
     } catch (error) {
         console.error("정보를 가져오는 중 오류가 발생했습니다: ", error);
@@ -1145,7 +1221,32 @@ async function handleMapClick(coords) {
         isLoading = false; // 작업 완료 플래그 해제
     }
 }
-
+/**
+ * 클릭 좌표기준 주소표시 함수
+*/
+async function clickCoordTodisplayAddress(coords) {
+    const addressResult = await searchDetailAddrFromCoordsMy(coords);
+        if (addressResult && addressResult.status === kakao.maps.services.Status.OK && addressResult.result && addressResult.result[0]) {
+            const result = addressResult.result[0];
+            let jibunAddr = result.address ? result.address.address_name : '';
+            $("#click_location").val(jibunAddr); // 
+        }
+}
+/**
+ * 주소 검색
+ * @param {*} coords
+ */
+async function searchDetailAddrFromCoordsMy(coords) {
+    return new Promise((resolve, reject) => {
+        geocoder.coord2Address(coords.lng, coords.lat, function (result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                resolve({ result, status }); // 검색 결과를 Promise의 resolve로 반환
+            } else {
+                resolve({ result, status });
+            }
+        });
+    });
+}
 /**
  * 건물 폴리곤과 토지 폴리곤을 지도에 동시에 추가하는 함수
  * @param {Array} buildingPolygonPaths - 건물 폴리곤 경로 배열
@@ -2386,9 +2487,9 @@ async function showRealPrice(geomFilter, buffer) {
 function transCoordCB(result, status) {
     // 정상적으로 검색이 완료됐으면
     if (status === kakao.maps.services.Status.OK) {
-        console.log(result);
+        //console.log(result);
         searchAddrFromCoords(new kakao.maps.LatLng(result[0].y, result[0].x), function () {
-            console.log(result[0].y, result[0].x);
+            //console.log(result[0].y, result[0].x);
         });
 
         return;

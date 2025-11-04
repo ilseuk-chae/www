@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_28110107",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "28110107", "EMD_ENG_NM": "Haean-dong 3(sam)-ga", "EMD_KOR_NM": "해안동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.621872697714423, 37.471911502962222 ], [ 126.622415220193304, 37.47161507746516 ], [ 126.623111046838858, 37.471216075309854 ], [ 126.622720355479174, 37.470792201496621 ], [ 126.621486029552656, 37.471495242472699 ], [ 126.621872697714423, 37.471911502962222 ] ] ] ] } }
+]
+}

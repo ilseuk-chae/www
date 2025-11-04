@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_26110122",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "26110122", "EMD_ENG_NM": "Bosu-dong 3(sam)-ga", "EMD_KOR_NM": "보수동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 129.02390970714589, 35.103635738429816 ], [ 129.02387858233368, 35.103125265969361 ], [ 129.021193852419231, 35.103242694058189 ], [ 129.021344957719435, 35.105672068990785 ], [ 129.021389946896335, 35.105884224461491 ], [ 129.0215818879484, 35.106260214384442 ], [ 129.02390970714589, 35.103635738429816 ] ] ] ] } }
+]
+}

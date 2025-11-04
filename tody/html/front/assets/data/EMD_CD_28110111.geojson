@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_28110111",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "28110111", "EMD_ENG_NM": "Gwan-dong 3(sam)-ga", "EMD_KOR_NM": "관동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.624438154631775, 37.472715415324096 ], [ 126.625668721752575, 37.472018809858703 ], [ 126.625107301185523, 37.47140124487661 ], [ 126.623892466360999, 37.472095083741749 ], [ 126.624438154631775, 37.472715415324096 ] ] ] ] } }
+]
+}

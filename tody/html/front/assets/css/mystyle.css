@@ -1412,3 +1412,17 @@
   cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
   border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
 }
+
+/* polygon-name-label 클래스 스타일 */
+.polygon-name-label {
+  background-color: rgba(255, 255, 255, 0.8); /* 배경 반투명 흰색 */
+  border: 1px solid #ccc; /* 테두리 */
+  padding: 5px 10px; /* 내부 여백 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  font-size: 14px; /* 글씨 크기 */
+  font-weight: bold; /* 글씨 굵게 */
+  color: #333; /* 글씨 색상 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  text-align: center;
+  transform: translate(-50%, -50%); /* 정확한 중심에 오도록 조정 */
+}

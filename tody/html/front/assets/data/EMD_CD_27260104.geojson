@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_27260104",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "27260104", "EMD_ENG_NM": "Suseong-dong 2(i)-ga", "EMD_KOR_NM": "수성동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.613273278413487, 35.851138999458612 ], [ 128.614107884098985, 35.859773498500566 ], [ 128.617631296933467, 35.859595544392072 ], [ 128.616766222400173, 35.850922109231455 ], [ 128.613273278413487, 35.851138999458612 ] ] ] ] } }
+]
+}

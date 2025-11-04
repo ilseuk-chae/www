@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_48129134",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "48129134", "EMD_ENG_NM": "Pyeongan-dong", "EMD_KOR_NM": "평안동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.661305402206125, 35.150324915617006 ], [ 128.659625890961735, 35.149362477214787 ], [ 128.658422816086613, 35.150604185889989 ], [ 128.661305402206125, 35.150324915617006 ] ] ] ] } }
+]
+}

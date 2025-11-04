@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_46110116",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "46110116", "EMD_ENG_NM": "Sangnak-dong 2(i)-ga", "EMD_KOR_NM": "상락동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.387336497713903, 34.790073181971209 ], [ 126.385876656417096, 34.788808728530249 ], [ 126.384683574540105, 34.789745463688682 ], [ 126.384490023662636, 34.790060113991949 ], [ 126.386476537806132, 34.790310440514283 ], [ 126.387336497713903, 34.790073181971209 ] ] ] ] } }
+]
+}
