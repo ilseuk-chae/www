@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // $crs = 'EPSG:4326';
 
     $sggCd = isset($_POST['sggCd']) ? urldecode($_POST['sggCd']) : '';
+    $sidoCd = substr($sggCd, 0, 2); // 시도 코드 추출 (앞의 두 자리)
     $bbox = isset($_POST['bbox']) ? urldecode($_POST['bbox']) : '';
     if (!empty($bbox)) {
         list($minLat, $minLng, $maxLat, $maxLng) = array_slice(explode(',', $bbox), 0, 4);
@@ -115,6 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($requested_estate_types)) {
         responseApi(200, 'SUCCESS', []); // 빈 배열을 응답하고 종료
+        exit;
+    }
+    if (strlen($sidoCd) !== 2) {
+        responseApi(400, 'INVALID_SGGCD', []);
         exit;
     }
     // Redis에서 sggCd 캐시 확인
@@ -155,7 +160,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // estate_type이 선택된 경우에만 쿼리 실행
         // --- 캐시 미스: DB에서 데이터 가져와야 함 ---
         $union_queries = []; // 각 부동산 유형별 쿼리를 저장할 배열
-        
+        $adminTableName = "AL_D002_{$sidoCd}";
+        $tableNames = [
+            'apt' => "realPrice_apt_{$sidoCd}",
+            'multi' => "realPrice_multiFamily_{$sidoCd}",
+            'officetel' => "realPrice_officetel_{$sidoCd}",
+            'land' => "realPrice_land_{$sidoCd}"
+        ];
+
         // 아파트 쿼리 템플릿
         $apt_query_template = "
             SELECT
@@ -169,13 +181,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 null AS jimok,
                 'apt' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
-            FROM realPrice_apt_41 AS rap
-            INNER JOIN administrative_district_map_41 AS admg
+            FROM {$tableNames['apt']} AS rap
+            INNER JOIN {$adminTableName} AS admg
             ON admg.pnu_cd = rap.pnu
             INNER JOIN
             (
                 SELECT aptSeq, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
-                FROM realPrice_apt_41
+                FROM {$tableNames['apt']}
                 GROUP BY aptSeq
             ) AS latest
             ON rap.aptSeq = latest.aptSeq
@@ -196,13 +208,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 null AS jimok,
                 'multi' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
-            FROM realPrice_multiFamily_41 AS rmf
-            INNER JOIN administrative_district_map_41 AS admg
+            FROM {$tableNames['multi']} AS rmf
+            INNER JOIN {$adminTableName} AS admg
             ON admg.pnu_cd = rmf.pnu
             INNER JOIN
             (
                 SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
-                FROM realPrice_multiFamily_41
+                FROM {$tableNames['multi']}
                 GROUP BY pnu
             ) AS latest
             ON rmf.pnu = latest.pnu
@@ -223,13 +235,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 null AS jimok,
                 'officetel' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
-            FROM realPrice_officetel_41 AS rot
-            INNER JOIN administrative_district_map_41 AS admg
+            FROM {$tableNames['officetel']} AS rot
+            INNER JOIN {$adminTableName} AS admg
             ON admg.pnu_cd = rot.pnu
             INNER JOIN
             (
                 SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
-                FROM realPrice_officetel_41
+                FROM {$tableNames['officetel']}
                 GROUP BY pnu
             ) AS latest
             ON rot.pnu = latest.pnu
@@ -250,13 +262,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 rl.jimok,
                 'land' AS estate_type,
                 ST_AsText(admg.WKT) AS poligon
-            FROM realPrice_land_41 AS rl
-            INNER JOIN administrative_district_map_41 AS admg
+            FROM {$tableNames['land']} AS rl
+            INNER JOIN {$adminTableName} AS admg
             ON admg.pnu_cd = rl.pnu
             INNER JOIN
             (
                 SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
-                FROM realPrice_land_41
+                FROM {$tableNames['land']}
                 GROUP BY pnu
             ) AS latest
             ON rl.pnu = latest.pnu
