@@ -146,7 +146,7 @@ try {
     $response_data['name'] = $name;
     $response_data['role'] = $role;
     $response_data['status'] = $status;
-
+    $response_data['userId'] = $id;
 
     // ----------------------------------------------------------------------------------------------------------------
     // token 업데이트

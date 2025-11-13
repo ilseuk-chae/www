@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="kr" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tody 관리자 페이지 | 가입자 통계</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content="Tody" name="description" />
+        <meta content="Tody" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+        <link href="/assets/libs/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/colReorder.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- Layout config Js -->
+        <script src="/assets/js/layout.js"></script>
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Css -->
+        <link href="/assets/css/fonts.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Waves Css-->
+        <link href="/assets/libs/node-waves/waves.min.css" rel="stylesheet" type="text/css" />
+        <!-- choices Css -->
+        <link href="/assets/libs/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- custom Css-->
+        <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <!-- common Css-->
+        <link href="/assets/css/common.css" rel="stylesheet" type="text/css" />
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+        <!-- jQuery UI CSS (Datepicker용) -->
+        <link href="/assets/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+        
+        <!-- 통계 페이지 전용 스타일 -->
+        <style>
+            body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+            .container { max-width: 1200px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+            .date-filter {
+                margin-bottom: 05px;
+                padding-bottom: 05px;
+                border-bottom: 1px solid #eee;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                /* ✨ 추가할 코드 시작 ✨ */
+                max-width: 600px; /* 적절한 너비로 조절하세요 (예: 500px, 700px 등) */
+                margin-left: auto; /* 상하 마진은 05px 그대로 유지하고 좌우만 auto로 */
+                margin-right: auto;
+                /* ✨ 추가할 코드 끝 ✨ */
+            }
+
+            /* .date-filter 내의 input과 button 스타일은 그대로 둡니다. */
+            .date-filter label { font-weight: bold; }
+            .date-filter input[type="text"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+            .date-filter button { padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+            .date-filter button:hover { background-color: #0056b3; }
+
+            .stat-section { display: block; margin-top: 20px; }
+            .stat-section.active { display: block; }
+            .chart-container { max-width: 100%; height: 400px; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            table, th, td { border: 1px solid #ddd; }
+            th, td { padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+<!-- 
+            .stats-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+            .stats-nav button { padding: 10px 15px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 5px; cursor: pointer; }
+            .stats-nav button.active { background-color: #007bff; color: white; border-color: #007bff; }
+            .stats-nav button:hover:not(.active) { background-color: #e9e9e9; }
+-->
+    <body>
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+            <!-- header -->
+            <header id="page-topbar"></header>
+            <!-- /.header -->
+             <!-- removeNotificationModal -->
+            <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mt-2 text-center">
+                                <lord-icon src="/assets/json/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width: 100px; height: 100px"></lord-icon>
+                                <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                    <h4>Are you sure ?</h4>
+                                    <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn w-sm btn-danger" id="delete-notification">Yes, Delete It!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- ========== App Menu ========== -->
+            <div class="app-menu navbar-menu"></div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <div class="page-content" style="overflow-y: none;">
+                    <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                    <h4 class="mb-sm-0">가입자 통계관리</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item active"><a href="javascript: void(0);">가입자 통계관리</a></li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title 
+                        <h2>방문자 통계 대시보드</h2> -->
+
+                        <div class="date-filter">
+                            <label for="startDate">검색기간</label>
+                            <input type="text" id="startDate" readonly>
+                            <label for="endDate"> ~ </label>
+                            <input type="text" id="endDate" readonly>
+                            <button id="applyFilter">조회</button>
+                        </div>
+                        <!-- 우측 결과 영역을 화면 전체 사용하며, 모든 결과 항목을 한 번에 노출 
+                        <div class="stats-results" style="width:88%; height:100%; overflow-y:auto; padding:10px;">-->
+                        <div class="stats-results" style="width: 100%; height: 1000px; overflow-y: auto; padding: 10px; box-sizing: border-box;">
+                            <!-- 각 결과 섹션은 높이 고정, 테두리 및 여백 부여 -->
+                            <section id="dailyNewUsers" class="stat-section" style="height:700px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>일자별 가입자수</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);"> <!-- 제목 높이를 고려한 차트 컨테이너 높이 -->
+                                    <canvas id="dailyNewUsersChart"></canvas>
+                                </div>
+                                <div id="dailyNewUsersTable" style="display: none;"></div> <!-- 테이블도 chart-container 밖으로 분리하는 것이 좋습니다. -->
+                            </section>
+                            
+                            <section id="dailyVisitors" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>일별 방문자수</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="dailyVisitorsChart"></canvas>
+                                </div>
+                                <div id="dailyVisitorsTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="hourlyVisitors" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>시간대별 방문자수</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="hourlyVisitorsChart"></canvas>
+                                </div>
+                                <div id="hourlyVisitorsTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="weekdayVisitors" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>요일별 방문자수</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="weekdayVisitorsChart"></canvas>
+                                </div>
+                                <div id="weekdayVisitorsTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="hourlyDuration" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>시간대별 체류시간 (최초 접속시간 기준)</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="hourlyDurationChart"></canvas>
+                                </div>
+                                <div id="hourlyDurationTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="weekdayDuration" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>요일별 체류시간</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="weekdayDurationChart"></canvas>
+                                </div>
+                                <div id="weekdayDurationTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="monthlyDuration" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>월별 체류시간</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="monthlyDurationChart"></canvas>
+                                </div>
+                                <div id="monthlyDurationTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="pageDuration" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>페이지별 체류시간</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="pageDurationChart"></canvas>
+                                </div>
+                                <div id="pageDurationTable" style="display: none;"></div>
+                            </section>
+                        
+                            <section id="userDuration" class="stat-section" style="height:280px; margin-bottom:20px; border:1px solid #abdaa7; padding:10px;">
+                                <h3>사용자별 체류시간</h3>
+                                <div class="chart-container" style="height: calc(100% - 30px);">
+                                    <canvas id="userDurationChart"></canvas>
+                                </div>
+                                <div id="userDurationTable" style="display: none;"></div>
+                            </section>
+                        
+                        </div>
+                        
+                    </div>
+                    <!-- container-fluid -->    
+                </div>
+                <!-- End Page-content -->
+            </div>
+            <!-- end main content-->
+        </div>
+        <!-- END layout-wrapper -->
+        
+        <!--preloader-->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Theme Settings -->
+        <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas"></div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/libs/jquery/js/jquery-3.7.1.min.js"></script>
+        <!-- jQuery UI (jQuery 다음에!) -->
+        <script src="/assets/js/jquery-ui.js"></script> 
+        
+        <!-- Chart.js (차트 그리기용) -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+        
+        <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="/assets/libs/node-waves/waves.min.js"></script>
+        <script src="/assets/libs/feather-icons/feather.min.js"></script>
+        <script src="/assets/js/plugins/lord-icon-2.1.0.js"></script>
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+        <script src="/assets/libs/prismjs/prism.js"></script>
+        <!--datatable js-->
+        <script src="/assets/libs/datatables/js/jszip.min.js"></script>
+        <script src="/assets/libs/datatables/js/pdfmake.min.js"></script>
+        <script src="/assets/libs/datatables/js/vfs_fonts.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.colVis.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.html5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.print.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.colReorder.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/libs/datatables/js/responsive.bootstrap5.js"></script>
+        <!-- jquery-validation.js -->
+        <script src="/assets/libs/jquery-validation/js/jquery.validate.min.js"></script>
+        <script src="/admin/js/00-include/validation.js"></script>
+        <!-- daum 주소 api -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <!-- 카카오맵 -->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"></script>
+        <!-- pako -->
+        <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+        <!-- SheetJS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-style/0.8.13/xlsx.full.min.js"></script>
+        <!-- custom -->
+        <script src="/admin/js/00-include/layout.js"></script>
+        <script src="/admin/js/00-include/sha256.js"></script>
+        <script src="/admin/js/00-include/functions.js"></script>
+        <script src="/admin/js/00-include/common.js"></script>
+        <script src="/admin/js/00-include/layer_popup.js"></script>
+        <script src="/admin/js/12-statics/statics.js"></script>
+        
+    </body>
+</html>

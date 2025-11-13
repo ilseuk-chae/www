@@ -18,7 +18,7 @@
         <script src="/front/assets/js/jquery-3.3.1.js"></script>
         <script src="/front/js/00-include/functions.js"></script>
         <script src="/front/js/00-include/common.js"></script>
-
+        
         <!-- (2) LoginWithNaverId Javscript 설정 정보 및 초기화 -->
         <script>
             const clientId = "51uqj3T1dAORiqMsBTFv";
@@ -57,17 +57,31 @@
 
                         try {
                             const response = await callApiAbort("/front/back/00-include/login_naver.php", "POST", dataObj, "naverLogin");
-                            console.log("API 호출 성공");
+                            //console.log("API 호출 성공");
 
                             const { statusCode, message, responseData } = response;
                             loginHandleError(message, statusCode);
 
-                            const { userNo, userToken, name, role, status } = responseData;
+                            //const { userNo, userToken, name, role, status } = responseData;
+                            const { userNo, userToken, name: resName, role, status: resStatus, userId} = responseData; // 응답 데이터의 이름과 충돌 방지를 위해 resName 사용
+                            
                             setCookie("user_no", userNo);
                             setCookie("user_token", userToken);
-                            setCookie("user_name", encodeURIComponent(name));
+                            //setCookie("user_name", encodeURIComponent(name));
+                            setCookie("user_name", encodeURIComponent(resName)); // 응답 데이터의 이름을 사용
                             setCookie("user_role", encodeURIComponent(role));
                             setCookie("naver_token", getHashParam("access_token"));
+                            setCookie("user_id", userId);
+
+                            // --- 여기가 onLoginSuccess() 호출을 요청하는 위치 ---
+                            // 부모 창으로 로그인 성공 메시지와 userNo를 보냅니다.
+                            if (window.opener && window.opener.postMessage && userId) {
+                                // 'naverLoginSuccess' 타입으로 메시지 구분
+                                window.opener.postMessage({ type: 'naverLoginSuccess', userId: userId }, window.location.origin);
+                                //console.log('Naver login success message sent to parent with userId:', userId);
+                            }
+                            // --- ---
+                            
                         } catch (error) {
                             // API 호출 실패
                             console.error("API 호출 실패", error);

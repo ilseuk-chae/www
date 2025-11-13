@@ -103,6 +103,7 @@ try {
     $response_data['agency_name'] = $user_data['agency_name'];
     $response_data['role'] = $user_data['role'];
     $response_data['status'] = $user_data['status'];
+    $response_data['userId'] = $id;
 
 
     // ----------------------------------------------------------------------------------------------------------------

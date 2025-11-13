@@ -20,6 +20,8 @@
 
         // 카카오 로그인 스크립트 로드
         loadScript("/front/assets/js/kakao.min.js", "kakao-login-script", "sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4", "anonymous");
+        //loadScript("https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js", "kakao-login-script", "sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4", "anonymous");
+        //loadScript("https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js", "kakao-login-script");
 
         // 네이버 로그인 스크립트 로드
         loadScript("https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js", "naver-login-script");
@@ -28,6 +30,11 @@
         // 로그인 스크립트 로드
         setTimeout(() => {
             loadScript("/front/js/00-include/login.js", "login-script");
+        }, 500);
+
+        // 로그인 스크립트 로드
+        setTimeout(() => {
+            loadScript("/front/js/visit/client.js", "visit-client-script");
         }, 500);
 
         // 모달 설정

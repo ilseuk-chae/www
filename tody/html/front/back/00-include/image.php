@@ -56,17 +56,67 @@ try {
 
 function verifyToken($token, $type, $secretKey)
 {
+    //error_log("[DEBUG] verifyToken called with Token: {$token}, Type: {$type}"); // 함수 시작 시 로그
     $tokenParts = explode('.', $token);
     if (count($tokenParts) !== 2) {
         // echo "Invalid token parts count: " . count($tokenParts) . "<br>";
+        //error_log("[DEBUG] verifyToken: Token format error. Part count: " . count($tokenParts));
         return false;
     }
 
     $encodedPayload = $tokenParts[0];
     $providedSignature = $tokenParts[1];
     $decodedPayload = base64_decode($encodedPayload);
+    // base64_decode 실패 확인
+    if ($decodedPayload === false) {
+        //error_log("[DEBUG] verifyToken: base64_decode failed for payload: {$encodedPayload}");
+        return false;
+    }
     $expectedSignature = hash_hmac('sha256', $decodedPayload, $secretKey);
 
+    if (!hash_equals($expectedSignature, $providedSignature)) {
+        error_log("[DEBUG] verifyToken: Signature mismatch. Expected: {$expectedSignature}, Provided: {$providedSignature}");
+        return false;
+    }
+
+    $tokenData = json_decode($decodedPayload, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log("[DEBUG] verifyToken: JSON decode error: " . json_last_error_msg() . " for payload: {$decodedPayload}");
+        return false;
+    }
+
+    // 만료 시간 확인
+    if (isset($tokenData['expiry']) && $tokenData['expiry'] < time()) {
+        error_log("[DEBUG] verifyToken: Token expired. Expiry: " . $tokenData['expiry'] . ", Current: " . time());
+        return false;
+    }
+    
+    // 복호화 관련 값 확인
+    if (!isset($tokenData['iv']) || !isset($tokenData['filePath'])) {
+        error_log("[DEBUG] verifyToken: Missing 'iv' or 'filePath' in token data.");
+        return false;
+    }
+    
+    $iv = base64_decode($tokenData['iv']);
+    if ($iv === false) {
+        error_log("[DEBUG] verifyToken: IV base64_decode failed for IV: " . $tokenData['iv']);
+        return false;
+    }
+
+    $cipher = "aes-256-cbc";
+    $decryptedFilePath = openssl_decrypt($tokenData['filePath'], $cipher, $secretKey, 0, $iv);
+    
+    if ($decryptedFilePath === false) {
+        error_log("[DEBUG] verifyToken: Decryption failed. Error: " . openssl_error_string() . ". Encrypted Path: " . $tokenData['filePath'] . ", IV: " . bin2hex($iv));
+        // openssl_error_string()은 한 번 호출하면 초기화되므로 바로 사용해야 합니다.
+        return false;
+    }
+
+    // 모든 검증 통과 시 파일 경로 반환
+    error_log("[DEBUG] verifyToken: Token successfully verified. FilePath: " . $decryptedFilePath);
+    return $decryptedFilePath;
+
+/*
     if (hash_equals($expectedSignature, $providedSignature)) {
         $tokenData = json_decode($decodedPayload, true);
 
@@ -92,6 +142,7 @@ function verifyToken($token, $type, $secretKey)
         // echo "Signature mismatch.<br>";
     }
     return false;
+*/
 }
 
 

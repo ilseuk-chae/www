@@ -1,1 +1,84 @@
-function a0_0x1110(){const _0x20b772=['pop','5154000UQLCYk','split','/index.html','user_token','.sub-menu\x20a','addClass','117DgeAPC','209PraMhI','pathname','695380xmQKzj','3402497SNsYvZ','98304GaYqES','.sub-menu','active','user_role','12RMwvbp','menu','html','POST','replace','location','2778540FCRUXQ','user_no','attr','18RGpXUV','1655xjNVJQ','4249220OqsaRB','href','user_name','each','634TmvDte'];a0_0x1110=function(){return _0x20b772;};return a0_0x1110();}(function(_0x26b4e7,_0x41d7cd){const _0x286e76=a0_0x356a,_0x3b65ab=_0x26b4e7();while(!![]){try{const _0x1d0652=parseInt(_0x286e76(0xa8))/0x1*(-parseInt(_0x286e76(0xad))/0x2)+-parseInt(_0x286e76(0xa7))/0x3*(-parseInt(_0x286e76(0xba))/0x4)+-parseInt(_0x286e76(0xa9))/0x5+parseInt(_0x286e76(0x9e))/0x6*(-parseInt(_0x286e76(0xb9))/0x7)+-parseInt(_0x286e76(0xaf))/0x8+parseInt(_0x286e76(0xb5))/0x9*(-parseInt(_0x286e76(0xb8))/0xa)+-parseInt(_0x286e76(0xb6))/0xb*(-parseInt(_0x286e76(0xa4))/0xc);if(_0x1d0652===_0x41d7cd)break;else _0x3b65ab['push'](_0x3b65ab['shift']());}catch(_0x57e77b){_0x3b65ab['push'](_0x3b65ab['shift']());}}}(a0_0x1110,0x9f2aa),$(function(){}));function a0_0x356a(_0x5f48f7,_0x17b82d){const _0x1110db=a0_0x1110();return a0_0x356a=function(_0x356a85,_0x298c53){_0x356a85=_0x356a85-0x9e;let _0x989594=_0x1110db[_0x356a85];return _0x989594;},a0_0x356a(_0x5f48f7,_0x17b82d);}function userInfo(){const _0x2ea0a3=a0_0x356a,_0x1479c7={'user_no':getCookie(_0x2ea0a3(0xa5)),'user_token':getCookie(_0x2ea0a3(0xb2)),'user_name':getCookie(_0x2ea0a3(0xab)),'user_role':getCookie(_0x2ea0a3(0xbd))};for(let _0x1feac4 in _0x1479c7){if(!_0x1479c7[_0x1feac4])return![];}return _0x1479c7;}function logout(){const _0xd1ff66=a0_0x356a;try{deleteCookie('user_name'),deleteCookie(_0xd1ff66(0xa5)),deleteCookie('user_role'),deleteCookie(_0xd1ff66(0xb2)),deleteCookie('naver_token');}catch(_0x4ef62b){}finally{location[_0xd1ff66(0xaa)]=_0xd1ff66(0xb1);}}async function initMenu(_0x3f1eaf=userInfo()){const _0x4d540c=a0_0x356a,_0x1f1c42=await callApi(_0x4d540c(0xa1),'/front/back/mypage/menu_list.php',_0x3f1eaf);if(!_0x1f1c42)return;const {statusCode:_0x3a8a9d,message:_0x57a19b,responseData:_0x2f08a2}=_0x1f1c42;if(!_0x2f08a2)return;const _0x1a5e4d=_0x2f08a2[_0x4d540c(0x9f)];$(_0x4d540c(0xbb))[_0x4d540c(0xa0)](_0x1a5e4d);let _0x263e84=window[_0x4d540c(0xa3)][_0x4d540c(0xb7)][_0x4d540c(0xb0)]('/')['pop']()[_0x4d540c(0xa2)](/\.[^/.]+$/,'');$(_0x4d540c(0xb3))[_0x4d540c(0xac)](function(){const _0x1e6cbc=_0x4d540c,_0x56da34=$(this)[_0x1e6cbc(0xa6)]('href')[_0x1e6cbc(0xb0)]('/')[_0x1e6cbc(0xae)]()[_0x1e6cbc(0xa2)](/\.[^/.]+$/,'');_0x56da34===_0x263e84&&$(this)[_0x1e6cbc(0xb4)](_0x1e6cbc(0xbc));});}
+$(function () {
+    // // waves.js 초기화
+    // Waves.init();
+    // Waves.attach(".waves-effect");
+});
+
+/**
+ * 쿠키에서 사용자 정보 가져오는 함수
+ * @returns
+ */
+function userInfo() {
+    const userInfo = {
+        user_no: getCookie("user_no"),
+        user_token: getCookie("user_token"),
+        user_name: getCookie("user_name"),
+        user_role: getCookie("user_role"),
+        user_id: getCookie("user_id"),
+    };
+
+    // 모든 속성이 유효한지 확인
+    for (let key in userInfo) {
+        if (!userInfo[key]) {
+            // console.log("회원정보 없음");
+            return false;
+        }
+    }
+
+    return userInfo;
+}
+
+function logout() {
+    try {
+        deleteCookie("user_name");
+        deleteCookie("user_no");
+        deleteCookie("user_role");
+        deleteCookie("user_token");
+        deleteCookie("naver_token");
+        deleteCookie("user_id");
+        
+        console.log('client.js: User logged out.');
+        currentUserId = null; // userId 초기화
+        
+        // 로그아웃 후에도 비회원(guest)으로 추적은 계속
+        // 주기 업데이트가 자동으로 userId: null로 업데이트할 것
+        startVisitTracking(); // (필요시 호출, currentUserId 변경사항 반영)
+
+    } catch (error) {
+    } finally {
+        location.href = "/index.html";
+    }
+}
+
+/**
+ * 서브 메뉴 불러오는 함수
+ * @returns
+ */
+async function initMenu(user = userInfo()) {
+    const result = await callApi("POST", "/front/back/mypage/menu_list.php", user);
+    if (!result) return;
+    const { statusCode, message, responseData } = result;
+    if (!responseData) return;
+    const menuListHtml = responseData.menu;
+    $(".sub-menu").html(menuListHtml);
+
+    // 현재 페이지 URL 추출 (확장자가 있으면 제거)
+    let currentPage = window.location.pathname
+        .split("/")
+        .pop()
+        .replace(/\.[^/.]+$/, "");
+
+    // 현재 페이지와 일치하는 링크에 'active' 클래스 추가
+    $(".sub-menu a").each(function () {
+        // href에서 확장자를 제거하고 비교
+        const href = $(this)
+            .attr("href")
+            .split("/")
+            .pop()
+            .replace(/\.[^/.]+$/, "");
+
+        if (href === currentPage) {
+            $(this).addClass("active");
+        }
+    });
+}

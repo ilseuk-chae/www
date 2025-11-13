@@ -1,178 +1,261 @@
-(function (_0x2ea8f3, _0x156870) {
-    const _0x3a07b4 = a4_0x37c9,
-        _0xebdacc = _0x2ea8f3();
-    while (!![]) {
-        try {
-            const _0xe9465e =
-                (parseInt(_0x3a07b4(0x1ca)) / 0x1) * (-parseInt(_0x3a07b4(0x1e4)) / 0x2) +
-                -parseInt(_0x3a07b4(0x1d8)) / 0x3 +
-                parseInt(_0x3a07b4(0x1df)) / 0x4 +
-                (parseInt(_0x3a07b4(0x1e0)) / 0x5) * (parseInt(_0x3a07b4(0x1cd)) / 0x6) +
-                -parseInt(_0x3a07b4(0x1f2)) / 0x7 +
-                parseInt(_0x3a07b4(0x1cc)) / 0x8 +
-                (parseInt(_0x3a07b4(0x1e1)) / 0x9) * (parseInt(_0x3a07b4(0x1d9)) / 0xa);
-            if (_0xe9465e === _0x156870) break;
-            else _0xebdacc["push"](_0xebdacc["shift"]());
-        } catch (_0x137418) {
-            _0xebdacc["push"](_0xebdacc["shift"]());
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(function () {
+    // 아이디 기억 (필요시 주석 해제)
+    // const rememberChk = $("#auth-remember-check");
+    // const rememberId = getCookie("remember_sa_id");
+    // if (rememberId) {
+    //     $("#user_id").val(decodeURIComponent(rememberId));
+    //     rememberChk.prop("checked", true);
+    // }
+
+    // 로그인 버튼 클릭 이벤트
+    $(document).on("click", "#login_btn", function () {
+        login();
+    });
+
+    // 로그인 input에서 엔터 키 입력시 로그인 이벤트
+    $(document).on("keyup", "#login_id, #login_pw", function (event) {
+        if (event.key === "Enter") {
+            login();
+        }
+    });
+
+    // 카카오 로그인 초기화
+    kakaoLogin();
+
+    // 네이버 로그인 초기화
+    naverLogin();
+
+    window.addEventListener(
+        "message",
+        function (event) {
+            if (event.origin !== window.location.origin) return;
+
+            const messageData = event.data;
+            
+            // 카카오 로그인 성공 메시지 처리
+            if (messageData && messageData.type === 'kakaoLoginSuccess' && messageData.userId) {
+                //console.log('Kakao login: userNo received for onLoginSuccess:', messageData.userId);
+                onLoginSuccess(messageData.userId);
+                window.handleLoginSuccess(messageData.userId); // userId는 `varchar(100)`에 맞는 ID 형식
+                location.reload(); // 새로고침은 여기서 하는 것이 일관적입니다.
+            }
+            // 네이버 로그인 성공 메시지 처리
+            else if (messageData && messageData.type === 'naverLoginSuccess' && messageData.userId) {
+                //console.log('Naver login: userId received for onLoginSuccess:', messageData.userId);
+                onLoginSuccess(messageData.userId);
+                window.handleLoginSuccess(messageData.userId); // userId는 `varchar(100)`에 맞는 ID 형식
+                location.reload(); // 새로고침은 여기서 하는 것이 일관적입니다.
+            }
+        },
+        false
+    );
+    // !!! 새로 추가되는 부분 끝 !!!
+});
+
+async function login() {
+    const id = $("#login_id").val();
+    const password = $("#login_pw").val();
+
+    // client.js에서 초기화된 currentClientSessionId를 가져옵니다.
+    // client.js가 먼저 로드되고 initializeClientSessionId()가 호출되어 currentClientSessionId가 설정되어 있어야 합니다.
+    // 만약 currentClientSessionId가 아직 설정되지 않았다면, initializeClientSessionId()를 호출하여 강제로 초기화합니다.
+    if (typeof currentClientSessionId === 'undefined' || currentClientSessionId === null) {
+        console.warn("login(): currentClientSessionId is not initialized, attempting to initialize...");
+        await initializeClientSessionId(); // client.js의 함수 호출 (await 필수)
+        if (currentClientSessionId === null) { // 초기화 후에도 null이면 문제
+            alert("방문 세션 ID 초기화에 실패했습니다. 다시 시도해 주세요.");
+            return;
         }
     }
-})(a4_0x37a7, 0xa5033),
-    $(function () {
-        const _0x3a80b7 = a4_0x37c9;
-        $(document)["on"](_0x3a80b7(0x1d5), _0x3a80b7(0x1ed), function () {
-            login();
-        }),
-            $(document)["on"]("keyup", _0x3a80b7(0x1d7), function (_0x10df76) {
-                const _0x39ff76 = _0x3a80b7;
-                _0x10df76[_0x39ff76(0x1d6)] === _0x39ff76(0x1e8) && login();
-            }),
-            kakaoLogin(),
-            naverLogin();
-    });
-async function login() {
-    const _0x280bc3 = a4_0x37c9,
-        _0x46ae9d = $("#login_id")[_0x280bc3(0x1f1)](),
-        _0x2f80c2 = $("#login_pw")["val"](),
-        _0x3757f0 = { id: encodeURIComponent(_0x46ae9d), password: encodeURIComponent(_0x2f80c2) },
-        _0xa27608 = await callApi(_0x280bc3(0x1e6), _0x280bc3(0x1f0), _0x3757f0);
-    if (!_0xa27608) {
-        alert("no\x20result");
+
+    const dataObj = { 
+        id: encodeURIComponent(id), 
+        password: encodeURIComponent(password),
+        // 새로 추가된 파라미터: clientSessionId를 로그인 시 서버로 함께 보냅니다.
+        // 이를 통해 서버 측 로그인 처리 로직에서도 clientSessionId를 사용하여 추가 작업을 수행할 수 있습니다.
+        clientSessionId: currentClientSessionId 
+    };
+
+    const result = await callApi("POST", "/front/back/00-include/login.php", dataObj);
+
+    if (!result) {
+        alert("로그인 처리 결과가 없습니다.");
         return;
     }
-    const { statusCode: _0x5d6e7e, message: _0x389a2b, responseData: _0x73dd8a } = _0xa27608,
-        _0x1132b6 = await loginHandleError(_0x389a2b, _0x5d6e7e);
-    if (!_0x1132b6) return;
-    const { userNo: _0x2e2a69, userToken: _0x1d7321, name: _0x1801e2, agency_name: _0x3c2c5c, role: _0xb63895, status: _0x39be9b } = _0x73dd8a;
-    setCookie(_0x280bc3(0x1e5), _0x2e2a69),
-        setCookie(_0x280bc3(0x1e2), _0x1d7321),
-        setCookie(_0x280bc3(0x1d0), _0xb63895 == _0x280bc3(0x1dd) ? encodeURIComponent(_0x1801e2) : _0xb63895 == _0x280bc3(0x1f3) ? encodeURIComponent(_0x3c2c5c) : encodeURIComponent(_0x1801e2)),
-        setCookie(_0x280bc3(0x1c8), encodeURIComponent(_0xb63895)),
-        location[_0x280bc3(0x1c9)]();
+    
+    const { statusCode, message, responseData } = result;
+    const alertResult = await loginHandleError(message, statusCode);
+    if (!alertResult) return;
+
+    const { userNo, userToken, name, agency_name, role, status, userId } = responseData;
+
+
+    // 쿠키 설정
+    setCookie("user_no", userNo);
+    setCookie("user_token", userToken);
+    setCookie("user_name", role == "001" ? encodeURIComponent(name) : role == "002" ? encodeURIComponent(agency_name) : encodeURIComponent(name));
+    setCookie("user_role", encodeURIComponent(role));
+    setCookie("user_id", userId);
+    // 아이디 기억 (필요시 주석 해제)
+    // if ($("#auth-remember-check").prop("checked")) {
+    //     setCookie("remember_sa_id", encodeURIComponent(id));
+    // } else {
+    //     deleteCookie("remember_sa_id");
+    // }
+
+    // --- 여기에 onLoginSuccess 호출 ---
+    // 기존 onLoginSuccess 로직 (새로운 추적 시스템과 별개로 작동하는 기존 로직이라고 가정)
+    // 일반적으로는 id (로그인 ID) 대신 userNo나 userId (실제 사용자 PK)를 넘기는 것이 좋습니다.
+    if (userNo) { // userNo가 실제 사용자를 식별하는 키라고 가정합니다.
+        // 기존 시스템의 onLoginSuccess 호출
+        // onLoginSuccess(userNo); 
+        // 만약 기존 onLoginSuccess가 user_id를 필요로 한다면 onLoginSuccess(userId); 로 변경
+
+        // 새로운 방문 추적 시스템에 로그인 성공을 알립니다.
+        // client.js의 handleLoginSuccess 함수를 호출합니다.
+        // 이 함수는 user_visits, user_total_durations 테이블 업데이트를 트리거합니다.
+        if (typeof window.handleLoginSuccess === 'function' && userId) {
+            await window.handleLoginSuccess(userId); 
+        } else {
+            console.warn("client.js의 handleLoginSuccess 함수를 찾을 수 없거나 userId가 유효하지 않습니다. 방문자 추적 업데이트가 누락될 수 있습니다.");
+        }
+    }
+
+    location.reload();
+
+    // 주의사항:
+    // 1. initializeClientSessionId() 함수가 정의된 client.js 파일이 이 login() 함수보다 먼저 로드되어야 합니다.
+    // 2. handleLoginSuccess() 함수도 client.js에 정의되어 있으므로, client.js 로드 순서가 중요합니다.
+    // 3. onLoginSuccess(id)는 기존 시스템에 특화된 함수라고 가정하며, 이 호출은 변경하지 않았습니다.
+    //    다만, 새로운 방문 추적 시스템의 handleLoginSuccess에는 정확한 사용자 식별자(userId)를 전달합니다.
+    //    (userNo는 내부적인 PK일 수 있고, userId는 SNS 로그인 등에 사용되는 외부 식별자일 수 있으므로 구분)
 }
+
+/**
+ * 카카오 로그인 초기화 함수
+ */
 function kakaoLogin() {
-    const _0x32516e = a4_0x37c9,
-        _0x4006a9 = _0x32516e(0x1d1),
-        _0x2e7d64 = "/front/views/callback/kakao.html",
-        _0x19825f = window[_0x32516e(0x1c6)][_0x32516e(0x1d3)] + (location[_0x32516e(0x1e3)] ? ":" + location[_0x32516e(0x1e3)] : "") + _0x2e7d64,
-        _0x2bc4c3 = generateNonce(0x10);
-    Kakao["init"](_0x4006a9),
-        Kakao["isInitialized"](),
-        $("#kakao_login_btn")["on"]("click", function () {
-            const _0x1abe66 = _0x32516e,
-                _0x538bb4 = _0x1abe66(0x1de) + _0x4006a9 + _0x1abe66(0x1cb) + encodeURIComponent(_0x19825f) + _0x1abe66(0x1d2) + _0x2bc4c3,
-                _0x54d561 = window["open"](_0x538bb4, _0x1abe66(0x1e9), _0x1abe66(0x1ce));
-            window[_0x1abe66(0x1da)](
-                "message",
-                function (_0x6c3e75) {
-                    const _0x1be6d3 = _0x1abe66;
-                    if (_0x6c3e75[_0x1be6d3(0x1d3)] !== window[_0x1be6d3(0x1c6)][_0x1be6d3(0x1d3)]) return;
-                    const _0x3f9caf = _0x6c3e75["data"];
-                    console["log"](_0x1be6d3(0x1ee), _0x3f9caf);
-                },
-                ![]
-            );
+    // SDK 초기화
+    const serviceKey = "847d6b0bbbc2dbfe6b7c0c1f82d8cd71"; //orginal
+    //const serviceKey = "9b6daa25fe1bfdc411ee3e7ddd88121d";  //it7
+    const redirectPath = "/front/views/callback/kakao.html";
+    const redirectUri = window.location.origin + (location.port ? ":" + location.port : "") + redirectPath;
+    const nonce = generateNonce(16); // 16자리 nonce 생성
+    
+    Kakao.init(serviceKey);
+    //console.log(Kakao.isInitialized()); // 이 값이 true여야 합니다.
+    Kakao.isInitialized();
+    
+    $("#kakao_login_btn").on("click", function () {
+        // const authUrl = Kakao.Auth.authorize({
+        //     redirectUri: redirectUri, // 인가 코드를 전달받을 서비스 서버의 URI
+        //     throughTalk: true, // 간편로그인 사용 여부 (기본값: true)
+        //     nonce: nonce, // ID 토큰 유효성 검증 시 대조할 임의의 문자열(정해진 형식 없음)
+        //     prompt: "select_account",
+        // });
+
+        // 인증 URL 생성
+        //const authUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${serviceKey}&redirect_uri=${encodeURIComponent(redirectUri)}&prompt="select_account"&nonce=${nonce}`;
+
+        const authUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${serviceKey}&redirect_uri=${encodeURIComponent(redirectUri)}&prompt=login&nonce=${nonce}`;
+//                                                                                   👆 "select_account" 대신 "login"으로 변경하고 따옴표 제거
+
+        // 팝업 창 열기
+        const popup = window.open(authUrl, "kakao_login", "width=500,height=600");
+
+        const test1 = popup;
+        // 팝업 창에서 인증 완료 후 부모 창으로 결과 전달
+        //window.addEventListener(
+        //    "message",
+        //    function (event) {
+        //        if (event.origin !== window.location.origin) return;
+
+        //        const userData = event.data;
+        //        console.log("Received user data from popup:", userData);
+        //        // 사용자 정보를 활용한 추가 작업 수행
+        //    },
+        //    false
+        //);
+      
+    });
+/*  추후 참고용
+    $("#kakao_login_btn").on("click", function () {
+        
+        Kakao.Auth.authorize({
+            redirectUri: redirectUri, // 인가 코드를 전달받을 서비스 서버의 URI
+            throughTalk: false, // 카카오톡으로 간편 로그인 사용 여부 (기본값: true)
+            nonce: nonce, // ID 토큰 유효성 검증 시 대조할 임의의 문자열
+            prompt: 'select_account', // 계정 선택 팝업 강제 (선택 사항)
+            //scope: 'profile_nickname, profile_image, account_email' // 필요한 동의 항목
+            scope: 'name, phone_number, account_email' // 필요한 동의 항목
+            // 그 외 추가 파라미터 (예: state, login_hint 등)
+        })
+        .then(function (response) {
+            console.log("Kakao authorize success:", response);
+            // 인가 코드 받기 성공 후 redirectUri로 이동
+            // redirectUri에서 인가 코드를 받아 토큰 요청
+        })
+        .catch(function (error) {
+            console.error("Kakao authorize error:", error);
+            // 에러 처리
         });
+
+    });
+*/
 }
+
+
+// 네이버 로그인 초기화 함수
 function naverLogin() {
-    const _0x1c0eb4 = a4_0x37c9,
-        _0x330ea9 = _0x1c0eb4(0x1c5),
-        _0xcd23c9 = _0x1c0eb4(0x1ea),
-        _0x38b00e = window[_0x1c0eb4(0x1c6)][_0x1c0eb4(0x1d3)] + (location[_0x1c0eb4(0x1e3)] ? ":" + location[_0x1c0eb4(0x1e3)] : "") + _0xcd23c9;
-    var _0x4c17e9 = new naver[_0x1c0eb4(0x1ec)]({ clientId: _0x330ea9, callbackUrl: _0x38b00e, isPopup: !![] });
-    _0x4c17e9[_0x1c0eb4(0x1dc)]();
+    const clientId = "51uqj3T1dAORiqMsBTFv";
+    const callbackPath = "/front/views/callback/naver.html";
+    const callbackUrl = window.location.origin + (location.port ? ":" + location.port : "") + callbackPath;
+
+    var naverLogin = new naver.LoginWithNaverId({
+        clientId: clientId,
+        callbackUrl: callbackUrl,
+        isPopup: true,
+        // loginButton: { color: "green", type: 3, height: 60 },
+    });
+
+    /* (4) 네아로 로그인 정보를 초기화하기 위하여 init을 호출 */
+    naverLogin.init();
+
+    /* (4-1) 임의의 링크를 설정해줄 필요가 있는 경우 */
+    // $("#naver_login_btn").attr("href", naverLogin.generateAuthorizeUrl());
 }
-async function loginHandleError(_0x48921f, _0x3ae3f6, _0x215f51) {
-    const _0x2bf48b = a4_0x37c9;
-    switch (_0x3ae3f6) {
-        case 0xc8:
-            return !![];
-        case 0x190:
-            sweetAlertMessage(_0x2bf48b(0x1ef), "", "w");
-            return ![];
-        case 0x191:
-            sweetAlertMessage(_0x48921f, "", "w");
-            return ![];
-        case 0x193:
-            sweetAlertMessage(_0x48921f + _0x2bf48b(0x1c7), "", "w");
-            return ![];
+
+// 로그인 오류 처리 함수
+async function loginHandleError(message, statusCode, data) {
+    switch (statusCode) {
+        case 200:
+            return true;
+        case 400:
+            sweetAlertMessage("아이디와 비밀번호를 입력하세요.", "", "w");
+            return false;
+        case 401:
+            sweetAlertMessage(message, "", "w");
+            return false;
+        case 403:
+            sweetAlertMessage(message + " 유저입니다.", "", "w");
+            return false;
         default:
-            sweetAlertMessage(_0x48921f, "", "e");
-            return ![];
+            sweetAlertMessage(message, "", "e");
+            return false;
     }
 }
-function a4_0x37c9(_0x516bad, _0x5a141f) {
-    const _0x37a74c = a4_0x37a7();
-    return (
-        (a4_0x37c9 = function (_0x37c95a, _0x2ef42c) {
-            _0x37c95a = _0x37c95a - 0x1c5;
-            let _0x11d6e4 = _0x37a74c[_0x37c95a];
-            return _0x11d6e4;
-        }),
-        a4_0x37c9(_0x516bad, _0x5a141f)
-    );
-}
-function a4_0x37a7() {
-    const _0x59450c = [
-        "566824FzkioS",
-        "168gYttDq",
-        "width=500,height=600",
-        "random",
-        "user_name",
-        "847d6b0bbbc2dbfe6b7c0c1f82d8cd71",
-        "&prompt=\x22select_account\x22&nonce=",
-        "origin",
-        "length",
-        "click",
-        "key",
-        "#login_id,\x20#login_pw",
-        "2458626VbNCwy",
-        "10huKEZF",
-        "addEventListener",
-        "floor",
-        "init",
-        "001",
-        "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=",
-        "3137236AFvuom",
-        "23150mColKP",
-        "14469471BFzHfP",
-        "user_token",
-        "port",
-        "1279834vNandY",
-        "user_no",
-        "POST",
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-        "Enter",
-        "kakao_login",
-        "/front/views/callback/naver.html",
-        "charAt",
-        "LoginWithNaverId",
-        "#login_btn",
-        "Received\x20user\x20data\x20from\x20popup:",
-        "아이디와\x20비밀번호를\x20입력하세요.",
-        "/front/back/00-include/login.php",
-        "val",
-        "3200197WVqgUd",
-        "002",
-        "51uqj3T1dAORiqMsBTFv",
-        "location",
-        "\x20유저입니다.",
-        "user_role",
-        "reload",
-        "1KOfDXF",
-        "&redirect_uri=",
-    ];
-    a4_0x37a7 = function () {
-        return _0x59450c;
-    };
-    return a4_0x37a7();
-}
-function generateNonce(_0xe70ac6) {
-    const _0x1fabbf = a4_0x37c9,
-        _0x306657 = _0x1fabbf(0x1e7);
-    let _0x494181 = "";
-    for (let _0x3e5b7a = 0x0; _0x3e5b7a < _0xe70ac6; _0x3e5b7a++) {
-        _0x494181 += _0x306657[_0x1fabbf(0x1eb)](Math[_0x1fabbf(0x1db)](Math[_0x1fabbf(0x1cf)]() * _0x306657[_0x1fabbf(0x1d4)]));
+
+/**
+ * 로그인을 위해 임의의 문자열 생성
+ * @param {*} length
+ * @returns
+ */
+function generateNonce(length) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let nonce = "";
+    for (let i = 0; i < length; i++) {
+        nonce += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    return _0x494181;
+    return nonce;
 }

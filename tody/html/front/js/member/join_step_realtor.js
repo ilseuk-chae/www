@@ -408,14 +408,14 @@ async function signUp() {
                 const alertResult = await loginHandleError(message, statusCode);
                 if (!alertResult) return;
 
-                const { userNo, userToken, agency_name, role } = responseData;
+                const { userNo, userToken, agency_name, role,userId } = responseData;
 
                 // 쿠키 설정
                 setCookie("user_no", userNo);
                 setCookie("user_token", userToken);
                 setCookie("user_name", encodeURIComponent(agency_name));
                 setCookie("user_role", encodeURIComponent(role));
-
+                setCookie("user_id", userId);
                 // 페이지 이동
                 location.href = "/index.html";
             });
