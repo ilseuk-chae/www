@@ -96,21 +96,23 @@ try {
         
         $newDurationMinutes = $oldDurationMinutes + $addedDurationThisCallMinutes; 
 
+        // 1. user_visits 테이블 업데이트
         $stmt_update_visit = mysqli_prepare($conn, "
             UPDATE user_visits
             SET
-                user_id = ?, 
-                user_type = ?,
+                user_id = CASE WHEN user_id IS NULL THEN ? ELSE user_id END, 
+                user_type = CASE WHEN user_id IS NOT NULL THEN 'registered' ELSE ? END,
                 ip_address = ?,
                 page_url = ?, 
                 last_activity_time = FROM_UNIXTIME(?),
                 duration_minutes = ?
             WHERE visit_id = ?
         ");
+        // 이 쿼리는 userId가 이미 NULL이 아니라면 user_id를 바꾸지 않습니다.
 
         if ($stmt_update_visit === false) { throw new Exception("Update visit prepare failed: " . mysqli_error($conn)); }
         // 바인딩 타입 다시 확인 (user_id s, user_type s, ip_address s, page_url s, currentTime i, newDurationMinutes i, currentVisitRecordId i)
-        mysqli_stmt_bind_param($stmt_update_visit, "sssssii", 
+        mysqli_stmt_bind_param($stmt_update_visit, "sssssii", //"sssssii", // 첫 's'는 user_id, 나머지는 user_type부터
             $userId, 
             $userType, 
             $ipAddress,

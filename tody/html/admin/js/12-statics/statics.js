@@ -361,7 +361,7 @@ $(function() {
             datalabels: {
                 color: 'black',
                 align: 'center',
-                anchor: 'end',
+                anchor: 'start',
                 offset: 5,
                 font: { size: 10 },
                 formatter: function(value, context) {
@@ -939,14 +939,14 @@ $(function() {
         // 단일 데이터셋 생성 (두 개의 막대가 다른 색상으로 표시되도록)
         const datasets = [
             {
-                label: '방문당 평균 체류 시간 (분)',
+                label: '사용자 유형별 사용자당 평균 체류 시간 (분)',
                 data: averageDataPoints,
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.7)', // 회원 색상
                     'rgba(255, 159, 64, 0.7)'  // 비회원 색상
                 ], 
                 borderColor: [
-                    'rgba(75, 192, 192, 1)',
+                    'rgb(168, 197, 197)',
                     'rgba(255, 159, 64, 1)'
                 ],
                 borderWidth: 1,
@@ -995,7 +995,7 @@ $(function() {
                     },
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: '방문당 평균 체류 시간 (분)' } // Y축 제목
+                        title: { display: true, text: '사용자당 평균 체류 시간 (분)' } // Y축 제목
                     }
                 }
             },
@@ -1005,7 +1005,7 @@ $(function() {
         // --- 테이블 렌더링 ---
         let tableHtml = '<table><thead><tr>'
             + '<th style="width: 50%;">사용자 유형</th>'
-            + '<th style="width: 50%;">방문당 평균 체류 시간 (분)</th>'
+            + '<th style="width: 50%;">사용자당 평균 체류 시간 (분)</th>'
             + '</tr></thead><tbody>';
 
         // labels 배열의 순서대로 테이블 행을 추가합니다.
