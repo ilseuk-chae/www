@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // estate_type이 선택된 경우에만 쿼리 실행
         // --- 캐시 미스: DB에서 데이터 가져와야 함 ---
         $union_queries = []; // 각 부동산 유형별 쿼리를 저장할 배열
-        $adminTableName = "AL_D002_{$sidoCd}";
+        $adminTableName = "AL_D002_{$sidoCd}";  //AL_D002_ 연속지적도
         $tableNames = [
             'apt' => "realPrice_apt_{$sidoCd}",
             'multi' => "realPrice_multiFamily_{$sidoCd}",

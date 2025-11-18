@@ -33,6 +33,7 @@ $(document).ready(async function () {
     initTooltip(); // 툴팁 초기화  
     updateMapContentIcons();
     handleMapContentClass();
+
 });
 
 // 초기화 함수 호출
@@ -449,6 +450,29 @@ function initAction() {
             removeExistingMemoOverlays();
         }
     });
+
+    // 지도 - 옵션 - 경계표시 //
+    boundaryFlag = localStorage.getItem("boundaryKey") ?? false; // default false
+    if(boundaryFlag == true || boundaryFlag == "true"){
+        $("#mapOptionBoundary").addClass("active");
+    } else {
+        $("#mapOptionBoundary").removeClass("active");
+    }
+
+    $("#mapOptionBoundary").click(function () {
+        
+        $(this).toggleClass("active"); // active 클래스를 토글합니다.
+
+        if ($(this).hasClass("active")) {
+            boundaryFlag= true;
+
+        } else {
+            clearAdministrativePolygons();
+            boundaryFlag= false;
+        }
+        localStorage.setItem("boundaryKey", boundaryFlag);
+    });
+
     // ⭐ opt_complet (거래완료 포함) 체크박스 변경 시 ⭐
     $("#opt_complet").on("change", function() {
         // 메모 목록을 다시 불러와 지도에 표시합니다.
@@ -1657,7 +1681,7 @@ async function estateList(searchNo = "", propertyNo = "") {
 
                     // 1-1. 클러스터러 생성 또는 가져오기
                     let clusterer = null;
-                    if (zoomLevel > 5) {
+                    if (zoomLevel > 6) {                        //zoomLevel 5->6 으로 수정 
                         clusterer = createClustererAll("all");
                     } else {
                         clusterer = createClusterer(data.estate_type, data.sale_type);
@@ -1839,7 +1863,7 @@ async function estateNewList(searchNo = "", propertyNo = "", agencyName ="") {
 
                     // 1-1. 클러스터러 생성 또는 가져오기
                     let clusterer = null;
-                    if (zoomLevel > 5) {
+                    if (zoomLevel > 6) {                        //zoomLevel 5->6 으로 수정
                         clusterer = createClustererAll("all");
                     } else {
                         clusterer = createClusterer(data.estate_type, data.sale_type);
@@ -2053,7 +2077,7 @@ async function estateNewList_toDispalyMapOnly(searchNo = "") {
                     const zoomLevel = map.getLevel();
                     // 1-1. 클러스터러 생성 또는 가져오기
                     let clusterer = null;
-                    if (zoomLevel > 5) {
+                    if (zoomLevel > 6) {                        //zoomLevel 5->6 으로 수정
                         clusterer = createClustererAll("all");
                     } else {
                         clusterer = createClusterer(data.estate_type, data.sale_type);

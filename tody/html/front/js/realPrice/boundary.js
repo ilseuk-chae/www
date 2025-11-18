@@ -192,25 +192,25 @@ function getGeoJsonFileName(pnu, zoomLevel) {
     
     if(flag){
         // 줌 레벨에 따른 데이터 파일 명 결정 (onedol님 제안 기준)
-        if (zoomLevel <= 5) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson)
+        if (zoomLevel <= 6) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson)  //zoomLevel 변경 5->6
             fileNamePrefix = "BJCD_";
             pnuPart = pnu.substring(0, 8) + '00';
             
-        } else if (zoomLevel >= 6 && zoomLevel <= 9) { // 줌 6~9: 시군구 (BJCD_xxxxx00000.geojson)
+        } else if (zoomLevel >= 7 && zoomLevel <= 9) { // 줌 7~9: 시군구 (BJCD_xxxxx00000.geojson) //zoomLevel 변경6~9 -> 7~9
             fileNamePrefix = "BJCD_";
             pnuPart = pnu.substring(0, 5) + '00000';
             
-        } else { // 줌 8이상: 시도 (BJCD_xx00000000.geojson)
+        } else { // 줌 10이상: 시도 (BJCD_xx00000000.geojson)
             fileNamePrefix = "BJCD_";
             pnuPart = pnu.substring(0, 2) + '00000000';
             
         }
     } else {
-        if (zoomLevel <= 5) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson)
+        if (zoomLevel <= 6) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson) //zoomLevel 변경 5->6 
             fileNamePrefix = "EMD_CD_";
             //pnuPart = pnu.substring(0, 8) + '00';
             pnuPart = pnu.substring(0, 8);
-        } else if (zoomLevel >= 6 && zoomLevel <= 9) { // 줌 6~9: 시군구 (BJCD_xxxxx00000.geojson)
+        } else if (zoomLevel >= 7 && zoomLevel <= 9) { // 줌 6~9: 시군구 (BJCD_xxxxx00000.geojson)  //zoomLevel 변경6~9 -> 7~9
             fileNamePrefix = "SIG_CD_";
             //pnuPart = pnu.substring(0, 5) + '00000';
             pnuPart = pnu.substring(0, 5);

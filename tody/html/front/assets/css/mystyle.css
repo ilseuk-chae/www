@@ -796,6 +796,7 @@
 }
 
 #mapOptionSearch.active,
+#mapOptionBoundary.active,
 #mapOptionMemoOpen2.active,
 #mapOptionTooltip.active {
   /*background-color: #ef8779; /* 활성화된 상태의 배경색 */
@@ -803,6 +804,8 @@
 }
 #mapOptionSearch.tooltip-target.active i,
 #mapOptionSearch.tooltip-target.active span,
+#mapOptionBoundary.tooltip-target.active i,
+#mapOptionBoundary.tooltip-target.active span,
 #mapOptionMemoOpen2.tooltip-target.active i,
 #mapOptionMemoOpen2.tooltip-target.active span,
 #mapOptionTooltip.tooltip-target.active i,

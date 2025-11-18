@@ -28,6 +28,7 @@ let hoverTimer = null;             // 마우스가 멈춰있는지 감지하는 
 let lastHoverLatLng = null;        // 마지막으로 마우스가 멈췄다고 감지된 LatLng
 const HOVER_DELAY_MS = 500;       // 마우스 멈춤 감지 시간 (1.초)
 let isHoverDrawingPending = false; // 현재 호버 폴리곤 그리기가 예약되었는지 여부
+let boundaryFlag= false; // 행정경계 표시 여부 플래그
 
 $(document).ready(function () {
     initProj4(); // proj4 초기화
@@ -159,8 +160,8 @@ function displayAddressInfo(result, status) {
  * 카카오맵 적용 함수
  */
 async function initializeMap() {
-    let zoomLevel = getCookie("curZoom") || 5;
-    if (zoomLevel > 5) zoomLevel = 5;
+    let zoomLevel = getCookie("curZoom") || 5;  //zoomLevel 변경 5->6
+    if (zoomLevel > 6) zoomLevel = 6;           //zoomLevel 변경 5->6
 
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -282,10 +283,11 @@ function handleMapEvents() {
         const level = map.getLevel();
 
         let buffer = 0;
-        if (level > 5) return;
+        if (level > 6) return;      //zoomLevel 변경 6 이상일 때는 실거래가 조회 안함 5->6
 
         // 줌 레벨에 따른 버퍼 설정
-        if (level == 5) buffer = 2500;
+        //if (level == 5) buffer = 2500;   
+        if (level == 5 || level == 6) buffer = 2500;    //zoomLevel 변경 5->6
         else if (level == 4) buffer = 1300;
         else if (level == 3) buffer = 700;
         else if (level == 2) buffer = 300;
@@ -344,7 +346,7 @@ function handleMapEvents() {
         }
         //for test
         const level = map.getLevel();
-        if (level < 6) {
+        if (level < 7) {                    //zoomLevel 변경 6->7
             // 건물 및 토지 정보를 동시에 가져오기
             handleMapClick(coords);
 
@@ -355,8 +357,9 @@ function handleMapEvents() {
             clickCoordTodisplayAddress(coords);
         }
         // 신규 추가 행정 경계 폴리곤 클릭 처리 함수 호출
-        
-        await handleMapClickForPolygon(map, clickLatLng);
+        if(boundaryFlag == true || boundaryFlag == "true"){
+            await handleMapClickForPolygon(map, clickLatLng);
+        }
     });
 
     // ⭐ 지도 마우스 이동(mousemove) 이벤트 리스너 등록
@@ -388,8 +391,9 @@ function handleMapEvents() {
                     // 기존 폴리곤을 지우고 새로운 폴리곤을 그리는 로직 호출
                     // (클릭 이벤트와 동일한 handleMapClickForPolygon 함수 재활용)
                     // (또는 호버 전용 함수를 만들어 현재HoverPolygons에만 영향을 주게 할 수 있습니다.)
-                    await handleMapClickForPolygon(map, currentLatLng); // ⭐ 중요: 기존 함수 재활용
-
+                    if(boundaryFlag == true || boundaryFlag == "true"){
+                        await handleMapClickForPolygon(map, currentLatLng); // ⭐ 중요: 기존 함수 재활용
+                    }
                     isHoverDrawingPending = false; // 그리기 완료 또는 에러 발생 후 pending 해제
                 }
                 hoverTimer = null; // 타이머 실행 후 초기화

@@ -30,11 +30,11 @@ function countEstateTypes(apiResponseObject) {
 }
 
 async function realPriceApt(sggCd) {
-    var bounds = map.getBounds();
-    var sw = bounds.getSouthWest(); // 남서쪽 좌표
-    var ne = bounds.getNorthEast(); // 북동쪽 좌표
-    var boxString = `BOX(${sw.getLng()},${sw.getLat()},${ne.getLng()},${ne.getLat()})`; // BOX 형식으로 변환
-    var bbox = `${sw.getLat()},${sw.getLng()},${ne.getLat()},${ne.getLng()},EPSG:4326`; // BOX 형식으로 변환
+    var bounds = map.getBounds();   //현재 지도 화면의 가시적인 사각 영역(Bounding Box) 객체를 반환합니다. 이 객체는 지도의 가장 남서쪽 지점과 가장 북동쪽 지점의 좌표 정보를 포함하고 있어요.
+    var sw = bounds.getSouthWest(); // 남서쪽 좌표 남서쪽(South-West) 끝 지점의 좌표 객체를 가져옵니다. 남서쪽은 위도(latitude)가 가장 낮고, 경도(longitude)가 가장 낮은 지점
+    var ne = bounds.getNorthEast(); // 북동쪽 좌표  북동쪽(North-East) 끝 지점의 좌표 객체를 가져옵니다. 북동쪽은 위도(latitude)가 가장 높고, 경도(longitude)가 가장 높은 지점
+    var boxString = `BOX(${sw.getLng()},${sw.getLat()},${ne.getLng()},${ne.getLat()})`; //BOX sw (남서쪽)와 ne (북동쪽) 좌표를 이용해서 SQL/GIS(Geographic Information System) 등에서 사용되는 BOX 형식의 문자열을 만듭
+    var bbox = `${sw.getLat()},${sw.getLng()},${ne.getLat()},${ne.getLng()},EPSG:4326`; // BBOX (Bounding Box) 형식의 문자열을 만듭
 
     var filterObj = collectMultiFilterParams(); // 필터
 
@@ -65,12 +65,12 @@ async function realPriceApt(sggCd) {
             
             // 클러스터러 생성 또는 인포윈도우 생성
             Object.values(responseData).forEach((data) => {
-                if (zoomLevel > 5) {
+                if (zoomLevel > 4) {    //zoomLevel 5->4
                     // 기존 클러스터러 생성 및 마커 추가 로직
                     let clusterer = createClustererAll("all"); // 클러스터러 생성
                     const marker = createClusteredMarker(data); // 마커 생성
                     clusterer.addMarker(marker); // 클러스터러에 마커 추가
-                } else if (zoomLevel == 5) {
+                } else if (zoomLevel == 4) {    ////zoomLevel 5->4
                     // 줌 레벨이 5 이하일 경우, 작은 원형 점으로 표시
                     const smallMarker = document.createElement("div");
                     //smallMarker.className = data.estate_type !== "land" ? "small-marker bg-main border-danger" : "small-marker bg-yellow1 border-yellow1";

@@ -1,5 +1,6 @@
 let activeBootstrapTooltips = new Map(); // Map<HTMLElement, bootstrap.Tooltip>
 let globalTooltipContents = {};   
+
 $(document).ready(async function () {
     initModal(); // 이지모달 초기화
     initAction(); // 액션 이벤트 초기화
@@ -519,6 +520,28 @@ function initAction() {
             // mapLandMoChk = 1;
         });
     }
+
+    // 지도 - 옵션 - 경계표시 //
+    boundaryFlag = localStorage.getItem("boundaryKey") ?? false; // default false
+    if(boundaryFlag == true || boundaryFlag == "true"){
+        $("#mapOptionBoundary").addClass("active");
+    } else {
+        $("#mapOptionBoundary").removeClass("active");
+    }
+
+    $("#mapOptionBoundary").click(function () {
+        
+        $(this).toggleClass("active"); // active 클래스를 토글합니다.
+
+        if ($(this).hasClass("active")) {
+            boundaryFlag= true;
+
+        } else {
+            clearAdministrativePolygons();
+            boundaryFlag= false;
+        }
+        localStorage.setItem("boundaryKey", boundaryFlag);
+    });
 
     // 지도 - 공유 //
     var mapShareChk = 0;

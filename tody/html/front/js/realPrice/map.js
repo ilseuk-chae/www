@@ -32,6 +32,7 @@ let isMapClickable = true; // 지도 클릭 가능 여부
 let textModuleControl = null; // 텍스트 모듈
 let realPriceOverlays = []; // 실거래가 오버래이 저장 배열
 const flag = false; // 경계용 플래그  true:EPSG:5179 경계용, false:EPSG:4326 
+let boundaryFlag= false; // 행정경계 표시 여부 플래그
 
 let hoverTimer = null;             // 마우스가 멈춰있는지 감지하는 타이머 ID
 let lastHoverLatLng = null;        // 마지막으로 마우스가 멈췄다고 감지된 LatLng
@@ -172,10 +173,11 @@ function handleMapEvents() {
         const level = map.getLevel();
 
         let buffer = 0;
-        if (level > 5) return;
+        if (level > 6) return;  // 5레벨 이하에서만 처리  //zoomLevel 변경 5->6
 
         // 줌 레벨에 따른 버퍼 설정
-        if (level == 5) buffer = 2500;
+        //if (level == 5) buffer = 2500;
+        if (level == 5 || level == 6) buffer = 2500;  //zoomLevel 변경
         else if (level == 4) buffer = 1300;
         else if (level == 3) buffer = 700;
         else if (level == 2) buffer = 300;
@@ -259,7 +261,7 @@ function handleMapEvents() {
         updateURL({ curLat: lat, curLng: lng }); // url 파라미터 및 쿠키 변경
 
         const level = map.getLevel();
-        if (level < 6) {
+        if (level < 7) {                    //zoomLevel 6->7
             // 건물 및 토지 정보를 동시에 가져오기
             handleMapClick(coords);
 
@@ -284,7 +286,9 @@ function handleMapEvents() {
 
         // 신규 추가 행정 경계 폴리곤 클릭 처리 함수 호출
         //console.log(`지도 클릭: 위도 ${clickLatLng.getLat()}, 경도 ${clickLatLng.getLng()}`);
-        await handleMapClickForPolygon(map, clickLatLng);
+        if(boundaryFlag == true || boundaryFlag == "true"){
+            await handleMapClickForPolygon(map, clickLatLng);
+        }
 
         // searchAddrFromCoords(mouseEvent.latLng, function (result, status) {
         //     let miniMapCoords = null;
@@ -333,8 +337,9 @@ function handleMapEvents() {
                     // 기존 폴리곤을 지우고 새로운 폴리곤을 그리는 로직 호출
                     // (클릭 이벤트와 동일한 handleMapClickForPolygon 함수 재활용)
                     // (또는 호버 전용 함수를 만들어 현재HoverPolygons에만 영향을 주게 할 수 있습니다.)
-                    await handleMapClickForPolygon(map, currentLatLng); // ⭐ 중요: 기존 함수 재활용
-
+                    if(boundaryFlag == true || boundaryFlag == "true"){
+                        await handleMapClickForPolygon(map, currentLatLng); // ⭐ 중요: 기존 함수 재활용
+                    }
                     isHoverDrawingPending = false; // 그리기 완료 또는 에러 발생 후 pending 해제
                 }
                 hoverTimer = null; // 타이머 실행 후 초기화
@@ -402,13 +407,13 @@ function fetchRealPriceAptBasedOnMapCenter() {
             // 레벨에 따라 sggCd 길이 조정 (기존 로직 유지)
             if (level <= 3) {
                 sggCd = result[0].code.substring(0, 10); // 10자리 (시군구+법정동 전체)
-            } else if (level === 4 || level === 5) { // 4-5레벨 시군구+법정동
+            } else if (level === 4 || level === 5 || level === 6) { // 4-5레벨 시군구+법정동 //zoomLevel 변경 4~5 ==> 4~6
                 sggCd = result[0].code.substring(0, 10);
-            } else if (level === 6) { // 6레벨 시군구
+            } else if (level === 7) { // 6레벨 시군구  ////zoomLevel 변경 6->7
                 sggCd = result[0].code.substring(0, 8); // 8자리 (시군구)
-            } else if (level > 6 && level < 9) { // 7-8레벨 광역 시도 (prefix 5자리)
+            } else if (level > 7 && level < 10) { // 7-8레벨 광역 시도 (prefix 5자리)  ////zoomLevel 변경 7-8 >8-9
                 sggCd = result[0].code.substring(0, 5);
-            } else if (level >= 9) { // 9레벨 이상 시도 (prefix 2자리)
+            } else if (level >= 10) { // 9레벨 이상 시도 (prefix 2자리) ////zoomLevel 변경 9=>10
                 sggCd = result[0].code.substring(0, 2);
             }
 
@@ -1324,8 +1329,8 @@ function clearAllPolygons() {
  * 카카오맵 적용 함수
  */
 async function initializeMap() {
-    let zoomLevel = getCookie("curZoom") || 5;
-    if (zoomLevel > 5) zoomLevel = 5;
+    let zoomLevel = getCookie("curZoom") || 6;  // //zoomLevel 변경 5->6기본 줌 레벨 설정
+    if (zoomLevel > 6) zoomLevel = 6;           // //zoomLevel 변경 5->6기본 줌 레벨 설정
 
     const urlParams = new URLSearchParams(window.location.search);
 
