@@ -403,11 +403,15 @@ function initAction() {
         }
         //estateNewList();
         fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기
+        //fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        //fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); //실거래가를 가져오기 - cash
     });
 
     //지도 - real estate info 선택 - 정보 타입
     $('#infoType').on('change', function() {
         fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기
+        //fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        //fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); //실거래가를 가져오기 - cash
     });
 
     // 지도 - 이력관리 //
@@ -789,18 +793,35 @@ function initHandleEvents() {
         landAnalysisTotal();
     });
 
+    bindNationalEnvRegionToggle('#chk1', 'nem_ecvam');
+    bindNationalEnvRegionToggle('#chkSlope', 'slope');
+    bindNationalEnvRegionToggle('#chkElevation', 'elevation');
+
     // 지역현황 - 생태자연도
     $("#chk2").change(function () {
-        if ($(this).is(":checked")) {
+        if (typeof map === 'undefined') {
+            return;
+        }
+
+        const isChecked = $(this).is(':checked');
+
+        if (isChecked) {
+            if (isAnyNationalEnvCheckboxChecked()) {
+                $('#chk1, #chkSlope, #chkElevation').prop('checked', false);
+                if (typeof removeNationalEnvWMSTileLayer === 'function') {
+                    removeNationalEnvWMSTileLayer();
+                }
+            }
+
             if (map.getLevel() > 9) {
                 map.setLevel(9);
             }
-            map.setMaxLevel(9);
             getEcologyWMSTileLayer(); // 체크된 경우 타일 레이어 추가
         } else {
-            map.setMaxLevel(13);
             removeEcologyWMSTileLayer(); // 체크 해제된 경우 타일 레이어 제거
         }
+
+        updateRegionStatusZoomLimit();
     });
 
     // 도구사용 - 지도출력
@@ -2130,4 +2151,80 @@ function handleMapContentClass() {
         }
     }
     updateMapContentIcons();
+}
+
+function updateRegionStatusZoomLimit() {
+    if (typeof map === 'undefined') {
+        return;
+    }
+
+    const hasOverlay =
+        $('#chk1').is(':checked') ||
+        $('#chk2').is(':checked') ||
+        $('#chkSlope').is(':checked') ||
+        $('#chkElevation').is(':checked');
+    map.setMaxLevel(hasOverlay ? 9 : 13);
+}
+
+function bindNationalEnvRegionToggle(selector, layerId) {
+    $(selector).change(function () {
+        if (typeof map === 'undefined') {
+            return;
+        }
+
+        const isChecked = $(this).is(':checked');
+
+        if (isChecked) {
+            if ($('#chk2').is(':checked')) {
+                $('#chk2').prop('checked', false);
+                removeEcologyWMSTileLayer();
+            }
+            if (typeof setNationalEnvLayer === 'function') {
+                setNationalEnvLayer(layerId);
+            }
+            if (map.getLevel() > 9) {
+                map.setLevel(9);
+            }
+            if (typeof addNationalEnvWMSTileLayer === 'function' && typeof isNationalEnvLayerActive === 'function') {
+                if (!isNationalEnvLayerActive()) {
+                    addNationalEnvWMSTileLayer();
+                }
+            }
+        } else if (!isAnyNationalEnvCheckboxChecked()) {
+            if (typeof removeNationalEnvWMSTileLayer === 'function') {
+                removeNationalEnvWMSTileLayer();
+            }
+        } else {
+            const nextLayer = resolveCheckedNationalEnvLayerId();
+            if (nextLayer) {
+                if (typeof setNationalEnvLayer === 'function') {
+                    setNationalEnvLayer(nextLayer);
+                }
+                if (typeof addNationalEnvWMSTileLayer === 'function' && typeof isNationalEnvLayerActive === 'function') {
+                    if (!isNationalEnvLayerActive()) {
+                        addNationalEnvWMSTileLayer();
+                    }
+                }
+            }
+        }
+
+        updateRegionStatusZoomLimit();
+    });
+}
+
+function isAnyNationalEnvCheckboxChecked() {
+    return $('#chk1').is(':checked') || $('#chkSlope').is(':checked') || $('#chkElevation').is(':checked');
+}
+
+function resolveCheckedNationalEnvLayerId() {
+    if ($('#chk1').is(':checked')) {
+        return 'nem_ecvam';
+    }
+    if ($('#chkSlope').is(':checked')) {
+        return 'slope';
+    }
+    if ($('#chkElevation').is(':checked')) {
+        return 'elevation';
+    }
+    return null;
 }

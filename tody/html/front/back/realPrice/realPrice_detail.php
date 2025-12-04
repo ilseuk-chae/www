@@ -32,6 +32,9 @@ foreach ($validations as $validation) {
     }
 }
 
+// 시도 코드 추출
+$sidoCd = substr($pnu, 0, 2);
+
 // Redis 키 설정
 $cacheKey = "realPrice:{$type}:{$pnu}";
 
@@ -42,30 +45,60 @@ if ($redis->exists($cacheKey)) {
     exit;
 }
 
+// 테이블명을 시도 코드에 맞춰 동적으로 변경
+$tableNames = [
+    'apt' => "realPrice_apt_{$sidoCd}",
+    'land' => "realPrice_land_{$sidoCd}",
+    'officetel' => "realPrice_officetel_{$sidoCd}",
+    'multi' => "realPrice_multiFamily_{$sidoCd}"
+];
+
+// SQL 구문 설정
+if (!isset($tableNames[$type])) {
+    responseApi(400, "잘못된 유형입니다.", null);
+    exit;
+}
+
+$table = $tableNames[$type];
 
 // 테이블과 SQL 구문 설정
 switch ($type) {
     case 'apt':
-        $table = 'realPrice_apt_41';
-        $sql = "SELECT rap.aptDong, rap.floor, rap.excluUseAr, '매매' AS saleType, 'apt' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+        $sql = "SELECT rap.aptDong, rap.floor, rap.excluUseAr, '매매' AS saleType, 'apt' AS estateType, 
+                       rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                       rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
         break;
     case 'land':
-        $table = 'realPrice_land_41';        
-        $sql = "SELECT rap.dealArea, '매매' AS saleType, 'land' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+        $sql = "SELECT rap.dealArea, '매매' AS saleType, 'land' AS estateType, 
+                       rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                       rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
         break;
     case 'officetel':
-        $table = 'realPrice_officetel_41';
-        $sql = "SELECT rap.floor, rap.excluUseAr, '매매' AS saleType, 'officetel' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+        $sql = "SELECT rap.floor, rap.excluUseAr, '매매' AS saleType, 'officetel' AS estateType, 
+                       rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                       rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
         break;
     case 'multi':
-        $table = 'realPrice_multiFamily_41';
-        $sql = "SELECT rap.floor, rap.excluUseAr, rap.houseType, '매매' AS saleType, 'multi' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
-        break;
-    default:
+        $sql = "SELECT rap.floor, rap.excluUseAr, rap.houseType, '매매' AS saleType, 'multi' AS estateType, 
+                       rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                       rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
         break;
 }
 
 
+// 실행 및 결과 반환
 try {
     // 결과를 배열로 변환합니다.
     $response_data = array();
@@ -87,11 +120,9 @@ try {
 
     // 모든 작업 성공 시 커밋
     responseApi(200, 'SUCCESS', $response_data);
-
 } catch (\Throwable $e) {
     // 오류 발생 시 롤백
     responseApi($e->getCode(), $e->getMessage(), null);
-
 } finally {
     // 연결 종료
     if (isset($stmt))
@@ -102,4 +133,3 @@ try {
         mysqli_stmt_close($stmt3);
     mysqli_close($conn);
 }
-

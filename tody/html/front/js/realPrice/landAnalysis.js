@@ -111,10 +111,52 @@ $(document).ready(async function () {
                 // 모든 bbox를 합친 결과를 사용하여 ecologyMap 호출
                 ecologyMap(landWFSArrays[0].pnu, combinedBbox, landGeoJsonArrays);
             }
+        } else if (analysisVal === 'slope' || analysisVal === 'elevation') {
+            if (Array.isArray(landWFSArrays) && landWFSArrays.length > 0) {
+                let combinedBbox = [...landWFSArrays[0].bbox];
+                const landGeoJsonArrays = [];
+                const pnuList = [];
+
+                landWFSArrays.forEach((element) => {
+                    const [minX, minY, maxX, maxY] = element.bbox;
+
+                    combinedBbox[0] = Math.min(combinedBbox[0], minX);
+                    combinedBbox[1] = Math.min(combinedBbox[1], minY);
+                    combinedBbox[2] = Math.max(combinedBbox[2], maxX);
+                    combinedBbox[3] = Math.max(combinedBbox[3], maxY);
+
+                    landGeoJsonArrays.push(element.landGeoJson);
+                    pnuList.push(element.pnu);
+                });
+
+                if (analysisVal === 'slope') {
+                    slopeMap(pnuList, combinedBbox, landGeoJsonArrays, { forceReset: true });
+                } else {
+                    elevationMap(pnuList, combinedBbox, landGeoJsonArrays, { forceReset: true });
+                }
+            }
         }
         // 분석주제도 - 국토환경성평가
         else if (analysisVal == "nationalEnv") {
-            nationalEnvMap(pnu);
+            if (Array.isArray(landWFSArrays) && landWFSArrays.length > 0) {
+                let combinedBbox = [...landWFSArrays[0].bbox];
+                const landGeoJsonArrays = [];
+                const pnuList = [];
+
+                landWFSArrays.forEach((element) => {
+                    const [minX, minY, maxX, maxY] = element.bbox;
+
+                    combinedBbox[0] = Math.min(combinedBbox[0], minX);
+                    combinedBbox[1] = Math.min(combinedBbox[1], minY);
+                    combinedBbox[2] = Math.max(combinedBbox[2], maxX);
+                    combinedBbox[3] = Math.max(combinedBbox[3], maxY);
+
+                    landGeoJsonArrays.push(element.landGeoJson);
+                    pnuList.push(element.pnu);
+                });
+
+                nationalEnvMap(pnuList, combinedBbox, landGeoJsonArrays, { forceReset: true });
+            }
         }
         // 분석주제도 - 합필분석
         else if (analysisVal == "initial") {

@@ -1,6 +1,73 @@
 <?php
-include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/validation.php');
-header("Content-Type: application/json; charset=utf-8");
+// /www/tody/html/front/back/00-include/common.php
+
+// ----------------------------------------------------
+// 1. CLI 환경에서도 $_SERVER['DOCUMENT_ROOT'] 사용을 위한 안전 장치
+// ----------------------------------------------------
+// generate_emd_caches.php와 같은 CLI 스크립트에서 이 common.php를 include 할 경우,
+// $_SERVER['DOCUMENT_ROOT']가 설정되지 않아 require_once에서 오류가 발생할 수 있습니다.
+// 이 로직은 CLI 환경에서만 수동으로 DOCUMENT_ROOT를 설정하여 문제를 방지합니다.
+if (php_sapi_name() == 'cli' && !isset($_SERVER['DOCUMENT_ROOT'])) {
+    // onedol님의 실제 웹 서버 DOCUMENT_ROOT 경로에 맞게 반드시 수정하세요!
+    $_SERVER['DOCUMENT_ROOT'] = '/www/tody/html'; 
+}
+
+// ----------------------------------------------------
+// 2. 다른 공통 라이브러리/파일 포함
+// ----------------------------------------------------
+// validation.php가 common.php와 같은 폴더에 있다고 가정
+// 이 경로가 이전 에러를 발생시킨 부분이므로, validation.php 파일의 실제 경로와 존재 여부 확인 필수!
+require_once __DIR__ . '/validation.php'; 
+// 만약 validation.php가 document_root 기준으로 다른 경로에 있다면:
+// require_once $_SERVER['DOCUMENT_ROOT'] . '/경로/validation.php';
+// 와 같이 명확하게 지정해야 합니다. 현재 /front/back/00-include/common.php 안에 있으므로,
+// __DIR__ . '/validation.php'가 가장 적절하고 일반적인 방법입니다.
+
+// ----------------------------------------------------
+// 3. HTTP 웹 요청 환경에 특화된 로직 (CLI에서는 건너김)
+// ----------------------------------------------------
+if (php_sapi_name() !== 'cli') {
+    // 웹 환경 전용 헤더 및 세션 설정
+    // 기본 Content-Type은 text/html로 설정 (다른 응답이 필요한 경우 오버라이드 가능)
+    header("Content-Type: text/html; charset=utf-8"); // 기본 HTML 응답을 가정
+
+    // CORS (Cross-Origin Resource Sharing) 설정
+    header("Access-Control-Allow-Origin: *"); // 개발 단계에서는 * 허용, 운영에서는 특정 도메인으로 제한 권장
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // 허용할 HTTP 메서드
+    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With"); // 허용할 헤더
+
+    // 옵션(OPTIONS) 요청 처리 (CORS Preflight)
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit();
+    }
+
+    // HTTP_REFERER 검사 및 접근 제어
+    // $jsonErrorResponse 람다 함수는 이제 common.php 외부에 정의하거나,
+    // 이곳에 직접 정의해서 웹 환경 오류 처리 로직을 구현합니다.
+    $handleWebAccessError = function($message, $statusCode = 403) {
+        http_response_code($statusCode);
+        echo json_encode(['success' => false, 'message' => $message], JSON_UNESCAPED_UNICODE);
+        exit();
+    };
+
+    if (!isset($_SERVER['HTTP_REFERER'])) {
+        // HTTP_REFERER가 없는 경우는 직접 접근(예: URL 입력)이므로 막을지 여부 판단
+        // $handleWebAccessError('Access denied: No referrer', 403); 
+        // CLI 환경이 아니라면, HTTP_REFERER가 없어도 허용하는 경우도 많습니다.
+    } else {
+        $referrer = $_SERVER['HTTP_REFERER'];
+        $referrer_host = parse_url($referrer, PHP_URL_HOST);
+        if ($referrer_host === null) {
+            $handleWebAccessError('Access denied: Invalid referrer host', 403);
+        }
+        $allowed_domains = ['tody.co.kr']; // 허용할 도메인 목록
+        if (!in_array($referrer_host, $allowed_domains)) {
+            $handleWebAccessError('Access denied: Referrer not allowed', 403);
+        }
+    }
+}
+
 /**
  * Http Response 정보를 입력받아, 형태를 정의하고 반환하는 함수
  * 버전 : v0.1

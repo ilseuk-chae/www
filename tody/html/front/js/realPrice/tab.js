@@ -210,8 +210,12 @@ function initTabEvents() {
 
         if (analysisVal == "ecology") {
             ecologyMap(lastElement.pnu, lastElement.bbox, lastElement.landGeoJson);
-        } else if (analysisVal == "nationalEnv") {
-            nationalEnvMap(pnu);
+        } else if (analysisVal == 'slope') {
+            slopeMap(lastElement.pnu, lastElement.bbox, lastElement.landGeoJson);
+        } else if (analysisVal == 'elevation') {
+            elevationMap(lastElement.pnu, lastElement.bbox, lastElement.landGeoJson);
+        } else if (analysisVal == 'nationalEnv') {
+            nationalEnvMap(lastElement.pnu, lastElement.bbox, lastElement.landGeoJson);
         }
         // 분석주제도 - 합필분석
         else if (analysisVal == "initial") {
@@ -265,6 +269,9 @@ async function BuildingDetail(pnu) {
     const responseData = await callApiAbort(`/front/back/realPrice/buiding_register_title_info.php`, "POST", dataObj, "BuildingDetail");
 
     // ===>> 여기에서 responseData가 유효한지 먼저 확인합니다. <<===
+    const buildingButton = $('.tab-btn[data-target="mc-building"]'); // 건물 탭
+    const buildingContent = $(".mc-tab-content .mc-building"); // 건물 컨텐츠
+
     if (!responseData) {
         console.warn("BuildingDetail: API 응답 데이터가 없습니다.");
         buildingButton.hide();
@@ -273,9 +280,7 @@ async function BuildingDetail(pnu) {
         createBuildingButtons(globalBrTitleInfo); // 빈 버튼 목록 생성 또는 비움
         return; // 함수 종료
     }
-    const buildingButton = $('.tab-btn[data-target="mc-building"]'); // 건물 탭
-    const buildingContent = $(".mc-tab-content .mc-building"); // 건물 컨텐츠
-
+    
     const brTitleInfo = responseData.brTitleInfo;
     const brRecapTitleInfo = responseData.brRecapTitleInfo; // 이 부분도 사용 가능성이 있어 보입니다.
 
@@ -758,7 +763,7 @@ function formatDate(dateString) {
  * @returns
  */
 async function searchArroundPlaces(coords) {
-    return;
+    
     // 합필분석 모드에서는 중단
     if (isMultiSelectMode) return;
 

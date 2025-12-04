@@ -3,6 +3,10 @@
 header("Access-Control-Allow-Headers: X-Requested-With, X-Prototype-Version");
 header("Content-Type:text/html;charset=utf-8");
 
+require_once $_SERVER['DOCUMENT_ROOT'] . "/vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
+$dotenv->load();
+
 // 허용된 도메인 목록을 설정
 $allowed_domains = ['tody.co.kr'];
 
@@ -25,10 +29,11 @@ if (!in_array($referrer_host, $allowed_domains)) {
     die('Access denied: Invalid referrer');
 }
 
-$servername = 'localhost';
-$username = 'root';
-$password = 'dkfvkdhkdhaprk!123';
-$dbname = 'tody';
+// DB 설정
+$servername = $_ENV['mariadb_host'];
+$username = $_ENV['mariadb_user'];
+$password = $_ENV['mariadb_password'];
+$dbname = $_ENV['mariadb_database'];
 $conn = mysqli_connect($servername, $username, $password, $dbname);
 
 mysqli_query($conn, "set session character_set_connection=utf8;");

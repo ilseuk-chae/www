@@ -5,8 +5,14 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="title" content="토디-실거래가" />
-        <meta name="description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
-        <meta name="keywords" content="토디,토디부동산,토디플랫폼,tody,tody부동산,tody플랫폼,부동산정보,부동산, 부동산앱, 부동산어플, 상가,건물, 빌딩, 공장, 창고, 토지, 매물,아파트, 주상복합, 오피스텔, 단독, 다가구, 다세대, 빌라,전세, 월세, 매매, 전월세, 임대, 실거래가, 부동산중개, 공인중개사" />
+        <meta
+            name="description"
+            content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원"
+        />
+        <meta
+            name="keywords"
+            content="토디,토디부동산,토디플랫폼,tody,tody부동산,tody플랫폼,부동산정보,부동산, 부동산앱, 부동산어플, 상가,건물, 빌딩, 공장, 창고, 토지, 매물,아파트, 주상복합, 오피스텔, 단독, 다가구, 다세대, 빌라,전세, 월세, 매매, 전월세, 임대, 실거래가, 부동산중개, 공인중개사"
+        />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="http://" />
         <meta property="og:type" content="article" />
@@ -14,7 +20,10 @@
         <meta property="og:url" content="http://" />
         <meta property="og:title" content="토디-실거래가" />
         <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
-        <meta property="og:description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
+        <meta
+            property="og:description"
+            content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원"
+        />
         <title>토디-실거래가</title>
         <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
 
@@ -45,8 +54,9 @@
         <!-- menu Css -->
         <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
         <!-- jQuery UI 기본 테마 CSS -->
-        <link href="/assets/css/jquery-ui.css" rel="stylesheet" > <!-- 다운로드한 파일 경로 -->
-        
+        <link href="/assets/css/jquery-ui.css" rel="stylesheet" />
+        <!-- 다운로드한 파일 경로 -->
+
         <style>
             .wms-overlay {
                 position: absolute;
@@ -59,7 +69,8 @@
             }
         </style>
     </head>
-    <body data-screen-type="realprice"> <!-- 현재 화면 종류를 body 태그에 설정 -->
+    <body data-screen-type="realprice">
+        <!-- 현재 화면 종류를 body 태그에 설정 -->
         <div class="wrap">
             <!-- 전체모션 -->
             <div class="visual-bg">
@@ -77,17 +88,29 @@
                 <div class="mobile-header">
                     <dl>
                         <dt>
-                            <a href="/index.html"><img src="/front/assets/image/logo.svg" height="20" alt="" title="" /></a>
+                            <a href="/index.html"
+                                ><img src="/front/assets/image/logo.svg" height="20" alt="" title=""
+                            /></a>
                         </dt>
                         <dd>
-                            <a href="javascript:void(0);" id="mobileSearchOpen"><i class="fa-light fa-magnifying-glass"></i></a>
+                            <a href="javascript:void(0);" id="mobileSearchOpen"
+                                ><i class="fa-light fa-magnifying-glass"></i
+                            ></a>
                             <a href="javascript:void(0);" id="mobileMenuInfo"><i class="fa-light fa-bars"></i></a>
 
                             <!-- 검색영역 -->
                             <div class="mh-search">
                                 <button id="mobileSearchClose"><i class="fa-regular fa-xmark"></i></button>
-                                <input type="text" id="search_input_mobile" name="" placeholder="검색하세요" autocomplete="off" />
-                                <button type="button" id="search_btn_mobile"><i class="fa-regular fa-magnifying-glass"></i></button>
+                                <input
+                                    type="text"
+                                    id="search_input_mobile"
+                                    name=""
+                                    placeholder="검색하세요"
+                                    autocomplete="off"
+                                />
+                                <button type="button" id="search_btn_mobile">
+                                    <i class="fa-regular fa-magnifying-glass"></i>
+                                </button>
 
                                 <div id="search_result_box_mobile" class="mhs-box">
                                     <ul id="placesListMobile"></ul>
@@ -124,7 +147,9 @@
                             <div>금융지원</div>
                         </li>
                         <li onclick="location.href='/front/views/support/partnership_proposal_step01.html';">
-                            <p><img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="제휴및제안" /></p>
+                            <p>
+                                <img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="제휴및제안" />
+                            </p>
                             <div>제휴및제안</div>
                         </li>
                     </ul>
@@ -147,27 +172,43 @@
                     </div>
                     <div class="mmi-menu">
                         <a href="/front/views/realPrice/realPrice.html">
-                            <span><img src="/front/assets/image/footer_menu01.svg" alt="실거래가" title="" /> 실거래가</span>
+                            <span
+                                ><img src="/front/assets/image/footer_menu01.svg" alt="실거래가" title="" />
+                                실거래가</span
+                            >
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/sell/sell.html">
-                            <span><img src="/front/assets/image/footer_menu02.svg" alt="매물정보" title="" /> 매물정보</span>
+                            <span
+                                ><img src="/front/assets/image/footer_menu02.svg" alt="매물정보" title="" />
+                                매물정보</span
+                            >
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/find/find_list.html">
-                            <span><img src="/front/assets/image/footer_menu03.svg" alt="삽니다" title="" /> 삽니다</span>
+                            <span
+                                ><img src="/front/assets/image/footer_menu03.svg" alt="삽니다" title="" /> 삽니다</span
+                            >
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/put/put_list.html">
-                            <span><img src="/front/assets/image/footer_menu04.svg" alt="팝니다" title="" /> 팝니다</span>
+                            <span
+                                ><img src="/front/assets/image/footer_menu04.svg" alt="팝니다" title="" /> 팝니다</span
+                            >
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/finance/finance.html">
-                            <span><img src="/front/assets/image/footer_menu05.svg" alt="금융지원" title="" /> 금융지원</span>
+                            <span
+                                ><img src="/front/assets/image/footer_menu05.svg" alt="금융지원" title="" />
+                                금융지원</span
+                            >
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                         <a href="/front/views/support/partnership_proposal_step01.html">
-                            <span><img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="" /> 제휴및제안</span>
+                            <span
+                                ><img src="/front/assets/image/footer_menu06.svg" alt="제휴및제안" title="" />
+                                제휴및제안</span
+                            >
                             <em><i class="fa-light fa-angle-right"></i></em>
                         </a>
                     </div>
@@ -208,11 +249,41 @@
 
                     <!-- 우측 상단 - 지도 선택 -->
                     <div class="map-select-group">
-                        <button id="generalMode" type="button" class="tooltip-target active" onclick="changeBaseMapType('roadmap', map)">일반</button>
-                        <button id="satellitelMode" type="button"class="tooltip-target" onclick="changeBaseMapType('skyview', map)">위성</button>
-                        <button id="hybridMode" type="button" class="tooltip-target" onclick="changeBaseMapType('hybrid', map)">일반+위성</button>
-                        <button id="cadastralMap" type="button" class="tooltip-target" onclick="setOverlayMapTypeId('use_district', map)">지적편집도</button>
-                        <button type="button" id="roadviewControl" class="tooltip-target" onclick="setRoadviewRoad()">로드뷰</button>
+                        <button
+                            id="generalMode"
+                            type="button"
+                            class="tooltip-target active"
+                            onclick="changeBaseMapType('roadmap', map)"
+                        >
+                            일반
+                        </button>
+                        <button
+                            id="satellitelMode"
+                            type="button"
+                            class="tooltip-target"
+                            onclick="changeBaseMapType('skyview', map)"
+                        >
+                            위성
+                        </button>
+                        <button
+                            id="hybridMode"
+                            type="button"
+                            class="tooltip-target"
+                            onclick="changeBaseMapType('hybrid', map)"
+                        >
+                            일반+위성
+                        </button>
+                        <button
+                            id="cadastralMap"
+                            type="button"
+                            class="tooltip-target"
+                            onclick="setOverlayMapTypeId('use_district', map)"
+                        >
+                            지적편집도
+                        </button>
+                        <button type="button" id="roadviewControl" class="tooltip-target" onclick="setRoadviewRoad()">
+                            로드뷰
+                        </button>
                     </div>
 
                     <!-- 좌측 상단 - 이력 옆 매물유형  -->
@@ -231,16 +302,20 @@
                     </div>
                     <!-- 좌측 상단 - 이력 아래 마커표시 정보  -->
                     <div id="realmapEstateInfo" class="realmap-estate-info tooltip-target active">
-                        <ul class="text-center bg-white border border-yellow1 overflow-hidden" style="min-width:60px; border-radius:10px;">
-                            <li class="up bg-white border-bottom-yellow1 " style="line-height: 13x;">
+                        <ul
+                            class="text-center bg-white border border-yellow1 overflow-hidden"
+                            style="min-width: 60px; border-radius: 10px"
+                        >
+                            <li class="up bg-white border-bottom-yellow1" style="line-height: 13x">
                                 <p class="font12">거래유형</p>
                             </li>
-                            <li class="up bg-white ">
-                                <p class="font12 " style="line-height: 13px;">실거래가</p>
+                            <li class="up bg-white">
+                                <p class="font12" style="line-height: 13px">실거래가</p>
                             </li>
                             <li class="bg-yellow1 text-white">
                                 <div>
-                                    <select id="infoType"  class="font12 my-select-box"> <!-- select-box small w100p -->
+                                    <select id="infoType" class="font12 my-select-box">
+                                        <!-- select-box small w100p -->
                                         <option value="거래면적">거래면적</option>
                                         <option value="거래년도">거래년도</option>
                                         <option value="거래단가">거래단가</option>
@@ -255,11 +330,11 @@
 
                     <!-- 우측 옵션 -->
                     <div class="map-option">
-                        <button id="mapOptionTooltip"  class="tooltip-target">
-                            <i class="fa-sharp fa-light fa-hire-a-helper "></i>
+                        <button id="mapOptionTooltip" class="tooltip-target">
+                            <i class="fa-sharp fa-light fa-hire-a-helper"></i>
                             <span>도움<br />툴팁</span>
                         </button>
-                        <button id="mapOptionAreaOpen"  class="tooltip-target">
+                        <button id="mapOptionAreaOpen" class="tooltip-target">
                             <i class="fa-sharp fa-light fa-chart-area"></i>
                             <span>지역<br />현황</span>
                         </button>
@@ -278,22 +353,26 @@
                                         <option value="">----</option>
                                     </select>
                                 </div> -->
-                                <!-- <p class="check-box-red-s">
+                                <p class="check-box-red-s">
                                     <input type="checkbox" name="opt" id="chk1" />
                                     <label for="chk1">국토환경성평가</label>
-                                </p> -->
+                                </p>
+                                <p class="check-box-red-s">
+                                    <input type="checkbox" name="opt" id="chkSlope" />
+                                    <label for="chkSlope">경사도</label>
+                                </p>
+                                <p class="check-box-red-s">
+                                    <input type="checkbox" name="opt" id="chkElevation" />
+                                    <label for="chkElevation">표고도</label>
+                                </p>
                                 <p class="check-box-red-s">
                                     <input type="checkbox" name="opt" id="chk2" />
                                     <label for="chk2">생태자연도</label>
                                 </p>
-                                <!-- <p class="check-box-red-s">
-                                    <input type="checkbox" name="opt" id="chk3" />
-                                    <label for="chk3">노후도</label>
-                                </p> -->
                             </div>
                         </div>
 
-                        <button id="mapOptionToolOpen"  class="tooltip-target">
+                        <button id="mapOptionToolOpen" class="tooltip-target">
                             <i class="fa-sharp fa-light fa-pencil"></i>
                             <span>도구<br />사용</span>
                         </button>
@@ -305,7 +384,9 @@
                                 </dd>
                             </dl>
                             <div>
-                                <button id="mapOptionToolOptionOpen"><i class="fa-light fa-ruler"></i> 거리/면적</button>
+                                <button id="mapOptionToolOptionOpen">
+                                    <i class="fa-light fa-ruler"></i> 거리/면적
+                                </button>
                                 <button id="draw_tool_btn"><i class="fa-light fa-pen-nib"></i> 사용자그리기</button>
                                 <button id="print_map_btn"><i class="fa-light fa-print"></i> 지도출력</button>
                                 <button id="save_img_btn"><i class="fa-light fa-floppy-disk"></i> 이미지저장</button>
@@ -313,10 +394,18 @@
                         </div>
                         <div class="mo-tool-option">
                             <div>
-                                <button type="button" onclick="cancelDrawingMode(this, 'line');"><i class="fa-sharp fa-light fa-ruler-combined"></i></button>
-                                <button type="button" onclick="cancelDrawingMode(this, 'polygon')"><i class="fa-sharp fa-light fa-draw-square"></i></button>
-                                <button type="button" onclick="cancelDrawingMode(this, 'circle')"><i class="fa-sharp fa-light fa-crosshairs"></i></button>
-                                <button type="button" onclick="resetDrawing()"><i class="fa-regular fa-light fa-trash-can"></i></button>
+                                <button type="button" onclick="cancelDrawingMode(this, 'line');">
+                                    <i class="fa-sharp fa-light fa-ruler-combined"></i>
+                                </button>
+                                <button type="button" onclick="cancelDrawingMode(this, 'polygon')">
+                                    <i class="fa-sharp fa-light fa-draw-square"></i>
+                                </button>
+                                <button type="button" onclick="cancelDrawingMode(this, 'circle')">
+                                    <i class="fa-sharp fa-light fa-crosshairs"></i>
+                                </button>
+                                <button type="button" onclick="resetDrawing()">
+                                    <i class="fa-regular fa-light fa-trash-can"></i>
+                                </button>
                                 <button id="mapOptionToolOptionClose"><i class="fa-light fa-xmark"></i></button>
                             </div>
                             <p class="pt-2 color-main font12">
@@ -332,7 +421,7 @@
                             <button id="mapOptionToolDrawOptionClose"><i class="fa-light fa-xmark"></i></button>
                         </div> -->
 
-                        <button id="mapOptionLandOpen"  class="tooltip-target">
+                        <button id="mapOptionLandOpen" class="tooltip-target">
                             <i class="fa-light fa-layer-plus"></i>
                             <span>합필<br />분석</span>
                         </button>
@@ -366,7 +455,9 @@
 
                     <!-- 합필분석 -->
                     <div class="map-land">
-                        <div class="ml-mo-open-close" id="mapLandMoOpenClose"><i class="fa-regular fa-chevron-up"></i></div>
+                        <div class="ml-mo-open-close" id="mapLandMoOpenClose">
+                            <i class="fa-regular fa-chevron-up"></i>
+                        </div>
                         <!-- <div class="ml-open-close" id="mapLandOpenClose"><i class="fa-solid fa-chevron-left"></i></div> -->
 
                         <dl class="ml-title">
@@ -380,8 +471,18 @@
                             <dl>
                                 <dt>전체 <span id="land_analysis_total_cnt">0</span>개 필지</dt>
                                 <dd>
-                                    <button id="anaysis_toggle_unit_btn"><span id="anaysis_unit_pyeong">평</span> <i class="fa-light fa-arrows-repeat"></i> <span id="anaysis_unit_m2" class="active">㎡</span></button>
-                                    <button type="button" id="land_analysis_reset" class="btn-default-s bg-blue1 text-white">초기화</button>
+                                    <button id="anaysis_toggle_unit_btn">
+                                        <span id="anaysis_unit_pyeong">평</span>
+                                        <i class="fa-light fa-arrows-repeat"></i>
+                                        <span id="anaysis_unit_m2" class="active">㎡</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        id="land_analysis_reset"
+                                        class="btn-default-s bg-blue1 text-white"
+                                    >
+                                        초기화
+                                    </button>
                                 </dd>
                             </dl>
                             <ul>
@@ -389,15 +490,17 @@
                                     <h2><span>면적 합계</span></h2>
                                     <div id="land_total_area">0㎡</div>
                                     <div>
-                                        <div id="land_area_by_color_summary" class="color-summary-row"></div> <!-- 색상별 면적 합계가 표시될 곳 -->
+                                        <div id="land_area_by_color_summary" class="color-summary-row"></div>
+                                        <!-- 색상별 면적 합계가 표시될 곳 -->
                                     </div>
                                 </li>
                                 <li>
                                     <h2><span>공시지가 합계</span></h2>
                                     <div id="land_total_price">0만</div>
                                     <div>
-                                        <div id="land_price_by_color_summary" class="color-summary-row"></div> <!-- 색상별 공시지가 합계가 표시될 곳 -->
-                                    </div>    
+                                        <div id="land_price_by_color_summary" class="color-summary-row"></div>
+                                        <!-- 색상별 공시지가 합계가 표시될 곳 -->
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -560,10 +663,16 @@
                             <dl>
                                 <dt>분석주제도</dt>
                                 <dd>
-                                    <select name="" id="land_analysis_select" class="form-select select-box middle w100p">
+                                    <select
+                                        name=""
+                                        id="land_analysis_select"
+                                        class="form-select select-box middle w100p"
+                                    >
                                         <option value="initial">분석주제도 선택(또는 분석 초기화)</option>
                                         <option value="ecology">생태자연도</option>
-                                        <!-- <option value="nationalEnv">국토환경성평가</option> -->
+                                        <option value="slope">경사도</option>
+                                        <option value="elevation">표고도</option>
+                                        <option value="nationalEnv">국토환경성평가지도</option>
                                     </select>
                                     <button id="land_analysis_btn" class="btn-default-m bg-dark">분석</button>
                                 </dd>
@@ -583,7 +692,9 @@
 
                             <div>
                                 <p class="text-center">면적: <span id="land_analysis_total_area"></span></p>
-                                <p class="text-center color-main">※ 분석 면적은 구적면적으로 토지대장상 면적과 다르며 참고용입니다.</p>
+                                <p class="text-center color-main">
+                                    ※ 분석 면적은 구적면적으로 토지대장상 면적과 다르며 참고용입니다.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -592,11 +703,16 @@
                     <!-- 이력관리 -->
                     <div class="map-history active">
                         <div class="mh-button">
-                            <button id="mapHistoryOpen" class="tooltip-target"><i class="fa-regular fa-clock-rotate-left"></i></button>
+                            <button id="mapHistoryOpen" class="tooltip-target">
+                                <i class="fa-regular fa-clock-rotate-left"></i>
+                            </button>
                         </div>
                         <div class="mh-list">
                             <dl>
-                                <dt class="d-flex align-items-center gap-2">이력관리 <button id="remove_history_marker" class="btn-line-red-s">마커 지우기</button></dt>
+                                <dt class="d-flex align-items-center gap-2">
+                                    이력관리
+                                    <button id="remove_history_marker" class="btn-line-red-s">마커 지우기</button>
+                                </dt>
                                 <dd>
                                     <button><i class="fa-light fa-xmark"></i></button>
                                 </dd>
@@ -604,7 +720,10 @@
                             <div>
                                 <h2 class="d-flex justify-content-between">
                                     <span>
-                                        최근 방문한 곳 <button class="history-marker btn-default-s bg-dark"><i class="fa-light fa-map-location-dot"></i></button>
+                                        최근 방문한 곳
+                                        <button class="history-marker btn-default-s bg-dark">
+                                            <i class="fa-light fa-map-location-dot"></i>
+                                        </button>
                                     </span>
                                     <button class="mhl-more-btn btn-line-gray-s">더보기</button>
                                 </h2>
@@ -626,7 +745,10 @@
                             <div>
                                 <h2 class="d-flex justify-content-between">
                                     <span>
-                                        즐겨찾기한 곳 <button class="history-marker btn-default-s bg-dark"><i class="fa-light fa-map-location-dot"></i></button>
+                                        즐겨찾기한 곳
+                                        <button class="history-marker btn-default-s bg-dark">
+                                            <i class="fa-light fa-map-location-dot"></i>
+                                        </button>
                                     </span>
                                     <button class="mhl-more-btn btn-line-gray-s">더보기</button>
                                 </h2>
@@ -648,7 +770,10 @@
                             <div>
                                 <h2 class="d-flex justify-content-between">
                                     <span>
-                                        인쇄한 곳 <button class="history-marker btn-default-s bg-dark"><i class="fa-light fa-map-location-dot"></i></button>
+                                        인쇄한 곳
+                                        <button class="history-marker btn-default-s bg-dark">
+                                            <i class="fa-light fa-map-location-dot"></i>
+                                        </button>
                                     </span>
                                     <button class="mhl-more-btn btn-line-gray-s">더보기</button>
                                 </h2>
@@ -677,11 +802,23 @@
                             <i class="fa-regular fa-chevron-up" id="mapContentMoUp"></i>
                             <i class="fa-regular fa-chevron-down" id="mapContentMoDown"></i>
                         </div>
-                        <div class="mc-open-close" id="mapContentOpenClose"><i class="fa-solid fa-chevron-left"></i></div>
+                        <div class="mc-open-close" id="mapContentOpenClose">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </div>
 
                         <div class="mc-search">
-                            <input type="text" id="search_input" name="" title="" value="" placeholder="" autocomplete="off" />
-                            <button type="button" id="search_return_btn" class="btn"><i class="fa-light fa-location-dot"></i> 검색위치로</button>
+                            <input
+                                type="text"
+                                id="search_input"
+                                name=""
+                                title=""
+                                value=""
+                                placeholder=""
+                                autocomplete="off"
+                            />
+                            <button type="button" id="search_return_btn" class="btn">
+                                <i class="fa-light fa-location-dot"></i> 검색위치로
+                            </button>
 
                             <div id="search_result_box" class="mcs-box">
                                 <ul id="placesList"></ul>
@@ -698,7 +835,9 @@
                                 <dd>
                                     <button id="mapShareOpen"><i class="fa-sharp fa-light fa-share-nodes"></i></button>
                                     <div id="mapShare" class="share-opt">
-                                        <button id="kakaotalk_sharing_btn"><img src="/front/assets/image/icn_sns_kakao.svg" alt="" title="" /></button>
+                                        <button id="kakaotalk_sharing_btn">
+                                            <img src="/front/assets/image/icn_sns_kakao.svg" alt="" title="" />
+                                        </button>
                                         <button id="copy_url_btn"><i class="fa-light fa-copy"></i></button>
                                         <span id="mapShareClose"><i class="fa-light fa-xmark"></i></span>
                                     </div>
@@ -736,13 +875,18 @@
                                                 <label for="print_finance">금융</label>
                                             </p>
                                         </div>
-                                        <button type="button" id="print_confirm_btn" class="btn-line-gray-s">확인</button>
+                                        <button type="button" id="print_confirm_btn" class="btn-line-gray-s">
+                                            확인
+                                        </button>
                                     </div>
                                 </dd>
                             </dl>
                             <div>
-                                토지 <span id="top_land_area">면적</span> · <span id="top_prposArea1Nm">용도지역</span> · <span id="top_land_pups">지목</span> · <span id="top_official_land_price">공시지가</span><br />
-                                건물 <span id="top_build_area">면적</span> · <span id="top_putps">주용도</span> · <span id="top_floor">층</span> · <span id="top_useAprDay">사용승인년도</span>
+                                토지 <span id="top_land_area">면적</span> ·
+                                <span id="top_prposArea1Nm">용도지역</span> · <span id="top_land_pups">지목</span> ·
+                                <span id="top_official_land_price">공시지가</span><br />
+                                건물 <span id="top_build_area">면적</span> · <span id="top_putps">주용도</span> ·
+                                <span id="top_floor">층</span> · <span id="top_useAprDay">사용승인년도</span>
                             </div>
                         </div>
 
@@ -757,7 +901,10 @@
                                     <button class="tab-btn" data-target="mc-finance">금융</button>
                                 </dt>
                                 <dd>
-                                    <button id="toggle_unit_btn"><span id="unit_pyeong">평</span> <i class="fa-light fa-arrows-repeat"></i> <span id="unit_m2" class="active">㎡</span></button>
+                                    <button id="toggle_unit_btn">
+                                        <span id="unit_pyeong">평</span> <i class="fa-light fa-arrows-repeat"></i>
+                                        <span id="unit_m2" class="active">㎡</span>
+                                    </button>
                                 </dd>
                             </dl>
                         </div>
@@ -769,7 +916,9 @@
                                     <div id="mini_map"></div>
                                     <!-- <img src="/front/assets/image/map_img02.png" width="100%" alt="" title="" /> -->
                                     <div class="mcr-btn-group">
-                                        <button class="active" onclick="changeBaseMapType('roadmap', miniMap)">일반</button>
+                                        <button class="active" onclick="changeBaseMapType('roadmap', miniMap)">
+                                            일반
+                                        </button>
                                         <button onclick="changeBaseMapType('skyview', miniMap)">위성</button>
                                     </div>
                                 </div>
@@ -827,13 +976,20 @@
                                         </tbody>
                                     </table>
                                     <p>
-                                        <button type="button" id="more_realPrice_btn" style="display: none"><i class="fa-sharp fa-light fa-circle-plus"></i> 더보기</button>
+                                        <button type="button" id="more_realPrice_btn" style="display: none">
+                                            <i class="fa-sharp fa-light fa-circle-plus"></i> 더보기
+                                        </button>
                                     </p>
                                 </div>
                                 <div class="mcr-guide">
-                                    <h2><i class="fa-light fa-triangle-exclamation"></i> 보다 정확한 내용은 등기부등본을 확인하시기 바랍니다.</h2>
+                                    <h2>
+                                        <i class="fa-light fa-triangle-exclamation"></i> 보다 정확한 내용은 등기부등본을
+                                        확인하시기 바랍니다.
+                                    </h2>
                                     <div>
-                                        <a target="_blank" href="https://www.iros.go.kr/index.jsp ">이동 <i class="fa-light fa-arrow-up-right-from-square"></i></a>
+                                        <a target="_blank" href="https://www.iros.go.kr/index.jsp "
+                                            >이동 <i class="fa-light fa-arrow-up-right-from-square"></i
+                                        ></a>
                                     </div>
                                 </div>
                             </div>
@@ -844,7 +1000,9 @@
                                 </div>
 
                                 <div class="mcg-land-character">
-                                    <p class="font18 pt-2 text-center"><span id="mnnmSlno_length" class="d-none"></span>필지정보</p>
+                                    <p class="font18 pt-2 text-center">
+                                        <span id="mnnmSlno_length" class="d-none"></span>필지정보
+                                    </p>
                                     <div id="mnnmSlno_btn_group" class="pt-2">
                                         <!-- <button class="mnnmSlno-btn active">부번1</button>
                                         <button class="mnnmSlno-btn">부번2</button>
@@ -924,7 +1082,9 @@
                                         </tbody>
                                     </table>
                                     <p>
-                                        <button id="more_price_btn"><i class="fa-sharp fa-light fa-circle-plus"></i> 더보기</button>
+                                        <button id="more_price_btn">
+                                            <i class="fa-sharp fa-light fa-circle-plus"></i> 더보기
+                                        </button>
                                     </p>
                                 </div>
                             </div>
@@ -1053,21 +1213,51 @@
                                 <div class="mcs-tab-menu mt-3">
                                     <dl>
                                         <dt class="nav nav-pills">
-                                            <button class="nav-link active" data-bs-toggle="tab" href="#transportation" role="tab" aria-selected="fasle" tabindex="-1">대중교통</button>
-                                            <button class="nav-link" data-bs-toggle="tab" href="#education" role="tab" aria-selected="fasle" tabindex="-1">교육시설</button>
-                                            <button class="nav-link" data-bs-toggle="tab" href="#amenities" role="tab" aria-selected="fasle" tabindex="-1">편의시설</button>
+                                            <button
+                                                class="nav-link active"
+                                                data-bs-toggle="tab"
+                                                href="#transportation"
+                                                role="tab"
+                                                aria-selected="fasle"
+                                                tabindex="-1"
+                                            >
+                                                대중교통
+                                            </button>
+                                            <button
+                                                class="nav-link"
+                                                data-bs-toggle="tab"
+                                                href="#education"
+                                                role="tab"
+                                                aria-selected="fasle"
+                                                tabindex="-1"
+                                            >
+                                                교육시설
+                                            </button>
+                                            <button
+                                                class="nav-link"
+                                                data-bs-toggle="tab"
+                                                href="#amenities"
+                                                role="tab"
+                                                aria-selected="fasle"
+                                                tabindex="-1"
+                                            >
+                                                편의시설
+                                            </button>
                                         </dt>
                                     </dl>
                                 </div>
 
                                 <div class="tab-content text-muted mt-3">
-                                    <p class="text-center color-main">※ 각 주변 시설을 클릭하면, 1km 이내의 가까운 15개 장소가 표시됩니다.</p>
+                                    <p class="text-center color-main">
+                                        ※ 각 주변 시설을 클릭하면, 1km 이내의 가까운 15개 장소가 표시됩니다.
+                                    </p>
 
                                     <div class="tab-pane active" id="transportation" role="tabpanel">
                                         <div class="place-SW8">
                                             <div class="mb-2 mt-3">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-subway"></i></span><strong>지하철역</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-subway"></i></span
+                                                    ><strong>지하철역</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1076,7 +1266,8 @@
                                         <div class="place-BUS">
                                             <div class="mb-2 mt-3">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-subway"></i></span><strong>버스정류장</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-subway"></i></span
+                                                    ><strong>버스정류장</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1087,7 +1278,8 @@
                                         <div class="place-PS3">
                                             <div class="mb-2 mt-3">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg las la-shapes"></i></span><strong>어린이집,유치원</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg las la-shapes"></i></span
+                                                    ><strong>어린이집,유치원</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1096,7 +1288,8 @@
                                         <div class="place-SC4">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-school"></i></span><strong>학교</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-school"></i></span
+                                                    ><strong>학교</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1105,7 +1298,8 @@
                                         <div class="place-AC5">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-chalkboard-teacher"></i></span><strong>학원</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-chalkboard-teacher"></i></span
+                                                    ><strong>학원</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1115,7 +1309,8 @@
                                         <div class="place-PO3">
                                             <div class="mb-2 mt-3">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-landmark"></i></span><strong>공공기관</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-landmark"></i></span
+                                                    ><strong>공공기관</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1124,7 +1319,8 @@
                                         <div class="place-BK9">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-donate"></i></span><strong>은행</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-donate"></i></span
+                                                    ><strong>은행</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1133,7 +1329,8 @@
                                         <div class="place-PM9">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-pills"></i></span><strong>약국</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-pills"></i></span
+                                                    ><strong>약국</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1142,7 +1339,8 @@
                                         <div class="place-HP8">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-hospital"></i></span><strong>병원</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-hospital"></i></span
+                                                    ><strong>병원</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1151,7 +1349,8 @@
                                         <div class="place-MT1">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-store-alt"></i></span><strong>대형마트</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-store-alt"></i></span
+                                                    ><strong>대형마트</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1160,7 +1359,8 @@
                                         <div class="place-CS2">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-store"></i></span><strong>편의점</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-store"></i></span
+                                                    ><strong>편의점</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1169,7 +1369,8 @@
                                         <div class="place-FD6">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-utensils"></i></span><strong>음식점</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-utensils"></i></span
+                                                    ><strong>음식점</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1178,7 +1379,8 @@
                                         <div class="place-CE7">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-coffee"></i></span><strong>카페</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-coffee"></i></span
+                                                    ><strong>카페</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1187,7 +1389,8 @@
                                         <div class="place-CT1">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-theater-masks"></i></span><strong>문화시설</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-theater-masks"></i></span
+                                                    ><strong>문화시설</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1196,7 +1399,8 @@
                                         <div class="place-AT4">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-camera-retro"></i></span><strong>관광명소</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-camera-retro"></i></span
+                                                    ><strong>관광명소</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1205,7 +1409,8 @@
                                         <div class="place-AD5">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-hotel"></i></span><strong>숙박</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-hotel"></i></span
+                                                    ><strong>숙박</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1214,7 +1419,8 @@
                                         <div class="place-PK6">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-parking"></i></span><strong>주차장</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-parking"></i></span
+                                                    ><strong>주차장</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1223,7 +1429,8 @@
                                         <div class="place-OL7">
                                             <div class="mb-2 mt-4">
                                                 <h5 class="place-title color-main">
-                                                    <span><i class="las la-lg la-gas-pump"></i></span><strong>주유소, 충전소</strong>(<span class="count">0</span>개)
+                                                    <span><i class="las la-lg la-gas-pump"></i></span
+                                                    ><strong>주유소, 충전소</strong>(<span class="count">0</span>개)
                                                 </h5>
                                             </div>
                                             <div class="place-contents"></div>
@@ -1248,11 +1455,16 @@
                                     <dl>
                                         <dt>분석주제도</dt>
                                         <dd>
-                                            <select name="" id="analysis_select" class="form-select select-box middle w100p">
+                                            <select
+                                                name=""
+                                                id="analysis_select"
+                                                class="form-select select-box middle w100p"
+                                            >
                                                 <option value="initial">분석주제도 선택(또는 분석 초기화)</option>
                                                 <option value="ecology">생태자연도</option>
-                                                <!-- <option value="nationalEnv">국토환경성평가</option> -->
-
+                                                <option value="slope">경사도</option>
+                                                <option value="elevation">표고도</option>
+                                                <option value="nationalEnv">국토환경성평가지도</option>
                                             </select>
                                             <button id="analysis_btn" class="btn-default-m bg-dark">분석</button>
                                         </dd>
@@ -1294,7 +1506,9 @@
 
                                 <div>
                                     <p class="text-center">면적: <span id="analysis_total_area"></span></p>
-                                    <p class="text-center color-main">※ 분석 면적은 구적면적으로 토지대장상 면적과 다르며 참고용입니다.</p>
+                                    <p class="text-center color-main">
+                                        ※ 분석 면적은 구적면적으로 토지대장상 면적과 다르며 참고용입니다.
+                                    </p>
                                 </div>
                             </div>
 
@@ -1429,35 +1643,84 @@
                                     </li> -->
                                 </ul>
                                 <div class="mcf-more">
-                                    <button id="more_finance_btn"><i class="fa-sharp fa-light fa-circle-plus"></i> 더보기</button>
+                                    <button id="more_finance_btn">
+                                        <i class="fa-sharp fa-light fa-circle-plus"></i> 더보기
+                                    </button>
                                 </div>
 
                                 <div class="mcf-write">
                                     <div>
                                         <h2>연락처</h2>
                                         <p>
-                                            <input type="text" id="mobile_num" name="" title="" value="" placeholder="연락처를 입력하세요 (예: 01011112222)" class="input-box middle w100p" />
+                                            <input
+                                                type="text"
+                                                id="mobile_num"
+                                                name=""
+                                                title=""
+                                                value=""
+                                                placeholder="연락처를 입력하세요 (예: 01011112222)"
+                                                class="input-box middle w100p"
+                                            />
                                             <input type="hidden" id="name" />
                                         </p>
                                     </div>
                                     <div>
                                         <h2>담보물주소지</h2>
                                         <p>
-                                            <input type="text" id="collateral_address_jibun" name="" title="" value="" placeholder="" class="input-box middle w100p jibun-address" disabled />
-                                            <input type="hidden" id="collateral_address_road" class="road-address" disabled />
-                                            <input type="text" id="collateral_address_detail" name="" title="" value="" placeholder="상세주소를 입력하세요" class="input-box middle w100p" />
+                                            <input
+                                                type="text"
+                                                id="collateral_address_jibun"
+                                                name=""
+                                                title=""
+                                                value=""
+                                                placeholder=""
+                                                class="input-box middle w100p jibun-address"
+                                                disabled
+                                            />
+                                            <input
+                                                type="hidden"
+                                                id="collateral_address_road"
+                                                class="road-address"
+                                                disabled
+                                            />
+                                            <input
+                                                type="text"
+                                                id="collateral_address_detail"
+                                                name=""
+                                                title=""
+                                                value=""
+                                                placeholder="상세주소를 입력하세요"
+                                                class="input-box middle w100p"
+                                            />
                                         </p>
                                     </div>
                                     <div>
                                         <h2>대출희망금액(단위: 만 원)</h2>
                                         <p>
-                                            <input type="text" id="loan_amount" name="" title="" value="" placeholder="금액을 입력하세요 (단위: 만 원)" class="input-box middle w100p" oninput="allowOnlyNumbers(this, 11)" minlength="0" maxlength="100000000" />
+                                            <input
+                                                type="text"
+                                                id="loan_amount"
+                                                name=""
+                                                title=""
+                                                value=""
+                                                placeholder="금액을 입력하세요 (단위: 만 원)"
+                                                class="input-box middle w100p"
+                                                oninput="allowOnlyNumbers(this, 11)"
+                                                minlength="0"
+                                                maxlength="100000000"
+                                            />
                                         </p>
                                     </div>
                                     <div>
                                         <h2>기타메모</h2>
                                         <p>
-                                            <textarea id="additional_memo" name="" cols="" rows="" class="w100p h60"></textarea>
+                                            <textarea
+                                                id="additional_memo"
+                                                name=""
+                                                cols=""
+                                                rows=""
+                                                class="w100p h60"
+                                            ></textarea>
                                         </p>
                                     </div>
                                     <div>
@@ -1468,11 +1731,18 @@
                                     </div>
                                     <ul>
                                         <li>선택하신 10개 지점에 실시간으로 금융 지원 신청이 접수됩니다.</li>
-                                        <li>신청하신 후, 은행 담당자의 연락을 받고, 상담하신 후, 금융지원 절차를 진행하시기 바랍니다.</li>
+                                        <li>
+                                            신청하신 후, 은행 담당자의 연락을 받고, 상담하신 후, 금융지원 절차를
+                                            진행하시기 바랍니다.
+                                        </li>
                                         <li>토디는 금융지원에 대한 정보를 제공하며, 일체 책임은 없습니다.</li>
                                         <li>금융 지원은 회원 가입 후 이용 가능합니다.</li>
                                     </ul>
-                                    <p><button type="button" id="loan_request_btn" class="btn btn-line-red w100p">금융지원 신청하기</button></p>
+                                    <p>
+                                        <button type="button" id="loan_request_btn" class="btn btn-line-red w100p">
+                                            금융지원 신청하기
+                                        </button>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -1482,21 +1752,39 @@
                     <!-- 로드뷰 -->
                     <div id="rvWrapper">
                         <div id="road_bg" class="road-bg"></div>
-                        <div id="road_close" title="로드뷰닫기" onclick="closeRoadview()"><span class="img"></span></div>
+                        <div id="road_close" title="로드뷰닫기" onclick="closeRoadview()">
+                            <span class="img"></span>
+                        </div>
                     </div>
 
                     <!-- 전체지도 -->
                     <div id="map_bg" class="map-bg">
                         <!-- 사용자그리기 툴박스 -->
                         <div id="draw_toolbox">
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'MARKER')"><span style="background-position: 0px -180px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'ARROW')"><span style="background-position: 0px -150px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'POLYLINE')"><span style="background-position: 0px 0px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'RECTANGLE')"><span style="background-position: 0px -60px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'CIRCLE')"><span style="background-position: 0px -29px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'ELLIPSE')"><span style="background-position: 0px -119px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'POLYGON')"><span style="background-position: 0px -90px"></span></a>
-                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'TEXT')"><span style="background-position: -90px -40px">텍스트 입력</span></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'MARKER')"
+                                ><span style="background-position: 0px -180px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'ARROW')"
+                                ><span style="background-position: 0px -150px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'POLYLINE')"
+                                ><span style="background-position: 0px 0px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'RECTANGLE')"
+                                ><span style="background-position: 0px -60px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'CIRCLE')"
+                                ><span style="background-position: 0px -29px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'ELLIPSE')"
+                                ><span style="background-position: 0px -119px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'POLYGON')"
+                                ><span style="background-position: 0px -90px"></span
+                            ></a>
+                            <a href="javascript:void(0)" onclick="selectOverlay(this, 'TEXT')"
+                                ><span style="background-position: -90px -40px">텍스트 입력</span></a
+                            >
                         </div>
                     </div>
                     <!-- 전체지도 끝 -->
@@ -1538,7 +1826,7 @@
         <script src="/front/assets/js/jquery-3.3.1.js"></script>
         <script src="/front/assets/js/jquery-ui.js"></script>
         <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        
+
         <script src="/front/assets/js/easing.js"></script>
         <script src="/front/assets/js/gsap.min.js"></script>
         <script src="/front/assets/js/ScrollTrigger.min.js"></script>
@@ -1558,10 +1846,17 @@
         <script src="/front/assets/js/mfb.js"></script>
 
         <!-- 카카오맵 -->
-        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"></script>
+        <script
+            type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"
+        ></script>
 
         <!-- 카카오공유 -->
-        <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+        <script
+            src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+            integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+            crossorigin="anonymous"
+        ></script>
 
         <!-- 환경공간정보서비스 -->
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.11.1/ol.min.css" />
@@ -1591,14 +1886,17 @@
         <!-- map 위치를 저장 위해 추가    -->
         <script src="/front/assets/js/myMap.js"></script>
         <script src="/front/js/realPrice/map.js"></script>
+        <script src="/front/js/realPrice/regionalEnvLayer.js"></script>
         <script src="/front/js/realPrice/boundary.js"></script>
         <script src="/front/js/realPrice/tab.js"></script>
-        <script src="/front/js/realPrice/realPrice.js"></script>
+        <script src="/front/js/realPrice/realPrice.js?v=202511241800"></script>
         <script src="/front/js/realPrice/finance.js"></script>
-        <script src="/front/js/realPrice/landAnalysis.js"></script>
+        <script src="/front/js/realPrice/landAnalysis.js?v=202511241800"></script>
         <script src="/front/js/realPrice/roadView.js"></script>
-        <script src="/front/js/memo/memo.js"></script> 
-        
+        <script src="/front/js/memo/memo.js"></script>
+        <script src="/front/js/realPrice/regionalEnvLayer.js?v=202511241800"></script>
+        <script src="/front/js/realPrice/analysisMap.js?v=202511241800"></script>
+
         <!-- active menu를 위해 추가    -->
         <script src="/front/assets/js/myscript.js"></script>
 
@@ -1606,15 +1904,16 @@
         <script src="/front/js/visit/client.js"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
-        
+
         <!-- 계산기 menu를 위해 추가    -->
-        <div id="toolModal" class="toolmodal" style="display: none;">
+        <div id="toolModal" class="toolmodal" style="display: none">
             <div class="tool-modal-overlay"></div>
-            <div class="tool-modal-content"> <!-- 요소가 draggable 대상입니다 -->
+            <div class="tool-modal-content">
+                <!-- 요소가 draggable 대상입니다 -->
                 <div class="tool-modal-header">
                     <div class="modal-title">
-                      <span class="modal-label">계산기</span>
-                      <button class="tool-close-button" aria-label="닫기">X</button>
+                        <span class="modal-label">계산기</span>
+                        <button class="tool-close-button" aria-label="닫기">X</button>
                     </div>
                 </div>
                 <div class="tool-modal-body">

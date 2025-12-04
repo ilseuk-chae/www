@@ -14,7 +14,7 @@ header("Content-Type: application/json; charset=utf-8");
 // }
 
 // dbconnect.php는 기존 경로를 그대로 사용한다고 가정
-include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/dbconnect.php'); 
+include ($_SERVER['DOCUMENT_ROOT'] . '/admin/back/00-include/dbconnect.php'); 
 
 $response = ['status' => 'error', 'message' => '초기 상태: 처리 중 오류 발생', 'data' => []];
 
