@@ -1,4 +1,8 @@
-let clusterersByType = {}; // 클러스터러 객체들을 저장할 변수
+const clusterersByType = {
+    "all": null, // 아래 createClustererAll 함수에서 map 객체가 준비되면 초기화
+    // 필요한 경우 estateType별 클러스터러 추가:
+    // "apt": null, "multi": null, "officetel": null, "land": null,
+};
 let realPriceData = []; // 실거래가 정보
 let realEstimatedPrice = null; // 추정가
 
@@ -19,16 +23,1339 @@ function countEstateTypes(apiResponseObject) {
     });
 
     // 3. 집계된 결과를 콘솔에 표시합니다.
-    console.log("Estate 총수 : " + dataRecords.length);
+    //console.log("Estate 총수 : " + dataRecords.length);
     if (Object.keys(estateTypeCounts).length === 0) {
         console.log("데이터 내에 estate_type이 없거나, 레코드가 없습니다.");
     } else {
         for (const type in estateTypeCounts) {
-            console.log(` - ${type}: ${estateTypeCounts[type]}개`);
+            //console.log(` - ${type}: ${estateTypeCounts[type]}개`);
         }
     }
 }
 
+
+// 전역 변수들: 기존 코드에서 사용하는 변수명과 일치시켜야 합니다.
+let currentEstateTypes = ['apt', 'multi', 'officetel', 'land']; // 현재 선택된 부동산 유형 (UI에 따라 동적으로 갱신)
+let realEstateMarkers = []; // 클러스터러에 추가되지 않는 일반 마커 (현재는 사용하지 않지만 기존 구조 유지를 위해 선언)
+
+// Kakao Geocoder 이후 주소 처리 및 기타 액션 함수들 (맵핑 후 바로 사용되므로 그대로 두는 것이 좋음)
+// searchDetailAddrFromCoords(kakaoCoords, function (result, status) { ... });
+// handleMapClick(coords);
+// searchArroundPlaces(coords);
+// realPriceDetail(type, pnu);
+// displayAddressInfo(result, status);
+// getFormattedDateTime() (디버깅용)
+
+// 지도에 모든 부동산 관련 오버레이 및 마커를 제거하는 유틸리티 함수
+function clearAllRealEstateOverlays() {
+    realPriceOverlays.forEach(overlay => overlay.setMap(null));
+    realPriceOverlays = [];
+    realEstateMarkers.forEach(marker => marker.setMap(null)); // 클러스터러에 추가되지 않은 일반 마커 (이 코드가 필요하다면)
+    realEstateMarkers = [];
+    // 클러스터러가 초기화된 후에만 clear 호출
+    if (clusterersByType["all"]) {
+        clusterersByType["all"].clear();
+    }
+    // 다른 타입별 클러스터러가 있다면 forEach 등으로 clear
+    // Object.values(clusterersByType).forEach(clusterer => clusterer && clusterer.clear());
+}
+
+
+/**
+ * Kakao Map에서 사용할 Marker 객체를 생성합니다. (클러스터링용)
+ * 기존 `createClusteredMarker` 함수의 역할을 재현합니다.
+ * @param {Object} data - 부동산 데이터 아이템
+ * @returns {kakao.maps.Marker} Kakao Map Marker 객체
+ */
+function createClusteredMarker(data) {
+    const position = new kakao.maps.LatLng(data.center_latitude, data.center_longitude);
+    const marker = new kakao.maps.Marker({
+        position: position,
+        // 클러스터러가 관리하므로 직접 map에 추가하지 않음
+        // 기타 옵션 (예: 이미지, draggable 등)은 기존 코드에 맞춰 추가
+    });
+    return marker; // 마커 이벤트는 realPriceAptArrayWithCache 내부에서 별도로 추가.
+}
+
+/**
+ * Kakao 지도 경계 내의 그리드 포인트들을 생성합니다.
+ * @param {kakao.maps.Map} mapObj - Kakao Map 객체
+ * @param {number} numPoints - 가로/세로 축당 생성할 포인트 개수 (총 numPoints * numPoints 개 생성)
+ * @returns {Array<kakao.maps.LatLng>} 그리드 포인트들의 배열
+ */
+function getGridPointsFromMapBounds(mapObj, numPoints) {
+    const bounds = mapObj.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    const minLat = sw.getLat();
+    const minLng = sw.getLng();
+    const maxLat = ne.getLat();
+    const maxLng = ne.getLng();
+
+    const latStep = (maxLat - minLat) / (numPoints - 1);
+    const lngStep = (maxLng - minLng) / (numPoints - 1);
+
+    const points = [];
+    for (let i = 0; i < numPoints; i++) {
+        const lat = minLat + i * latStep;
+        for (let j = 0; j < numPoints; j++) {
+            const lng = minLng + j * lngStep;
+            points.push(new kakao.maps.LatLng(lat, lng));
+        }
+    }
+    return points;
+}
+
+/**
+ * UI에서 부동산 유형 필터의 선택 상태를 읽어 `currentEstateTypes` 전역 변수를 갱신합니다.
+ * onedol님 프로젝트의 UI 요소에 맞춰 이 함수를 구현해야 합니다.
+ */
+function updateEstateTypeFiltersFromUI() {
+    const newEstateTypes = []; // 임시 배열
+
+    const allToggleButton = $('.realmap-estate-group button').eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
+    const isAllActive = allToggleButton.hasClass("active"); // '전체' 버튼이 활성화된 상태인지 확인
+
+    if (isAllActive) {
+        // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
+        // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
+        newEstateTypes.push("apt");
+        newEstateTypes.push("multi"); // 오타 수정!
+        newEstateTypes.push("officetel");
+        newEstateTypes.push("land");
+    } else {
+        // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
+        // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
+        $('.realmap-estate-group button.active').not(allToggleButton).each(function () {
+            const btn_text = $(this).text().trim();
+            // 개별 유형 버튼의 텍스트를 이용해 값을 추가
+            newEstateTypes.push(estateTypeToValue(btn_text));
+        });
+    }
+    // 만약 아무것도 선택되지 않았다면 기본값으로 모두 포함하도록 설정
+    if (newEstateTypes.length === 0) {
+        currentEstateTypes = ['apt', 'multi', 'officetel', 'land'];
+    } else {
+        currentEstateTypes = newEstateTypes;
+    }
+    
+    //console.log("Current Estate Types: ", currentEstateTypes);
+}
+
+// 헬퍼 함수: 가격을 보기 좋게 포맷 (예: 소수점 둘째 자리까지)
+function myformatPrice(price) {
+    if (isNaN(price) || price === null) return 'N/A';
+    // 가격이 1000 이상이면 콤마 추가, 소수점 둘째 자리까지
+    // (이전 formatPrice가 .toFixed(2)만 있었다면 확장)
+    //const formatted = parseFloat(price).toFixed(2);
+    const formatted = parseFloat(price);
+    return formatted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+/**
+ * 주어진 부동산 타입에 대한 가격 아이템 HTML 문자열을 생성합니다.
+ * @param {string} estateType - 부동산 타입 ('apt', 'multi', 'officetel', 'land').
+ * @param {object} sigunguData - 해당 시군구의 모든 데이터.
+ * @param {boolean} isPyeongDisplay - 현재 오버레이의 단위 표시 상태 (true: 평, false: ㎡).
+ * @returns {string} 가격 정보가 담긴 HTML 문자열.
+ */
+function createPriceItem(estateType, sigunguData, isPyeongDisplay) { // isPyeongDisplay 인자 추가
+    let estateTypeName = '';
+    if (estateType === 'apt') estateTypeName = '(아)';
+    else if (estateType === 'multi') estateTypeName = '(연)';
+    else if (estateType === 'officetel') estateTypeName = '(오)';
+    else if (estateType === 'land') estateTypeName = '(토)';
+
+    const estateTypeData = sigunguData.estateTypes[estateType];
+    let priceText = 'N/A';
+
+    if (estateTypeData && estateTypeData.all_average !== null && estateTypeData.all_average !== undefined) {
+        // 가정: DB에서 받은 all_average는 '만원/평' 단위의 평균 가격입니다.
+        // 이 가정에 따라 '㎡'로 변환 로직을 적용합니다.
+        let displayPrice = estateTypeData.all_average; 
+
+        if (!isPyeongDisplay) { // '㎡'로 표시해야 하는 경우
+            // 1평 = 3.30578 제곱미터. 평당 가격을 제곱미터당 가격으로 변환.
+            displayPrice = displayPrice / 3.30578; 
+        }
+        priceText = myformatPrice(displayPrice) + '만원'; // '/평' 또는 '/㎡' 단위를 제거합니다.
+    }
+    // 각 estate_type별로 다른 class를 줄 수도 있습니다. (예: estate-item-apt)
+    return `<div class="estate-item estate-item-${estateType}"> ${estateTypeName} ${priceText}</div>`;
+}
+
+// -----------------------------------------------------
+// 초기 데이터 로드 (맵이 완전히 초기화된 후 호출)
+// -----------------------------------------------------
+// map 객체와 Kakao API 스크립트 로딩, 그리고 `initializeClusterers()`가 완료된 시점에서
+// `fetchRealPriceAptArrayBasedOnMapCenterWidthCash()`를 호출해야 합니다.
+// (예시: map 객체 초기화 콜백 함수, 또는 window.onload 이벤트 내에서)
+// 맵 초기화 및 클러스터러 초기화는 페이지 로드 시 단 한 번 이루어져야 합니다.
+
+// Kakao Map 생성 및 초기화 코드
+// var container = document.getElementById('map');
+// var options = {
+//     center: new kakao.maps.LatLng(37.566826, 126.9786567), // 서울 시청
+//     level: 7 // 초기 지도 확대 레벨
+// };
+// map = new kakao.maps.Map(container, options);
+
+// // 지도 로드 완료 후 클러스터러 초기화
+// kakao.maps.event.addListener(map, 'tilesloaded', function() {
+//     initializeClusterers(); // 클러스터러 초기화
+//     fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); // 초기 데이터 로드
+// }, { once: true }); // 타일 로드 후 한 번만 실행
+
+
+/**
+ * 최종 목표
+ * 지도 화면 내 여러 시군구 코드를 자동으로 찾아 그 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
+ * 부동산 실거래가 정보를 새로운 캐시 API로부터 가져와 지도에 시각화하는 비동기 함수.
+ * 이 함수는 기존 `realPriceAptArray(sggCdArray)`의 역할을 완전히 대체합니다.
+ *
+ * @param {string[]} sggCdsToFetch - 조회할 시군구 PNU 코드들의 배열 (예: ['11110', '11140'])
+ * @param {Array<string>} estateTypesToFetch - 조회할 부동산 유형 배열 (예: ['apt', 'multi', 'officetel', 'land'])
+ * @returns {Promise<void>} 데이터 로드 및 시각화 작업 완료 Promise
+ */
+async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFeatures) {  /// estateTypesToFetch는 이제 collectMultiFilterParams에서 가져옴
+               
+    // 1. 현재 지도 화면의 바운딩 박스(Bounding Box) 추출
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    
+    const mapBoundsPolygon = (map && map.getBounds) ? (function() {
+        const sw = map.getBounds().getSouthWest();
+        const ne = map.getBounds().getNorthEast();
+        
+        // ✨ 수정된 부분: turf.polygon() 자체가 Geometry 객체를 반환합니다. ✨
+        // turf.js의 turf.polygon() 함수는 { "type": "Polygon", "coordinates": [...] } 형태의 객체를 직접 반환합니다.
+        return turf.polygon([[
+            [sw.getLng(), sw.getLat()],
+            [sw.getLng(), ne.getLat()],
+            [ne.getLng(), ne.getLat()],
+            [ne.getLng(), sw.getLat()],
+            [sw.getLng(), sw.getLat()]
+        ]]);
+    })() : null; // map 객체나 getBounds가 없으면 null 할당
+
+    const isValidPolygon = (geometry) => {
+        return (
+            geometry &&
+            (geometry.type === "Polygon" || geometry.type === "MultiPolygon") &&
+            Array.isArray(geometry.coordinates) &&
+            geometry.coordinates.length > 0 &&
+            Array.isArray(geometry.coordinates[0]) &&
+            geometry.coordinates[0].length >= 4 &&
+            geometry.coordinates[0][0].length === 2 // [lng, lat] 형식 확인
+        );
+    };
+
+    // 2. 클라이언트 필터 파라미터 수집 (API에는 직접 전달하지 않지만 시각화에 필요할 수 있음)
+    const filterObj = collectMultiFilterParams();
+    // API에 보낼 estateTypes는 filterObj.estateType 입니다.
+    const estateTypesFromFilter = filterObj.estateType; 
+
+    // 필수 파라미터 유효성 검사
+     if (!bounds || !estateTypesFromFilter || estateTypesFromFilter.length === 0 || !sggCdsToFetch || sggCdsToFetch.length === 0) {
+        
+        clearAllRealEstateOverlays(); // 데이터가 없으므로 지도 비우기
+        hideLoadingSpinner(); // 혹시 로딩 중이라면 숨김
+        return;
+    }
+    
+    // 3. 백엔드 API 호출 데이터 객체 구성 (JSON POST Body)
+    const requestBody = { 
+        minLat: sw.getLat(),
+        minLng: sw.getLng(),
+        maxLat: ne.getLat(),
+        maxLng: ne.getLng(),
+        estateTypes: estateTypesFromFilter.join(','), // collectMultiFilterParams에서 가져온 estateType 배열 사용
+        sggCds: sggCdsToFetch.join(',') // 이 파라미터는 `fetchRealPriceAptArrayBasedOnMapCenterWidthCash()`에서 넘어옴
+    };
+
+    showLoadingSpinner(); // 로딩 스피너 표시
+    clearAllRealEstateOverlays(); // API 호출 전 기존 지도 객체 모두 제거
+    
+    // 추후 sggCdsToFetch 길이로 읍면동/시군구/시도 단위 처리 분기 가능
+    if(sggCdsToFetch[0].length === 10){
+        //console.log('[실거래가] (읍면동)그리기 시작 시간:', getFormattedDateTime()); // 디버깅용
+        // 읍면동 단위 처리 로직 
+        try {
+            const response = await fetch("/front/back/realPrice/realPrice_apt_emd_cache.php", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody), // JSON 형태로 바디에 담아 전송
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            // 5. API 응답 처리 시작
+            if (!result.success) {
+                console.error("API Error:", result.message);
+                alert("부동산 데이터를 가져오는 중 오류가 발생했습니다: " + result.message);
+                return;
+            }
+
+            const responseData = result.data; // 실제 데이터 배열
+            const zoomLevel = map.getLevel(); // 현재 줌 레벨
+
+            // 6. 데이터 반복 및 지도 객체 생성 (기존 로직과 거의 동일)
+            //console.log('[실거래가] 표시할 실거래가 개수:', responseData.length);
+            //console.log('[실거래가] 그리기 시작 시간:', getFormattedDateTime()); // 디버깅용
+
+            responseData.forEach((data) => {
+                // 이제 'data' 객체 안에 'redis_cached_at' 필드가 포함되어 있습니다.
+                const cachedAt = data.redis_cached_at; // 이 변수에 Redis 캐시된 시간 정보가 담깁니다.
+                // console.log(`데이터 PNU: ${data.pnu}, Redis 캐시 시각: ${cachedAt}`); // 콘솔에서 확인 가능
+                let markerString = ""; // 줌 레벨 4 이하에서 사용
+                let estateString = "";
+                let borderString = "";
+                let liString = "";
+                let imgString = "";
+                let infoString = "";
+                let jimokString = "";
+
+                if (zoomLevel > 4) { // 줌 레벨이 5 이상일 경우 (원안에 숫자 표시)
+                    // 클러스터러가 초기화되었는지 확인
+                    if (!clusterersByType["all"]) {
+                        //console.warn("MarkerClusterer 'all' is not initialized.");
+                        return;
+                    }
+                    const marker = createClusteredMarker(data); // 마커 생성 (데이터는 그대로 전달)
+                    
+                    // 마커에 클릭 이벤트 추가 (클러스터러 마커와 구분되도록) - 데이터마다 다른 이벤트이므로 여기서 추가
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        if ($(".mo-tool-option button").hasClass("active")) return;
+                        if ($("#draw_toolbox a").hasClass("active")) return;
+                        
+                        const type = data.estate_type;
+                        const pnu = data.pnu;
+                        const lat = data.center_latitude;
+                        const lng = data.center_longitude;
+                        const coords = { lat: lat, lng: lng };
+                        const kakaoCoords = new kakao.maps.LatLng(lat, lng);
+
+                        searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+                            if (status === kakao.maps.services.Status.OK) {
+                                handleMapClick(coords);
+                                searchArroundPlaces(coords);
+                                realPriceDetail(type, pnu);
+                            }
+                            displayAddressInfo(result, status);
+                        });
+                    });
+
+                    clusterersByType["all"].addMarker(marker); // 클러스터러에 마커 추가
+
+                } else if (zoomLevel === 4) { // 줌 레벨이 4일 경우 (점표시)
+                    const smallMarker = document.createElement("div");
+                    
+                    // 부동산 유형에 따른 스타일 클래스 설정
+                    switch(data.estate_type) {
+                        case "apt": markerString = "small-marker bg-orange2 border-orange2"; break;
+                        case "land": markerString = "small-marker bg-yellow1 border-yellow1"; break;
+                        case "multi": markerString = "small-marker bg-red2 border-red2"; break;
+                        case "officetel": markerString = "small-marker bg-indigo2 border-indigo2"; break;
+                        default: markerString = "small-marker bg-gray border-gray"; break;
+                    }
+                    
+                    smallMarker.className = markerString;
+                    smallMarker.style.cssText = `
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                    `;
+
+                    // 커스텀 오버레이로 원형 점을 지도에 추가
+                    let smallMarkerPosition = new kakao.maps.LatLng(data.center_latitude, data.center_longitude);
+                    const smallMarkerOverlay = new kakao.maps.CustomOverlay({
+                        content: smallMarker,
+                        position: smallMarkerPosition,
+                        map: map,
+                        xAnchor: 0.5,
+                        yAnchor: 0.5,
+                        zIndex: 1,
+                    });
+
+                    // 작은 원형 점에 클릭 이벤트 추가
+                    smallMarker.addEventListener("click", function () {
+                        if ($(".mo-tool-option button").hasClass("active")) return;
+                        if ($("#draw_toolbox a").hasClass("active")) return;
+
+                        const type = data.estate_type;
+                        const pnu = data.pnu;
+                        const lat = data.center_latitude;
+                        const lng = data.center_longitude;
+                        const coords = { lat: lat, lng: lng };
+                        const kakaoCoords = new kakao.maps.LatLng(lat, lng);
+                        searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+                            if (status === kakao.maps.services.Status.OK) {
+                                handleMapClick(coords);
+                                searchArroundPlaces(coords);
+                                realPriceDetail(type, pnu);
+                            }
+                            displayAddressInfo(result, status);
+                        });
+                    });
+                    realPriceOverlays.push(smallMarkerOverlay); // 오버레이 배열에 작은 원형 점 추가
+
+                } else { // 줌 레벨이 3 이하일 경우 (상세도 상세표시) 
+                    const iwContent = document.createElement("div"); 
+                    iwContent.className = "real-price-marker cursor-pointer";
+                    
+                    // 부동산 유형에 따른 스타일 및 텍스트 설정
+                    switch(data.estate_type) {
+                        case "apt":
+                            markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
+                            imgString = "icn_arr_mark.svg"; estateString = "아파트"; break;
+                        case "land":
+                            markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
+                            imgString = "icn_arr_mark_yellow1.svg";
+                            if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
+                            estateString = jimokString ? `토지: ${jimokString}` : "토지"; break;
+                        case "multi":
+                            markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
+                            imgString = "icn_arr_mark_red2.svg"; estateString = "연립/다세대"; break;
+                        case "officetel":
+                            markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
+                            imgString = "icn_arr_mark_indigo2.svg"; estateString = "오피스텔"; break;
+                        default:    
+                            markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
+                            imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; break;
+                    }
+                    
+                    // 필터에 따른 정보 문자열 구성
+                    switch(filterObj.estateinfo) {
+                        case "거래면적":
+                            infoString = `<span class="font12 number toggle-unit">${(data.excluUseAr / 3.3058).toFixed(2)}평</span>`;
+                            break;
+                        case "거래년도":
+                            infoString = `<span class="font12">${data.dealYear}년</span>`;
+                            break;
+                        case "거래단가":
+                            const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                            const originalArea = data.excluUseAr / 3.3058;
+                            const unitPrice = originalAmount / originalArea;
+                            infoString = `<span class="font12 number toggle-unit">${formatPrice(unitPrice, "all", false, true)}/평</span>`;
+                            break;
+                        default: // filterObj.estateinfo === "거래가격"
+                            infoString = `<span class="font12 ">-</span>`; 
+                            break;
+                    }
+                    
+                    // HTML 콘텐츠 구성
+                    iwContent.innerHTML = `
+                    <ul class="text-center bg-white border ${markerString} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
+                    }" ondragstart="return false;" onselectstart="return false;">
+                        <li class="up bg-white ${borderString} p-1" style="line-height: 11px;">
+                            <p class="font10">${estateString}</p>
+                        </li>
+                        <li class="up bg-white p-1">
+                            <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
+                        </li>
+                        <li class="${liString} text-white">
+                            ${infoString}
+                        </li>
+                    </ul>
+                    <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
+                    `;
+
+                    // CustomOverlay 생성 및 지도에 추가
+                    let iwPosition = new kakao.maps.LatLng(data.center_latitude, data.center_longitude); 
+                    var realPriceOverlay = new kakao.maps.CustomOverlay({
+                        clickable: true,
+                        content: iwContent,
+                        map: map,
+                        position: iwPosition,
+                        xAnchor: 0.45,
+                        yAnchor: 1.2,
+                        zIndex: 1,
+                    });
+                    
+                    // HTML 내부의 toggle-unit 요소에 직접 클릭 이벤트 추가
+                    iwContent.addEventListener("click", function (e) {
+                        if ($(".mo-tool-option button").hasClass("active")) return;
+                        if ($("#draw_toolbox a").hasClass("active")) return;
+                        e.preventDefault(); // 기본 클릭 동작 (링크 이동 등) 방지
+
+                        // Z-index 조절 로직
+                        if (realPriceOverlay) { 
+                            const currentZIndex = parseInt(realPriceOverlay.getZIndex() || 0, 10); 
+                            if (currentZIndex >= globalClusterZIndex) { 
+                                globalClusterZIndex = currentZIndex + 1; 
+                            } else {
+                                globalClusterZIndex++; 
+                            }
+                            realPriceOverlay.setZIndex(globalClusterZIndex); 
+                        }
+                        
+                        // 상세 정보 호출 로직 (data 객체에서 직접 가져옴)
+                        const type = data.estate_type;
+                        const pnu = data.pnu;
+                        const lat = data.center_latitude;
+                        const lng = data.center_longitude;
+                        const coords = { lat: lat, lng: lng };
+                        const kakaoCoords = new kakao.maps.LatLng(lat, lng);
+                        
+                        searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+                            if (status === kakao.maps.services.Status.OK) {
+                                handleMapClick(coords);
+                                searchArroundPlaces(coords);
+                                realPriceDetail(type, pnu);
+                            }
+                            displayAddressInfo(result, status);
+                        });
+                        
+                        // 단위 토글 로직
+                        if(filterObj.estateinfo === "거래면적" || filterObj.estateinfo === "거래단가"){
+                            const unitElement = iwContent.querySelector(".toggle-unit");
+                            const isPyeong = unitElement.textContent.includes("평");
+                            if(filterObj.estateinfo === "거래면적") {
+                                unitElement.textContent = isPyeong ? `${parseFloat(data.excluUseAr).toFixed(2)}㎡` : `${(data.excluUseAr / 3.3058).toFixed(2)}평`;
+                            } else if(filterObj.estateinfo === "거래단가") {
+                                const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                                const originalM2Area = data.excluUseAr;
+                                const originalPyArea = data.excluUseAr / 3.3058;
+                                const unitPyPrice = originalAmount / originalPyArea;
+                                const unitM2Price = originalAmount / originalM2Area;
+                                unitElement.textContent = isPyeong ? `${formatPrice(unitM2Price, "all", false, true)}/㎡` : `${formatPrice(unitPyPrice, "all", false, true)}/평`;
+                            }
+                        }
+                    });
+                    realPriceOverlays.push(realPriceOverlay); // 오버레이 배열에 인포윈도우 스타일 마커 추가
+                }
+            }); // responseData.forEach((data) => 끝
+            //console.log('[실거래가] (읍면동)그리기 완료 시간:', getFormattedDateTime()); // 디버깅용
+
+        } catch (error) {
+            //console.error("API Fetch Error:", error);
+            alert("데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
+        } finally {
+            hideLoadingSpinner(); // 로딩 스피너 숨김
+        }
+    } 
+    // 시군구 단위 처리 추가
+    else if(sggCdsToFetch[0].length === 5){
+        //console.log('[실거래가] (시군구) 그리기 시작 시간:', getFormattedDateTime());
+
+        // 시군구 단위에서는 estateTypes를 고정 값으로 변경합니다.
+        requestBody.estateTypes = "apt,multi,officetel,land"; 
+        
+        try {
+            const response = await fetch("/front/back/realPrice/realPrice_apt_sigungu_db.php", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+                body: JSON.stringify(requestBody), // 읍면동과 동일한 requestBody 사용 가능
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                //console.error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+                hideLoadingSpinner();
+                return;
+            }
+
+            const result = await response.json();
+            if (!result.success) {
+                //console.error("API Error:", result.message);
+                alert("시군구 데이터를 가져오는 중 오류가 발생했습니다: " + result.message);
+                return;
+            }
+            const responseData = result.data; // 시군구별, 타입별 평균 데이터 배열
+            if (!responseData || responseData.length === 0) {
+                hideLoadingSpinner();
+                return;
+            }
+
+            // 데이터 그룹화: 같은 시군구 코드를 가진 데이터를 모아서 처리 (클러스터 마커는 시군구별 1개)
+            const groupedData = responseData.reduce((acc, current) => {
+                if (!acc[current.code]) {
+                    acc[current.code] = {
+                        code: current.code,
+                        code_name: current.code_name,
+                        center_latitude: current.center_latitude,
+                        center_longitude: current.center_longitude,
+                        estateTypes: {} ,// 이 시군구의 각 estate_type별 평균 데이터를 담을 객체
+                        // 각 estate_type별 단위 표시 상태를 여기서 초기화 (기본: 평)
+                        _unitDisplayStates: { 
+                            'apt': true, 
+                            'multi': true, 
+                            'officetel': true, 
+                            'land': true 
+                        }
+                    };
+                }
+                // 각 estate_type별 평균 데이터를 저장
+                acc[current.code].estateTypes[current.estate_type] = {
+                    all_average: current.all_average,
+                    last1Year_average: current.last1Year_average,
+                    last3Month_average: current.last3Month_average,
+                    last1Month_average: current.last1Month_average,
+                    // 필요한 경우 count 정보도 추가
+                };
+                return acc;
+            }, {});
+
+            //console.log("groupedData : ", groupedData);
+
+            // 그룹화된 데이터를 순회하며 지도에 표시
+            Object.values(groupedData).forEach((sigunguData) => {  // sigunguData 변수 사용
+                // 개별 타입이 아니라 마커 전체의 단일 상태로 관리
+                if (!sigunguData._isPyeongDisplay) { // 혹시 이전에 정의되지 않았다면 기본값 설정
+                    sigunguData._isPyeongDisplay = true; 
+                }
+
+                // 마커의 최종 위치
+                let markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
+                
+                // 1. 해당 시군구 코드(sigunguData.code)에 맞는 GeoJSON feature를 찾습니다.
+                //    이 feature는 현재 화면에 보이는 GeoJSON 파일(예: SIG_CD_3pro.geojson)에서 와야 합니다.
+                //    'currentVisibleGeoJsonFeatures'는 이미 화면 경계와 교차하는 필터링된 feature 배열이라고 가정합니다.
+                // 해당 시군구의 GeoJSON feature 찾기 (Gist와 동일)
+                const correspondingGeoJsonFeature = currentVisibleGeoJsonFeatures.find(
+                    (feature) => {
+                        const featureCode = String(feature.properties.BJCD || feature.properties.SGC).substring(0, sigunguData.code.length);
+                        return featureCode === sigunguData.code;
+                    }
+                );
+
+                // --- turf.intersect 호출 전에 유효성 검사 강화 ---
+                const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
+                const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
+               
+                if (isFeatureGeometryValid && isMapBoundsValid) {
+                    try {
+                        
+                        // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
+                        const feature1_for_intersect = correspondingGeoJsonFeature; 
+                        // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
+                        const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
+                        // 두 Feature를 FeatureCollection으로 만듭니다.
+                        const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
+                        // turf.intersect에 FeatureCollection을 전달합니다.
+                        // 2. 해당 GeoJSON feature의 geometry와 현재 지도 화면의 경계(mapBoundsPolygon)가 교차하는 영역을 계산합니다.
+                        const intersection = turf.intersect(featuresToIntersect);
+
+                        if (intersection) { // 교차 영역이 유효하게 반환된 경우
+                            // 3. 교차 영역의 중심점을 계산합니다.
+                            const visibleCentroid = turf.centroid(intersection);
+                            markerPosition = new kakao.maps.LatLng(
+                            visibleCentroid.geometry.coordinates[1], // 위도
+                            visibleCentroid.geometry.coordinates[0] // 경도
+                            );
+                        } else {
+                            // 교차 영역은 없지만, 해당 feature의 원래 중심점을 사용
+                            //console.warn("No intersection found between feature and map bounds.");
+                            const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                            markerPosition = new kakao.maps.LatLng(
+                            featureCentroid.geometry.coordinates[1],
+                            featureCentroid.geometry.coordinates[0]
+                            );
+                            //console.warn(`[sigunguData.code: ${sigunguData.code}] No actual intersection between feature and map bounds, using feature's centroid.`);
+
+                        }
+                    } catch (turfError) {
+                        // turf.intersect 내부에서 발생한 다른 예외 처리
+                        //console.error(`[turf.intersect Error] for sido code ${sigunguData.code}:`, turfError);
+                        // 에러 발생 시 fallback: feature의 중심점 사용
+                        if (isFeatureGeometryValid) {
+                            const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                            markerPosition = new kakao.maps.LatLng(
+                            featureCentroid.geometry.coordinates[1],
+                            featureCentroid.geometry.coordinates[0]
+                            );
+                        } else {
+                            markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
+                        }
+                    }
+                } else {
+                    // 유효성 검사를 통과하지 못한 경우 (Feature Geometry가 없거나 Map Bounds Polygon이 유효하지 않음)
+                    if (isFeatureGeometryValid) {
+                        const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                        markerPosition = new kakao.maps.LatLng(
+                        featureCentroid.geometry.coordinates[1],
+                        featureCentroid.geometry.coordinates[0]
+                        );
+                        //console.warn(`[sigunguData.code: ${sigunguData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
+                    } else {
+                        // GeoJSON feature 자체도 문제가 있는 경우
+                        markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
+                        //console.warn(`[sigunguData.code: ${sigunguData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
+                    }
+                }
+                // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
+
+                // 1. markerPosition의 유효성 검사 (추가)
+                if (!markerPosition instanceof kakao.maps.LatLng || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
+                    //console.error(`[DEBUG ERROR] Invalid markerPosition for code ${sigunguData.code}:`, markerPosition);
+                    return; // 이 시군구에 대한 오버레이는 생성하지 않고 건너뜁니다.
+                }
+                
+                // 초기 단위 상태 및 텍스트 결정 (Gist 수정)
+                const initialIsPyeongDisplay = sigunguData._unitDisplayStates['apt']; 
+                const initialUnitText = initialIsPyeongDisplay ? '평' : '㎡';
+
+                // CustomOverlay HTML 내용 구성 (Gist 수정)
+                const customOverlayContent = `
+                    <div class="custom-overlay-content">
+                        <div class="name-line">
+                            <span class="name-text">${sigunguData.code_name}</span> 
+                            <span class="unit-toggle-btn">(${initialUnitText})</span> 
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="main-price">
+                            ${createPriceItem('apt', sigunguData, initialIsPyeongDisplay)}
+                        </div>
+                        <div class="detail-prices" style="display:none;">
+                            ${createPriceItem('multi', sigunguData, initialIsPyeongDisplay)}
+                            ${createPriceItem('officetel', sigunguData, initialIsPyeongDisplay)}
+                            ${createPriceItem('land', sigunguData, initialIsPyeongDisplay)}
+                        </div>
+                    </div>
+                `;
+                
+                // 2. customOverlayContent와 map 객체 값 확인 (추가)
+                const customOverlay = new kakao.maps.CustomOverlay({
+                    map: map,
+                    position: markerPosition,
+                    content: customOverlayContent,
+                    yAnchor: 1,
+                    zIndex: 1
+                });
+                realPriceOverlays.push(customOverlay);
+
+                // 이벤트 리스너 추가 // 3. customOverlayElement 접근 성공 여부 확인 (추가)
+                const customOverlayElement = customOverlay.a; // DOM 요소를 가져오는 방법
+                if (!customOverlayElement) {
+                    //console.error(`[DEBUG ERROR] Failed to get DOM element for CustomOverlay of code ${sigunguData.code}. Overlay might not be properly rendered.`);
+                    // 이 경우에도 계속 진행은 가능하지만, 이벤트 리스너는 붙지 않을 것입니다.
+                } else {
+                    //console.log(`[DEBUG]   DOM element retrieved successfully for code ${sigunguData.code}.`);
+                }
+                const nameLineDiv = customOverlayElement.querySelector('.name-line');
+                const detailPricesDiv = customOverlayElement.querySelector('.detail-prices');
+                const toggleIconSpan = customOverlayElement.querySelector('.toggle-icon');
+                const unitToggleButton = customOverlayElement.querySelector('.unit-toggle-btn'); // 새로 추가된 단위 토글 버튼
+
+                if (nameLineDiv) {
+                    // 전체 name-line 클릭 이벤트 (단위 토글 또는 펼치기/접기)
+                    nameLineDiv.addEventListener('click', (event) => {
+                        // event.target이 단위 토글 버튼인지 확인하여 분기 처리
+                        if (unitToggleButton && unitToggleButton.contains(event.target)) { // 클릭된 요소가 단위 토글 버튼이거나 그 자식일 경우
+                            event.stopPropagation(); // 오버레이 클릭 이벤트를 막아 지도가 이동하는 것을 방지
+                            
+                            const currentPyeongDisplay = sigunguData._unitDisplayStates['apt'];
+                            const newPyeongDisplay = !currentPyeongDisplay;
+
+                            // 해당 오버레이의 모든 estateType 단위 표시 상태를 업데이트
+                            for (const type in sigunguData._unitDisplayStates) {
+                                if (sigunguData._unitDisplayStates.hasOwnProperty(type)) {
+                                    sigunguData._unitDisplayStates[type] = newPyeongDisplay;
+                                }
+                            }
+
+                            unitToggleButton.textContent = newPyeongDisplay ? '(평)' : '(㎡)';
+
+                            // 가격 항목들만 다시 렌더링
+                            const mainPriceDiv = customOverlayElement.querySelector('.main-price');
+                            const newDetailPricesDiv = customOverlayElement.querySelector('.detail-prices');
+
+                            mainPriceDiv.innerHTML = createPriceItem('apt', sigunguData, newPyeongDisplay);
+                            newDetailPricesDiv.innerHTML = `
+                                ${createPriceItem('multi', sigunguData, newPyeongDisplay)}
+                                ${createPriceItem('officetel', sigunguData, newPyeongDisplay)}
+                                ${createPriceItem('land', sigunguData, newPyeongDisplay)}
+                            `;
+
+                        } else { // 펼치기/접기 아이콘 또는 나머지 영역 클릭 시 (기존 로직)
+                            event.stopPropagation(); // 지도 클릭 이벤트 방지
+                            if (detailPricesDiv.style.display === 'none') {
+                                detailPricesDiv.style.display = 'block';
+                                toggleIconSpan.textContent = '▲';
+                            } else {
+                                detailPricesDiv.style.display = 'none';
+                                toggleIconSpan.textContent = '▼';
+                            }
+                        }
+                    });
+                    nameLineDiv.addEventListener('mouseover', function() {
+                        nameLineDiv.style.background = '#eee';
+                    });
+                    nameLineDiv.addEventListener('mouseout', function() {
+                        nameLineDiv.style.background = '#fff';
+                    });
+                } else {
+                    //console.warn(`[DEBUG WARNING] Could not find .name-line div for code ${sigunguData.code}. Event listeners not attached.`);
+                }
+            }); // groupedData.forEach((sigunguData) => { ... }) 끝
+
+            hideLoadingSpinner(); // 로딩 스피너 숨김
+
+            //console.log('[실거래가] (시군구) 그리기 완료 시간:', getFormattedDateTime());
+
+        } catch (error) {
+            
+            let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
+            if (error.message) {
+                userFriendlyMessage = "데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
+            } else if (error instanceof TypeError) {
+                // 예를 들어 response.json()이 실패했거나, 네트워크 문제일 때 TypeError가 발생하기도 합니다.
+                userFriendlyMessage = "네트워크 문제 또는 서버 응답 처리 오류가 발생했습니다.";
+            } else if (error instanceof SyntaxError) {
+                userFriendlyMessage = "서버로부터 유효하지 않은 데이터가 수신되었습니다. (JSON 파싱 오류)";
+            }
+            alert(userFriendlyMessage); // 사용자에게 더 친화적인 메시지 표시
+
+        } finally {
+            hideLoadingSpinner(); // 로딩 스피너 숨김
+        }
+    } 
+    // 시도 단위 처리 로직 (추후 구현)
+    else if(sggCdsToFetch[0].length === 2){   
+        //console.log('[실거래가] (시도) 그리기 시작 시간:', getFormattedDateTime());
+        
+        // 시도 단위에서는 estateTypes를 고정 값으로 변경합니다.
+        requestBody.estateTypes = "apt,multi,officetel,land"; 
+
+        try {
+            // 시도 API 엔드포인트 호출
+            const response = await fetch("/front/back/realPrice/realPrice_apt_sido_db.php", { // 'sido_db.php'로 변경
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+                body: JSON.stringify(requestBody), 
+            });
+
+            if (!response.ok) {
+            const errorText = await response.text();
+            //console.error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+            hideLoadingSpinner();
+            return;
+        }
+            const result = await response.json();
+            if (!result.success) {
+                //console.error("API Error:", result.message);
+                alert("시도 데이터를 가져오는 중 오류가 발생했습니다: " + result.message);
+                return;
+            }
+            const responseData = result.data; 
+            if (!responseData || responseData.length === 0) {
+                hideLoadingSpinner();
+                return;
+            }
+
+            // 데이터 그룹화: 같은 시도 코드를 가진 데이터를 모아서 처리
+            const groupedData = responseData.reduce((acc, current) => {
+                if (!acc[current.code]) {
+                    acc[current.code] = {
+                        code: current.code,
+                        code_name: current.code_name, // 시도 이름
+                        center_latitude: current.center_latitude,
+                        center_longitude: current.center_longitude,
+                        estateTypes: {},
+                        // 각 estate_type별 단위 표시 상태를 여기서 초기화 (기본: 평)
+                        _unitDisplayStates: { 
+                            'apt': true, 'multi': true, 'officetel': true, 'land': true 
+                        }
+                    };
+                }
+                acc[current.code].estateTypes[current.estate_type] = {
+                    all_average: current.all_average,
+                    last1Year_average: current.last1Year_average,
+                    last3Month_average: current.last3Month_average,
+                    last1Month_average: current.last1Month_average,
+                };
+                return acc;
+            }, {});
+
+            //console.log("groupedData : ", groupedData);
+            // 그룹화된 데이터를 순회하며 지도에 표시
+            Object.values(groupedData).forEach((sidoData) => { // sidoData 변수 사용
+                // 개별 타입이 아니라 마커 전체의 단일 상태로 관리
+                if (!sidoData._isPyeongDisplay) {
+                    sidoData._isPyeongDisplay = true; 
+                }
+
+                // 마커의 최종 위치
+                let markerPosition = new kakao.maps.LatLng(sidoData.center_latitude, sidoData.center_longitude);
+                // 1. 해당 시도 코드(sidoData.code)에 맞는 GeoJSON feature를 찾습니다.
+                //    이 feature는 현재 화면에 보이는 GeoJSON 파일(예: CTPRVN_3pro.geojson)에서 와야 합니다.
+                //    'currentVisibleGeoJsonFeatures'는 이미 화면 경계와 교차하는 필터링된 feature 배열이라고 가정합니다.
+                 // 해당 시군구의 GeoJSON feature 찾기 (Gist와 동일)
+                const correspondingGeoJsonFeature = currentVisibleGeoJsonFeatures.find(
+                    (feature) => {
+                        const featureCode = String(feature.properties.BJCD || feature.properties.SGC).substring(0, sidoData.code.length);
+                        return featureCode === sidoData.code;
+                    }
+                );
+
+                // --- turf.intersect 호출 전에 유효성 검사 강화 ---
+                const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
+                const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
+
+                //console.log("isFeatureGeometryValid, isMapBoundsValid  ", isFeatureGeometryValid, " ", isMapBoundsValid );
+
+                if (isFeatureGeometryValid && isMapBoundsValid) {
+                    try {
+
+                        // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
+                        const feature1_for_intersect = correspondingGeoJsonFeature; 
+                        // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
+                        const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
+                        // 두 Feature를 FeatureCollection으로 만듭니다.
+                        const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
+                        // turf.intersect에 FeatureCollection을 전달합니다.
+                        // 2. 해당 GeoJSON feature의 geometry와 현재 지도 화면의 경계(mapBoundsPolygon)가 교차하는 영역을 계산합니다.
+                        const intersection = turf.intersect(featuresToIntersect);
+
+                        if (intersection) { // 교차 영역이 유효하게 반환된 경우
+                            // 3. 교차 영역의 중심점을 계산합니다.
+                            const visibleCentroid = turf.centroid(intersection);
+                            markerPosition = new kakao.maps.LatLng(
+                            visibleCentroid.geometry.coordinates[1], // 위도
+                            visibleCentroid.geometry.coordinates[0] // 경도
+                            );
+                        } else {
+                            // 교차 영역은 없지만, 해당 feature의 원래 중심점을 사용
+                            const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                            markerPosition = new kakao.maps.LatLng(
+                            featureCentroid.geometry.coordinates[1],
+                            featureCentroid.geometry.coordinates[0]
+                            );
+                            //console.warn(`[sidoData.code: ${sidoData.code}] No actual intersection between feature and map bounds, using feature's centroid.`);
+                        }
+                    } catch (turfError) {
+                        // turf.intersect 내부에서 발생한 다른 예외 처리
+                        //console.error(`[turf.intersect Error] for sido code ${sidoData.code}:`, turfError);
+                        // 에러 발생 시 fallback: feature의 중심점 사용
+                        if (isFeatureGeometryValid) {
+                            const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                            markerPosition = new kakao.maps.LatLng(
+                            featureCentroid.geometry.coordinates[1],
+                            featureCentroid.geometry.coordinates[0]
+                            );
+                        } else {
+                            markerPosition = new kakao.maps.LatLng(sidoData.center_latitude, sidoData.center_longitude);
+                        }
+                    }
+                } else {
+                    // 유효성 검사를 통과하지 못한 경우 (Feature Geometry가 없거나 Map Bounds Polygon이 유효하지 않음)
+                    if (isFeatureGeometryValid) {
+                        const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                        markerPosition = new kakao.maps.LatLng(
+                        featureCentroid.geometry.coordinates[1],
+                        featureCentroid.geometry.coordinates[0]
+                        );
+                        //console.warn(`[sidoData.code: ${sidoData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
+                    } else {
+                        // GeoJSON feature 자체도 문제가 있는 경우
+                        markerPosition = new kakao.maps.LatLng(sidoData.center_latitude, sidoData.center_longitude);
+                        //console.warn(`[sidoData.code: ${sidoData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
+                    }
+                }
+                // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
+                // 1. markerPosition의 유효성 검사 (추가)
+                if (!markerPosition instanceof kakao.maps.LatLng || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
+                    //console.error(`[DEBUG ERROR] Invalid markerPosition for code ${sidoData.code}:`, markerPosition);
+                    return; // 이 시도에 대한 오버레이는 생성하지 않고 건너뜁니다.
+                }
+
+                // 초기 단위 상태 및 텍스트 결정 (Gist 수정)
+                const initialIsPyeongDisplay = sidoData._unitDisplayStates['apt']; 
+                const initialUnitText = initialIsPyeongDisplay ? '평' : '㎡';
+
+                // CustomOverlay HTML 내용 구성 (Gist 수정)
+                const customOverlayContent = `
+                    <div class="custom-overlay-content">
+                        <div class="name-line">
+                            <span class="name-text">${sidoData.code_name}</span> 
+                            <span class="unit-toggle-btn">(${initialUnitText})</span> 
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="main-price">
+                            ${createPriceItem('apt', sidoData, initialIsPyeongDisplay)}
+                        </div>
+                        <div class="detail-prices" style="display:none;">
+                            ${createPriceItem('multi', sidoData, initialIsPyeongDisplay)}
+                            ${createPriceItem('officetel', sidoData, initialIsPyeongDisplay)}
+                            ${createPriceItem('land', sidoData, initialIsPyeongDisplay)}
+                        </div>
+                    </div>
+                `;
+                
+                // 2. customOverlayContent와 map 객체 값 확인 (추가)
+                const customOverlay = new kakao.maps.CustomOverlay({
+                    map: map,
+                    position: markerPosition,
+                    content: customOverlayContent,
+                    yAnchor: 1,
+                    zIndex: 1
+                });
+                realPriceOverlays.push(customOverlay);
+
+                // 이벤트 리스너 추가 (Gist 수정)
+                const customOverlayElement = customOverlay.a; // DOM 요소를 가져오는 방법
+                if (!customOverlayElement) {
+                    //console.error(`[DEBUG ERROR] Failed to get DOM element for CustomOverlay of code ${sidoData.code}. Overlay might not be properly rendered.`);
+                    // 이 경우에도 계속 진행은 가능하지만, 이벤트 리스너는 붙지 않을 것입니다.
+                } else {
+                    //console.log(`[DEBUG]   DOM element retrieved successfully for code ${sidoData.code}.`);
+                }
+                const nameLineDiv = customOverlayElement.querySelector('.name-line');
+                const detailPricesDiv = customOverlayElement.querySelector('.detail-prices');
+                const toggleIconSpan = customOverlayElement.querySelector('.toggle-icon');
+                const unitToggleButton = customOverlayElement.querySelector('.unit-toggle-btn'); // 새로 추가된 단위 토글 버튼
+
+                if (nameLineDiv) {
+                    // 전체 name-line 클릭 이벤트 (단위 토글 또는 펼치기/접기)
+                    nameLineDiv.addEventListener('click', (event) => {
+                        // event.target이 단위 토글 버튼인지 확인하여 분기 처리
+                        if (unitToggleButton && unitToggleButton.contains(event.target)) { // 클릭된 요소가 단위 토글 버튼이거나 그 자식일 경우
+                            event.stopPropagation(); // 오버레이 클릭 이벤트를 막아 지도가 이동하는 것을 방지
+                            
+                            const currentPyeongDisplay = sidoData._unitDisplayStates['apt'];
+                            const newPyeongDisplay = !currentPyeongDisplay;
+
+                            // 해당 오버레이의 모든 estateType 단위 표시 상태를 업데이트
+                            for (const type in sidoData._unitDisplayStates) {
+                                if (sidoData._unitDisplayStates.hasOwnProperty(type)) {
+                                    sidoData._unitDisplayStates[type] = newPyeongDisplay;
+                                }
+                            }
+
+                            unitToggleButton.textContent = newPyeongDisplay ? '(평)' : '(㎡)';
+
+                            // 가격 항목들만 다시 렌더링
+                            const mainPriceDiv = customOverlayElement.querySelector('.main-price');
+                            const newDetailPricesDiv = customOverlayElement.querySelector('.detail-prices');
+
+                            mainPriceDiv.innerHTML = createPriceItem('apt', sidoData, newPyeongDisplay);
+                            newDetailPricesDiv.innerHTML = `
+                                ${createPriceItem('multi', sidoData, newPyeongDisplay)}
+                                ${createPriceItem('officetel', sidoData, newPyeongDisplay)}
+                                ${createPriceItem('land', sidoData, newPyeongDisplay)}
+                            `;
+
+                        } else { // 펼치기/접기 아이콘 또는 나머지 영역 클릭 시 (기존 로직)
+                            event.stopPropagation(); // 지도 클릭 이벤트 방지
+                            if (detailPricesDiv.style.display === 'none') {
+                                detailPricesDiv.style.display = 'block';
+                                toggleIconSpan.textContent = '▲';
+                            } else {
+                                detailPricesDiv.style.display = 'none';
+                                toggleIconSpan.textContent = '▼';
+                            }
+                        }
+                    });
+                    nameLineDiv.addEventListener('mouseover', function() {
+                        nameLineDiv.style.background = '#eee';
+                    });
+                    nameLineDiv.addEventListener('mouseout', function() {
+                        nameLineDiv.style.background = '#fff';
+                    });
+                } else {
+                    //console.warn(`[DEBUG WARNING] Could not find .name-line div for code ${sidoData.code}. Event listeners not attached.`);
+                }
+            }); // groupedData.forEach((sidoData) => { ... }) 끝
+
+            hideLoadingSpinner(); // 로딩 스피너 숨김
+            
+            //console.log('[실거래가] (시도) 그리기 완료 시간:', getFormattedDateTime());
+
+        } catch (error) {
+            let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
+            if (error.message) {
+                userFriendlyMessage = "데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
+            } else if (error instanceof TypeError) {
+                // 예를 들어 response.json()이 실패했거나, 네트워크 문제일 때 TypeError가 발생하기도 합니다.
+                userFriendlyMessage = "네트워크 문제 또는 서버 응답 처리 오류가 발생했습니다.";
+            } else if (error instanceof SyntaxError) {
+                userFriendlyMessage = "서버로부터 유효하지 않은 데이터가 수신되었습니다. (JSON 파싱 오류)";
+            }
+            alert(userFriendlyMessage); // 사용자에게 더 친화적인 메시지 표시
+        } finally {
+            hideLoadingSpinner(); 
+        }
+    }
+    // 알 수 없는 sggCdsToFetch 길이
+    else {
+        //console.warn("알 수 없는 sggCdsToFetch 길이:", sggCdsToFetch);
+        hideLoadingSpinner(); // 로딩 스피너 숨김
+    }
+
+
+} // realPriceAptArrayWithCache 함수 끝
+
+
+/**
+ * 10x10 multi point를 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
+ * 지도 화면 내 여러 시군구 코드(sggCdArray)를 기준으로
+ * 부동산 실거래가 정보를 가져와 지도에 시각화하는 비동기 함수.
+ * @param {string[]} sggCdArray - 조회할 시군구 코드들의 배열 (예: ['11680', '11650'])
+ * 추후 삭제 예정
+ */
+async function realPriceAptArray(sggCdArray) { 
+    return new Promise((resolve, reject) => { // Promise를 반환하도록 함수 수정
+        // 1. 현재 지도 화면의 바운딩 박스(Bounding Box) 추출
+        var bounds = map.getBounds();
+        var sw = bounds.getSouthWest();
+        var ne = bounds.getNorthEast();
+        var bbox = `${sw.getLat()},${sw.getLng()},${ne.getLat()},${ne.getLng()},EPSG:4326`;
+
+        // 2. 클라이언트 필터 파라미터 수집
+        var filterObj = collectMultiFilterParams();
+
+        // 3. 백엔드 API 호출 데이터 객체 구성 (sggCds 배열을 포함하도록 변경)
+        //    >>> 백엔드에서 sggCds 배열을 처리할 수 있도록 구현되어야 합니다.
+        const dataObj = { 
+            ...filterObj, 
+            bbox: encodeURIComponent(bbox), 
+            sggCds: sggCdArray // <<--- 여기를 sggCds 배열로 변경!
+        };
+
+        // 4. 백엔드 API 호출 (API 엔드포인트 및 callTag 변경)
+        //    >>> "/front/back/realPrice/realPrice_apt_multi_sgg.php" 는 여러 sggCds를 처리하도록 백엔드에서 새로 구현되어야 함.
+        callApiAbort("/front/back/realPrice/realPrice_apt_multi_sgg.php", "POST", dataObj, "realPriceAptArray")
+            .then((response) => {
+                // 5. API 응답 처리 시작
+                if (!response) {
+                    resolve(); // 응답이 없어도 작업은 끝난 것으로 간주 (혹은 reject 처리)
+                    return;
+                }
+
+                const { responseData, message, statusCode } = response;
+                if (statusCode !== 200) {
+                    //console.error("API Error:", message);
+                    reject(new Error(message)); // API 오류 시 Promise reject
+                    return;
+                }
+
+                const zoomLevel = map.getLevel();
+
+                // 기존 오버레이 제거 (전체 시군구 데이터를 처리하므로 기존 오버레이는 모두 제거)
+                realPriceOverlays.forEach((overlay) => overlay.setMap(null));
+                realPriceOverlays = []; // 배열 초기화
+
+                // 모든 클러스터러 초기화
+                Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
+                
+                // 6. 데이터 반복 및 지도 객체 생성
+                Object.values(responseData).forEach((data) => {
+                    let markerString = ""; // 각 data에 대한 markerString을 다시 초기화
+
+                    if (zoomLevel > 4) { // 줌 레벨이 5 이상일 경우 (상세 뷰)
+                        // 기존 클러스터러 생성 및 마커 추가 로직 (동일)
+                        let clusterer = createClustererAll("all"); // 클러스터러 생성
+                        const marker = createClusteredMarker(data); // 마커 생성
+                        clusterer.addMarker(marker); // 클러스터러에 마커 추가
+                    } else if (zoomLevel == 4) { // 줌 레벨이 4일 경우 (중간 상세도 뷰)
+                        const smallMarker = document.createElement("div");
+                        // 부동산 유형에 따른 스타일 클래스 설정 (동일)
+                        switch(data.estate_type) {
+                            case "apt": markerString = "small-marker bg-orange2 border-orange2"; break;
+                            case "land": markerString = "small-marker bg-yellow1 border-yellow1"; break;
+                            case "multi": markerString = "small-marker bg-red2 border-red2"; break;
+                            case "officetel": markerString = "small-marker bg-indigo2 border-indigo2"; break;
+                            default: markerString = "small-marker bg-gray border-gray"; break;
+                        }
+                        
+                        smallMarker.className = markerString;
+                        smallMarker.style.cssText = `
+                            width: 7px;
+                            height: 7px;
+                            border-radius: 50%;
+                            cursor: pointer;
+                        `;
+
+                        // 커스텀 오버레이로 원형 점을 지도에 추가 (동일)
+                        let smallMarkerPosition = new kakao.maps.LatLng(data.center_latitude, data.center_longitude);
+                        const smallMarkerOverlay = new kakao.maps.CustomOverlay({
+                            content: smallMarker,
+                            position: smallMarkerPosition,
+                            map: map,
+                            xAnchor: 0.5,
+                            yAnchor: 0.5,
+                            zIndex: 1,
+                        });
+
+                        // 작은 원형 점에 클릭 이벤트 추가 (동일)
+                        smallMarker.addEventListener("click", function () {
+                            if ($(".mo-tool-option button").hasClass("active")) return;
+                            if ($("#draw_toolbox a").hasClass("active")) return;
+
+                            const type = data.estate_type;
+                            const pnu = data.pnu;
+                            const lat = data.center_latitude;
+                            const lng = data.center_longitude;
+                            const coords = { lat: lat, lng: lng };
+                            const kakaoCoords = new kakao.maps.LatLng(lat, lng);
+                            searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+                                if (status === kakao.maps.services.Status.OK) {
+                                    handleMapClick(coords);
+                                    searchArroundPlaces(coords);
+                                    realPriceDetail(type, pnu);
+                                }
+                                displayAddressInfo(result, status);
+                            });
+                        });
+                        realPriceOverlays.push(smallMarkerOverlay); // 오버레이 배열에 작은 원형 점 추가
+
+                    } else { // 줌 레벨이 3 이하일 경우 (가장 낮은 상세도 뷰) // 인포윈도우 스타일 마커 생성 로직
+                        const iwContent = document.createElement("div"); 
+                        iwContent.className = "real-price-marker cursor-pointer";
+                        let liString = ""; 
+                        let imgString = ""; 
+                        let estateString = ""; 
+                        let borderString = ""; 
+                        let infoString = ""; 
+                        let jimokString = ""; 
+
+                        // 부동산 유형에 따른 스타일 및 텍스트 설정 (동일)
+                        switch(data.estate_type) {
+                            case "apt":
+                                markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
+                                imgString = "icn_arr_mark.svg"; estateString = "아파트"; break;
+                            case "land":
+                                markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
+                                imgString = "icn_arr_mark_yellow1.svg";
+                                if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
+                                estateString = jimokString ? `토지: ${jimokString}` : "토지"; break;
+                            case "multi":
+                                markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
+                                imgString = "icn_arr_mark_red2.svg"; estateString = "연립/다세대"; break;
+                            case "officetel":
+                                markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
+                                imgString = "icn_arr_mark_indigo2.svg"; estateString = "오피스텔"; break;
+                            default:    
+                                markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
+                                imgString = "icn_arr_mark_gray.svg"; estateString = "-"; break;
+                        }
+                        
+                        // 필터에 따른 정보 문자열 구성 (동일)
+                        switch(filterObj.estateinfo) {
+                            case "거래면적":
+                                infoString = `<span class="font12 number toggle-unit">${(data.excluUseAr / 3.3058).toFixed(2)}평</span>`;
+                                break;
+                            case "거래년도":
+                                infoString = `<span class="font12">${data.dealYear}년</span>`;
+                                break;
+                            case "거래단가":
+                                const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                                const originalArea = data.excluUseAr / 3.3058;
+                                const unitPrice = originalAmount / originalArea;
+                                infoString = `<span class="font12 number toggle-unit">${formatPrice(unitPrice, "all", false, true)}/평</span>`;
+                                break;
+                            default:
+                                infoString = `<span class="font12 ">-</span>`; 
+                                break;
+                        }
+                        
+                        // HTML 콘텐츠 구성 (동일)
+                        iwContent.innerHTML = `
+                        <ul class="text-center bg-white border ${markerString} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
+                        }" ondragstart="return false;" onselectstart="return false;">
+                            <li class="up bg-white ${borderString} p-1" style="line-height: 11px;">
+                                <p class="font10">${estateString}</p>
+                            </li>
+                            <li class="up bg-white p-1">
+                                <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
+                            </li>
+                            <li class="${liString} text-white">
+                                ${infoString}
+                            </li>
+                        </ul>
+                        <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
+                        `;
+
+                        // CustomOverlay 생성 및 지도에 추가 (동일)
+                        let iwPosition = new kakao.maps.LatLng(data.center_latitude, data.center_longitude); 
+                        var realPriceOverlay = new kakao.maps.CustomOverlay({
+                            clickable: true,
+                            content: iwContent,
+                            map: map,
+                            position: iwPosition,
+                            xAnchor: 0.45,
+                            yAnchor: 1.2,
+                            zIndex: 1,
+                        });
+                        
+                        // HTML 내부의 toggle-unit 요소에 직접 클릭 이벤트 추가 (동일)
+                        iwContent.addEventListener("click", function (e) {
+                            if ($(".mo-tool-option button").hasClass("active")) return;
+                            if ($("#draw_toolbox a").hasClass("active")) return;
+                            e.preventDefault();
+
+                            // Z-index 조절 로직 (동일)
+                            if (realPriceOverlay) { 
+                                const currentZIndex = parseInt(realPriceOverlay.getZIndex() || 0, 10); 
+                                if (currentZIndex >= globalClusterZIndex) { 
+                                    globalClusterZIndex = currentZIndex + 1; 
+                                } else {
+                                    globalClusterZIndex++; 
+                                }
+                                realPriceOverlay.setZIndex(globalClusterZIndex); 
+                            }
+                            
+                            // 단위 토글 로직 (동일)
+                            if(filterObj.estateinfo === "거래면적" || filterObj.estateinfo === "거래단가"){
+                                const unitElement = iwContent.querySelector(".toggle-unit");
+                                const isPyeong = unitElement.textContent.includes("평");
+                                if(filterObj.estateinfo === "거래면적") {
+                                    unitElement.textContent = isPyeong ? `${parseFloat(data.excluUseAr).toFixed(2)}㎡` : `${(data.excluUseAr / 3.3058).toFixed(2)}평`;
+                                } else if(filterObj.estateinfo === "거래단가") {
+                                    const originalAmount = parseFloat(data.dealAmount.replace(/,/g, ""));
+                                    const originalM2Area = data.excluUseAr;
+                                    const originalPyArea = data.excluUseAr / 3.3058;
+                                    const unitPyPrice = originalAmount / originalPyArea;
+                                    const unitM2rice = originalAmount / originalM2Area;
+                                    unitElement.textContent = isPyeong ? `${formatPrice(unitM2rice, "all", false, true)}/㎡` : `${formatPrice(unitPyPrice, "all", false, true)}/평`;
+                                }
+                            }
+
+                            // 클릭 시 상세 정보 조회 로직 (동일)
+                            const type = data.estate_type;
+                            const pnu = data.pnu;
+                            const lat = data.center_latitude;
+                            const lng = data.center_longitude;
+                            const coords = { lat: lat, lng: lng };
+                            const kakaoCoords = new kakao.maps.LatLng(lat, lng);
+                            searchDetailAddrFromCoords(kakaoCoords, function (result, status) {
+                                if (status === kakao.maps.services.Status.OK) {
+                                    handleMapClick(coords);
+                                    searchArroundPlaces(coords);
+                                    realPriceDetail(type, pnu);
+                                }
+                                displayAddressInfo(result, status);
+                            });
+                        });
+                        realPriceOverlays.push(realPriceOverlay); // 오버레이 배열에 추가
+                    }
+                });
+                // --- 지도 객체 생성 로직 끝 ---
+                // 모든 지도 오버레이 지시가 완료되면 Promise를 resolve합니다.
+                resolve(); 
+            })
+            .catch((error) => {
+                //console.error("API Call Error:", error); // 콘솔 오류 메시지 개선
+                // 추가적인 에러 처리 로직 (사용자에게 알림 등)
+                reject(error); // API 호출 자체에서 오류 발생 시 Promise reject
+            });
+    });
+}
+/**
+ * //원래 함수 original function name: realPriceApt(sggCd)
+ * 지도 화면 내 여러 시군구 코드를 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
+ * 부동산 실거래가 정보를 가져와 지도에 시각화하는 비동기 함수.
+ * @param {string[]} sggCdArray - 조회할 시군구 코드들의 배열 (예: ['11680', '11650'])
+ */
 async function realPriceApt(sggCd) {
     var bounds = map.getBounds();   //현재 지도 화면의 가시적인 사각 영역(Bounding Box) 객체를 반환합니다. 이 객체는 지도의 가장 남서쪽 지점과 가장 북동쪽 지점의 좌표 정보를 포함하고 있어요.
     var sw = bounds.getSouthWest(); // 남서쪽 좌표 남서쪽(South-West) 끝 지점의 좌표 객체를 가져옵니다. 남서쪽은 위도(latitude)가 가장 낮고, 경도(longitude)가 가장 낮은 지점
@@ -383,6 +1710,7 @@ function getEstateInfoParams() {
         finalValue = selectedValue !== "all" ? selectedValue : "";
     } else {
         //console.error("ID가 'infoType'인 요소를 찾을 수 없습니다. 기본값 사용.");
+        selectedValue = "거래면적"; // 기본값을 명확히 설정 (UI가 없으면)
     }
 
     return selectedValue ;
@@ -395,11 +1723,8 @@ function getEstateListFilterParams() {
 
     if (isAllActive) {
         // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
-        // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
-        estate_value.push("apt");
-        estate_value.push("multi"); // 오타 수정!
-        estate_value.push("officetel");
-        estate_value.push("land");
+        // // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
+        estate_value.push("apt", "multi", "officetel", "land"); // 일괄 푸시
     } else {
         // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
         // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
@@ -456,6 +1781,7 @@ function estateTypeToValue(estateType) {
             estateValue = "lots";
             break;
         default:
+            estateValue = "";
             console.error("유효하지 않은 매물유형입니다.");
             break;
     }

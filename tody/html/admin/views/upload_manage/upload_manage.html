@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="kr" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tody 관리자 페이지 | 업로드 관리</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content="Tody" name="description" />
+        <meta content="Tody" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+        <!--datatable css-->
+        <!-- <link rel="stylesheet" href="/assets/css/plugins/datatables/dataTables.bootstrap5.min.css" />
+        <link rel="stylesheet" href="/assets/css/plugins/datatables/responsive.bootstrap.min.css" />
+        <link rel="stylesheet" href="/assets/css/plugins/datatables/buttons.dataTables.min.css" /> -->
+
+        <link href="/assets/libs/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/colReorder.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- Layout config Js -->
+        <script src="/assets/js/layout.js"></script>
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Css -->
+        <link href="/assets/css/fonts.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Waves Css-->
+        <link href="/assets/libs/node-waves/waves.min.css" rel="stylesheet" type="text/css" />
+        <!-- choices Css -->
+        <link href="/assets/libs/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- custom Css-->
+        <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <!-- common Css-->
+        <link href="/assets/css/common.css" rel="stylesheet" type="text/css" />
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+        <!-- admin Css -->
+        <link href="/assets/css/adminstyle.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+            <!-- header -->
+            <header id="page-topbar"></header>
+            <!-- /.header -->
+
+            <!-- removeNotificationModal -->
+            <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mt-2 text-center">
+                                <lord-icon src="/assets/json/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width: 100px; height: 100px"></lord-icon>
+                                <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                    <h4>Are you sure ?</h4>
+                                    <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn w-sm btn-danger" id="delete-notification">Yes, Delete It!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+            <!-- ========== App Menu ========== -->
+            <div class="app-menu navbar-menu"></div>
+            <!-- Left Sidebar End -->
+
+            <!-- Vertical Overlay-->
+            <div class="vertical-overlay"></div>
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <!-- content -->
+                <div class="page-content">
+                    <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                    <h4 class="mb-sm-0">업로드 관리</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">업로드 관리</a></li>
+                                            <!-- <li class="breadcrumb-item active">금융 지원 관리</li> -->
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex flex-wrap justify-content-between p-0">
+                                        <ul id="upload_nav" class="nav nav-tabs nav-border-top nav-border-top-danger mb-0" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <!-- Bootstrap 탭 토글은 여전히 href를 통해 활성화할 대상이 필요합니다.
+                                                     여기는 이제 콘텐츠 div가 아니므로, 더미 ID를 지정하고 JavaScript에서 컨트롤합니다.
+                                                     혹은 실제 콘텐츠를 포함하는 div 하나만 tab-pane으로 만들고
+                                                     그 안에서 나머지 동적인 내용을 JS로 교체하는 방식도 가능합니다.
+                                                     여기서는 Bootstrap 탭을 "순수하게 트리거" 역할만 하도록 조정합니다. -->
+                                                <a class="nav-link active" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="1" data-table="view" data-type="characteristic">토지 특성 정보 캐시 업로드 </a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="2" data-table="view" data-type="realprice">국토부 실거래가 가져오기 </a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="3" data-table="view" data-type="rediscache">실거래가 캐시 업로드</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="4" data-table="view" data-type="realpriceAverage">실거래 평균가 업데이트</a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                    <!-- end card header -->
+
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            <div class="discription-section">
+                                                <p>여기에 탭 선택에 따라 내용이 바뀝니다.</p>
+                                            </div>
+                                            <fieldset class="sido-checkboxes-group">
+                                                <div class="sido-checkboxes-container">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="ALL" id="sidoAllCheck">
+                                                        <label class="form-check-label" for="sidoAllCheck">전체 시도 (ALL)</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="11" id="sido_11">
+                                                        <label class="form-check-label" for="sido_11">서울특별시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="26" id="sido_26">
+                                                        <label class="form-check-label" for="sido_26">부산광역시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="27" id="sido_27">
+                                                        <label class="form-check-label" for="sido_27">대구광역시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="28" id="sido_28">
+                                                        <label class="form-check-label" for="sido_28">인천광역시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="29" id="sido_29">
+                                                        <label class="form-check-label" for="sido_29">광주광역시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="30" id="sido_30">
+                                                        <label class="form-check-label" for="sido_30">대전광역시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="31" id="sido_31">
+                                                        <label class="form-check-label" for="sido_31">울산광역시</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="36" id="sido_36">
+                                                        <label class="form-check-label" for="sido_36">세종특별자치시</label>
+                                                    </div>
+                                                </div>
+                                                <div class="sido-checkboxes-container">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="41" id="sido_41">
+                                                        <label class="form-check-label" for="sido_41">경기도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="51" id="sido_51">
+                                                        <label class="form-check-label" for="sido_51">강원특별자치도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="43" id="sido_43">
+                                                        <label class="form-check-label" for="sido_43">충청북도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="44" id="sido_44">
+                                                        <label class="form-check-label" for="sido_44">충청남도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="52" id="sido_52">
+                                                        <label class="form-check-label" for="sido_52">전북특별자치도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="46" id="sido_46">
+                                                        <label class="form-check-label" for="sido_46">전라남도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="47" id="sido_47">
+                                                        <label class="form-check-label" for="sido_47">경상북도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="48" id="sido_48">
+                                                        <label class="form-check-label" for="sido_48">경상남도</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input sido-checkbox" type="checkbox" value="50" id="sido_50">
+                                                        <label class="form-check-label" for="sido_50">제주특별자치도</label>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="date-selection-group">
+                                                <div class="date-selection-flex-container">
+                                                    <div id="startDate" class="date-selection-field-group">
+                                                        <label for="startDate">시작 년 / 월</label>
+                                                        <select id="startYear" class="form-select"></select>
+                                                        <select id="startMonth" class="form-select"></select>
+                                                    </div>
+                                                    <div id = "endDate" class="date-selection-field-group">
+                                                        <label for="endDate">종료 년 / 월</label>
+                                                        <select id="endYear" class="form-select"></select>
+                                                        <select id="endMonth" class="form-select"></select>
+                                                    </div>
+                                                    <div id="baseDate" class="date-selection-field-group">
+                                                        <label for="baseDate">평균 작성 기준 월</label>
+                                                        <select id="baseYear" class="form-select" disabled></select>
+                                                        <select id="baseMonth" class="form-select"></select>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                            <!-- 일반 업로드/배치 시작 버튼 섹션 -->
+                                            <div class="target-button-section" >    
+                                                <button id="uploadStartBtn" class="btn btn-primary">실거래가(읍면동 단위) Redis 캐시에 업로드 시작</button>
+                                                <button type="button" class="btn btn-warning" id="cancelBatchBtn" style="display:none;">중단하기</button>
+                                            </div>
+                                            
+                                            <!-- **************** 변경된 섹션: Redis 로그가 공통 상태 섹션으로 이동 **************** -->
+                                            <div class="target-status-section">
+                                                <!-- 상태 정보 표시 영역 (상단에 배치) -->
+                                                <div id="batchStatusInfo" class="p-3 mb-2 bg-light text-dark" style="border: 1px solid #dee2e6; border-radius: 5px;">
+                                                    <p><strong>현재 상태:</strong> <span id="currentStatus">대기 중</span></p>
+                                                    <p><strong>마지막 실행 시간:</strong> <span id="lastRunTime">-</span></p>
+                                                    <p><strong>마지막 완료 시간:</strong> <span id="lastCompletionTime">-</span></p>
+                                                </div>
+                                                
+                                                <!-- 로그 뷰어 섹션 (상태 정보 아래에 배치) -->
+                                                <h5 id="logHeading_redisTab"  style="color:blue; margin-top: 20px;">[최근 Redis 캐시 배치 스크립트 로그]</h5>
+                                                <pre id="batchLogViewer_redisTab" class="p-3 bg-light border rounded" style="max-height: 250px; overflow-y: scroll; font-size: 0.85em; font-family: 'Consolas', 'Monaco', monospace;"></pre>
+                                                <button id="refreshLogBtn_redisTab" class="btn btn-sm btn-info mt-2">로그 새로고침</button>
+                                                <p class="text-muted mt-2"><small>로그 파일 위치: `upload_batch_master_xxx.log` (xxx: historyID ,배치 스크립트와 동일 디렉토리)</small></p>
+
+                                            </div>
+                                            
+                                            <div class="target-history-section" >
+                                                <h5 id="historyTitle" style="color:blue;">이력</h5> <!-- 여기에 id 추가 -->
+                                                <div class="mt-4">
+                                                    <div id="batchhistory" class="p-3 mb-2 bg-light text-dark" >
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div> <!-- endtab-content  -->
+                                    </div>    <!-- end card-body -->
+                                </div>        <!-- end card -->
+                            </div>            <!-- end col -->
+                        </div>
+                    </div>                    <!-- container-fluid -->
+                </div>                <!-- End Page-content -->
+
+                <!-- footer -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <script>document.write(new Date().getFullYear())</script> © Tody.
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    Design & Develop by Tody
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- /.footer -->
+            </div>   <!-- end main content-->
+        </div>       <!-- END layout-wrapper -->
+
+        <!--start back-to-top-->
+        <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+            <i class="ri-arrow-up-line"></i>
+        </button>
+        <!--end back-to-top-->
+
+        <!--preloader-->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="customizer-setting d-none d-md-block">
+            <div class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
+                <i class="mdi mdi-spin mdi-cog-outline fs-22"></i>
+            </div>
+        </div>
+
+        <!-- Theme Settings -->
+        <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas"></div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/libs/jquery/js/jquery-3.7.1.min.js"></script>
+        <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="/assets/libs/node-waves/waves.min.js"></script>
+        <script src="/assets/libs/feather-icons/feather.min.js"></script>
+        <script src="/assets/js/plugins/lord-icon-2.1.0.js"></script>
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+        <script src="/assets/libs/prismjs/prism.js"></script>
+        <!--datatable js-->
+        <script src="/assets/libs/datatables/js/jszip.min.js"></script>
+        <script src="/assets/libs/datatables/js/pdfmake.min.js"></script>
+        <script src="/assets/libs/datatables/js/vfs_fonts.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.colVis.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.html5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.print.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.colReorder.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/libs/datatables/js/responsive.bootstrap5.js"></script>
+        <!-- jquery-validation.js -->
+        <script src="/assets/libs/jquery-validation/js/jquery.validate.min.js"></script>
+        <script src="/admin/js/00-include/validation.js"></script>
+        
+        <!-- custom -->
+        <script src="/admin/js/00-include/layout.js"></script>
+        <script src="/admin/js/00-include/sha256.js"></script>
+        <script src="/admin/js/00-include/functions.js"></script>
+        <script src="/admin/js/00-include/common.js"></script>
+        <script src="/admin/js/00-include/layer_popup.js"></script>
+        <script src="/admin/js/13-upload/upload.js"></script>
+        <!-- App js ==> common.js의 ready(function () { ... }) 부분으로 이동 
+        <script>
+            window.addEventListener("load", function () {
+                var script = document.createElement("script");
+                script.src = "/assets/js/app.js?v=" + new Date().getTime();
+                document.body.appendChild(script);
+            });
+        </script> -->
+        <!-- <script src="/assets/js/app.js"></script> -->
+    </body>
+</html>

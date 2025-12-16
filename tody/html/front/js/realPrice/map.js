@@ -38,8 +38,14 @@ let hoverTimer = null;             // 마우스가 멈춰있는지 감지하는 
 let lastHoverLatLng = null;        // 마지막으로 마우스가 멈췄다고 감지된 LatLng
 const HOVER_DELAY_MS = 500;       // 마우스 멈춤 감지 시간 (1.초)
 let isHoverDrawingPending = false; // 현재 호버 폴리곤 그리기가 예약되었는지 여부
+/*===========================================
+*  실거래가 폴리곤 모드 설절 플래그
+*============================================*/
+const REALPRICE_POLYGON_MODE = 3; // 1: 원모드, 2: multi 모드, 3: auto 모드
 
 $(document).ready(function () {
+
+    //console.log("***** REALPRICE_POLYGON_MODE:",REALPRICE_POLYGON_MODE);
     initProj4();
     initializeMap(); // 지도 초기화
     handleMapEvents(); // 지도 이벤트
@@ -166,10 +172,36 @@ function initProj4() {
 
 /**
  * 지도 이벤트를 처리하는 함수
- */
+*/
 function handleMapEvents() {
+
+    let fetchTimeout; // 디바운스 타이머
+/*
+    kakao.maps.event.addListener(map, 'idle', function() {
+        //console.log(`[${new Date().toLocaleTimeString()}] 지도 idle 이벤트 발생!`);
+        //console.trace('idle 이벤트 호출 스택:');
+        if (REALPRICE_POLYGON_MODE == 1) {
+            debouncedFetchRealPriceApt();
+        } else if (REALPRICE_POLYGON_MODE == 2) {
+            debouncedFetchRealPriceAptArray();
+        } else if (REALPRICE_POLYGON_MODE == 3) {
+            debouncedFetchRealPriceAptArrayWithCash();
+        }
+    });
+*/
     // [EVENT] 지도가 줌인 줌아웃 후 이벤트 처리
     kakao.maps.event.addListener(map, "dragend", async function () {
+
+        //debouncedFetchRealPrice(map); // 맵 객체를 인자로 전달 (혹은 함수가 필요한 다른 인자들)
+/*        
+        if (REALPRICE_POLYGON_MODE == 1) {
+            debouncedFetchRealPriceApt();
+        } else if (REALPRICE_POLYGON_MODE == 2) {
+            debouncedFetchRealPriceAptArray();
+        } else if (REALPRICE_POLYGON_MODE == 3) {
+            debouncedFetchRealPriceAptArrayWithCash();
+        }
+*/
         const level = map.getLevel();
 
         let buffer = 0;
@@ -201,12 +233,28 @@ function handleMapEvents() {
 
     // [EVENT] 지도가 드래그된 후 이벤트 처리
     kakao.maps.event.addListener(map, "zoom_changed", async function () {
+
+        //debouncedFetchRealPrice(map); // 맵 객체를 인자로 전달
+/*        
+        if (REALPRICE_POLYGON_MODE == 1) {
+            debouncedFetchRealPriceApt();
+        } else if (REALPRICE_POLYGON_MODE == 2) {
+            debouncedFetchRealPriceAptArray();
+        } else if (REALPRICE_POLYGON_MODE == 3) {
+            debouncedFetchRealPriceAptArrayWithCash();
+        }
+*/
         // 기존 오버레이 제거
         realPriceOverlays.forEach((overlay) => overlay.setMap(null));
         realPriceOverlays = []; // 배열 초기화
 
         // 모든 클러스터러 초기화
-        Object.values(clusterersByType).forEach((clusterer) => clusterer.clear());
+        Object.values(clusterersByType).forEach((clusterer) => {
+            // clusterer가 null 또는 undefined가 아닐 때만 clear() 호출
+            if (clusterer) {
+                clusterer.clear();
+            }
+        });
 
         const center = map.getCenter();
         const level = map.getLevel();
@@ -238,6 +286,7 @@ function handleMapEvents() {
         // }
     });
 
+    
     kakao.maps.event.addListener(map, "dblclick", async function (mouseEvent) {});
 
     // [EVENT] 지도가 클릭 이벤트 처리
@@ -261,7 +310,7 @@ function handleMapEvents() {
         updateURL({ curLat: lat, curLng: lng }); // url 파라미터 및 쿠키 변경
 
         const level = map.getLevel();
-        if (level < 7) {                    //zoomLevel 6->7
+        if (level < 5) {                    //zoomLevel 6->5
             // 건물 및 토지 정보를 동시에 가져오기
             handleMapClick(coords);
 
@@ -358,14 +407,23 @@ function handleMapEvents() {
         // clearAdministrativePolygons(); // 모든 폴리곤 및 라벨 제거 (클릭 폴리곤도 지워짐)
         // 또는 특정 호버 폴리곤만 제거하는 함수를 따로 구현 (예: clearHoverPolygons())
     });
+
     // 지도에서 idle 이벤트가 발생할 때마다 오버레이를 갱신
+    // `tilesloaded` 이벤트는 지도 처음 로딩 및 줌 레벨 변경 시 발생하지만,
+    // 데이터 로딩은 `idle` 이벤트에서 전담하도록 하는 것이 더 명확합니다.
+    // 따라서 여기서 `fetchRealPriceAptArrayBasedOnMapCenter()` 호출은 제거합니다.
+    // 초기 데이터 로딩은 맵 로드 완료 시 단 한 번만 호출하면 됩니다.
+    /*
     kakao.maps.event.addListener(map, "tilesloaded", async function () {
 
         // 맵 타일이 로드될 때도 기존처럼 호출
-        fetchRealPriceAptBasedOnMapCenter();
+        // 기존 동단위 호출
+        //fetchRealPriceAptBasedOnMapCenter();
 
+        // 개선된 다중 sggCd 호출(현재는 중앙 + 4군데)
+    //    fetchRealPriceAptArrayBasedOnMapCenter();
         /*
-        const center = map.getCenter();
+        //const center = map.getCenter();
         const level = map.getLevel();
         if (level > 6) return;
 
@@ -387,11 +445,303 @@ function handleMapEvents() {
                 realPriceApt(sggCd);
             }
         });
-        */
+       /
     });
+    */
 }
 
-// 지도 중심 좌표와 레벨을 기반으로 sggCd를 계산하고 realPriceApt를 호출하는 함수
+/**
+ * UI에서 부동산 유형 필터의 선택 상태를 읽어 `currentEstateTypes` 전역 변수를 갱신합니다.
+ * onedol님 프로젝트의 UI 요소에 맞춰 이 함수를 구현해야 합니다.
+ */
+function updateEstateTypeFiltersFromUI() {
+    const newEstateTypes = []; // 임시 배열
+
+    const allToggleButton = $('.realmap-estate-group button').eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
+    const isAllActive = allToggleButton.hasClass("active"); // '전체' 버튼이 활성화된 상태인지 확인
+
+    if (isAllActive) {
+        // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
+        // // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
+        newEstateTypes.push("apt", "multi", "officetel", "land"); // 일괄 푸시
+    } else {
+        // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
+        // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
+        $('.realmap-estate-group button.active').not(allToggleButton).each(function () {
+            const btn_text = $(this).text().trim();
+            // 개별 유형 버튼의 텍스트를 이용해 값을 추가
+            newEstateTypes.push(estateTypeToValue(btn_text));
+        });
+    }
+
+    // 만약 아무것도 선택되지 않았다면 기본값으로 모두 포함하도록 설정
+    if (newEstateTypes.length === 0) {
+        currentEstateTypes = ['apt', 'multi', 'officetel', 'land'];
+    } else {
+        currentEstateTypes = newEstateTypes;
+    }
+    
+    //console.log("Current Estate Types: ", currentEstateTypes);
+}
+
+/**
+ * * 최종 목표
+ * 지도 화면 내 여러 시군구 코드를 자동으로 찾아와 레벨을 기반으로 sggCd 배열(nxn)을 계산하고 realPriceAptArrayWithCache를 호출하는 함수
+ * 새로운 캐시 API를 호출하는 메인 함수
+ * 이 함수는 `map`의 `idle` 이벤트 리스너에서 호출됩니다.
+ * 레벨에 맞춰 지도의 보이는 영역에 해당하는 sggCd들을 모두 가져오는 방식
+ */
+async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
+    //console.trace('idle fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint 호출 스택:');
+    if (!clusterersByType["all"]) {
+        initializeClusterers();
+    }
+    //console.log(`(1)실거래가(AutoPoint) 시작시간 : ${getFormattedDateTime()} `);
+    
+    const currentBounds = map.getBounds();
+    const currentLevel = map.getLevel();
+
+    // 줌 레벨 조정: 가장 낮은 디테일 레벨(시도)을 넘어서면 중단
+    // 읍면동(31M), 시군구(22M), 시도(11M) 파일이 있으니 레벨 10 이상에서도 충분히 데이터를 사용할 수 있도록 조정
+
+    if (currentLevel > 11) { // 줌 레벨 조정: 가장 낮은 디테일 레벨(시도)을 넘어서면 중단
+        clearAllRealEstateOverlays();
+        //console.log(`[${getFormattedDateTime()}] Zoom level (${currentLevel}) is too high (>10). Skipping data fetch and clearing overlays.`);
+        hideLoadingSpinner();
+        return;
+    }
+
+    updateEstateTypeFiltersFromUI();
+    const estateTypesToFetch = currentEstateTypes;
+
+    const uniqueSggCds = new Set();
+    
+    const minLng = currentBounds.getSouthWest().getLng();
+    const minLat = currentBounds.getSouthWest().getLat();
+    const maxLng = currentBounds.getNorthEast().getLng();
+    const maxLat = currentBounds.getNorthEast().getLat();
+
+    // API에 전달할 bbox 파라미터용 배열
+    const bboxArrayForApi = [minLng, minLat, maxLng, maxLat]; // [minX, minY, maxX, maxY] 형식
+
+    // turf.bboxPolygon은 그대로 사용하세요 (booleanIntersects용)
+    const mapBoundsPolygon = turf.bboxPolygon(bboxArrayForApi);
+
+
+    let geojsonToProcess;
+    let geojsonTypeToLoad; // GeoJSON 파일 Type
+    
+    // 현재 레벨에 따라 사용할 GeoJSON 데이터와 파일 이름을 결정
+    if (currentLevel <= 5) { // 5 레벨: 가장 상세한 읍면동 코드 (10자리)
+        geojsonTypeToLoad = 'emd';
+        geojsonFileName = 'EMD_CD_3pro.geojson'; // 이 부분만 실제 파일명으로 바꿔주세요!
+    } else if (currentLevel >= 6 && currentLevel <= 8) { // 6~8 레벨: 시군구 코드 (5자리)
+        geojsonTypeToLoad = 'sigungu';
+        geojsonFileName = 'SIG_CD_3pro.geojson'; // 이 부분만 실제 파일명으로 바꿔주세요!
+    } else if (currentLevel >= 9) { // 9 레벨 이상: 시도 코드 (2자리)
+        geojsonTypeToLoad = 'sido';
+        geojsonFileName = 'CTPRVN_CD_2pro.geojson'; // 이 부분만 실제 파일명으로 바꿔주세요!
+    }
+
+    //console.log(` ==> ${geojsonTypeToLoad}(Level:${currentLevel}) geojson load 시작시간 : ${getFormattedDateTime()} `);
+    geojsonToProcess = await loadOrGetGeoJSON(geojsonTypeToLoad, geojsonFileName);
+    //console.log(` ==> ${geojsonTypeToLoad}(Level:${currentLevel}) geojsonload 종료 시간 : ${getFormattedDateTime()} `);
+
+    if (!geojsonToProcess) {
+        hideLoadingSpinner();
+        return;
+    }
+    
+    const currentVisibleGeoJsonFeatures = []; // 이 배열에 현재 화면에 보이는 GeoJSON feature들을 담을 겁니다.
+    // GeoJSON 데이터가 제대로 로드되었는지 확인 후 forEach 실행
+    if (geojsonToProcess.features && Array.isArray(geojsonToProcess.features)) {
+        geojsonToProcess.features.forEach(feature => {  //
+            // GeoJSON 파일에 포함된 각 행정구역(GeoJSON feature)을 순회 개별적으로 처리
+            if (feature.properties && feature.properties.BJCD) {
+                // 1. 현재 지도 화면 경계 내에 GeoJSON 폴리곤이 있는지 확인
+                //각 feature 객체에 행정 코드가 담긴 properties 속성이 있고, 그 properties 안에 실제 코드(여기서는 BJCD)가 존재하는지 확인
+                if (mapBoundsPolygon && mapBoundsPolygon.geometry && feature.geometry) { // null 체크 
+                    
+                    if (turf.booleanIntersects(mapBoundsPolygon.geometry, feature.geometry)) { // 특정 지리적 객체가 현재 지도 화면에 보이는지 판단
+                                            //지금 사용자가 보고 있는 지도 영역과 GeoJSON feature의 지오메트리가 공간적으로 교차하는지 확인
+                        //지도 화면에 보이는 영역(mapBoundsPolygon) 안에 현재 feature의 지오메트리(feature.geometry)가 일부라도 걸쳐 있는지 공간적으로 교차하는지 확인
+                        const pnuCodeFull = String(feature.properties.BJCD); // GeoJSON에서 가져온 코드 (문자열로 변환)
+                        let sggCd = "";
+        
+                        // 2. 현재 줌 레벨(currentLevel)에 따라 필요한 행정 코드 길이 결정
+                        // GeoJSON의 'BJCD' 속성이 이 로직에 맞게 10자리 PNU 코드를 포함하고 있어야 합니다.
+                        if (currentLevel <= 3) {
+                            sggCd = pnuCodeFull.substring(0, 10);
+                        } else if (currentLevel >= 4 && currentLevel <= 5) {  //10자리: 읍면동
+                            sggCd = pnuCodeFull.substring(0, 10);
+                        //} else if (currentLevel === 7) {
+                        //    sggCd = pnuCodeFull.substring(0, 8);
+                        } else if (currentLevel >= 6 && currentLevel <= 8) {  //5자리: 시군구 (SGG)
+                            sggCd = pnuCodeFull.substring(0, 5);
+                        } else if (currentLevel >= 9) {
+                            sggCd = pnuCodeFull.substring(0, 2);               //2자리: 시도 (SIDO)
+                        }
+                        // 3. 중복을 제거하며 추출된 코드 저장(중복된 값을 허용하지 않는 자료구조)
+                    //console.log(`추출된 sggCd: ${sggCd} from BJCD: ${pnuCodeFull} at level ${currentLevel}`);
+                        uniqueSggCds.add(sggCd);
+                        
+                        // 현재 지도 화면 경계와 교차하는 feature를 저장합니다.
+                        currentVisibleGeoJsonFeatures.push(feature); 
+                    }
+                } else {
+                    //console.warn("mapBoundsPolygon.geometry 또는 feature.geometry가 유효하지 않습니다.");
+                } 
+                
+            } else {
+                // 경고: GeoJSON Feature에 'properties' 또는 'BJCD' 속성이 없을 때
+                //console.warn(`[${getFormattedDateTime()}] Feature missing 'properties' or 'BJCD' for GeoJSON type ${geojsonTypeToLoad}:`, feature);
+            }
+        });
+    } else {
+        // 에러: 로드된 GeoJSON 데이터가 유효한 'features' 배열을 포함하지 않을 때
+        //console.error(`[${getFormattedDateTime()}] Loaded GeoJSON data does not contain a valid 'features' array.`, geojsonToProcess);
+        hideLoadingSpinner();
+    }
+
+    const sggCdsToFetch = Array.from(uniqueSggCds);
+                        
+    //console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}): (${sggCdsToFetch.length})`);
+    //console.log(`모드3 지도에서 샘플 포인트(unique codes): ${sggCdsToFetch}`);
+    const startTime = Date.now();
+    const bboxParameterString = bboxArrayForApi.join(','); // 예: "126.9,37.5,127.1,37.6"
+    
+    if (sggCdsToFetch.length > 0) {
+        showLoadingSpinner(); // 로딩 스피너 표시
+        try {
+            //await realPriceAptArrayWithCache(sggCdsToFetch, estateTypesToFetch);
+            await realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFeatures);
+            //await realPriceAptArrayWithCache(bboxParameterString, sggCdsToFetch);
+            //console.log(`[${getFormattedDateTime()}] 모든 폴리곤/마커 지시가 완료되었습니다. 지도 렌더링이 곧 완료될 것입니다.`);
+        } catch (error) {
+            //console.error(`[${getFormattedDateTime()}] 데이터 로드 중 에러 발생:`, error);
+            alert("부동산 데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
+        } finally {
+            hideLoadingSpinner();
+        }
+    } else {
+        console.warn(`[${getFormattedDateTime()}] 조회할 유효한 sggCds가 없습니다.`);
+        clearAllRealEstateOverlays();
+        hideLoadingSpinner();
+    }
+    const elapsedTime = Date.now() - startTime;
+    //console.log(`실거래가(AutoPoint) 종료시간 소요시간: ${elapsedTime/1000}초`);
+}
+
+/**
+ * 지도 nxn Point 와 레벨을 기반으로 sggCd 배열(nxn)을 계산하고 realPriceAptArray를 호출하는 함수
+ * 새로운 캐시 API를 호출하는 메인 함수
+ * 레벨에 맞춰 지도의 보이는 영역에 해당하는 sggCd들을 모두 가져오는 방식
+ */
+async function fetchRealPriceAptArrayBasedOnMapCenter() {
+    //console.trace('fetchRealPriceAptArrayBasedOnMapCenter 호출 스택:');
+    const center = map.getCenter();
+    const level = map.getLevel();
+
+    if (level > 6) return;
+
+    //const samplePoints = getSamplePointsFromMapBounds(map); // 지도 화면 내 여러 샘플링 지점들을 가져오는 함수
+    const samplePoints = getGridPointsFromMapBounds(map, 10);  //샘플링 포인트 개수 조절 함수(5X5)
+    
+    const uniqueSggCds = new Set(); // 중복 제거를 위한 Set
+
+    // 모든 샘플 포인트에 대해 비동기적으로 지오코딩 수행
+    const geocodingPromises = samplePoints.map(point => {
+        return new Promise((resolve) => {
+            // **여기서 point 객체 및 좌표 유효성 검사 시작!**
+            if (!point || typeof point.getLng !== 'function' || typeof point.getLat !== 'function') {
+                //console.error("Geocoding skip: 유효하지 않은 point 객체 또는 메서드 없음.", point);
+                resolve(null); // 유효하지 않은 포인트는 건너뛰고 null 반환
+                return;
+            }
+
+            const lng = point.getLng();
+            const lat = point.getLat();
+
+            if (typeof lng !== 'number' || typeof lat !== 'number' || isNaN(lng) || isNaN(lat)) {
+                //console.error(`Geocoding skip: point에서 유효하지 않은 좌표 감지. (Lng: ${lng}, Lat: ${lat})`, point);
+                resolve(null); // 유효하지 않은 좌표는 건너뛰고 null 반환
+                return;
+            }
+            // **유효성 검사 끝**
+
+            // 디버깅을 위해 실제로 geocoder에 전달되는 좌표를 확인해볼 수 있어요.
+            // console.log(`Geocoding 요청: Lat=${lat}, Lng=${lng}`);
+
+            geocoder.coord2RegionCode(lng, lat, function (result, status) {
+                if (status === kakao.maps.services.Status.OK && result[0]) {
+                    let sggCd = result[0].code;
+                    // 레벨에 따라 sggCd 길이 조정 로직 (기존 로직 유지)
+                    if (level <= 3) {
+                        sggCd = sggCd.substring(0, 10); // 10자리 (시군구+법정동 전체)
+                    } else if (level === 4 || level === 5 || level === 6) { // 4-6레벨 시군구+법정동
+                        sggCd = sggCd.substring(0, 10);
+                    } else if (level === 7) { // 7레벨 시군구
+                        sggCd = sggCd.substring(0, 8); // 8자리 (시군구)
+                    } else if (level > 7 && level < 10) { // 8-9레벨 광역 시도 (prefix 5자리)
+                        sggCd = sggCd.substring(0, 5);
+                    } else if (level >= 10) { // 10레벨 이상 시도 (prefix 2자리)
+                        sggCd = sggCd.substring(0, 2);
+                    }
+                    resolve(sggCd);
+                    //console.warn(`Geocoding success for point (${lat}, ${lng}):`, status, result); // 어떤 좌표가 실패했는지 경고 로그
+                } else {
+                    //console.warn(`Geocoding failed for point (${lat}, ${lng}):`, status, result); // 어떤 좌표가 실패했는지 경고 로그
+                    resolve(null); // 실패 시 null 반환
+                }
+            });
+        });
+    });
+    
+    const sggCdResults = await Promise.all(geocodingPromises); // 모든 지오코딩 결과 대기
+
+    sggCdResults.forEach(code => {
+        if (code) {
+            uniqueSggCds.add(code); // 유효한 코드만 Set에 추가
+        }
+    });
+
+    const sggCdsToFetch = Array.from(uniqueSggCds); // Set을 배열로 변환
+    // debugging logs
+    //console.log(`모드2 샘플 포인트 (sggCds 개수): ${samplePoints.length} (${sggCdsToFetch.length})`);
+    //console.log(`sggCds: ${sggCdsToFetch}`);
+
+    const startTime = Date.now();
+    //console.log(getFormattedDateTime());
+
+    if (sggCdsToFetch.length > 0) {
+        showLoadingSpinner(); 
+
+        //realPriceAptArray(sggCdsToFetch); // 변경된 API 호출 함수
+        try {
+            await realPriceAptArray(sggCdsToFetch); // Promise가 resolve될 때까지 기다림
+            //console.log("모든 폴리곤/마커 지시가 완료되었습니다. 지도 렌더링이 곧 완료될 것입니다.");
+            // 여기서 로딩 스피너 숨기기, UI 활성화 등 후처리
+            hideLoadingSpinner(); 
+        } catch (error) {
+            //console.error("데이터 로드 중 에러 발생:", error);
+            // 에러 메시지 표시, 로딩 스피너 숨기기 등
+            hideLoadingSpinner(); 
+        }
+    } else {
+        console.warn("조회할 유효한 sggCds가 없습니다.");
+        // 에러 처리 또는 UI 초기화 로직
+    }
+    // debugging logs
+    const elapsedTime = Date.now() - startTime; // 현재 시각 - 시작 시각 (밀리초)
+    //console.log(`소요시간: ${elapsedTime/1000}초`);
+}
+/**
+ * 원래 함수
+ * 지도 중심 좌표와 레벨을 기반으로 sggCd를 계산하고 realPriceApt를 호출하는 함수
+ * 새로운 캐시 API를 호출하는 메인 함수
+ * * 이 함수는 `map`의 `tilesloaded` 이벤트 리스너에서 호출됩니다.
+ * 레벨에 맞춰 지도의 보이는 영역에 해당하는 sggCd들을 모두 가져오는 방식
+ */
 function fetchRealPriceAptBasedOnMapCenter() {
     const center = map.getCenter();
     const level = map.getLevel();
@@ -424,6 +774,161 @@ function fetchRealPriceAptBasedOnMapCenter() {
             // 오류 처리 로직 추가
         }
     });
+}
+
+const cachedGeoJSONs = {};
+/*==================================================================================
+// "메모리 캐시 → IndexedDB 캐시 → 네트워크 요청" 순서로 데이터를 효율적으로 가져오는 함수
+==================================================================================*/
+async function loadOrGetGeoJSON(type, fileName) { // fileName 인자 추가
+    
+    //console.log(`loadOrGetGeoJSON 호출됨 (${type})  파일명: ${fileName}`);
+    if (cachedGeoJSONs[type]) {  //메모리 캐시 확인 (1차 캐시)
+        //console.log(`[${getFormattedDateTime()}] ${type} 메모리 캐쉬에서 GeoJSON loaded.`);
+        return cachedGeoJSONs[type];
+    }
+
+    const url = `/front/assets/data/${fileName}`; // 파일 경로를 여기에 설정
+    let geojsonData = await localforage.getItem(`geojson_${type}`);  //IndexedDB 캐시 확인 (2차 캐시)// 캐시 키는 'type'으로 유지
+    
+    if (!geojsonData) {
+        //console.log(`[${getFormattedDateTime()}] ${type} DB 경계 파일에서 GeoJSON loaded 시작 : ${url}`);
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${type} GeoJSON from ${url}: ${response.statusText}`);
+        }
+        geojsonData = await response.json();
+        await localforage.setItem(`geojson_${type}`, geojsonData);
+        //console.log(`[${getFormattedDateTime()}] ${type} DB 경계 파일에서 GeoJSON loaded(메모리 캐쉬로 로드 포함) 완료.`);
+    } else {
+        //console.log(`[${getFormattedDateTime()}] ${type} GeoJSON loaded from localforage.`);
+    }
+    cachedGeoJSONs[type] = geojsonData; //// 메모리에도 캐시 (네트워크에서 로드했든, localforage에서 로드했든 모든 경우에 메모리 캐시)
+    return geojsonData;
+}
+
+// 참고: preloadAllGeoJSONs() 함수를 사용하신다면 이곳의 파일명도 정확히 맞춰야 합니다.
+// 예시:
+async function preloadAllGeoJSONs() {
+     await loadOrGetGeoJSON('sido', 'CTPRVN_CD_2pro.geojson');
+     await loadOrGetGeoJSON('sigungu', 'SIG_CD_3pro.geojson');
+     await loadOrGetGeoJSON('emd', 'EMD_CD_3pro.geojson');
+     //console.log(`[${getFormattedDateTime()}] All GeoJSON files preloaded.`);
+}
+//preloadAllGeoJSONs();
+
+let loadingSpinnerElement = null; // 스피너 요소를 저장할 변수
+
+/**
+ * 로딩 스피너를 화면에 표시합니다.
+ * 스피너가 이미 존재하면 아무것도 하지 않습니다.
+ */
+function showLoadingSpinner() {
+    if (loadingSpinnerElement) {
+        // 이미 스피너가 표시되어 있으면 다시 만들지 않습니다.
+        return;
+    }
+
+    loadingSpinnerElement = document.createElement('div');
+    loadingSpinnerElement.id = 'global-loading-spinner'; // ID 부여 (선택 사항)
+    loadingSpinnerElement.className = 'loading-overlay'; // CSS 클래스 적용
+
+    const spinnerInner = document.createElement('div');
+    spinnerInner.className = 'spinner'; // 스피너 애니메이션 클래스 적용
+    
+    loadingSpinnerElement.appendChild(spinnerInner);
+    document.body.appendChild(loadingSpinnerElement); // body에 스피너 요소 추가
+    
+    //console.log("로딩 스피너 표시"); // 디버깅용
+}
+
+/**
+ * 로딩 스피너를 화면에서 숨깁니다.
+ * 스피너가 존재하지 않으면 아무것도 하지 않습니다.
+ */
+function hideLoadingSpinner() {
+    if (loadingSpinnerElement && loadingSpinnerElement.parentNode) {
+        loadingSpinnerElement.parentNode.removeChild(loadingSpinnerElement); // 부모로부터 요소 제거
+        loadingSpinnerElement = null; // 변수 초기화
+        //console.log("로딩 스피너 숨김"); // 디버깅용
+    }
+}
+
+function getFormattedDateTime() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(now.getDate()).padStart(2, '0');
+    
+    // 시간(hour)과 분(minutes), 초(seconds)를 가져와서 두 자리 숫자로 만듭니다.
+    const hours = String(now.getHours()).padStart(2, '0'); // 시간 (HH)
+    const minutes = String(now.getMinutes()).padStart(2, '0'); // 분 (MM)
+    const seconds = String(now.getSeconds()).padStart(2, '0'); // 초 (SS)
+
+    // yyyy-mm-dd HH:MM:SS 형식으로 조합
+    //const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const formattedDateTime = `${hours}:${minutes}:${seconds}`;
+
+    return formattedDateTime;
+}
+
+
+function getSamplePointsFromMapBounds(map) {
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    // 남서, 북서, 남동, 북동 좌표
+    const nw = new kakao.maps.LatLng(ne.getLat(), sw.getLng());
+    const se = new kakao.maps.LatLng(sw.getLat(), ne.getLng());
+
+    // 4개 변의 중간 좌표
+    const midLeft = new kakao.maps.LatLng((sw.getLat() + ne.getLat()) / 2, sw.getLng());
+    const midRight = new kakao.maps.LatLng((sw.getLat() + ne.getLat()) / 2, ne.getLng());
+    const midTop = new kakao.maps.LatLng(ne.getLat(), (sw.getLng() + ne.getLng()) / 2);
+    const midBottom = new kakao.maps.LatLng(sw.getLat(), (sw.getLng() + ne.getLng()) / 2);
+
+    const points = [];
+    // 중앙
+    points.push(map.getCenter());
+    // 4개 코너점
+    points.push(sw);      // 남서
+    points.push(nw);      // 북서
+    points.push(se);      // 남동
+    points.push(ne);      // 북동
+    // 4개 변 중간점
+    points.push(midLeft);
+    points.push(midRight);
+    points.push(midTop);
+    points.push(midBottom);
+
+    return points;
+}
+
+function getGridPointsFromMapBounds(map, gridSize = 5) {
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    const latStart = sw.getLat();
+    const latEnd = ne.getLat();
+    const lngStart = sw.getLng();
+    const lngEnd = ne.getLng();
+
+    const latStep = (latEnd - latStart) / (gridSize - 1);
+    const lngStep = (lngEnd - lngStart) / (gridSize - 1);
+
+    const points = [];
+    for(let i = 0; i < gridSize; i++) {
+        for(let j = 0; j < gridSize; j++) {
+            const lat = latStart + latStep * i;
+            const lng = lngStart + lngStep * j;
+            points.push(new kakao.maps.LatLng(lat, lng));
+        }
+    }
+
+    return points;
 }
 
 function groundOverlayFunc() {
@@ -1072,7 +1577,7 @@ function calculateOverlap(landPolygons, ecologyPolygonsObject) {
     landPolygons.forEach((landPolygon) => {
         // landPolygon이 유효한지 확인
         if (!isValidPolygon(landPolygon)) {
-            console.error("유효하지 않은 landPolygon입니다.");
+            //console.error("유효하지 않은 landPolygon입니다.");
             return;
         }
 
@@ -1157,7 +1662,7 @@ function calculateOverlap(landPolygons, ecologyPolygonsObject) {
         }
     });
 }
-
+/*
 async function nationalEnvMap(pnu) {
     const url = "/front/back/realPrice/test2.php";
     const dataObj = {
@@ -1166,6 +1671,7 @@ async function nationalEnvMap(pnu) {
     const result = await callApi("POST", url, dataObj);
     console.log(result);
 }
+*/
 
 /**
  * 지도 클릭 시 건물과 토지 정보를 동시에 가져오는 함수
@@ -1325,6 +1831,15 @@ function clearAllPolygons() {
     globalAnalysisArrays = []; // 합필분석 모드에서 사용되는 전역 배열 초기화
 }
 
+
+function initializeClusterers() {
+    if (!map) {
+        //console.error("Map object is not initialized. Cannot initialize clusterers.");
+        return;
+    }
+    // 'all' 클러스터러 초기화 (필요시 다른 타입별 클러스터러도 여기서 초기화)
+    createClustererAll("all");
+}
 /**
  * 카카오맵 적용 함수
  */
@@ -1363,7 +1878,31 @@ async function initializeMap() {
         disableDoubleClickZoom: true
     };
 
+    
     map = new kakao.maps.Map(mapContainer, mapOption);
+    
+    kakao.maps.event.addListener(map, 'tilesloaded', function() {
+        //console.log("==== tilesloaded 이벤트 발생! ==="); // ✨ 이 로그가 콘솔에 찍히는지 확인
+        //console.log("현재 REALPRICE_POLYGON_MODE 값:", REALPRICE_POLYGON_MODE); // ✨ REALPRICE_POLYGON_MODE 값도 확인
+    
+        initializeClusterers();
+        handleMapEvents();
+    
+        if(REALPRICE_POLYGON_MODE == 1){
+            //console.log("Mode 1 진입: BasedOnMapCenter 호출 시도"); // ✨
+            fetchRealPriceAptBasedOnMapCenter();
+        }
+        else if(REALPRICE_POLYGON_MODE == 2){
+            //console.log("Mode 2 진입: ArrayBasedOnMapCenter 호출 시도"); // ✨
+            fetchRealPriceAptArrayBasedOnMapCenter();
+        }
+        else if(REALPRICE_POLYGON_MODE == 3){
+            //console.log("Mode 3 진입: WidthCash_AutoPoint 호출 시도"); // ✨
+            fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint();
+        } else {
+            //console.log("REALPRICE_POLYGON_MODE 값이 1, 2, 3이 아님. 현재 값:", REALPRICE_POLYGON_MODE); // ✨
+        }
+    }, { once: true });
 
     // 1) 초기 복원(= URL 있으면 저장 동기화만, 없으면 스토리지/쿠키/기본으로 복원)
     applyGlobalViewOnInit(map, { persist: 'both' });
@@ -1507,6 +2046,7 @@ async function initializeMap() {
     //     }
     // });
 
+    
     return;
 
     // =================================================================
@@ -3022,4 +3562,21 @@ function resetDrawing() {
     lineDrawer.clearAllLines(); // 선 모두 제거
     circleDrawer.removeAllCircles(); // 원 모두 제거
     polygonDrawer.clearPolygon(); // 다각형 모두 제거
+}
+function debounce(func, delay) {
+    let timeoutId; // 타이머 ID를 저장할 변수
+
+    return;
+    // debounce가 적용된 함수를 반환
+    return function(...args) { // 이벤트 객체 등 인자들을 받기 위해 ...args 사용
+        const context = this; // func가 실행될 때의 this 컨텍스트 보존
+
+        // 이전 타이머가 있다면 취소 (이벤트가 다시 발생했으므로)
+        clearTimeout(timeoutId);
+
+        // 새로운 타이머 설정: delay 시간 후 func 실행
+        timeoutId = setTimeout(() => {
+            func.apply(context, args); // 원래 함수를 호출
+        }, delay);
+    };
 }

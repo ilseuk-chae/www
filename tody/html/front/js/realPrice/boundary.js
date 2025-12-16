@@ -103,7 +103,7 @@ async function getLatestGeoJsonVersionFromServer(fileName) {
     try {
         return "1.0.0"; // <-- 이 부분을 직접 원하는 버전으로 변경
     } catch (error) {
-        console.error(`서버에서 ${fileName} GeoJSON 버전 정보를 가져오는 중 오류 발생:`, error);
+        //console.error(`서버에서 ${fileName} GeoJSON 버전 정보를 가져오는 중 오류 발생:`, error);
         // 오류 발생 시, 캐시 사용을 막거나 기본 버전(예: '0')을 반환하여 강제 업데이트를 유도할 수 있습니다.
         return null;
     }
@@ -138,7 +138,7 @@ async function fetchAndCacheGeoJson(fileName) {
         return await fetchGeoJsonFromServer(fileName, dataKey, versionKey, latestServerVersion);
 
     } catch (error) {
-        console.error(`GeoJSON 데이터 로드 중 치명적인 오류 발생 (${fileName}):`, error);
+        //console.error(`GeoJSON 데이터 로드 중 치명적인 오류 발생 (${fileName}):`, error);
         // 최후의 경우: 캐시도 안 되고 서버에서도 가져오기 실패했을 때 처리
         return null;
     }
@@ -164,7 +164,7 @@ async function fetchGeoJsonFromServer(fileName, dataKey, versionKey, versionToCa
         }
         return geojson;
     } catch (error) {
-        console.error(`서버에서 ${fileName} GeoJSON 데이터를 가져오는 중 오류 발생:`, error);
+        //console.error(`서버에서 ${fileName} GeoJSON 데이터를 가져오는 중 오류 발생:`, error);
         return null;
     }
 }
@@ -192,29 +192,29 @@ function getGeoJsonFileName(pnu, zoomLevel) {
     
     if(flag){
         // 줌 레벨에 따른 데이터 파일 명 결정 (onedol님 제안 기준)
-        if (zoomLevel <= 6) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson)  //zoomLevel 변경 5->6
+        if (zoomLevel <= 5) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson)  //zoomLevel 변경 5->6
             fileNamePrefix = "BJCD_";
             pnuPart = pnu.substring(0, 8) + '00';
             
-        } else if (zoomLevel >= 7 && zoomLevel <= 9) { // 줌 7~9: 시군구 (BJCD_xxxxx00000.geojson) //zoomLevel 변경6~9 -> 7~9
+        } else if (zoomLevel >= 6 && zoomLevel <= 8) { // 줌 7~9: 시군구 (BJCD_xxxxx00000.geojson) //zoomLevel 변경6~9 -> 7~9
             fileNamePrefix = "BJCD_";
             pnuPart = pnu.substring(0, 5) + '00000';
             
-        } else { // 줌 10이상: 시도 (BJCD_xx00000000.geojson)
+        } else { // 줌 9이상: 시도 (BJCD_xx00000000.geojson)
             fileNamePrefix = "BJCD_";
             pnuPart = pnu.substring(0, 2) + '00000000';
             
         }
     } else {
-        if (zoomLevel <= 6) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson) //zoomLevel 변경 5->6 
+        if (zoomLevel <= 5) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson) //zoomLevel 변경 5->6 
             fileNamePrefix = "EMD_CD_";
             //pnuPart = pnu.substring(0, 8) + '00';
             pnuPart = pnu.substring(0, 8);
-        } else if (zoomLevel >= 7 && zoomLevel <= 9) { // 줌 6~9: 시군구 (BJCD_xxxxx00000.geojson)  //zoomLevel 변경6~9 -> 7~9
+        } else if (zoomLevel >= 6 && zoomLevel <= 8) { // 줌 6~9: 시군구 (BJCD_xxxxx00000.geojson)  //zoomLevel 변경6~9 -> 7~9
             fileNamePrefix = "SIG_CD_";
             //pnuPart = pnu.substring(0, 5) + '00000';
             pnuPart = pnu.substring(0, 5);
-        } else { // 줌 8이상: 시도 (BJCD_xx00000000.geojson)
+        } else { // 줌 9이상: 시도 (BJCD_xx00000000.geojson)
             fileNamePrefix = "CTPRVN_CD_";
             //pnuPart = pnu.substring(0, 2) + '00000000';
             pnuPart = pnu.substring(0, 2);
@@ -230,7 +230,7 @@ function getGeoJsonFileName(pnu, zoomLevel) {
  */
 function drawPolygonsFromGeoJson(geojson, mapInstance) {
     if (!geojson || !geojson.features) {
-        console.warn("유효한 GeoJSON 데이터가 없습니다.");
+        //console.warn("유효한 GeoJSON 데이터가 없습니다.");
         return;
     }
     
@@ -301,7 +301,9 @@ function drawPolygonsFromGeoJson(geojson, mapInstance) {
             */
             currentAdministrativePolygons.push(polygon); // 관리 배열에 추가
             //polygon.setMap(mapInstance) 
+
             // ⭐ 이름 표시 로직 추가 시작
+           /*
             let polygonName;
             const properties = feature.properties;
             if(flag){
@@ -341,6 +343,7 @@ function drawPolygonsFromGeoJson(geojson, mapInstance) {
                 }
             }
             // ⭐ 이름 표시 로직 추가 끝
+            */
         }
     });
 
@@ -361,7 +364,7 @@ async function handleMapClickForPolygon(mapInstance, clickLatLng) {
     var clickLng = clickLatLng.getLng();
     
     if (typeof clickLat !== 'number' || typeof clickLng !== 'number') {
-        console.error("클릭한 위도 또는 경도 값이 유효한 숫자가 아닙니다! (lat:", clickLat, "lng:", clickLng, ")");
+        //console.error("클릭한 위도 또는 경도 값이 유효한 숫자가 아닙니다! (lat:", clickLat, "lng:", clickLng, ")");
         return; // 유효하지 않으면 PNU 처리 중단
     }
 
@@ -369,7 +372,7 @@ async function handleMapClickForPolygon(mapInstance, clickLatLng) {
     var pnu = await CoordtoPNU(clickLat, clickLng);
 
     if (!pnu) {
-        console.warn("PNU 정보를 얻을 수 없습니다.");
+        //console.warn("PNU 정보를 얻을 수 없습니다.");
         return;
     }
 
@@ -402,7 +405,7 @@ async function handleMapClickForPolygon(mapInstance, clickLatLng) {
         // });
         // mapInstance.setBounds(bounds); // 해당 폴리곤을 포함하도록 지도 이동
     } else {
-        console.error("GeoJSON 데이터를 로드하는 데 실패했습니다.");
+        //console.error("GeoJSON 데이터를 로드하는 데 실패했습니다.");
     }
 }
 
@@ -468,9 +471,9 @@ function calculatePolygonCentroid(paths) {
 function clearLocalForageData() {
     localforage.clear().then(function() {
         // 모든 스토리지가 지워졌습니다.
-        console.log('All data in localforage has been cleared.');
+        //console.log('All data in localforage has been cleared.');
     }).catch(function(err) {
         // 오류가 발생했을 때
-        console.error('Error clearing localforage:', err);
+        //console.error('Error clearing localforage:', err);
     });
 }

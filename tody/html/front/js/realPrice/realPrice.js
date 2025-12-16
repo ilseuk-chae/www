@@ -402,16 +402,31 @@ function initAction() {
             }
         }
         //estateNewList();
-        fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기
-        //fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        if(REALPRICE_POLYGON_MODE == 1){
+            fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기(원본)
+        }
+        else if(REALPRICE_POLYGON_MODE == 2){
+            fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        }
         //fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); //실거래가를 가져오기 - cash
+        else if(REALPRICE_POLYGON_MODE == 3){
+            fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() //실거래가를 가져오기 - cash auto
+        }
+        
     });
 
     //지도 - real estate info 선택 - 정보 타입
     $('#infoType').on('change', function() {
-        fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기
-        //fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        if(REALPRICE_POLYGON_MODE == 1){
+            fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기(원본)
+        }
+        else if(REALPRICE_POLYGON_MODE == 2){
+            fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        }
         //fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); //실거래가를 가져오기 - cash
+        else if(REALPRICE_POLYGON_MODE == 3){
+            fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() //실거래가를 가져오기 - cash auto
+        }
     });
 
     // 지도 - 이력관리 //
@@ -638,7 +653,8 @@ function initSearchEvents() {
     $(document).on(
         "keyup",
         "#search_input, #search_input_mobile",
-        debounce(function (e) {
+        //debounce(function (e) {
+        function (e) {
             const { resultListItems, searchInput } = getSearchElements();
             const searchTerm = $(this).val().trim(); // 검색어 입력값
             const selectedIndex = resultListItems.index($(".selected")); // 현재 `selected` 클래스가 적용된 항목 찾기
@@ -685,7 +701,8 @@ function initSearchEvents() {
             //     }
             // }
             // setTimeout(() => {}, 500);
-        }, 100)
+    //    }, 100)
+        }
     );
 
     // 검색바 - 클릭
@@ -729,7 +746,7 @@ function initSearchEvents() {
             try {
                 places = JSON.parse(placesString);
             } catch (e) {
-                console.error("세션 스토리지 데이터 파싱 오류:", e);
+                //console.error("세션 스토리지 데이터 파싱 오류:", e);
                 // 파싱 오류 발생 시 places를 null로 유지하여 다음 조건문에서 처리되도록 합니다.
                 places = null;
             }
@@ -1505,7 +1522,7 @@ function initShareEvents() {
     }
 
     const currentUrl = location.href;
-    console.log(currentUrl);
+    //console.log(currentUrl);
     const jibunAddressElement = $(".jibun-address").eq(0);
 
     Kakao.Share.sendDefault({
@@ -2018,11 +2035,11 @@ function getRescentHistory() {
 async function removeHistory(btn) {
     const user = userInfo();
     if (!user) return;
-    console.log(btn);
+    //console.log(btn);
 
     const no = btn.attr("data-no");
     const type = btn.attr("data-type");
-    console.log(type);
+    //console.log(type);
 
     const dataObj = {
         ...user,
