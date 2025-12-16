@@ -33,8 +33,42 @@ $(document).ready(async function () {
     initTooltip(); // 툴팁 초기화  
     updateMapContentIcons();
     handleMapContentClass();
+    
+    check_realtor();
+    //document.addEventListener('DOMContentLoaded', check_realtor);
 
 });
+
+function check_realtor() {
+    const userInfoBool = userInfo();
+
+    const mapRegisterGroup = document.querySelector('.map-register-group');
+    if (mapRegisterGroup && getCookie("user_role") === "002") {
+        mapRegisterGroup.style.display = ''; // flex 컨테이너로 보이도록 설정
+        
+    } else if (mapRegisterGroup) {
+        mapRegisterGroup.style.display = 'none'; // 아니면 다시 숨김
+    }
+
+    // mc-tab-menu6 요소를 가져옵니다.
+    /*
+    const mcTabMenu6 = document.querySelector('.mc-tab-menu6');
+    const realtorSaleRegistBtn = document.getElementById('realtor_sale_register_btn'); // 버튼 요소 가져오기
+
+    // 요소가 존재하고, user_role 쿠키 값이 "002"이면 보이게 합니다.
+    if (mcTabMenu6 && getCookie("user_role") === "002") {
+        mcTabMenu6.style.display = 'flex'; // flex 컨테이너로 보이도록 설정
+        // 버튼 클릭 이벤트 리스너 추가
+        if (realtorSaleRegistBtn) {
+            realtorSaleRegistBtn.addEventListener('click', function() {
+                window.location.href = 'https://tody.co.kr/front/views/mypage/mypage_sale_registor.html';
+            });
+        }
+    } else if (mcTabMenu6) {
+        mcTabMenu6.style.display = 'none'; // 아니면 다시 숨김
+    }
+    */
+}
 
 // 초기화 함수 호출
 document.addEventListener("DOMContentLoaded", function () {

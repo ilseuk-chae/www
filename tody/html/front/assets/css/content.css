@@ -2393,7 +2393,7 @@
     white-space: nowrap; /* 버튼 내용이 한 줄로 표시되도록 */
 }
 
-@media all and (max-width: 1100px) {  /* 991 <-->1050 */
+@media all and (max-width: 1180px) {  /* 991 <-->1050 */
     .map-history.active {
         margin-left: 4px;
     }

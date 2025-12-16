@@ -1041,6 +1041,11 @@ function changeBaseMapType(mapType, map) {
     }
 }
 
+function gotoSaleRegister()
+{
+    window.location.href = 'https://tody.co.kr/front/views/mypage/mypage_sale_registor.html';
+}
+
 /* =================================================================
  * helper 관련 함수
  * ================================================================= */
