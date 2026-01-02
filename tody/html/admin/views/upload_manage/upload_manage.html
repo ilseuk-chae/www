@@ -241,14 +241,14 @@
                                             </fieldset>
                                             <!-- 일반 업로드/배치 시작 버튼 섹션 -->
                                             <div class="target-button-section" >    
-                                                <button id="uploadStartBtn" class="btn btn-primary">실거래가(읍면동 단위) Redis 캐시에 업로드 시작</button>
+                                                <button id="uploadStartBtn" class="btn btn-primary">토지 특성 정보를 Redis 캐시에 업로드 시작</button>
                                                 <button type="button" class="btn btn-warning" id="cancelBatchBtn" style="display:none;">중단하기</button>
                                             </div>
                                             
                                             <!-- **************** 변경된 섹션: Redis 로그가 공통 상태 섹션으로 이동 **************** -->
                                             <div class="target-status-section">
                                                 <!-- 상태 정보 표시 영역 (상단에 배치) -->
-                                                <div id="batchStatusInfo" class="p-3 mb-2 bg-light text-dark" style="border: 1px solid #dee2e6; border-radius: 5px;">
+                                                <div id="batchStatusInfo" class="p-3 mb-2 bg-light text-dark" style="border: 1px solid #dee2e6; border-radius: 5px; display: none;">
                                                     <p><strong>현재 상태:</strong> <span id="currentStatus">대기 중</span></p>
                                                     <p><strong>마지막 실행 시간:</strong> <span id="lastRunTime">-</span></p>
                                                     <p><strong>마지막 완료 시간:</strong> <span id="lastCompletionTime">-</span></p>

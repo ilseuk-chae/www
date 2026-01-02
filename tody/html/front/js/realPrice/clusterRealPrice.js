@@ -173,8 +173,29 @@ function createPriceItem(estateType, sigunguData, isPyeongDisplay) { // isPyeong
     if (estateTypeData && estateTypeData.all_average !== null && estateTypeData.all_average !== undefined) {
         // 가정: DB에서 받은 all_average는 '만원/평' 단위의 평균 가격입니다.
         // 이 가정에 따라 '㎡'로 변환 로직을 적용합니다.
-        let displayPrice = estateTypeData.all_average; 
-
+        let averageType = getAveragetypeParams();
+        let displayPrice = 0;
+        switch(averageType) {
+            case 'DB전체':
+                displayPrice = estateTypeData.all_average; 
+                break;
+            case '최근5년':
+                displayPrice = estateTypeData.last5Year_average; 
+                break;
+            case '최근1년':
+                displayPrice = estateTypeData.last1Year_average; 
+                break;
+            case '최근3월':
+                displayPrice = estateTypeData.last3Month_average; 
+                break;
+            case '최근1월':
+                displayPrice = estateTypeData.last1Month_average; 
+                break;
+            default:
+                displayPrice = estateTypeData.last5Year_average; 
+                break;
+        }
+        
         if (!isPyeongDisplay) { // '㎡'로 표시해야 하는 경우
             // 1평 = 3.30578 제곱미터. 평당 가격을 제곱미터당 가격으로 변환.
             displayPrice = displayPrice / 3.30578; 
@@ -308,7 +329,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
             const zoomLevel = map.getLevel(); // 현재 줌 레벨
 
             // 6. 데이터 반복 및 지도 객체 생성 (기존 로직과 거의 동일)
-            //console.log('[실거래가] 표시할 실거래가 개수:', responseData.length);
+            console.log('[실거래가] 표시할 실거래가 개수:', responseData.length);
             //console.log('[실거래가] 그리기 시작 시간:', getFormattedDateTime()); // 디버깅용
 
             responseData.forEach((data) => {
@@ -545,7 +566,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     } 
     // 시군구 단위 처리 추가
     else if(sggCdsToFetch[0].length === 5){
-        //console.log('[실거래가] (시군구) 그리기 시작 시간:', getFormattedDateTime());
+        console.log('[실거래가] (시군구) 그리기 시작 시간:', getFormattedDateTime());
 
         // 시군구 단위에서는 estateTypes를 고정 값으로 변경합니다.
         requestBody.estateTypes = "apt,multi,officetel,land"; 
@@ -597,6 +618,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 // 각 estate_type별 평균 데이터를 저장
                 acc[current.code].estateTypes[current.estate_type] = {
                     all_average: current.all_average,
+                    last5Year_average: current.last5Year_average,
                     last1Year_average: current.last1Year_average,
                     last3Month_average: current.last3Month_average,
                     last1Month_average: current.last1Month_average,
@@ -665,7 +687,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                         }
                     } catch (turfError) {
                         // turf.intersect 내부에서 발생한 다른 예외 처리
-                        //console.error(`[turf.intersect Error] for sido code ${sigunguData.code}:`, turfError);
+                        console.error(`[turf.intersect Error] for sido code ${sigunguData.code}:`, turfError);
                         // 에러 발생 시 fallback: feature의 중심점 사용
                         if (isFeatureGeometryValid) {
                             const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
@@ -685,18 +707,18 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                         featureCentroid.geometry.coordinates[1],
                         featureCentroid.geometry.coordinates[0]
                         );
-                        //console.warn(`[sigunguData.code: ${sigunguData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
+                        console.warn(`[sigunguData.code: ${sigunguData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
                     } else {
                         // GeoJSON feature 자체도 문제가 있는 경우
                         markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
-                        //console.warn(`[sigunguData.code: ${sigunguData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
+                        console.warn(`[sigunguData.code: ${sigunguData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
                     }
                 }
                 // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
 
                 // 1. markerPosition의 유효성 검사 (추가)
                 if (!markerPosition instanceof kakao.maps.LatLng || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
-                    //console.error(`[DEBUG ERROR] Invalid markerPosition for code ${sigunguData.code}:`, markerPosition);
+                    console.error(`[DEBUG ERROR] Invalid markerPosition for code ${sigunguData.code}:`, markerPosition);
                     return; // 이 시군구에 대한 오버레이는 생성하지 않고 건너뜁니다.
                 }
                 
@@ -800,7 +822,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             hideLoadingSpinner(); // 로딩 스피너 숨김
 
-            //console.log('[실거래가] (시군구) 그리기 완료 시간:', getFormattedDateTime());
+            console.log('[실거래가] (시군구) 그리기 완료 시간:', getFormattedDateTime());
 
         } catch (error) {
             
@@ -821,7 +843,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     } 
     // 시도 단위 처리 로직 (추후 구현)
     else if(sggCdsToFetch[0].length === 2){   
-        //console.log('[실거래가] (시도) 그리기 시작 시간:', getFormattedDateTime());
+        console.log('[실거래가] (시도) 그리기 시작 시간:', getFormattedDateTime());
         
         // 시도 단위에서는 estateTypes를 고정 값으로 변경합니다.
         requestBody.estateTypes = "apt,multi,officetel,land"; 
@@ -869,6 +891,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 }
                 acc[current.code].estateTypes[current.estate_type] = {
                     all_average: current.all_average,
+                    last5Year_average: current.last5Year_average,
                     last1Year_average: current.last1Year_average,
                     last3Month_average: current.last3Month_average,
                     last1Month_average: current.last1Month_average,
@@ -1068,7 +1091,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             hideLoadingSpinner(); // 로딩 스피너 숨김
             
-            //console.log('[실거래가] (시도) 그리기 완료 시간:', getFormattedDateTime());
+            console.log('[실거래가] (시도) 그리기 완료 시간:', getFormattedDateTime());
 
         } catch (error) {
             let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
@@ -1715,6 +1738,21 @@ function getEstateInfoParams() {
 
     return selectedValue ;
 }
+
+function getAveragetypeParams() {
+    let selectedValue = ""; 
+    const selectElement = document.getElementById('averageType');
+
+    if (selectElement) {
+        selectedValue = selectElement.value; // 이제 블록 밖에서 선언된 변수에 값을 할당합니다.
+        finalValue = selectedValue !== "all" ? selectedValue : "";
+    } else {
+        selectedValue = "최근5년"; // 기본값을 명확히 설정 (UI가 없으면)
+    }
+
+    return selectedValue ;
+}
+
 function getEstateListFilterParams() {
     let estate_value = [];
     

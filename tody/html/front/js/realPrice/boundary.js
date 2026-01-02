@@ -44,7 +44,7 @@ async function CoordtoPNU(lat, lng) {
     // Geocoder 결과의 status를 여기서 판단하여 처리합니다.
     if (kakaoAddressResults.status !== kakao.maps.services.Status.OK) {
         // ZERO_RESULT를 포함하여 OK가 아닌 모든 상태를 처리
-        console.warn(`[PNU 생성 실패] 좌표 [${lat}, ${lng}]에 대한 주소 검색 결과가 없습니다. 상태: ${kakaoAddressResults.status}`);
+//        console.warn(`[PNU 생성 실패] 좌표 [${lat}, ${lng}]에 대한 주소 검색 결과가 없습니다. 상태: ${kakaoAddressResults.status}`);
         return null;
     }
 
@@ -53,7 +53,7 @@ async function CoordtoPNU(lat, lng) {
     const primaryAddressInfo = kakaoAddressResults.result && kakaoAddressResults.result.length > 0 ? kakaoAddressResults.result[0] : null;
 
     if (!primaryAddressInfo) {
-        console.warn(`좌표 [${lat}, ${lng}]에 대한 주소 정보를 찾을 수 없습니다.`);
+//        console.warn(`좌표 [${lat}, ${lng}]에 대한 주소 정보를 찾을 수 없습니다.`);
         return null;
     }
 
@@ -64,7 +64,7 @@ async function CoordtoPNU(lat, lng) {
     const searchResultForPnu = await searchAddress(primaryAddressInfo.address.address_name);
 
     if (!searchResultForPnu || searchResultForPnu.status !== "OK" || !searchResultForPnu.documents || searchResultForPnu.documents.length === 0) {
-        console.warn(`주소 "${primaryAddressInfo.address.address_name}"에 대한 PNU 관련 상세 정보를 찾을 수 없습니다.`);
+//        console.warn(`주소 "${primaryAddressInfo.address.address_name}"에 대한 PNU 관련 상세 정보를 찾을 수 없습니다.`);
         return null;
     }
     const firstDoc = searchResultForPnu.documents[0]; // searchAddress가 반환하는 documents 배열의 첫 번째 요소
@@ -303,7 +303,7 @@ function drawPolygonsFromGeoJson(geojson, mapInstance) {
             //polygon.setMap(mapInstance) 
 
             // ⭐ 이름 표시 로직 추가 시작
-           /*
+           
             let polygonName;
             const properties = feature.properties;
             if(flag){
@@ -343,7 +343,7 @@ function drawPolygonsFromGeoJson(geojson, mapInstance) {
                 }
             }
             // ⭐ 이름 표시 로직 추가 끝
-            */
+           
         }
     });
 

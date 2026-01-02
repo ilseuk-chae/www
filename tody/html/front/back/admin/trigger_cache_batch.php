@@ -15,6 +15,8 @@ if (php_sapi_name() == 'cli' && !isset($_SERVER['DOCUMENT_ROOT'])) {
 // DB 연결
 require_once $_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/dbconnect.php'; // mysqli 객체 $conn 제공
 require_once $_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/front/back/admin/batch_helpers.php';
+
 
 // 1. 요청 메서드 및 입력값 유효성 검사
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -25,6 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 $sidoParamRaw = isset($input['sido']) ? trim($input['sido']) : null;
+$baseYear = isset($input['baseYear']) ? trim($input['baseYear']) : null;
+$baseMonth = isset($input['baseMonth']) ? trim($input['baseMonth']) : null;
 $userId = isset($input['user_id']) ? trim($input['user_id']) : null; // 프론트엔드에서 user_id를 넘겨준다면 사용
 
 if (empty($sidoParamRaw)) {
@@ -42,10 +46,12 @@ if (!preg_match('/^(ALL|\d{2}(,\d{2})*)$/', $sidoParamRaw)) {
 // supported sido codes (generate_emd_caches.php의 $allSupportedSidoCodes와 일치해야 함)
 $allSupportedSidoCodesForTrigger = ['11','26','27','28','29','30','31','36','41','43','44','46','47','48','50','51','52']; 
 
+//error_log("(trigger_cache_batch) sidoParamRaw: {$sidoParamRaw}");
 
 $sidoCodesToPass = []; // generate_emd_caches.php에 전달할 실제 시도 코드들
 if ($sidoParamRaw === 'ALL') {
     $sidoCodesToPass = $allSupportedSidoCodesForTrigger;
+    $resetType='all';
 } else {
     $inputSidoCodes = explode(',', $sidoParamRaw);
     foreach ($inputSidoCodes as $sidoCode) {
@@ -53,10 +59,11 @@ if ($sidoParamRaw === 'ALL') {
         if (in_array($sidoCode, $allSupportedSidoCodesForTrigger)) {
             $sidoCodesToPass[] = $sidoCode;
         } else {
-            error_log("Invalid or unsupported Sido code '{$sidoCode}' in trigger_cache_batch. It will be ignored.");
+            //error_log("Invalid or unsupported Sido code '{$sidoCode}' in trigger_cache_batch. It will be ignored.");
         }
     }
     $sidoCodesToPass = array_unique($sidoCodesToPass);
+    $resetType='part';
 }
 
 if (empty($sidoCodesToPass)) {
@@ -85,11 +92,16 @@ $overallSuccess = false;
 $overallMessage = '';
 
 try {
-    $stmt = $conn->prepare("INSERT INTO upload_history (task_type, sido_param, status, started_at, triggered_by_user_id, log_message, parent_history_id) VALUES (?, ?, ?, NOW(), ?, ?, NULL)");
+    $stmt = $conn->prepare("INSERT INTO upload_history 
+        (task_type, sido_param, end_year_month, status, started_at, triggered_by_user_id, log_message, parent_history_id) 
+        VALUES (?, ?, ?, ?, NOW(), ?, ?, NULL)");
     $taskType = 'rediscache';
     $status = 'processing';
-    $logMessage = "업로드 마스터 배치 작업 시작 (대상 시도: {$sidoParamForGenerateScript})";
-    $stmt->bind_param("sssss", $taskType, $sidoParamForGenerateScript, $status, $userId, $logMessage);
+    $formattedMonth = sprintf("%02d", $baseMonth);
+    $baseDateForLog = "{$baseYear}/{$formattedMonth}"; // 로그용으로 파라미터 보관
+
+    $logMessage = "업로드 마스터 배치 작업 시작 (대상 시도: {$sidoParamForGenerateScript}, 기준 연월: {$baseDateForLog}, 리셋 유형: {$resetType})";
+    $stmt->bind_param("ssssss", $taskType, $sidoParamForGenerateScript, $baseDateForLog, $status, $userId, $logMessage);
     $stmt->execute();
     $masterHistoryId = $conn->insert_id;
 
@@ -103,13 +115,17 @@ try {
 
     // 3. generate_emd_caches.php 스크립트를 모든 시도 코드를 인자로 백그라운드에서 실행
     $command = sprintf(
-        "%s %s --sido=%s --parent-history-id=%d > %s 2>&1 &",
+        "%s %s --sido=%s --parent-history-id=%d --reset==%s --base-year==%s --base-month==%s> %s 2>&1 &",
         escapeshellarg($phpExecutable),
         escapeshellarg($scriptPath),
         escapeshellarg($sidoParamForGenerateScript),
         $masterHistoryId,
+        $resetType,
+        escapeshellarg($baseYear),
+        escapeshellarg($baseMonth),
         escapeshellarg($logFile) // $logFile은 이미 절대 경로입니다.
     );
+    //error_log("(trigger_cache_batch)Executing command: " . $command);
 
     $output = []; 
     $return_var = null;
@@ -129,12 +145,12 @@ try {
             $updateStmt->bind_param("si", $logMessage, $masterHistoryId);
             $updateStmt->execute();
         } catch (Exception $e) {
-            error_log("Failed to update upload_history master status after exec failure: " . $e->getMessage());
+            //error_log("Failed to update upload_history master status after exec failure: " . $e->getMessage());
         }
         $overallMessage = "업로드 마스터 배치 작업을 시작하는 데 실패했습니다. Return Code: {$return_var}";
     }
 } catch (Exception $e) {
-    error_log("Error creating master history record or executing batch script: " . $e->getMessage());
+    //error_log("Error creating master history record or executing batch script: " . $e->getMessage());
     $overallMessage = "업로드 마스터 배치 작업 시작 중 오류 발생: " . $e->getMessage();
     if ($masterHistoryId) {
         try {
@@ -143,7 +159,7 @@ try {
             $updateStmt->bind_param("si", $overallMessage, $masterHistoryId);
             $updateStmt->execute();
         } catch (Exception $e2) {
-            error_log("Failed to update upload_history master status after initial error: " . $e2->getMessage());
+            //error_log("Failed to update upload_history master status after initial error: " . $e2->getMessage());
         }
     }
 }

@@ -1005,6 +1005,7 @@ async function searchCategory(coords, code) {
             searchArroundPlacesTable(response, coords);
         },
         error: function (xhr, status, error) {
+            console.log("coords:",coords, " code: ", code);
             console.error("API 요청 중 오류 발생:", status, error);
         },
     });

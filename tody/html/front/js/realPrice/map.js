@@ -27,7 +27,7 @@ let polygonDrawer = null; // 다각형 거리 모듈
 var textModule = null; // 텍스트 입력 모듈 상태를 저장하는 변수
 var currentOverlay = null; // 지도 오버레이(ex. 생태자연도)
 let existingBounds = []; // 기존 오버레이의 경계들을 추적
-let currentOverlays = []; // 현재 오버레이 목록을 저장
+let currentOverlays = []; // 현재 오버레이 s목록을 저장
 let isMapClickable = true; // 지도 클릭 가능 여부
 let textModuleControl = null; // 텍스트 모듈
 let realPriceOverlays = []; // 실거래가 오버래이 저장 배열
@@ -261,6 +261,18 @@ function handleMapEvents() {
         console.log("줌 레벨: ", level);
 
         updateURL({ curZoom: level });
+        const realmapAverageInfoElement = document.getElementById('realmapAverageInfo');
+
+        if ((level >= 6) && (level <= 11)) {
+            if (realmapAverageInfoElement) { // 요소가 존재하는지 확인하는 것이 좋습니다.
+                realmapAverageInfoElement.style.display = 'block'; // 또는 'flex', 'grid' 등 원래 요소의 display 속성
+            }
+        } else {
+            if (realmapAverageInfoElement) { // 요소가 존재하는지 확인
+                realmapAverageInfoElement.style.display = 'none';
+                document.getElementById('averageType').value = '최근5년';
+            }
+        }
 
         // geocoder.coord2RegionCode(center.getLng(), center.getLat(), function (result, status) {
         //     if (status === kakao.maps.services.Status.OK) {
@@ -310,7 +322,7 @@ function handleMapEvents() {
         updateURL({ curLat: lat, curLng: lng }); // url 파라미터 및 쿠키 변경
 
         const level = map.getLevel();
-        if (level < 5) {                    //zoomLevel 6->5
+        if (level < 6) {                    //zoomLevel 6->7
             // 건물 및 토지 정보를 동시에 가져오기
             handleMapClick(coords);
 
@@ -318,7 +330,7 @@ function handleMapEvents() {
             searchArroundPlaces(coords);
         }
         else {
-            //clickCoordTodisplayAddress(coords);
+            clickCoordTodisplayAddress(coords);
         }
 
         // 주소 요청
@@ -605,8 +617,7 @@ async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
 
     const sggCdsToFetch = Array.from(uniqueSggCds);
                         
-    //console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}): (${sggCdsToFetch.length})`);
-    //console.log(`모드3 지도에서 샘플 포인트(unique codes): ${sggCdsToFetch}`);
+    console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개 (sggCds): ${sggCdsToFetch}`);
     const startTime = Date.now();
     const bboxParameterString = bboxArrayForApi.join(','); // 예: "126.9,37.5,127.1,37.6"
     
@@ -824,6 +835,7 @@ let loadingSpinnerElement = null; // 스피너 요소를 저장할 변수
  * 스피너가 이미 존재하면 아무것도 하지 않습니다.
  */
 function showLoadingSpinner() {
+    /*
     if (loadingSpinnerElement) {
         // 이미 스피너가 표시되어 있으면 다시 만들지 않습니다.
         return;
@@ -840,6 +852,7 @@ function showLoadingSpinner() {
     document.body.appendChild(loadingSpinnerElement); // body에 스피너 요소 추가
     
     //console.log("로딩 스피너 표시"); // 디버깅용
+    */
 }
 
 /**
@@ -847,11 +860,13 @@ function showLoadingSpinner() {
  * 스피너가 존재하지 않으면 아무것도 하지 않습니다.
  */
 function hideLoadingSpinner() {
+    /*
     if (loadingSpinnerElement && loadingSpinnerElement.parentNode) {
         loadingSpinnerElement.parentNode.removeChild(loadingSpinnerElement); // 부모로부터 요소 제거
         loadingSpinnerElement = null; // 변수 초기화
         //console.log("로딩 스피너 숨김"); // 디버깅용
     }
+    */
 }
 
 function getFormattedDateTime() {

@@ -1137,7 +1137,7 @@
   width: 66px;
   font-size:11px; 
   line-height:12px; 
-  color:#f53535; 
+  color:#ef8779;
   border:#fff 1px solid; 
   border-radius:6px; 
   padding-right:0px; /* 이 값은 아래에서 설명 */
@@ -1145,6 +1145,42 @@
   background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #FEB912; /*#FEB912*/
   
 } 
+.my-select-box2 {
+  height:13px; 
+  /*padding:0 15px; */
+  width: 66px;
+  font-size:11px; 
+  line-height:12px; 
+  color:#c518e7;
+  border:#fff 1px solid; 
+  border-radius:6px; 
+  padding-right:0px; /* 이 값은 아래에서 설명 */
+  padding-left:2px; /* 이 값은 아래에서 설명 */
+  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #87DBDD; /*#FEB912*/
+  
+} 
+
+/* 지도 - 평균관리 */
+.realmap-average-info {
+  /*position: relative;  부모 컨텍스트 기준으로 배치 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1px 0 0 10px;
+  border: 1px solid #ccc; /* 예시 테두리 */
+  z-index: 1;
+  /*transition: margin-left 0.4s ease-out;*/
+  width : 70px;
+  /*border: #FEB912 1px solid;*/
+}
+.realmap-average-info {
+  margin-top: 100px;
+  margin-left: 4px; 
+}
+.realmap-average-info.active {
+  margin-top: 100px;
+  margin-left: 454px;
+}
 
 @media all and (max-width: 1040px) {
   .realmap-estate-group {

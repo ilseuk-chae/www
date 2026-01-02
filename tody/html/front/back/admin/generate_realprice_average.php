@@ -6,7 +6,7 @@
 // ----------------------------------------------------
 header('Content-Type: application/json; charset=UTF-8');
 error_reporting(E_ALL); // 개발 중 모든 에러 표시
-ini_set('display_errors', 1); // 운영 환경에서는 화면에 에러 표시 안함
+ini_set('display_errors', 0); // 운영 환경에서는 화면에 에러 표시 안함
 ini_set('memory_limit', '1024M'); // 메모리 제한 1024M로 설정
 
 // 스크립트 실행 제한 시간 (배치 작업이 길어질 수 있으므로 무제한으로 설정)
@@ -14,79 +14,6 @@ ini_set('memory_limit', '1024M'); // 메모리 제한 1024M로 설정
 set_time_limit(0);
 
 ini_set('date.timezone', 'Asia/Seoul'); // 배치 스크립트 시작 시 PHP 시간대 설정
-
-// ----------------------------------------------------
-// DB 로깅 및 상태 업데이트 헬퍼 함수
-// (이 파일 상단에 정의하여 스크립트 어디서든 사용 가능하게 함)
-// ----------------------------------------------------
-function log_to_db(?int $historyId, string $message, mysqli $conn, string $level = 'INFO') {
-    if ($historyId === null) {
-        error_log("[DB_LOG_SKIP] No historyId for DB logging: " . $message); 
-        return;
-    }
-    try {
-        $stmt = $conn->prepare("INSERT INTO upload_logs (history_id, log_message, level) VALUES (?, ?, ?)"); 
-        $stmt->bind_param("iss", $historyId, $message, $level); 
-        $stmt->execute();
-        $stmt->close();
-    } catch (Exception $e) {
-        error_log("[DB_LOG_FAIL] Failed to log to upload_logs for history ID {$historyId} (level: {$level}): " . $e->getMessage() . ". Original message: " . $message, 0);
-    }
-}
-
-function update_history_status(int $historyId, string $status, string $logMessage, mysqli $conn) {
-    try {
-        // historyId 컬럼은 ID라고 가정
-        $stmt = $conn->prepare("UPDATE upload_history SET status = ?, log_message = ?, finished_at = NOW() WHERE id = ?");
-        // prepare()가 성공했는지 확인하는 것이 좋습니다.
-        if ($stmt === false) {
-            error_log("[DB_STATUS_UPDATE_FAIL] Prepare failed for ID {$historyId}: " . $conn->error);
-            return; // 쿼리 준비 실패 시 함수 종료
-        }
-        $stmt->bind_param("ssi", $status, $logMessage, $historyId);
-        $stmt->execute();
-        // execute() 후 오류 확인
-        if ($stmt->error) {
-            error_log("[DB_STATUS_UPDATE_FAIL] Execute failed for ID {$historyId}: " . $stmt->error);
-        }
-        $stmt->close();
-    } catch (Exception $e) {
-        error_log("[DB_STATUS_UPDATE_FAIL] Failed to update upload_history for ID {$historyId} to status '{$status}': " . $e->getMessage(), 0);
-    }
-}
-
-function check_cancellation(int $historyId, mysqli $conn):bool {  //// 반환 타입을 bool로 명시
-    try {
-        $stmt = $conn->prepare("SELECT status FROM upload_history WHERE id = ?");
-        if (!$stmt) {
-            error_log("[DEBUG_CANCEL] SQL prepare 실패: " . $conn->error);
-            // 쿼리 준비 실패 시에는 취소된 것으로 간주하지 않고 진행 (false 반환)
-            return false; 
-        }
-        $stmt->bind_param("i", $historyId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            error_log("[DEBUG_CANCEL] DB 조회 결과 - ID: {$historyId}, Status: {$row['status']}");
-            if ($row['status'] === 'canceled') {
-                $logMessage = "작업 ID {$historyId}가 취소 요청되어 스크립트를 중단합니다.";
-                error_log("[CANCELED] " . $logMessage);
-                log_to_db($historyId, $logMessage, $conn, "INFO"); 
-                $conn->close(); // 명시적으로 연결 종료
-                // 쿼리 준비 실패 시에는 취소된 것으로 간주하지 않고 진행 (false 반환)
-                return true; 
-            }
-        } else {
-            error_log("[DEBUG_CANCEL] ID {$historyId}에 대한 upload_history 레코드를 찾을 수 없습니다.");
-        }
-        $stmt->close();
-    } catch (Exception $e) {
-        error_log("[CANCEL_CHECK_FAIL] Exception during check_cancellation for ID {$historyId}: " . $e->getMessage());
-        // 혹시 예외 발생 시 롤백을 고려할 수 있으나, 여기서는 exit(0) 하므로 영향이 제한적
-    }
-    // 취소되지 않은 경우 false 반환
-    return false; 
-}
 
 // --- 파일 로드 경로 수정: realpath()를 사용하여 절대 경로 확보 ---
 // __DIR__은 현재 스크립트 파일의 절대 경로 (예: /var/www/tody/html/front/back/admin)
@@ -112,7 +39,8 @@ $dotenv = Dotenv\Dotenv::createImmutable($web_root);
 $dotenv->load(); // .env 파일 로드 시도
 
 require_once $web_root . '/front/back/00-include/dbconnect.php'; 
-require_once $web_root . '/front/back/00-include/common.php';     
+require_once $web_root . '/front/back/00-include/common.php';
+require_once $web_root . '/front/back/admin/batch_helpers.php';     
 require_once $web_root . '/front/back/realPrice/poligon_center.php';
 
 //$dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
@@ -148,7 +76,7 @@ $geojsonBaseDir = $_SERVER['DOCUMENT_ROOT'] . '/front/assets/data/';
 // ----------------------------------------------------
 function getGeoJsonCenterCoordinates($geojsonPath) {
     if (!file_exists($geojsonPath)) {
-        error_log("[WARNING] GeoJSON file not found: {$geojsonPath}");
+        //error_log("[WARNING] GeoJSON file not found: {$geojsonPath}");
         return ['latitude' => null, 'longitude' => null];
     }
     
@@ -156,7 +84,7 @@ function getGeoJsonCenterCoordinates($geojsonPath) {
     $geojson = json_decode($geojsonContent, true);
 
     if (json_last_error() !== JSON_ERROR_NONE || !isset($geojson['features'])) {
-        error_log("[WARNING] Failed to parse GeoJSON or features not found in: {$geojsonPath}");
+        //error_log("[WARNING] Failed to parse GeoJSON or features not found in: {$geojsonPath}");
         return ['latitude' => null, 'longitude' => null];
     }
 
@@ -394,13 +322,14 @@ try {
             $stmt = $conn->prepare("
                 INSERT INTO realPrice_Average_sido 
                 (code, code_name, estate_type, all_average, all_count, 
-                 last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
+                 last5Year_average, last5Year_count, last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
                  last1Month_average, last1Month_count, 
                  center_latitude, center_longitude, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     code_name = VALUES(code_name), estate_type = VALUES(estate_type),
                     all_average = VALUES(all_average), all_count = VALUES(all_count),
+                    last5Year_average = VALUES(last5Year_average), last5Year_count = VALUES(last5Year_count),
                     last1Year_average = VALUES(last1Year_average), last1Year_count = VALUES(last1Year_count),
                     last3Month_average = VALUES(last3Month_average), last3Month_count = VALUES(last3Month_count),
                     last1Month_average = VALUES(last1Month_average), last1Month_count = VALUES(last1Month_count),
@@ -408,9 +337,10 @@ try {
                     description = VALUES(description);
             ");
             $descriptionValue = "시도별 통계 ({$type})[{$todayDateString}]";
-            $stmt->bind_param("sssdidisdiddds", 
+            $stmt->bind_param("sssdididisdiddds", 
                 $sidoCode, $sidoName, $type, 
                 $stats['all_average'], $stats['all_count'],
+                $stats['last5Year_average'], $stats['last5Year_count'],
                 $stats['last1Year_average'], $stats['last1Year_count'],
                 $stats['last3Month_average'], $stats['last3Month_count'],
                 $stats['last1Month_average'], $stats['last1Month_count'],
@@ -556,13 +486,14 @@ try {
             $stmt = $conn->prepare("
                 INSERT INTO realPrice_Average_sgg 
                 (code, code_name, estate_type, all_average, all_count, 
-                 last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
+                 last5Year_average, last5Year_count, last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
                  last1Month_average, last1Month_count, 
                  center_latitude, center_longitude, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     code_name = VALUES(code_name), estate_type = VALUES(estate_type),
                     all_average = VALUES(all_average), all_count = VALUES(all_count),
+                    last5Year_average = VALUES(last5Year_average), last5Year_count = VALUES(last5Year_count),
                     last1Year_average = VALUES(last1Year_average), last1Year_count = VALUES(last1Year_count),
                     last3Month_average = VALUES(last3Month_average), last3Month_count = VALUES(last3Month_count),
                     last1Month_average = VALUES(last1Month_average), last1Month_count = VALUES(last1Month_count),
@@ -570,9 +501,10 @@ try {
                     description = VALUES(description);
             ");
             $descriptionValue = "시군구별 통계 ({$type})[{$todayDateString}]";
-            $stmt->bind_param("sssdidisdiddds", 
+            $stmt->bind_param("sssdididisdiddds", 
                 $sggCode, $sggName, $type, 
                 $stats['all_average'], $stats['all_count'],
+                $stats['last5Year_average'], $stats['last5Year_count'],
                 $stats['last1Year_average'], $stats['last1Year_count'],
                 $stats['last3Month_average'], $stats['last3Month_count'],
                 $stats['last1Month_average'], $stats['last1Month_count'],
@@ -718,14 +650,16 @@ try {
             
             $stmt = $conn->prepare("
                 INSERT INTO realPrice_Average_emd 
-                (code, code_name, estate_type, all_average, all_count, 
+                (code, code_name, estate_type, all_average, all_count,
+                 last5Year_average, last5Year_count, 
                  last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
                  last1Month_average, last1Month_count, 
                  center_latitude, center_longitude, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     code_name = VALUES(code_name), estate_type = VALUES(estate_type),
                     all_average = VALUES(all_average), all_count = VALUES(all_count),
+                    last5Year_average = VALUES(last5Year_average), last5Year_count = VALUES(last5Year_count),
                     last1Year_average = VALUES(last1Year_average), last1Year_count = VALUES(last1Year_count),
                     last3Month_average = VALUES(last3Month_average), last3Month_count = VALUES(last3Month_count),
                     last1Month_average = VALUES(last1Month_average), last1Month_count = VALUES(last1Month_count),
@@ -733,9 +667,10 @@ try {
                     description = VALUES(description);
             ");
             $descriptionValue = "읍면동별 통계 ({$type})[{$todayDateString}]";
-            $stmt->bind_param("sssdidisdiddds", 
+            $stmt->bind_param("sssdididisdiddds", 
                 $emdCode, $emdName, $type, 
                 $stats['all_average'], $stats['all_count'],
+                $stats['last5Year_average'], $stats['last5Year_count'],
                 $stats['last1Year_average'], $stats['last1Year_count'],
                 $stats['last3Month_average'], $stats['last3Month_count'],
                 $stats['last1Month_average'], $stats['last1Month_count'],
@@ -824,7 +759,7 @@ try {
         update_history_status($historyId, $finalStatus, $finalLogMessage, $conn);
         log_to_db($historyId, "스크립트 최종 오류/취소: " . $finalLogMessage, $conn, "ERROR");
     }
-    error_log("[FATAL] RealPrice Average Worker Batch Error: " . $finalLogMessage);
+    //error_log("[FATAL] RealPrice Average Worker Batch Error: " . $finalLogMessage);
     exit(1); // 오류 코드로 종료
 
 } finally {
@@ -853,6 +788,7 @@ try {
 function calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseYear, $baseMonth, $additionalWhere = "") {
     $stats = [
         'all_count' => 0, 'all_average' => 0,
+        'last5Year_count' => 0, 'last5Year_average' => 0, // ✨ 최근 5년 통계 추가 ✨
         'last1Year_count' => 0, 'last1Year_average' => 0,
         'last3Month_count' => 0, 'last3Month_average' => 0,
         'last1Month_count' => 0, 'last1Month_average' => 0,
@@ -883,7 +819,7 @@ function calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseY
     //log_to_db($historyId, "[DEBUG] Final SQL for all_average: " . $sqlForAll, $conn, "INFO");
     $result = $conn->query($sqlForAll);
     if ($result === false) {
-        error_log("[ERROR] Query failed for all_average on {$tableName}: " . $conn->error);
+        //error_log("[ERROR] Query failed for all_average on {$tableName}: " . $conn->error);
         log_to_db($historyId, "[ERROR] Query failed for all_average on {$tableName}: " . $conn->error, $conn, "ERROR");
     } else if ($row = $result->fetch_assoc()) {
         if ($row['count'] > 0) {
@@ -908,13 +844,19 @@ function calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseY
     // 4. 최근 1개월 통계 (기준연월이 2025/11일 때 2025/11/01 ~ 2025/11/30)
     $filter1M = " AND dealYear = {$targetYear} AND dealMonth = {$targetMonth}";
 
+    // ✨ 5. 최근 5년 통계 (기준연월이 2025/11일 때 2020/12/01 ~ 2025/11/30) ✨
+    // 기준월의 59개월 전 (총 60개월 = 5년 데이터를 포함하기 위해)
+    $startMonthDate5Y = (new DateTime("{$baseYear}-{$baseMonth}-01"))->modify('-59 months');
+    $filter5Y = " AND (dealYear > {$startMonthDate5Y->format('Y')} OR (dealYear = {$startMonthDate5Y->format('Y')} AND dealMonth >= {$startMonthDate5Y->format('n')})) AND (dealYear < {$targetYear} OR (dealYear = {$targetYear} AND dealMonth <= {$targetMonth}))";
+
+    // --- 각 기간별 쿼리 실행 ---
+
     // 2. 최근 1년 통계
-    // {FILTER_CONDITION}에 $filter1Y를 전달
     $sqlFor1Y = str_replace('{FILTER_CONDITION}', $filter1Y, $selectSqlTemplate);
-    
     $result = $conn->query($sqlFor1Y);
     if ($result === false) {
-        error_log("[ERROR] Query failed for last1Year_average on {$tableName}: " . $conn->error);
+        //error_log("[ERROR] Query failed for last1Year_average on {$tableName}: " . $conn->error);
+        log_to_db($historyId, "[ERROR] Query failed for last1Year_average on {$tableName}: " . $conn->error, $conn, "ERROR");
     } else if ($row = $result->fetch_assoc()) {
         if ($row['count'] > 0) {
             $stats['last1Year_count'] = (int)$row['count'];
@@ -923,12 +865,11 @@ function calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseY
     }
     
     // 3. 최근 3개월 통계
-    // {FILTER_CONDITION}에 $filter3M을 전달
     $sqlFor3M = str_replace('{FILTER_CONDITION}', $filter3M, $selectSqlTemplate);
-    
     $result = $conn->query($sqlFor3M);
     if ($result === false) {
-        error_log("[ERROR] Query failed for last3Month_average on {$tableName}: " . $conn->error);
+        //error_log("[ERROR] Query failed for last3Month_average on {$tableName}: " . $conn->error);
+        log_to_db($historyId, "[ERROR] Query failed for last3Month_average on {$tableName}: " . $conn->error, $conn, "ERROR");
     } else if ($row = $result->fetch_assoc()) {
         if ($row['count'] > 0) {
             $stats['last3Month_count'] = (int)$row['count'];
@@ -937,16 +878,28 @@ function calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseY
     }
 
     // 4. 최근 1개월 통계
-    // {FILTER_CONDITION}에 $filter1M을 전달
     $sqlFor1M = str_replace('{FILTER_CONDITION}', $filter1M, $selectSqlTemplate);
-    
     $result = $conn->query($sqlFor1M);
     if ($result === false) {
-        error_log("[ERROR] Query failed for last1Month_average on {$tableName}: " . $conn->error);
+        //error_log("[ERROR] Query failed for last1Month_average on {$tableName}: " . $conn->error);
+        log_to_db($historyId, "[ERROR] Query failed for last1Month_average on {$tableName}: " . $conn->error, $conn, "ERROR");
     } else if ($row = $result->fetch_assoc()) {
         if ($row['count'] > 0) {
             $stats['last1Month_count'] = (int)$row['count'];
             $stats['last1Month_average'] = (float)($row['total_unit_price'] / $row['count']);
+        }
+    }
+
+    // ✨ 5. 최근 5년 통계 ✨
+    $sqlFor5Y = str_replace('{FILTER_CONDITION}', $filter5Y, $selectSqlTemplate);
+    $result = $conn->query($sqlFor5Y);
+    if ($result === false) {
+        //error_log("[ERROR] Query failed for last5Year_average on {$tableName}: " . $conn->error);
+        log_to_db($historyId, "[ERROR] Query failed for last5Year_average on {$tableName}: " . $conn->error, $conn, "ERROR");
+    } else if ($row = $result->fetch_assoc()) {
+        if ($row['count'] > 0) {
+            $stats['last5Year_count'] = (int)$row['count'];
+            $stats['last5Year_average'] = (float)($row['total_unit_price'] / $row['count']);
         }
     }
 

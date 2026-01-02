@@ -61,6 +61,8 @@ try {
             estate_type,
             all_average,
             all_count,
+            last5Year_average,
+            last5Year_count,
             last1Year_average,
             last1Year_count,
             last3Month_average,

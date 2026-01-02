@@ -80,7 +80,7 @@ try {
 
 } catch (Exception $e) {
     $conn->rollback(); // 오류 발생 시 롤백
-    error_log("Failed to cancel batch job (ID: {$historyId}): " . $e->getMessage());
+    //error_log("Failed to cancel batch job (ID: {$historyId}): " . $e->getMessage());
     echo json_encode(['success' => false, 'message' => '작업 취소 중 오류가 발생했습니다.']);
 } finally {
     // DB 연결이 된 경우에만 닫습니다.

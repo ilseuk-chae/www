@@ -109,13 +109,16 @@ $(document).ready(async function () {
                 showbaseDateSelection = false;
                 break;
             case 'rediscache':
-                descriptionContent  = '<p>읍면동 단위로 실거래가 데이터를 DB에서 Redis 캐시를 생성/업데이트합니다. <span style="color: red;">(시도 선택 필수)</span></p>';
+                descriptionContent  = '<p>읍면동 단위로 실거래가 데이터를 DB에서 Redis 캐시를 생성/업데이트합니다(기준월 대비 최근 5년 것만). <span style="color: red;">(시도 선택 필수)</span></p>';
                 buttonText = '실거래가(읍면동 단위)를 Redis 캐시에 업로드 시작'; // 메인 시작 버튼의 텍스트
                 logHeading.textContent = '[실거래가(읍면동 단위) Redis 캐시 배치 스크립트 로그]';
-                showDateSelection = false; // Redis 캐시 작업은 날짜 선택이 필요 없음
+                showDateSelection = true; 
+                showstartDateSelection = false;
+                showendDateSelection = false;
+                showbaseDateSelection = true;
                 break;
             case 'realpriceAverage':
-                descriptionContent  = '<p>시도/시군구/읍면동 단위로 실거래 평균가 데이터를 업데이트합니다.</p>';
+                descriptionContent  = '<p>시도/시군구/읍면동 단위로 실거래 평균가 데이터를 업데이트합니다.(전체,5년,1년,3개월,1개월:지준 월 대비)</p>';
                 buttonText = '실거래 평균가를 테이블에 업데이트 시작'; // 메인 시작 버튼의 텍스트
                 logHeading.textContent = '[실거래가 평균가 테이블 업데이트 스크립트 로그]';
                 showDateSelection = true; 
@@ -133,10 +136,13 @@ $(document).ready(async function () {
         if (descriptionSection) {
             descriptionSection.innerHTML = descriptionContent;
         }
-        if (uploadStartBtn_main) { 
-            uploadStartBtn_main.textContent = buttonText;
-            $(uploadStartBtn_main).show(); // 모든 탭에서 이 버튼을 사용하므로 항상 보임
+        
+        if (uploadStartBtn_main.length > 0) {
+            uploadStartBtn_main.text(buttonText); // .textContent 대신 .text() 사용
+            uploadStartBtn_main.show(); // 이미 jQuery 객체이므로 다시 $()로 감쌀 필요 없음
+            // $(uploadStartBtn_main).show(); -> uploadStartBtn_main.show(); 로 변경
         }
+
         if (dateSelectionGroup) {
              // dateSelectionGroup은 순수 DOM 객체이므로 style.display를 직접 조작합니다.
             dateSelectionGroup.style.display = showDateSelection ? '' : 'none';
@@ -250,20 +256,24 @@ $(document).ready(async function () {
     populateMonths(baseMonthSelect);
 
     // 현재 년/월로 기본값 설정
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth() + 1;
-    startYearSelect.value = currentYear;
-    endYearSelect.value = currentYear;
-    baseYearSelect.value = currentYear;
-    startMonthSelect.value = (currentMonth < 10 ? '0' : '') + currentMonth;
-    endMonthSelect.value = (currentMonth < 10 ? '0' : '') + currentMonth;
-    if(currentMonth === 1){
-        baseMonthSelect.value = (currentMonth < 10 ? '0' : '') + currentMonth-1+12;
-        baseYearSelect.value = currentYear-1;
-    }
-    else {  
-        baseMonthSelect.value = (currentMonth < 10 ? '0' : '') + currentMonth-1;
-    }
+    // 현재 월의 1개월 이전 날짜를 계산
+    const now = new Date(); // 2026. 1. 2. 오전 8:58:54
+    now.setMonth(now.getMonth() - 1); // 현재 월에서 1을 뺌 (자동으로 연도 처리됨)
+
+    const prevMonth = now.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+    const prevYear = now.getFullYear();
+    // HTML 요소에 값 설정
+    // month에 두 자리 숫자가 필요할 경우를 대비해 패딩 처리
+    const formattedPrevMonth = String(prevMonth).padStart(2, '0');
+
+    baseMonthSelect.value = formattedPrevMonth;
+    baseYearSelect.value = prevYear;
+
+    endMonthSelect.value = formattedPrevMonth;
+    endYearSelect.value = prevYear;
+
+    startMonthSelect.value = formattedPrevMonth;
+    startYearSelect.value = prevYear; // startYearSelect도 이전 연도로 설정 (원래 로직과 동일)
 
     initEvents(); // 모든 이벤트 리스너 등록
 
@@ -318,8 +328,10 @@ $(document).ready(async function () {
             // --- 모든 탭에서 공통적으로 사용할 파라미터 준비 ---
             const startYear = startYearSelect.value;
             const startMonth = startMonthSelect.value;
+            
             const endYear = endYearSelect.value;
             const endMonth = endMonthSelect.value;
+            
             const baseYear = baseYearSelect.value;
             const baseMonth = baseMonthSelect.value;
 
@@ -354,11 +366,12 @@ $(document).ready(async function () {
 
             // --- API 호출 로직 ---
             let apiUrl = '';
-            let requestBody = { task_type: currentDataType, sido: sidoParam }; // task_type 파라미터 추가
+            //let requestBody = { task_type: currentDataType, sido: sidoParam }; // task_type 파라미터 추가
+            let requestBody = {}; // 공통 파라미터 객체
             
             switch (currentDataType) {
                 case 'characteristic':
-                    apiUrl = '/front/back/admin/trigger_characteristic_batch.php';
+                    apiUrl = '/front/back/admin/start_characteristics_batch.php';
                     // 토지특성은 날짜 선택이 필요 없으므로 requestBody에 날짜 파라미터는 생략
                     Object.assign(requestBody, {
                         task_type: currentDataType, 
@@ -367,7 +380,7 @@ $(document).ready(async function () {
                     //추후 개발
                     break;
                 case 'realprice':
-                    apiUrl = '/front/back/admin/trigger_data_upload.php';
+                    apiUrl = '/front/back/admin/start_realPrice_batch.php';
                     Object.assign(requestBody, {
                         task_type: currentDataType, 
                         sido: sidoParam,
@@ -380,8 +393,10 @@ $(document).ready(async function () {
                 case 'rediscache':
                     apiUrl = '/front/back/admin/trigger_cache_batch.php';
                     Object.assign(requestBody, {
-                        task_type: currentDataType, 
-                        sido: sidoParam
+                        task_type: currentDataType,
+                        baseYear: baseYear,
+                        baseMonth: baseMonth,
+                        sido: sidoParam                        
                     });
                     break;
                 case 'realpriceAverage':
@@ -415,6 +430,7 @@ $(document).ready(async function () {
                 
                 // HTTP 응답 자체에 문제가 있었는지 확인 (예: 404, 500)
                 if (!response.ok) {
+                    //console.error(`서버 응답 오류: ${response.status} ${response.statusText}`);
                     throw new Error(`서버 응답 오류: ${response.status} ${response.statusText}`);
                 }
 
@@ -433,6 +449,8 @@ $(document).ready(async function () {
                                         // ===>>> 이 부분이 핵심 수정: result.batch_id 대신 result.master_history_id 사용 <<<===
                     startBatchPolling(result.master_history_id); // API 응답의 master_history_id를 인자로 전달
                     
+                    cancelBatchBtn.show(); // 시작 요청 성공 시 버튼 보이기
+                    
                 } else {
                     // result.success가 false인 경우 (백엔드 로직상 실패)
                     const errorMsg = `[${new Date().toLocaleString()}] ${currentDataType} 작업 요청 실패: ${result.message || '알 수 없는 오류'}`;
@@ -450,7 +468,7 @@ $(document).ready(async function () {
                 $(this).prop('disabled', false).text(getUploadStartBtnText(activeTaskType)); // 버튼 활성화
                 //console.error(`Batch trigger for ${currentDataType} failed (client-side error):`, error);
             } finally {
-                loadInitialBatchStatus(currentDataType); // 상태 초기화 재호출
+                //loadInitialBatchStatus(currentDataType); // 상태 초기화 재호출
             }
         });
 
@@ -468,7 +486,14 @@ $(document).ready(async function () {
 
             try {
                 cancelBatchBtn.prop('disabled', true).text('취소 중...'); // 버튼 비활성화
-                const response = await fetch('/front/back/admin/cancel_batch.php', {
+                let apiUrl = "";
+                if(currentDataType === 'realpriceAverage' || currentDataType === 'rediscache'){
+                    apiUrl = '/front/back/admin/cancel_batch.php'; // 공통 취소 API 엔드포인트
+                }
+                else if(currentDataType === 'characteristic' || currentDataType === 'realprice'){
+                    apiUrl = '/front/back/admin/cancel_batch_new.php'; // 공통 취소 API 엔드포인트
+                }
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -478,6 +503,7 @@ $(document).ready(async function () {
                 const result = await response.json();
 
                 if (result.success) {
+                    cancelBatchBtn.hide(); // 취소 요청 성공 시 버튼 숨김
                     alert(result.message);
                     // 취소 요청 성공 후, 폴링은 계속 진행되어 'canceled' 상태를 감지할 것임
                     // 화면 갱신은 fetchBatchProgress가 'canceled' 상태를 처리할 때 이루어짐.
@@ -488,7 +514,7 @@ $(document).ready(async function () {
                 console.error('배치 취소 API 호출 중 오류 발생:', error);
                 alert('배치 취소 중 통신 오류가 발생했습니다.');
             } finally {
-                cancelBatchBtn.prop('disabled', false).text('중단'); // 버튼 다시 활성화
+                cancelBatchBtn.prop('disabled', false).text('중단하기'); // 버튼 다시 활성화
             }
             loadInitialBatchStatus(currentDataType); // 상태 초기화 재호출
         });
@@ -601,6 +627,7 @@ $(document).ready(async function () {
             cancelBatchBtn.hide(); // 오류 발생 시 중단 버튼 숨김
             $(uploadStartBtn_main).prop('disabled', false).text(getUploadStartBtnText(activeTaskType));
         }
+        historyTablerefresh(activeTaskType);
     }
 
     function historyTablerefresh(dataType) {
@@ -617,14 +644,20 @@ $(document).ready(async function () {
 
     function getUploadStartBtnText(taskType) {
         let buttonText = '시작 버튼';
-        if (taskType === 'characteristic') {
-            buttonText = '토지 특성 정보를 Redis 캐시에 업로드 시작';
-        } else if (taskType === 'realprice') {
-            buttonText = '국토교통부에서 실거래가 데이터를 가져오기 시작';
-        } else if (taskType === 'rediscache') {
-            buttonText = '실거래가(읍면동 단위)를 Redis 캐시에 업로드 시작';
-        } else if (taskType === 'realpriceAverage') {
-        }   buttonText = '실거래 평균가를 테이블에 업데이트 시작';
+        switch (taskType) {
+            case 'characteristic':
+                buttonText = '토지 특성 정보를 Redis 캐시에 업로드 시작';
+                break;
+            case 'realprice':
+                buttonText = '국토교통부에서 실거래가 데이터를 가져오기 시작';
+                break;
+            case 'rediscache':
+                buttonText = '실거래가(읍면동 단위)를 Redis 캐시에 업로드 시작';
+                break;
+            case 'realpriceAverage':
+                buttonText = '실거래 평균가를 테이블에 업데이트 시작';
+                break;
+        }
         return buttonText;
     }
 

@@ -429,6 +429,20 @@ function initAction() {
         }
     });
 
+    //지도 - real averageType 선택 - 정보 타입
+    $('#averageType').on('change', function() {
+        if(REALPRICE_POLYGON_MODE == 1){
+            fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기(원본)
+        }
+        else if(REALPRICE_POLYGON_MODE == 2){
+            fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
+        }
+        //fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); //실거래가를 가져오기 - cash
+        else if(REALPRICE_POLYGON_MODE == 3){
+            fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() //실거래가를 가져오기 - cash auto
+        }
+    });
+    
     // 지도 - 이력관리 //
     $("#mapHistoryOpen").click(function () {
         $(".mh-list").toggleClass("active");
@@ -541,25 +555,35 @@ function initAction() {
     }
 
     // 지도 - 옵션 - 경계표시 //
-    boundaryFlag = localStorage.getItem("boundaryKey") ?? false; // default false
-    if(boundaryFlag == true || boundaryFlag == "true"){
+    const storedBoundary = localStorage.getItem("boundaryKey");
+
+    if (storedBoundary === "true") {
+        boundaryFlag = true;
         $("#mapOptionBoundary").addClass("active");
+        // 여기에 초기 로딩 시 경계선 로드/표시하는 함수 호출이 필요할 수도 있습니다.
+        // 예를 들어: loadAdministrativeBoundaries();
     } else {
+        boundaryFlag = false; // null 이나 "false"이면 false
         $("#mapOptionBoundary").removeClass("active");
+        // boundaryFlag가 false일 때 clearAdministrativePolygons()를 즉시 호출하는 것이
+        // 적절한지는 맥락에 따라 판단해야 합니다.
+        // 만약 처음 로딩 시 지도가 비활성 상태이고, active 될 때 그려야 한다면 여기서 호출하지 않습니다.
     }
 
+    
     $("#mapOptionBoundary").click(function () {
-        
         $(this).toggleClass("active"); // active 클래스를 토글합니다.
-
+    
+        // 토글된 상태에 따라 boundaryFlag 업데이트
         if ($(this).hasClass("active")) {
-            boundaryFlag= true;
-
+            boundaryFlag = true;
         } else {
+            boundaryFlag = false;
             clearAdministrativePolygons();
-            boundaryFlag= false;
         }
-        localStorage.setItem("boundaryKey", boundaryFlag);
+        
+        // boolean 값을 localStorage에 저장하면 "true" 또는 "false" 문자열로 자동 변환됩니다.
+        localStorage.setItem("boundaryKey", String(boundaryFlag));
     });
 
     // 지도 - 공유 //
