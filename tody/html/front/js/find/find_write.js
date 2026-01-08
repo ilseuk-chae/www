@@ -306,8 +306,8 @@ function findWrite() {
         }
     }
 
-    //callApiAbort("/front/back/find/find_write.php", "POST", dataObj, "findWrite")
-    callApiFormData("POST", "/front/back/find/find_write.php", formData)
+    callApiAbort("/front/back/find/find_write.php", "POST", dataObj, "findWrite")
+    //callApiFormData("POST", "/front/back/find/find_write.php", formData)
         .then((response) => {
             if (!response) {
                 $("#modalFail").iziModal("open");

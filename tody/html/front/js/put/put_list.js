@@ -408,9 +408,18 @@ async function estate_type_get() {
     const dataObj = {};
 
     callApiAbort("/front/back/find/estate_type_get.php", "POST", dataObj, "estate_type_get")
-        .then((response) => {
+        .then((data) => {
             //populateOptions("#estate_type", response.responseData, "type_code", "type_name");
             populateOptions2("#estate_type", response.responseData, "type_code", "type_name", "type_code");
+            /*
+            // 서버 응답이 {"responseData": [...] } 형태일 경우
+            if (data && data.responseData) {
+                populateOptions2("#estate_type", data.responseData, "type_code", "type_name", "type_code");
+            } else if (Array.isArray(data)) { // 서버 응답이 단순히 배열 [...] 형태일 경우
+                populateOptions2("#estate_type", data, "type_code", "type_name", "type_code");
+            } else { // 기타 예상치 못한 형태
+                console.error("estate_type_get API 응답 형식이 예상과 다릅니다.", data);
+            }*/
         })
         .catch((error) => {
             console.error("API 호출 실패", error);

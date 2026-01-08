@@ -35,7 +35,7 @@
 
 
 /* 구분 및 버튼 */
-.sort-btn {display:flex; justify-content:space-between; align-items:center; width:1400px; margin:0 auto; padding-bottom:20px;}
+.sort-btn {display:flex; justify-content:space-between; align-items:center; width:1400px; margin:0 auto; padding-bottom:5px;} /* 20->5*/
 .sort-btn dt button {font-size:13px; line-height:13px; letter-spacing:-1px;}
 .sort-btn dt button i {display:none; margin-right:3px; color:#E54887;}
 .sort-btn dt button.active {color:#111;}

@@ -203,12 +203,20 @@ try {
     }
     // 4. 모아진 이메일 리스트로 이메일 발송 (이전에 언급했던 sendEmail 함수를 가정)
     
+    //error_log("num_rows count: " . $num_rows);
+    //error_log("emailRecipientList count: " . count($emailRecipientList));
+    $emailSent = 'SUCCESS';
+    $successCnt = 0;
+    
     if (!empty($emailRecipientList)) {
         foreach ($emailRecipientList as $recipient) {
             // 실제 이메일 발송 함수 호출
             $emailSent = sendMail($recipient['email'], $recipient['subject'], $recipient['message']);
             if (!$emailSent) {
                 error_log("Failed to send email to: " . $recipient['email']);
+            }
+            else {
+                $successCnt++;
             }
         }
         error_log("Emails sent to " . count($emailRecipientList) . " recipients.");

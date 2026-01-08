@@ -1605,3 +1605,179 @@
   color: #333333; /* 원하는 색상 코드로 변경하세요. 예: #333333 (진한 회색) */
   /* font-weight: bold; */ /* 원한다면 글자 굵기도 여기서 지정할 수 있습니다. */
 }
+
+.tab-container {
+  width: 100%;
+  max-width: 1430px;
+  margin: 10px auto;
+  margin-top: 5px;
+  background-color: #fff;
+  
+  /* 여기를 수정! */
+  max-height: calc(100vh - 80px); /* 100vh에서 헤더 높이(예:60px) + 푸터/하단 여백(예:20px) 제외 */
+  overflow-y: auto;              /* 세로 스크롤바를 이 요소에 생성 */
+  /* overflow-x: hidden; */         /* (선택 사항) 가로 스크롤은 명시적으로 막을 수 있습니다. */
+
+  position: relative;
+  /*z-index: 10;*/
+}
+
+/* 탭 헤더 스타일 */
+.tab-headers {
+  width: 100%; /* 부모 너비에 맞춤 */
+  max-width: 1400px; /* 최대 1400px까지 확장 */
+  margin: auto;
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+.tab-headers button {
+  flex: 1; /* 너비 균등 분배 */
+  padding: 15px 0;
+  cursor: pointer;
+  border: none;
+  background-color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  transition: background-color 0.3s, color 0.3s;
+}
+.tab-headers button:hover {
+  /*background-color: #e0e0e0;*/
+  color: #ef8779;
+}
+.tab-headers button.active {
+  /*background-color: #e0e0e0;*/
+  color: #ef8779;
+  border: 1px solid #ef8779;
+  /*border-bottom: 1px solid #ef8779;  활성 탭 밑줄 */
+}
+
+/* 탭 콘텐츠 스타일 */
+.tab-content {
+  padding: 20px;
+  /* 기본적으로 모든 탭 콘텐츠는 숨깁니다. */
+  display: none;
+}
+.tab-content.active {
+  /* 활성 탭 콘텐츠만 보여줍니다. */
+  display: block;
+}
+/* put_list.html 및 find_list.html 내의 스타일 충돌 방지를 위한 접두사
+.tab-content #realpriceList { padding-top: 0; }
+.tab-content .realprice-table {  } */
+@media all and (max-width:479px) {
+  .tab-headers {width:90%;}
+}
+@media all and (min-width:480px) and (max-width:767px) {
+  .tab-headers {width:470px;}
+}
+@media all and (min-width:768px) and (max-width:991px) {
+  .tab-headers {width:750px;}
+}
+@media all and (min-width:992px) and (max-width:1199px) {
+  .tab-headers {width:970px;}
+}
+@media all and (min-width:1200px) and (max-width:1399px) {
+  .tab-headers {width:1180px;}
+}
+@media all and (min-width:1400px) {
+
+}
+
+/* 타이틀 영역 */
+.title-area2 {
+  width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0; /* 70 -> 20 */
+  text-align: center;
+}
+.title-area2 > h2 {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 40px;
+  color: #222;
+  letter-spacing: -1px;
+}
+.title-area2 > h3 {
+  margin-top: 25px; /* 25 -> 15 */
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -1px;
+}
+
+@media all and (max-width: 479px) {
+  .title-area2 {
+      width: 90%;
+      padding: 40px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 26px;
+      line-height: 26px;
+  }
+  .title-area2 > h3 {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 22px;
+  }
+}
+@media all and (min-width: 480px) and (max-width: 767px) {
+  .title-area2 {
+      width: 470px;
+      padding: 40px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 26px;
+      line-height: 26px;
+  }
+  .title-area2 > h3 {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 22px;
+  }
+}
+@media all and (min-width: 768px) and (max-width: 991px) {
+  .title-area2 {
+      width: 750px;
+      padding: 50px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 30px;
+      line-height: 30px;
+  }
+}
+@media all and (min-width: 992px) and (max-width: 1199px) {
+  .title-area2 {
+      width: 970px;
+      padding: 60px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 35px;
+      line-height: 35px;
+  }
+}
+@media all and (min-width: 1200px) and (max-width: 1399px) {
+  .title-area2 {
+      width: 1180px;
+  }
+}
+@media all and (min-width: 1400px) {
+}
+
+#input_price_start,
+#input_price_end {
+    width: 75px; /* 고정 너비 */
+    /* 또는 */
+    /* width: 40%; */ /* 부모 d-flex 아이템 대비 상대 너비 */
+    /* 또는 min-width / max-width 조합 */
+    /* min-width: 80px; */
+    /* max-width: 120px; */
+}
+#input_area_start,
+#input_area_end {
+    width: 68px; /* 고정 너비 */
+    /* 또는 */
+    /* width: 40%; */ /* 부모 d-flex 아이템 대비 상대 너비 */
+    /* 또는 min-width / max-width 조합 */
+    /* min-width: 80px; */
+    /* max-width: 120px; */
+}
