@@ -1,1 +1,387 @@
-(function(_0x583025,_0x451d96){const _0x7d2b=a5_0x5bf6,_0x218be0=_0x583025();while(!![]){try{const _0x4dd57d=parseInt(_0x7d2b(0x1e2))/0x1+parseInt(_0x7d2b(0x1df))/0x2*(parseInt(_0x7d2b(0x1b9))/0x3)+parseInt(_0x7d2b(0x1aa))/0x4*(-parseInt(_0x7d2b(0x1dd))/0x5)+-parseInt(_0x7d2b(0x1f8))/0x6*(-parseInt(_0x7d2b(0x1cc))/0x7)+-parseInt(_0x7d2b(0x1e7))/0x8+parseInt(_0x7d2b(0x1da))/0x9*(-parseInt(_0x7d2b(0x1b6))/0xa)+parseInt(_0x7d2b(0x1d0))/0xb;if(_0x4dd57d===_0x451d96)break;else _0x218be0['push'](_0x218be0['shift']());}catch(_0x370cd0){_0x218be0['push'](_0x218be0['shift']());}}}(a5_0x1fc1,0xc3488));function validateInput(_0x5163ee,_0x2233f6,_0x59c4c2,_0x3401b8){const _0x17e150=a5_0x5bf6,_0x300e8b=_0x5163ee[_0x17e150(0x1e4)](),_0x4f7fe2=_0x5163ee['attr'](_0x17e150(0x1e5)),_0x3e45c4=_0x5163ee['attr'](_0x17e150(0x1b5)),_0x36275e=_0x5163ee[_0x17e150(0x1b2)]('.input-box')[_0x17e150(0x1f7)](_0x17e150(0x1b0));var _0x530cc2=!![];console['log'](_0x36275e);if(!_0x300e8b||!_0x300e8b[_0x17e150(0x1eb)]())return _0x36275e[_0x17e150(0x1b3)](_0x59c4c2),![];switch(_0x2233f6){case'id':_0x4f7fe2&&_0x300e8b[_0x17e150(0x1c1)]<_0x4f7fe2&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1ae)+_0x4f7fe2+_0x17e150(0x1f1)),_0x530cc2=![]);_0x3e45c4&&_0x300e8b['length']>_0x3e45c4&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1e8)+_0x3e45c4+'자\x20이하여야\x20합니다.'),_0x530cc2=![]);break;case'username':_0x4f7fe2&&_0x300e8b['length']<_0x4f7fe2&&(_0x36275e[_0x17e150(0x1b3)]('사용자\x20이름은\x20최소\x20'+_0x4f7fe2+_0x17e150(0x1f1)),_0x530cc2=![]);_0x3e45c4&&_0x300e8b[_0x17e150(0x1c1)]>_0x3e45c4&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1e8)+_0x3e45c4+_0x17e150(0x1d5)),_0x530cc2=![]);break;case _0x17e150(0x1f0):const _0xe1a8d0=/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;!_0xe1a8d0[_0x17e150(0x1af)](_0x300e8b)&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1f3)),_0x530cc2=![]);break;case _0x17e150(0x1c8):_0x4f7fe2&&_0x300e8b[_0x17e150(0x1c1)]<_0x4f7fe2&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1d3)+_0x4f7fe2+_0x17e150(0x1f1)),_0x530cc2=![]);_0x3e45c4&&_0x300e8b[_0x17e150(0x1c1)]>_0x3e45c4&&(_0x36275e[_0x17e150(0x1b3)]('비밀번호는\x20최대\x20'+_0x3e45c4+_0x17e150(0x1d5)),_0x530cc2=![]);break;case'select':!_0x300e8b&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1e3)),_0x530cc2=![]);break;case _0x17e150(0x1b3):(_0x4f7fe2&&_0x300e8b['length']<_0x4f7fe2||_0x3e45c4&&_0x300e8b['length']>_0x3e45c4)&&(_0x36275e['text']('최소\x20'+_0x4f7fe2+_0x17e150(0x1fa)+_0x3e45c4+'자\x20이하여야\x20합니다.'),_0x530cc2=![]);break;case _0x17e150(0x1ee):(isNaN(_0x300e8b)||_0x300e8b<_0x4f7fe2||_0x300e8b>_0x3e45c4)&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1ba)+_0x4f7fe2+_0x17e150(0x1fa)+_0x3e45c4+_0x17e150(0x1ea)),_0x530cc2=![]);break;case'phone':const _0x4ee381=/^\d{9,11}$/;!_0x4ee381[_0x17e150(0x1af)](_0x300e8b)&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1b7)),_0x530cc2=![]);break;case'mobile':const _0x4e6deb=/^\d{9,11}$/;!_0x4e6deb[_0x17e150(0x1af)](_0x300e8b)&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1ed)),_0x530cc2=![]);break;case _0x17e150(0x1c7):const _0x3e9ece=_0x5163ee[0x0]['files'];let _0x22fe4d=[],_0xcefbc5=[];if(_0x3401b8===_0x17e150(0x1f5))_0x22fe4d=['jpg',_0x17e150(0x1b4),_0x17e150(0x1c5),_0x17e150(0x1cf)],_0xcefbc5=[_0x17e150(0x1b8),_0x17e150(0x1bb),_0x17e150(0x1ca)];else{if(_0x3401b8==='video')_0x22fe4d=[_0x17e150(0x1d6),_0x17e150(0x1e1),_0x17e150(0x1d1),_0x17e150(0x1cb)],_0xcefbc5=[_0x17e150(0x1bc),_0x17e150(0x1bf),_0x17e150(0x1be),_0x17e150(0x1d2)];else _0x3401b8===_0x17e150(0x1e9)&&(_0x22fe4d=[_0x17e150(0x1ab),_0x17e150(0x1e9),'docx',_0x17e150(0x1ac)],_0xcefbc5=[_0x17e150(0x1b1),_0x17e150(0x1d7),_0x17e150(0x1d8),'text/plain']);}$[_0x17e150(0x1c0)](_0x3e9ece,function(_0x5a3c83,_0x1be39a){const _0x2361d9=_0x17e150;if(!isValidFile(_0x1be39a,_0x22fe4d,_0xcefbc5))return _0x36275e[_0x2361d9(0x1b3)](_0x2361d9(0x1f2)+_0x22fe4d),_0x530cc2=![],![];});break;default:if(_0x2233f6!=_0x17e150(0x1f0)){const _0x44db53=/^[a-zA-Z0-9]+$/;!_0x44db53['test'](_0x300e8b)&&(_0x36275e[_0x17e150(0x1b3)](_0x17e150(0x1d9)),_0x530cc2=![]);}}return _0x530cc2&&_0x36275e[_0x17e150(0x1b3)](''),_0x530cc2;}function validateField(_0x516599,_0x26410c,_0x27bd89,_0x142a6f){const _0x2d7a2c=a5_0x5bf6,_0x2afbc3=_0x516599[_0x2d7a2c(0x1e4)]();var _0x324e6c=_0x516599['siblings'](_0x2d7a2c(0x1b0));if(!_0x2afbc3[_0x2d7a2c(0x1eb)]())return _0x324e6c[_0x2d7a2c(0x1b3)](_0x26410c),![];const _0x198646=/^[a-zA-Z0-9]+$/;if(!_0x198646[_0x2d7a2c(0x1af)](_0x2afbc3))return _0x324e6c[_0x2d7a2c(0x1b3)](_0x2d7a2c(0x1d9)),![];if(_0x27bd89!==undefined&&_0x2afbc3[_0x2d7a2c(0x1c1)]<_0x27bd89)return _0x324e6c[_0x2d7a2c(0x1b3)](_0x26410c),![];if(_0x142a6f!==undefined&&_0x2afbc3[_0x2d7a2c(0x1c1)]>_0x142a6f)return _0x324e6c['text'](_0x26410c),![];return _0x324e6c['text'](''),!![];}function a5_0x5bf6(_0x503daa,_0x9b0add){const _0x1fc10d=a5_0x1fc1();return a5_0x5bf6=function(_0x5bf6e9,_0x1c8608){_0x5bf6e9=_0x5bf6e9-0x1aa;let _0x5f8886=_0x1fc10d[_0x5bf6e9];return _0x5f8886;},a5_0x5bf6(_0x503daa,_0x9b0add);}function validateSelect(_0x4ec597,_0x4baed8){const _0x589fa1=a5_0x5bf6,_0x3627cd=_0x4ec597['val']();var _0x2ce037=_0x4ec597[_0x589fa1(0x1c9)](_0x589fa1(0x1b0));return!_0x3627cd?(_0x2ce037['text'](_0x4baed8),![]):(_0x2ce037[_0x589fa1(0x1b3)](''),!![]);}function validateUsername(_0x3220cc,_0xdb5c5a){const _0x381c8c=a5_0x5bf6,_0x3271a6=_0x3220cc['val'](),_0xfdc673=_0x3220cc[_0x381c8c(0x1c9)](_0x381c8c(0x1b0));return _0x3271a6['length']<_0xdb5c5a?(_0xfdc673[_0x381c8c(0x1b3)](_0x381c8c(0x1ec)),![]):(_0xfdc673[_0x381c8c(0x1b3)](''),!![]);}function validateEmail(_0x33cd02){const _0x2e7201=a5_0x5bf6,_0x37a5ae=_0x33cd02[_0x2e7201(0x1e4)](),_0x2192c2=_0x33cd02[_0x2e7201(0x1c9)]('.error'),_0x54f1bd=/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;return!_0x54f1bd[_0x2e7201(0x1af)](_0x37a5ae)?(_0x2192c2['text'](_0x2e7201(0x1f3)),![]):(_0x2192c2[_0x2e7201(0x1b3)](''),!![]);}function a5_0x1fc1(){const _0x2f35db=['12161528hpLvMg','사용자\x20이름은\x20최대\x20','doc','이하여야\x20합니다.','trim','사용자\x20이름은\x20최소\x202자\x20이상이어야\x20합니다.','휴대폰번호를\x20확인해주세요.\x20(예:\x2001012345678)','number','includes','email','자\x20이상이어야\x20합니다.','파일의\x20확장자를\x20확인해주세요.\x20ex)\x20','올바른\x20이메일\x20주소를\x20입력하세요.','concat','image','log','find','12hBIhHT','name','이상,\x20최대\x20','split','14724uvWnUU','pdf','txt','text/plain','사용자\x20이름은\x20최소\x20','test','.error','application/pdf','closest','text','jpeg','maxLength','904690lFnoPJ','전화번호를\x20확인해주세요.\x20(예:\x200212345678)','image/jpeg','1752QgQKUC','최소\x20','image/png','video/mp4','substring','video/quicktime','video/x-msvideo','each','length','then','/constant/extension.json','toLowerCase','png','파일의\x20확장자를\x20확인해주세요.','file','password','siblings','image/gif','wmv','3334429TGncdZ','pop','jpg','gif','33190795CeZcMa','mov','video/x-ms-wmv','비밀번호는\x20최소\x20','비밀번호는\x20최소\x206자\x20이상이어야\x20합니다.','자\x20이하여야\x20합니다.','mp4','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','특수문자는\x20사용할\x20수\x20없습니다.','108KFbMql','files','docx','1820APpYYX','video','1264mqjSTt','map','avi','406456WTwyjO','옵션을\x20선택하세요.','val','minLength','type'];a5_0x1fc1=function(){return _0x2f35db;};return a5_0x1fc1();}function validatePassword(_0x37fc9e){const _0x2370e3=a5_0x5bf6,_0x40a8e5=_0x37fc9e[_0x2370e3(0x1e4)](),_0xccc4eb=_0x37fc9e[_0x2370e3(0x1c9)](_0x2370e3(0x1b0));return _0x40a8e5['length']<0x5?(_0xccc4eb[_0x2370e3(0x1b3)](_0x2370e3(0x1d4)),![]):(_0xccc4eb[_0x2370e3(0x1b3)](''),!![]);}function getExtOfFileName(_0x4124d1){const _0xa1adf0=a5_0x5bf6,_0x4cee07=_0x4124d1['lastIndexOf']('.'),_0x190339=_0x4124d1[_0xa1adf0(0x1bd)](_0x4cee07+0x1)[_0xa1adf0(0x1c4)]();return _0x190339;}function handleFileChange(_0x40405c,_0x32c3e4){const _0x4999d6=a5_0x5bf6,_0x50b5db=_0x40405c['target'],_0x4412c8=_0x50b5db[_0x4999d6(0x1db)];let _0x1a0f20=[],_0x76a02a=[];if(_0x32c3e4===_0x4999d6(0x1f5))_0x1a0f20=[_0x4999d6(0x1ce),_0x4999d6(0x1b4),_0x4999d6(0x1c5),_0x4999d6(0x1cf),'pdf'],_0x76a02a=[_0x4999d6(0x1b8),_0x4999d6(0x1bb),_0x4999d6(0x1ca),'application/pdf'];else{if(_0x32c3e4===_0x4999d6(0x1de))_0x1a0f20=[_0x4999d6(0x1d6),_0x4999d6(0x1e1),_0x4999d6(0x1d1),'wmv'],_0x76a02a=[_0x4999d6(0x1bc),_0x4999d6(0x1bf),_0x4999d6(0x1be),_0x4999d6(0x1d2)];else _0x32c3e4==='doc'&&(_0x1a0f20=[_0x4999d6(0x1ab),_0x4999d6(0x1e9),_0x4999d6(0x1dc),'txt'],_0x76a02a=['application/pdf',_0x4999d6(0x1d7),_0x4999d6(0x1d8),_0x4999d6(0x1ad)]);}$['each'](_0x4412c8,function(_0x57bb12,_0x32e48d){const _0x246551=_0x4999d6;if(!isValidFile(_0x32e48d,_0x1a0f20,_0x76a02a))return sweetAlertMessage(_0x246551(0x1c6),'','e'),_0x50b5db['value']='',![];else console[_0x246551(0x1f6)]('일치');});}function isValidFile(_0x34b82f,_0x1dab20,_0xa70d4c){const _0x6dfd9b=a5_0x5bf6,_0x30bff2=_0x34b82f[_0x6dfd9b(0x1f9)],_0x36b0a5=_0x30bff2[_0x6dfd9b(0x1fb)]('.')[_0x6dfd9b(0x1cd)]()['toLowerCase'](),_0x22869a=_0x34b82f[_0x6dfd9b(0x1e6)],_0x58351c=_0x1dab20['includes'](_0x36b0a5),_0x3dca5f=_0xa70d4c[_0x6dfd9b(0x1ef)](_0x22869a);return _0x58351c&&_0x3dca5f;}async function checkFileExt(_0x5cd57e,_0x4ff059){const _0x57df7d=a5_0x5bf6,_0x396e2a=getExtOfFileName(_0x5cd57e),_0x5bb5a9=await fetch(_0x57df7d(0x1c3))[_0x57df7d(0x1c2)](_0x4e3cd0=>_0x4e3cd0['json']()),_0x226110=_0x4ff059[_0x57df7d(0x1e0)](_0x136daf=>_0x5bb5a9[_0x136daf])['reduce']((_0x844369,_0x10dd60)=>_0x844369[_0x57df7d(0x1f4)](_0x10dd60),[]),_0x48a473=_0x226110['includes'](_0x396e2a)?!![]:![];return _0x48a473;}
+/**
+ * 입력 값의 유효성을 검사하는 함수
+ * @param {jQuery} input - 입력 요소
+ * @param {string} type - 입력 값의 유형 (예: "username", "email", "password", "select", "text", "number", "phone", "mobile", "file")
+ * @param {string} errorMessage - 값이 비어있을 때 표시할 오류 메시지
+ * @param {string} [fileType] - 파일 유형 (예: "image", "video", "doc"). 파일 유형이 "file"인 경우에만 사용
+ * @returns {boolean} - 입력 값이 유효하면 true, 그렇지 않으면 false
+ */
+function validateInput(input, type, errorMessage, fileType, isRequired = true)  {
+
+    // ⭐⭐⭐ 추가된 부분: input이 유효한 jQuery 객체인지, 그리고 그 안에 DOM 요소가 있는지 확인 ⭐⭐⭐
+    if (!(input instanceof jQuery) || input.length === 0) {
+        console.error("validateInput: 'input' 인자가 유효한 jQuery 객체가 아니거나 요소를 찾을 수 없습니다.", input);
+        // 이 상황에서는 에러 메시지를 표시할 DOM도 없으므로, 즉시 false 반환하거나 다른 오류 처리를 할 수 있습니다.
+        // 예를 들어, 개발 모드에서만 경고창을 띄우는 등.
+        return false;
+    }
+    const value = input.val();
+    const minLength = input.attr("minLength");
+    const maxLength = input.attr("maxLength");
+    //const errorElement = input.closest(".input-box").find(".error"); // 오류 메시지를 표시할 요소
+    var isValid = true;
+    //console.log(errorElement);
+
+    // === 수정 부분 시작 ===
+    // input 요소의 바로 상위 부모인 ".date-input-group" 또는 라디오 버튼의 경우 부모 ".input-group"을 찾은 다음,
+    // 해당 그룹 내부의 ".error"를 찾도록 합니다.
+    let errorContainer;
+    if (type === "radio") { // 라디오 버튼 그룹의 에러를 찾을 때
+        errorContainer = input.closest('.date-input-group');
+    } else { // 일반 input (text, date, file)의 에러를 찾을 때
+        errorContainer = input.closest('.date-input-group');
+        if (errorContainer.length === 0) { // 만약 date-input-group이 없다면 가장 가까운 input-box를 찾도록 폴백
+             errorContainer = input.closest('.input-box');
+        }
+    }
+    const errorElement = errorContainer.find(".error").first();
+    // === 수정 부분 끝 ===
+
+
+    // 1. 파일 입력 필드 처리 (다른 타입과 다르게 files 속성으로 파일 유무 판단)
+    if (type === "file") {
+        const files = input[0].files; // 실제 FileList 객체
+
+        if (isRequired && files.length === 0) {
+            // 필수로 지정되었는데 파일이 선택되지 않은 경우
+            errorElement.text(errorMessage); // "이미지 파일을 선택해하세요."
+            return false;
+        }
+        // 필수가 아니고 파일이 선택되지 않았다면 유효하다고 간주하고 더 이상 검사할 필요 없음
+        if (!isRequired && files.length === 0) {
+            return true;
+        }
+
+        // 파일이 선택되었고 이미지 타입 검사가 필요한 경우
+        const file = files[0];
+        if (fileType === "image" && !file.type.startsWith('image/')) {
+            errorElement.text("이미지 파일만 선택 가능합니다.");
+            return false;
+        }
+        // 파일 유효성 검사를 통과했다면 여기서 함수 종료
+        return true;
+    }
+
+    // 2. 파일 타입이 아닌 다른 모든 입력 필드 (텍스트, 날짜 등)
+    // 필수로 지정되었는데 값이 비어있거나 공백인 경우
+    if (isRequired && (!value || value.trim().length === 0)) {
+        errorElement.text(errorMessage); // "메인 광고명을 입력하세요." 또는 "시작일을 선택하세요."
+        return false;
+    }
+
+    // 필수가 아니고, 값이 비어있거나 공백이라면 이 필드는 유효하다고 간주하고 더 이상 검사할 필요 없음
+    if (!isRequired && (!value || value.trim().length === 0)) {
+        return true;
+    }
+
+    // 유효성 검사
+    switch (type) {
+        case "id":
+            // 최소 길이와 최대 길이가 있는지 확인하고 검사
+            if (minLength && value.length < minLength) {
+                errorElement.text("사용자 이름은 최소 " + minLength + "자 이상이어야 합니다.");
+                isValid = false;
+            }
+            if (maxLength && value.length > maxLength) {
+                errorElement.text("사용자 이름은 최대 " + maxLength + "자 이하여야 합니다.");
+                isValid = false;
+            }
+
+            break;
+        case "username":
+            // 최소 길이와 최대 길이가 있는지 확인하고 검사
+            if (minLength && value.length < minLength) {
+                errorElement.text("사용자 이름은 최소 " + minLength + "자 이상이어야 합니다.");
+                isValid = false;
+            }
+            if (maxLength && value.length > maxLength) {
+                errorElement.text("사용자 이름은 최대 " + maxLength + "자 이하여야 합니다.");
+                isValid = false;
+            }
+            break;
+        case "email":
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailRegex.test(value)) {
+                errorElement.text("올바른 이메일 주소를 입력하세요.");
+                isValid = false;
+            }
+            break;
+        case "password":
+            if (minLength && value.length < minLength) {
+                errorElement.text("비밀번호는 최소 " + minLength + "자 이상이어야 합니다.");
+                isValid = false;
+            }
+            if (maxLength && value.length > maxLength) {
+                errorElement.text("비밀번호는 최대 " + maxLength + "자 이하여야 합니다.");
+                isValid = false;
+            }
+            break;
+        case "select":
+            if (!value) {
+                errorElement.text("옵션을 선택하세요.");
+                isValid = false;
+            }
+            break;
+        case "text":
+            if ((minLength && value.length < minLength) || (maxLength && value.length > maxLength)) {
+                errorElement.text("최소 " + minLength + "이상, 최대 " + maxLength + "자 이하여야 합니다.");
+                isValid = false;
+            }
+            break;
+        case "number":
+            if (isNaN(value) || value < minLength || value > maxLength) {
+                errorElement.text("최소 " + minLength + "이상, 최대 " + maxLength + "이하여야 합니다.");
+                isValid = false;
+            }
+            break;
+        case "phone":
+            // const phoneRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+            const phoneRegex = /^\d{9,11}$/; // 전화번호 길이가 9자리에서 11자리 이내인지 확인
+            if (!phoneRegex.test(value)) {
+                errorElement.text("전화번호를 확인해주세요. (예: 0212345678)");
+                isValid = false;
+            }
+            break;
+        case "mobile":
+            // const mobileRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+            const mobileRegex = /^\d{9,11}$/; // 휴대전화번호 길이가 9자리에서 11자리 이내인지 확인
+            if (!mobileRegex.test(value)) {
+                errorElement.text("휴대폰번호를 확인해주세요. (예: 01012345678)");
+                isValid = false;
+            }
+            break;
+        case "file":
+            const files = input[0].files; // 선택된 파일 목록
+
+            let validExtensions = [];
+            let validMimeTypes = [];
+            if (fileType === "image") {
+                validExtensions = ["jpg", "jpeg", "png", "gif"];
+                validMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+            } else if (fileType === "video") {
+                validExtensions = ["mp4", "avi", "mov", "wmv"];
+                validMimeTypes = ["video/mp4", "video/x-msvideo", "video/quicktime", "video/x-ms-wmv"];
+            } else if (fileType === "doc") {
+                validExtensions = ["pdf", "doc", "docx", "txt"];
+                validMimeTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+            }
+
+            $.each(files, function (i, file) {
+                if (!isValidFile(file, validExtensions, validMimeTypes)) {
+                    errorElement.text(`파일의 확장자를 확인해주세요. ex) ${validExtensions}`);
+                    // input.val("");
+                    isValid = false;
+                    return false; // $.each 루프를 종료
+                }
+            });
+            break;
+        case "date":
+                // YYYY-MM-DD 형식 검사 정규식
+                // \d{4}: 연도 (4자리 숫자)
+                // -\d{2}: 월 (하이픈 뒤 2자리 숫자)
+                // -\d{2}: 일 (하이픈 뒤 2자리 숫자)
+                const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!dateRegex.test(value)) {
+                    errorElement.text("날짜 형식이 올바르지 않습니다 (YYYY-MM-DD).");
+                    isValid = false;
+                }
+                break;
+    
+        default:
+            if (type != "email") {
+                // 기본적으로 특수문자를 제외한 값인지 확인
+                const regex = /^[a-zA-Z0-9]+$/;
+                if (!regex.test(value)) {
+                    errorElement.text("특수문자는 사용할 수 없습니다.");
+                    isValid = false;
+                }
+            }
+    }
+
+    // 유효성 검사 통과
+    if (isValid) {
+        errorElement.text("");
+    }
+
+    return isValid;
+}
+
+// 일반 유효성 검사
+function validateField(input, errorMessage, minLength, maxLength) {
+    const value = input.val();
+    var errorElement = input.siblings(".error");
+
+    // 값이 비어있는지 확인
+    if (!value.trim()) {
+        errorElement.text(errorMessage);
+        return false;
+    }
+
+    // 특수문자를 제외한 값인지 확인
+    const regex = /^[a-zA-Z0-9]+$/;
+    if (!regex.test(value)) {
+        errorElement.text("특수문자는 사용할 수 없습니다.");
+        return false;
+    }
+
+    // 최소 길이와 최대 길이가 있는지 확인하고 검사
+    if (minLength !== undefined && value.length < minLength) {
+        errorElement.text(errorMessage);
+        return false;
+    }
+
+    if (maxLength !== undefined && value.length > maxLength) {
+        errorElement.text(errorMessage);
+        return false;
+    }
+
+    // 유효성 검사 통과
+    errorElement.text("");
+    return true;
+}
+
+// 선택 여부 유효성 검사
+function validateSelect(input, errorMessage) {
+    const value = input.val();
+    var errorElement = input.siblings(".error");
+    if (!value) {
+        errorElement.text(errorMessage);
+        return false;
+    } else {
+        errorElement.text("");
+        return true;
+    }
+}
+
+// 사용자 이름 유효성 검사
+function validateUsername(input, minLength) {
+    const value = input.val();
+    const errorElement = input.siblings(".error");
+    if (value.length < minLength) {
+        errorElement.text("사용자 이름은 최소 2자 이상이어야 합니다.");
+        return false;
+    } else {
+        errorElement.text("");
+        return true;
+    }
+}
+
+// 이메일 유효성 검사
+function validateEmail(input) {
+    const value = input.val();
+    const errorElement = input.siblings(".error");
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(value)) {
+        errorElement.text("올바른 이메일 주소를 입력하세요.");
+        return false;
+    } else {
+        errorElement.text("");
+        return true;
+    }
+}
+
+// 비밀번호 유효성 검사
+function validatePassword(input) {
+    const password = input.val();
+    const errorElement = input.siblings(".error");
+    if (password.length < 5) {
+        errorElement.text("비밀번호는 최소 6자 이상이어야 합니다.");
+        return false;
+    } else {
+        errorElement.text("");
+        return true;
+    }
+}
+
+/**
+ * 파일명에서 확장자를 추출하는 함수
+ * 버전 : 0.1
+ * 작성일 : 2023-09-11
+ * 작성자 : IT7
+ * @param {string} fileName 파일명
+ * @returns {string} 파일명에서 추출한 확장자
+ */
+function getExtOfFileName(fileName) {
+    // 마지막 .의 위치를 찾는다.
+    const fileLastDot = fileName.lastIndexOf(".");
+
+    // 마지막 .의 위치부터 끝까지 자른다.
+    const fileExt = fileName.substring(fileLastDot + 1).toLowerCase();
+
+    return fileExt;
+}
+
+/**
+ * File 선택 시, 확장자 및 MIME 타입 체크 함수
+ * @param {*} e
+ * @param {string} rcvType - 파일 유형 (예: "image", "video", "doc")
+ */
+function handleFileChange(e, rcvType) {
+    const inputElement = e.target;
+    const files = inputElement.files; // 선택된 파일 목록
+
+    let validExtensions = []; // 유효한 확장자 목록
+    let validMimeTypes = []; // 유효한 MIME 타입 목록
+
+    if (rcvType === "image") {
+        validExtensions = ["jpg", "jpeg", "png", "gif", "pdf"];
+        validMimeTypes = ["image/jpeg", "image/png", "image/gif", "application/pdf"];
+    } else if (rcvType === "video") {
+        validExtensions = ["mp4", "avi", "mov", "wmv"];
+        validMimeTypes = ["video/mp4", "video/x-msvideo", "video/quicktime", "video/x-ms-wmv"];
+    } else if (rcvType === "doc") {
+        validExtensions = ["pdf", "doc", "docx", "txt"];
+        validMimeTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
+    }
+
+    $.each(files, function (i, file) {
+        // 각 파일을 순회하여 확장자 및 MIME 타입 체크
+        if (!isValidFile(file, validExtensions, validMimeTypes)) {
+            // 파일이 유효한 확장자 및 MIME 타입이 아닐 경우
+            sweetAlertMessage("파일의 확장자를 확인해주세요.", "", "e");
+            inputElement.value = "";
+            return false; // $.each 루프를 종료
+        } else {
+            // 파일이 유효한 확장자 및 MIME 타입일 경우
+            console.log("일치");
+        }
+    });
+}
+
+/**
+ * 파일 확장자 및 MIME 타입 체크 함수
+ * @param {*} file ex) e.target.files[0]
+ * @param {*} validExtensions ex) ['jpg', 'jpeg', 'png', 'gif', 'pdf']
+ * @param {*} validMimeTypes ex) ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']
+ * @returns
+ */
+function isValidFile(file, validExtensions, validMimeTypes) {
+    const fileName = file.name;
+    const fileExtension = fileName.split(".").pop().toLowerCase();
+    const fileType = file.type;
+
+    const isExtensionValid = validExtensions.includes(fileExtension);
+    const isMimeTypeValid = validMimeTypes.includes(fileType);
+
+    return isExtensionValid && isMimeTypeValid;
+}
+
+/**
+ * 파일의 확장자를 체크하여, 파일업로드가 가능한 확장자인지 체크하는 함수이다.
+ * 버전 : 0.1
+ * 작성일 : 2023-09-13
+ * 작성자 : IT7
+ * @param {string} fileName 파일명
+ * @param {array} fileTypeArr 허용할 확장자 타입 배열
+ * @returns {boolean} 파일업로드가 가능한 확장자인지 여부
+ */
+async function checkFileExt(fileName, fileTypeArr) {
+    const ext = getExtOfFileName(fileName);
+
+    // constant/extension.json 파일을 불러온다.
+    const extJson = await fetch("/constant/extension.json").then((res) => res.json());
+    const allowedExtList = fileTypeArr.map((fileType) => extJson[fileType]).reduce((acc, cur) => acc.concat(cur), []);
+
+    const flag = allowedExtList.includes(ext) ? true : false;
+    return flag;
+}

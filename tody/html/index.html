@@ -5,21 +5,15 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="google-site-verification" content="3KzgnS-sef1UfPZCoMizIWbhgKbAlw3xMH9-3V7otHg" />
-        <!-- <meta name="title" content="원스톱 부동산 종합 플랫폼 서비스 토디" /> -->
-        <!-- <meta name="title" content="토디- 원스톱 부동산 종합 플랫폼 서비스, tody" />  -->
         <meta name="title" content="토디-부동산 종합 플랫폼 서비스, tody" />
         <meta name="description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
         <meta name="keywords" content="토디,토디부동산,토디플랫폼,tody,tody부동산,tody플랫폼,부동산정보,부동산, 부동산앱, 부동산어플, 상가,건물, 빌딩, 공장, 창고, 토지, 매물,아파트, 주상복합, 오피스텔, 단독, 다가구, 다세대, 빌라,전세, 월세, 매매, 전월세, 임대, 실거래가, 부동산중개, 공인중개사" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://" />
         <meta property="og:type" content="article" />
-        <!--  <meta property="og:site_name" content="원스톱 부동산 종합 플랫폼 서비스 토디" /> -->
-        <meta property="og:site_name" content="토디" />
+        <meta property="og:site_name" content="토디- 부동산 종합 플랫폼 서비스" />
         <meta property="og:type" content="article" />
-        <!-- <meta property="og:url" content="https://" /> -->
         <meta property="og:url" content="https://tody.co.kr" />
-        <!-- <meta property="og:title" content="원스톱 부동산 종합 플랫폼 서비스 토디, tody" /> -->
-        <!-- <meta property="og:title" content="토디- 원스톱 부동산 종합 플랫폼 서비스, tody" /> -->
         <meta property="og:title" content="토디-부동산 종합 플랫폼 서비스, tody" />
         <meta property="og:description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
         <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
@@ -383,6 +377,33 @@
             <footer class="footer"></footer>
             <!-- 하단영역 끝 -->
         </div>
+        <div id="popup-welcome-overlay" style="display: none;">
+            <div id="popup-welcome-content">
+                <!-- 팝업 제목 및 닫기 버튼은 그대로 둡니다. 
+                <h2>오늘의 특별 추천 광고!</h2>-->
+                
+                <div class="ad-carousel-container">
+                    <!--<button class="nav-button prev-button">&lt;</button> -->
+                    <div class="ad-carousel">
+                        
+                    </div>
+                    <!-- <button class="nav-button next-button">&gt;</button> -->
+                </div>
+                
+                <div class="carousel-indicators">
+                    <!-- 인디케이터가 여기에 동적으로 삽입될 거예요 -->
+                    <!-- 예시:
+                    <span class="indicator active"></span>
+                    <span class="indicator"></span>
+                    -->
+                </div>
+        
+                <button id="close-welcome-popup">닫기</button>
+                <label>
+                    <input type="checkbox" id="donot-show-today"> 오늘 하루 안 보기
+                </label>
+            </div>
+        </div>
 
         <!-- JAVASCRIPT -->
         <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script> 
@@ -445,6 +466,5 @@
                 <!-- 필요하다면 푸터 등 다른 내용 추가 -->
             </div>
         </div>
-    
     </body>
 </html>

@@ -792,8 +792,22 @@ function callApiFormData(type, url, dataObj = {}, loading) {
                 resolve(result);
             },
             error: async (xhr, status, error) => {
-                const { responseJSON } = xhr;
-                const { message, statusCode } = responseJSON;
+                let responseData = xhr.responseJSON; // responseJSON이 undefined일 수 있음
+                // responseJSON이 없거나 파싱 불가능한 경우 대비
+                if (!responseData) {
+                    // responseText가 HTML일 가능성이 높으므로 message만 뽑아내기 어려움
+                    responseData = {
+                        message: xhr.responseText || `HTTP 상태코드: ${xhr.status}, 에러: ${error}`,
+                        statusCode: xhr.status
+                    };
+                    // 404 에러의 경우 좀 더 명확한 메시지를 제공
+                    if (xhr.status === 404) {
+                        responseData.message = "요청한 서버 경로를 찾을 수 없습니다 (404 Not Found). 파일 경로를 확인해주세요.";
+                    } else if (xhr.status === 500) {
+                        responseData.message = "서버 내부 오류가 발생했습니다 (500 Internal Server Error). 서버 로그를 확인해주세요.";
+                    }
+                }
+                const { message, statusCode } = responseData; // 이제 responseData는 null/undefined가 아님
                 const langCode = localStorage.getItem("langCode") ?? "KR";
 
                 // Status Code가 200, 300번 대가 아닐 경우 메시지를 띄운다.
@@ -807,6 +821,9 @@ function callApiFormData(type, url, dataObj = {}, loading) {
                                 location.href = "/admin/index.html";
                             }
                             break;
+                        case 404: // 404 Not Found 에러도 여기서 명시적으로 처리할 수 있습니다.
+                            sweetAlertMessage(message, "", "e"); // 이미 위에서 메시지를 설정했음
+                            break;
                         default:
                             if (statusCode.toString().startsWith("4")) {
                                 // 4로 시작하는 경우, message를 표시
@@ -819,9 +836,16 @@ function callApiFormData(type, url, dataObj = {}, loading) {
                     }
 
                     resolve(false);
+                } else {
+                    // Status Code가 200, 300번대지만 responseJSON 내부에 status === 'FAILURE' 가 올 수 있으니 확인
+                    // PHP의 responseApi 에서 'status' 키를 사용하므로, 여기서 responseData.status를 확인해야 함
+                    if (responseData.status === 'FAILURE') {
+                        sweetAlertMessage(message || "서버 처리 중 오류가 발생했습니다.", "", "e");
+                        resolve(false); // 처리 실패로 간주
+                    } else {
+                        resolve(responseData); // 정상 응답 처리
+                    }
                 }
-
-                resolve(responseJSON);
             },
             complete: function (xhr, status) {
                 sessionStorage.setItem("data-preloader", "disable");

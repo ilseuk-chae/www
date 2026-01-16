@@ -1,4 +1,9 @@
 var mainSearchBoxChk = 0;
+const welcomePoputOnOff = true; // 메인 광고 팝업 ON/OFF  on : true / off : false
+// MAX_SHOW_IMAGE_COUNT 상수를 정의합니다.
+const MAX_SHOW_IMAGE_COUNT = 3;
+let autoSlideInterval; // 자동 슬라이드 타이머를 저장할 변수
+let resizeHandlerRegistered = false;
 
 $(document).ready(function () {
     initScroll();
@@ -7,7 +12,266 @@ $(document).ready(function () {
     getNews();
     // initModal();
     initEvents();
+    welComePopup();
 });
+
+/**
+ * 환영 광고 팝업
+ */
+async function welComePopup() {
+    const popupWelcomeOverlay = document.getElementById('popup-welcome-overlay'); // ID 변경
+    const closeWelcomePopupButton = document.getElementById('close-welcome-popup'); // ID 변경
+    const donotShowTodayCheckbox = document.getElementById('donot-show-today');
+    const adCarousel = document.querySelector('.ad-carousel'); // 클래스 선택자
+    //const prevButton = document.querySelector('.prev-button'); // 클래스 선택자
+    //const nextButton = document.querySelector('.next-button'); // 클래스 선택자
+    const carouselIndicators = document.querySelector('.carousel-indicators'); // 클래스 선택자
+
+    let currentAdIndex = 0;
+    let adsData = []; // DB에서 가져올 광고 데이터를 담을 배열
+
+     // --- 2) DB에서 광고 데이터 가져오는 실제 로직 ---
+     const dataObj = {}; // API 호출에 필요한 데이터가 있다면 여기에 추가
+     let result;
+     try {
+         result = await callApi("POST", "/admin/back/14-advertise/ad_welcome_show_list.php", dataObj);
+     } catch (error) {
+         console.error("광고 API 호출 중 오류 발생:", error);
+         if (popupWelcomeOverlay) { // 팝업 오버레이가 존재하면 숨김
+             popupWelcomeOverlay.style.display = 'none';
+         }
+         return; // 오류 발생 시 함수 종료
+     }
+     
+ 
+     if (!result) {
+         console.log("광고 API에서 결과가 반환되지 않았습니다.");
+         if (popupWelcomeOverlay) { // 팝업 오버레이가 존재하면 숨김
+             popupWelcomeOverlay.style.display = 'none';
+         }
+         return;
+     }
+ 
+     const { status, message, responseData } = result;
+ 
+     if (!responseData || !Array.isArray(responseData) || responseData.length === 0) {
+         //console.log("광고 데이터가 없습니다:", message);
+         // 광고 데이터가 없으면 팝업을 표시할 필요가 없으므로 숨깁니다.
+         if (popupWelcomeOverlay) {
+             popupWelcomeOverlay.style.display = 'none';
+         }
+         return; // 데이터가 없으면 함수 종료
+     }
+ 
+     // 받아온 데이터를 우리가 원하는 adsData 형식으로 매핑합니다.
+     adsData = responseData
+         .slice(0, MAX_SHOW_IMAGE_COUNT) // <-- 여기에 MAX_SHOW_IMAGE_COUNT 적용!
+         .map((item) => ({
+             id: item.ad_no,        // ad_no를 id로 사용
+             imageSrc: item.ad_image, // ad_image를 imageSrc로 매핑
+             url: item.ad_url,      // ad_url을 url로 매핑
+             title: item.ad_name    // ad_name을 title로 매핑
+         }));
+ 
+     // API 호출 후, 실제 광고 데이터가 하나도 없는 경우를 다시 한번 확인
+     if (adsData.length === 0) {
+         // console.log("매핑 후 표시할 광고가 없습니다.");
+         if (popupWelcomeOverlay) {
+             popupWelcomeOverlay.style.display = 'none';
+         }
+         return;
+     }
+     // --- DB에서 광고 데이터 가져오는 실제 로직 끝 ---
+    function createAdsAndIndicators() {
+        if (!adCarousel || !carouselIndicators) {
+            console.error("광고 캐러셀 또는 인디케이터 요소를 찾을 수 없습니다.");
+            return;
+        }
+
+        adCarousel.innerHTML = ''; // 기존 내용 초기화
+        carouselIndicators.innerHTML = ''; // 기존 인디케이터 초기화
+
+        // 광고가 없을 경우 캐러셀 숨기기
+        if (adsData.length === 0) { 
+            const adCarouselContainer = document.querySelector('.ad-carousel-container');
+            if(adCarouselContainer) adCarouselContainer.style.display = 'none';
+            return;
+        }
+
+        adsData.forEach((ad, index) => {
+            // 광고 아이템 생성
+            const adLink = document.createElement('a');
+            adLink.href = ad.url;
+            adLink.target = '_blank'; // 3) 이미지를 클릭하면 해당 페이지의 URL을 open 한다 (새 창)
+            adLink.classList.add('ad-item');
+                                                                                            //tyle="width:300px; height:350px;
+            adLink.innerHTML = `<img src="/uploads/${ad.imageSrc}" alt="${ad.title}">`;
+            adCarousel.appendChild(adLink);
+                        
+            // 인디케이터 생성
+            const indicator = document.createElement('span');
+            indicator.classList.add('indicator');
+            if (index === 0) {
+                indicator.classList.add('active');
+            }
+            indicator.addEventListener('click', () => {
+                showAd(index);
+            });
+            carouselIndicators.appendChild(indicator);
+        });
+    }
+
+    function showAd(index) {
+        if (!adCarousel || adsData.length === 0) return;
+    
+        const lastIndex = adsData.length - 1;
+    
+        // 광고 1개
+        if (adsData.length <= 1) {
+            currentAdIndex = 0;
+            adCarousel.style.transition = 'none';
+            adCarousel.style.transform = 'translateX(0)';
+            adCarousel.offsetHeight; // 🔥 reflow
+            adCarousel.style.transition = 'transform 0.5s ease-in-out';
+            updateIndicators();
+            return;
+        }
+    
+        // index 보정
+        if (index > lastIndex) index = 0;
+        if (index < 0) index = lastIndex;
+    
+        // 🔥 마지막 → 처음 (3 → 1)
+        if (currentAdIndex === lastIndex && index === 0) {
+            adCarousel.style.transition = 'none';
+            adCarousel.style.transform = 'translateX(0)';
+            adCarousel.offsetHeight; // 🔥 핵심
+            adCarousel.style.transition = 'transform 0.5s ease-in-out';
+            currentAdIndex = 0;
+            updateIndicators();
+            return;
+        }
+    
+        // 🔥 처음 → 마지막 (1 → 3)
+        if (currentAdIndex === 0 && index === lastIndex) {
+            adCarousel.style.transition = 'none';
+            adCarousel.style.transform =
+                `translateX(-${lastIndex * 100}%)`;
+            adCarousel.offsetHeight; // 🔥 핵심
+            adCarousel.style.transition = 'transform 0.5s ease-in-out';
+            currentAdIndex = lastIndex;
+            updateIndicators();
+            return;
+        }
+    
+        // 일반 이동
+        currentAdIndex = index;
+        adCarousel.style.transform =
+            `translateX(-${currentAdIndex * 100}%)`;
+    
+        updateIndicators();
+    }
+    
+    function updateIndicators() {
+        const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+        indicators.forEach((indicator, idx) => {
+            indicator.classList.toggle('active', idx === currentAdIndex);
+        });
+    }
+    
+    if (!resizeHandlerRegistered) {
+        window.addEventListener('resize', () => {
+            showAd(currentAdIndex);
+        });
+        resizeHandlerRegistered = true;
+    }
+    /*
+    // 좌우 버튼 이벤트 리스너 수정
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            stopAutoSlide(); // 수동 조작 시 자동 슬라이드 잠시 멈춤
+            showAd(currentAdIndex - 1);
+            startAutoSlide(); // 다시 자동 슬라이드 시작
+        });
+    }
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            stopAutoSlide(); // 수동 조작 시 자동 슬라이드 잠시 멈춤
+            showAd(currentAdIndex + 1);
+            startAutoSlide(); // 다시 자동 슬라이드 시작
+        });
+    }
+    */
+
+    // --- 자동 슬라이드 관련 함수들 ---
+    function startAutoSlide() {
+        if (adsData.length <= 1) return; // 광고가 1개 이하면 자동 슬라이드 필요 없음
+        clearInterval(autoSlideInterval); // 혹시 모를 이전 타이머 클리어
+        autoSlideInterval = setInterval(() => {
+            showAd(currentAdIndex + 1);
+        }, 3000); // 3초마다 다음 광고로 전환
+    }
+
+    function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+    }
+
+    // 초기 로딩 시 팝업에 애니메이션처럼 모든 광고를 한 번씩 보여주는 대신,
+    // 바로 첫 광고를 보여주고 자동 슬라이드를 시작하는 방식으로 변경
+    function initializeCarouselDisplay() {
+        if (adsData.length > 0) {
+            createAdsAndIndicators(); // 광고 요소 생성 및 초기 인디케이터 설정
+            showAd(0); // 첫 번째 광고를 바로 표시
+            startAutoSlide(); // 자동 슬라이드 시작
+        } else {
+            // 광고 데이터가 없으면 팝업 자체를 숨길 수 있습니다.
+            if (popupWelcomeOverlay) {
+                popupWelcomeOverlay.style.display = 'none';
+            }
+        }
+    }
+    // --- 자동 슬라이드 관련 함수들 끝 ---
+
+
+    // --- 팝업 표시 조건 시작 ---
+    // 현재 시간을 미리 정의해둡니다.
+    const now = new Date();
+
+    // 로컬 스토리지에서 팝업 숨김 만료 시점을 가져옵니다.
+    const hideUntil = localStorage.getItem('hideWelcomePopupUntil');
+
+    // 팝업 표시 조건 확인
+    // 1. hideUntil 설정이 없거나 (처음 방문),
+    // 2. hideUntil 설정이 있어도 그 시간이 현재 시간보다 이전이면 (숨김 기간 만료),
+    // 3. 그리고 welcomePoputOnOff가 정의되어 있고 true일 때만 팝업을 표시합니다.
+    if (adsData.length > 0 && (!hideUntil || new Date(hideUntil) < now) && typeof welcomePoputOnOff !== 'undefined' && welcomePoputOnOff) {
+        if (popupWelcomeOverlay) { // 팝업 오버레이가 존재하면 표시
+            popupWelcomeOverlay.style.display = 'flex'; 
+        }
+        initializeCarouselDisplay(); // 캐러셀 초기화 및 자동 슬라이드 시작
+    } else {
+        if (popupWelcomeOverlay) { // 팝업 오버레이가 존재하면 숨김
+            popupWelcomeOverlay.style.display = 'none';
+        }
+    }
+
+    // 닫기 버튼 이벤트 리스너 수정
+    if (closeWelcomePopupButton) { // 닫기 버튼이 존재할 때만 이벤트 리스너 추가
+        closeWelcomePopupButton.addEventListener('click', () => {
+            if (popupWelcomeOverlay) {
+                popupWelcomeOverlay.style.display = 'none'; 
+            }
+
+            if (donotShowTodayCheckbox && donotShowTodayCheckbox.checked) { // 체크박스도 존재할 때만 확인
+                const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+                localStorage.setItem('hideWelcomePopupUntil', nextDay.toISOString());
+            }
+        });
+    }
+
+    // 디버깅 용도: 개발 중 팝업 계속 보이게 하려면 주석 해제 (숨김 정보 제거)
+    // localStorage.removeItem('hideWelcomePopupUntil'); 
+}
 
 /**
  * 스크롤 처리
@@ -213,6 +477,34 @@ function initEvents() {
         }
         if ($("#placesList li").length == 0) return;
         $("#placesList li:first").click();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const popupOverlay = document.getElementById('popup-welcome-overlay');
+        const closePopupButton = document.getElementById('close-popup');
+        const donotShowTodayCheckbox = document.getElementById('donot-show-today');
+    
+        // '오늘 하루 안 보기' 체크 여부를 localStorage에서 확인
+        const hideUntil = localStorage.getItem('hideWelComePopupUntil');
+        const now = new Date();
+    
+        if ((!hideUntil || new Date(hideUntil) < now) && welcomPoputOnOff) {
+            // 숨기기 설정이 없거나, 시간이 지났으면 팝업 표시
+            popupOverlay.style.display = 'flex';
+        }
+        else {
+            popupOverlay.style.display = 'none';
+        }
+    
+        closePopupButton.addEventListener('click', () => {
+            popupOverlay.style.display = 'none';
+    
+            if (donotShowTodayCheckbox.checked) {
+                // '오늘 하루 안 보기' 체크 시, 다음 날 0시까지 팝업 숨김
+                const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+                localStorage.setItem('hideWelComePopupUntil', nextDay.toISOString());
+            }
+        });
     });
 }
 

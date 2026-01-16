@@ -559,6 +559,61 @@ function upload_file_one($file, $filePath)
     }
 }
 
+function upload_file_one_new($file_data, $target_path_prefix)
+{
+    // UPLOAD_BASE_DIR_ABSOLUTE, UPLOAD_WEB_ROOT_URL 상수는 함수 외부 또는 common.php에 정의되어야 합니다.
+    // 여기서는 설명을 위해 다시 포함합니다.
+    define('UPLOAD_BASE_DIR_ABSOLUTE', "/home/project/tody/upload/"); 
+    define('UPLOAD_WEB_ROOT_URL', "/uploads/");
+
+    $result_array = array();
+
+    // 1. 사이즈 체크
+    if ($file_data['size'] <= 0) {
+        $result_array['result'] = 'error';
+        $result_array['message'] = 'File size is zero or negative';
+        return $result_array;
+    }
+    
+    // 2. 업로드 타겟 디렉토리 설정
+    $upload_target_dir_absolute = UPLOAD_BASE_DIR_ABSOLUTE . $target_path_prefix;
+    
+    // 3. 업로드 디렉토리 존재 여부 확인 및 생성
+    if (!file_exists($upload_target_dir_absolute)) {
+        if (!mkdir($upload_target_dir_absolute, 0777, true)) {
+            $result_array['result'] = 'error';
+            $result_array['message'] = 'Failed to create user directory: ' . $upload_target_dir_absolute;
+            return $result_array;
+        }
+    }
+
+    // ⭐⭐⭐ 이 부분을 수정합니다: 고유 파일명 대신 원본 파일명 사용 ⭐⭐⭐
+    // $file_extension = pathinfo($file_data['name'], PATHINFO_EXTENSION); // 필요하면 확장자는 추출
+    // $unique_filename = uniqid('ad_', true) . '.' . $file_extension; // <- 이 줄을 주석 처리하거나 삭제
+    $target_filename = basename($file_data['name']); // ✅ 사용자 업로드 원본 파일명 그대로 사용
+    $target_file_absolute_path = $upload_target_dir_absolute . $target_filename; // $unique_filename 대신 $target_filename 사용
+
+    // 5. 파일 이동
+    if (move_uploaded_file($file_data['tmp_name'], $target_file_absolute_path)) {
+        $result_array['result'] = 'success';
+        
+        // ⭐⭐⭐ 여기서 반환하는 파일 경로에도 $target_filename 사용 ⭐⭐⭐
+        // $result_array['file_path'] = "/uploads/" . $filePath;
+        //$result_array['file_path'] = UPLOAD_WEB_ROOT_URL . $target_path_prefix . $target_filename; 
+        $result_array['file_path'] = $target_path_prefix . $target_filename; 
+        
+        return $result_array;
+    } else {
+        $php_upload_error_code = $file_data['error'];
+        $error_message = "Failed to move uploaded file. PHP Error Code: " . $php_upload_error_code;
+        $error_message .= " (Source: {$file_data['tmp_name']}, Target: {$target_file_absolute_path})";
+        error_log($error_message);
+
+        $result_array['result'] = 'error';
+        $result_array['message'] = 'Failed to move uploaded file';
+        return $result_array;
+    }
+}
 
 function upload_file_temp($file, $uploadFolder)
 {
