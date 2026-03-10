@@ -24,7 +24,7 @@ try {
 
 } catch (Exception $e) {
     // 실패 메시지를 표준 출력과 표준 에러 출력으로 보냅니다.
-    $errorMessage = "Redis reset failed: " . $e->getMessage() . " FAILED";
+    $errorMessage = "토지 특성 정보 Redis reset failed: " . $e->getMessage() . " FAILED";
     echo $errorMessage . PHP_EOL; // 표준 출력으로도 실패 메시지 전송
     fwrite(STDERR, $errorMessage . PHP_EOL); // 표준 에러로도 실패 메시지 전송 (로그용)
     exit(1); // 오류 시 헬퍼 스크립트 자체를 종료
@@ -42,7 +42,8 @@ function deleteKeysByPattern(Redis $redis, string $pattern, int $count = 10000):
         $keys = $redis->scan($iterator, $pattern, $count);
         if ($keys === false) {
             // Redis 연결 오류 등으로 SCAN이 실패하면 예외 처리
-            throw new Exception("Redis SCAN failed for pattern {$pattern}");
+            //throw new Exception("Redis SCAN failed for pattern {$pattern}");
+            continue; // 오류 발생 시 해당 스캔을 건너뛰고 다음으로 진행
         }
 
         if (!empty($keys)) {

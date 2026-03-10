@@ -142,7 +142,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'apt' => "realPrice_apt_{$sidoCd}",
                 'multi' => "realPrice_multiFamily_{$sidoCd}",
                 'officetel' => "realPrice_officetel_{$sidoCd}",
-                'land' => "realPrice_land_{$sidoCd}"
+                'land' => "realPrice_land_{$sidoCd}",
+                'single' => "realPrice_single_{$sidoCd}",
+                'commercial' => "realPrice_commercial_{$sidoCd}",
+                'factory' => "realPrice_factory_{$sidoCd}"
             ];
 
             // 아파트 쿼리 템플릿
@@ -169,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ) AS latest
                 ON rap.aptSeq = latest.aptSeq 
                 AND CONCAT(rap.dealYear, LPAD(rap.dealMonth, 2, '0'), LPAD(rap.dealDay, 2, '0')) = latest.max_date
-                WHERE rap.pnu LIKE ?
+                WHERE rap.pnu LIKE ? AND rap.cdealDay IS NULL
                 GROUP BY rap.aptSeq";
                 
             // 다세대/연립 쿼리 템플릿
@@ -196,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ) AS latest
                 ON rmf.pnu = latest.pnu 
                 AND CONCAT(rmf.dealYear, LPAD(rmf.dealMonth, 2, '0'), LPAD(rmf.dealDay, 2, '0')) = latest.max_date
-                WHERE rmf.pnu LIKE ?
+                WHERE rmf.pnu LIKE ? AND rmf.cdealDay IS NULL
                 GROUP BY rmf.pnu";
                 
             // 오피스텔 쿼리 템플릿
@@ -223,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ) AS latest
                 ON rot.pnu = latest.pnu 
                 AND CONCAT(rot.dealYear, LPAD(rot.dealMonth, 2, '0'), LPAD(rot.dealDay, 2, '0')) = latest.max_date
-                WHERE rot.pnu LIKE ?
+                WHERE rot.pnu LIKE ? AND rot.cdealDay IS NULL 
                 GROUP BY rot.pnu";
                 
             // 토지 쿼리 템플릿
@@ -250,8 +253,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ) AS latest
                 ON rl.pnu = latest.pnu 
                 AND CONCAT(rl.dealYear, LPAD(rl.dealMonth, 2, '0'), LPAD(rl.dealDay, 2, '0')) = latest.max_date
-                WHERE rl.pnu LIKE ? AND rl.jimok != '도로'
+                WHERE rl.pnu LIKE ? AND rl.jimok != '도로' AND rl.cdealDay IS NULL AND rl.shareDealingType IS NULL
                 GROUP BY rl.pnu";
+            // 단독 쿼리 템플릿
+            $single_query_template_current_sgg = "
+                SELECT
+                    null AS aptSeq,
+                    rs.plottageAr as excluUseAr,  -- 대지면적을 excluUseAr로 매핑
+                    rs.dealYear,
+                    rs.dealMonth,
+                    rs.dealDay,
+                    rs.dealAmount,
+                    rs.pnu,
+                    rs.housetype AS jimok,          -- single의 경우 housetype을 jimok로 매핑(예: 단독주택, 다가구주택)
+                    'single' AS estate_type,
+                    ST_AsText(admg.WKT) AS poligon
+                FROM {$tableNames['single']} AS rs
+                INNER JOIN {$adminTableName} AS admg
+                ON admg.pnu_cd = rs.pnu
+                INNER JOIN
+                (
+                    SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                    FROM {$tableNames['single']}
+                    GROUP BY pnu
+                ) AS latest
+                ON rs.pnu = latest.pnu
+                AND CONCAT(rs.dealYear, LPAD(rs.dealMonth, 2, '0'), LPAD(rs.dealDay, 2, '0')) = latest.max_date
+                WHERE rs.pnu LIKE ?  AND rs.cdealDay IS NULL
+                GROUP BY rs.pnu";
+
+            // 상업용 쿼리 템플릿
+            $commercial_query_template_current_sgg = "
+                SELECT
+                    null AS aptSeq,
+                    rc.buildingAr as excluUseAr,  -- 건물면적(전용)을 excluUseAr로 매핑
+                    rc.dealYear,
+                    rc.dealMonth,
+                    rc.dealDay,
+                    rc.dealAmount,
+                    rc.pnu,
+                    rc.buildingUse AS usage_type,      -- 집합 건물주용도(예: 업무,근린 판매, 숙박 등)를 usage_type으로 매핑
+                    'commercial' AS estate_type,
+                    ST_AsText(admg.WKT) AS poligon
+                FROM {$tableNames['commercial']} AS rc
+                INNER JOIN {$adminTableName} AS admg
+                ON admg.pnu_cd = rc.pnu
+                INNER JOIN
+                (
+                    SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                    FROM {$tableNames['commercial']}
+                    GROUP BY pnu
+                ) AS latest
+                ON rc.pnu = latest.pnu
+                AND CONCAT(rc.dealYear, LPAD(rc.dealMonth, 2, '0'), LPAD(rc.dealDay, 2, '0')) = latest.max_date
+                WHERE rc.pnu LIKE ? AND rc.cdealDay IS NULL AND rc.shareDealingType IS NULL
+                GROUP BY rc.pnu";
+
+            // 공장 쿼리 템플릿
+            $factory_query_template_current_sgg = "
+                SELECT
+                    null AS aptSeq,
+                    rf.buildingAr as excluUseAr,  -- 건물면적(전용)을 excluUseAr로 매핑
+                    rf.dealYear,
+                    rf.dealMonth,
+                    rf.dealDay,
+                    rf.dealAmount,
+                    rf.pnu,
+                    rf.buildingUse AS usage_type,      -- 집합 건물주용도(예: 업무,근린 판매, 숙박 등)를 usage_type으로 매핑
+                    'factory' AS estate_type,
+                    ST_AsText(admg.WKT) AS poligon
+                FROM {$tableNames['factory']} AS rf
+                INNER JOIN {$adminTableName} AS admg
+                ON admg.pnu_cd = rf.pnu
+                INNER JOIN
+                (
+                    SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                    FROM {$tableNames['factory']}
+                    GROUP BY pnu
+                ) AS latest
+                ON rf.pnu = latest.pnu
+                AND CONCAT(rf.dealYear, LPAD(rf.dealMonth, 2, '0'), LPAD(rf.dealDay, 2, '0')) = latest.max_date
+                WHERE rf.pnu LIKE ? AND rf.cdealDay IS NULL AND rf.shareDealingType IS NULL
+                GROUP BY rf.pnu";
 
             foreach ($requested_estate_types as $type) {
                 switch ($type) {
@@ -266,6 +349,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         break;
                     case 'land':
                         $union_queries[] = $land_query_template_current_sgg;
+                        break;
+                    case 'single':
+                        $union_queries[] = $single_query_template_current_sgg;
+                        //$params[] = $pnu_filter_value;
+                        break;
+                    case 'commercial':
+                        $union_queries[] = $commercial_query_template_current_sgg;
+                        //$params[] = $pnu_filter_value;
+                        break;
+                    case 'factory':
+                        $union_queries[] = $factory_query_template_current_sgg;
+                        //$params[] = $pnu_filter_value;
                         break;
                 }
                 // --- 변경점 4: 바인딩할 파라미터 배열에 현재 sggCdLike 값을 추가 ---

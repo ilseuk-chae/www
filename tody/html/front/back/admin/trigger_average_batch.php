@@ -12,7 +12,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/dbconnect.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/front/back/admin/batch_helpers.php';
 
-
 // DB 연결 확인
 if (!isset($conn) || $conn->connect_error) {
     //error_log("[FATAL] DB Connection failed in master trigger: " . ($conn->connect_error ?? "Unknown error"));

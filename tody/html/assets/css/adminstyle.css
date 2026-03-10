@@ -66,6 +66,7 @@
 
 .date-selection-field-group label {
     white-space: nowrap;
+    margin-bottom: 0px;
 }
 
 .date-selection-field-group .form-select {

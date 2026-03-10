@@ -10,6 +10,7 @@
  * @param mysqli $conn DB 연결 객체
  * @param string $level 로그 레벨 (INFO, WARN, ERROR)
  */
+/*
 function log_to_db(?int $historyId, string $message, mysqli $conn, string $level = 'INFO')
 {
     // $historyId가 null이면, 로그에 history_id가 null로 들어갑니다 (예: 초기 에러).
@@ -23,6 +24,51 @@ function log_to_db(?int $historyId, string $message, mysqli $conn, string $level
         $stmt->close();
     } else {
         error_log("Failed to prepare log_to_db statement: " . $conn->error);
+    }
+}
+*/
+function log_to_db(?int $historyId, string $message, mysqli $conn, string $level = 'INFO')
+{
+    try {
+        // 1️⃣ UTF-8 정합성 보정 (깨진 문자열 방지)
+        if (!mb_check_encoding($message, 'UTF-8')) {
+            $message = mb_convert_encoding($message, 'UTF-8', 'auto');
+        }
+
+        // 2️⃣ 제어문자 제거 (XML/바이너리 방지)
+        // \p{C} = 제어문자 전체
+        $message = preg_replace('/\p{C}+/u', ' ', $message);
+
+        // 3️⃣ 길이 제한 (TEXT 기준 안전)
+        $message = mb_substr($message, 0, 3000, 'UTF-8');
+
+        // 4️⃣ SQL 준비
+        $sql = "INSERT INTO upload_logs (history_id, log_message, level, timestamp)
+                VALUES (?, ?, ?, NOW())";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            throw new RuntimeException("Prepare failed: " . $conn->error);
+        }
+
+        // 5️⃣ bind_param
+        // historyId는 null 허용 → i로 바인딩 가능
+        $stmt->bind_param("iss", $historyId, $message, $level);
+
+        // 6️⃣ 실행
+        if (!$stmt->execute()) {
+            throw new RuntimeException("Execute failed: " . $stmt->error);
+        }
+
+        $stmt->close();
+
+    } catch (Throwable $e) {
+        // 🔥 로그 실패는 절대 메인 로직을 죽이면 안 됨
+        error_log(
+            '[LOG_DB_FAIL] ' .
+            $e->getMessage() .
+            ' | message_preview=' . substr($message ?? '', 0, 200)
+        );
     }
 }
 

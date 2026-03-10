@@ -1,5 +1,5 @@
 <?php
-// trigger_characteristics_batch_cli.php
+// trigger_buildingregister_batch_cli.php
 
 // CLI 실행 강제 (안정성 확보)
 if (PHP_SAPI !== 'cli') {
@@ -9,7 +9,7 @@ if (PHP_SAPI !== 'cli') {
 
 // 환경 설정
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 set_time_limit(0);
 ini_set('memory_limit', '-1');
 
@@ -47,59 +47,40 @@ if ($parentHistoryId === 0 || empty($sidoCdsString)) {
     exit(1);
 }
 
-
 // 스크립트 시작 시간 기록
 $startTimeTotal = microtime(true);
-
-// --- Redis 연결 (마스터 시작 전 한 번만 연결) ---
-$redis = new Redis();
-try {
-    $redis->connect('127.0.0.1', 6379);
-    $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
-    log_to_db($parentHistoryId, "Redis 서버에 연결되었습니다.", $conn, 'INFO');
-} catch (Exception $e) {
-    $redis = null;
-    $logMessage = "Redis connection failed: " . $e->getMessage();
-    log_to_db($parentHistoryId, $logMessage, $conn, 'CRITICAL');
-    update_history_status($parentHistoryId, 'failed', $logMessage, $conn);
-    $conn->close();
-    exit(1);
-}
-
-if (!$redis || !$redis->ping()) {
-    $logMessage = "Redis connection failed or invalid. Aborting script.";
-    log_to_db($parentHistoryId, $logMessage, $conn, 'CRITICAL');
-    update_history_status($parentHistoryId, 'failed', $logMessage, $conn);
-    $conn->close();
-    exit(1);
-}
-
 
 $overallErrors = 0;
 $processedSidoCount = 0;
 
 // 마스터 작업 초기 상태 업데이트: 'processing' 상태 유지, log_message 업데이트
 if($resetType === 'true' || $resetType === 'yes' || $resetType === 1) {
-    update_history_status($parentHistoryId, 'processing', '토지특성정보 캐시 업로드 작업 시작', $conn, false);
-    log_to_db($parentHistoryId, "토지특성정보 캐시 업로드 마스터 작업 시작. 대상 시도: {$sidoCdsString}", $conn, 'INFO');
+    update_history_status($parentHistoryId, 'processing', '건축물대장 데이터를 가져오기 작업 시작', $conn, false);
+    log_to_db($parentHistoryId, "건축물대장 데이터를 가져오기 마스터 작업 시작. 대상 시도: {$sidoCdsString}", $conn, 'INFO');
 
-    // 1. Redis 초기화 스크립트 실행 (마스터 작업에 속함)
-    log_to_db($parentHistoryId, "전체 토지특성정보 Redis 캐시 초기화 스크립트 실행.", $conn, 'INFO');
-    $resetCommand = 'php ' .$project_base . '/admin/download_realPrice_land_characteristics_reset_helper.php';
+    // 1.초기화 스크립트 실행 (마스터 작업에 속함)
+    log_to_db($parentHistoryId, "전체 건축물대장 DB데이터 초기화 스크립트 실행.", $conn, 'INFO');
+    $resetCommand = 'php ' .$project_base . '/admin/buildingregister_DB_init_helper.php ' .
+        escapeshellarg('historyId=' . $parentHistoryId) . ' ' .
+        escapeshellarg('sidoCds=' . $sidoCdsString) . 
+        ' 2>&1';   // ← stdout + stderr 받기
     $resetOutput = shell_exec($resetCommand); // 헬퍼 스크립트의 표준 출력을 받음
 
-    if (strpos($resetOutput, 'SUCCESS') === false) {
-        log_to_db($parentHistoryId, "토지특성정보 Redis 캐시 초기화 실패: " . $resetOutput, $conn, 'ERROR');
-        $overallErrors++;
-        // 초기화 실패 시 전체 작업을 실패로 간주하고 종료
-        update_history_status($parentHistoryId, 'failed', "토지특성정보 Redis 캐시 초기화 실패로 마스터 작업 종료.", $conn);
-        if ($conn) $conn->close();
-        if ($redis) $redis->close();
+    if ($resetOutput === null) {
+        log_to_db($parentHistoryId, "건축물대장 DB 초기화 실행 자체 실패", $conn, 'ERROR');
+        update_history_status($parentHistoryId,'failed',"건축물대장 DB 초기화 실행 실패로 마스터 작업 종료",$conn, true);
         exit(1);
     }
-    log_to_db($parentHistoryId, "토지특성정보 Redis 캐시 초기화 완료. " . $resetOutput, $conn, 'INFO');
+
+    if (strpos($resetOutput, '"status":"SUCCESS"') === false) {
+        log_to_db( $parentHistoryId,"건축물대장 DB 초기화 실패. 출력: {$resetOutput}",$conn,'ERROR');
+        update_history_status($parentHistoryId,'failed',"건축물대장 DB 초기화 실패로 마스터 작업 종료",$conn, true);
+        exit(1);
+    }
+
+    log_to_db($parentHistoryId, "건축물대장 DB데이터 초기화 완료. " . $resetOutput, $conn, 'INFO');
 } else {
-    log_to_db($parentHistoryId, "실행 전 reset을 체크하지 않아서 토지특성정보 Redis 초기화 작업을 하지 않습니다.", $conn, 'INFO');
+    log_to_db($parentHistoryId, "실행 전 reset을 체크하지 않아서 DB데이터 초기화 작업을 하지 않습니다.", $conn, 'INFO');
 }
 
 $success = true;
@@ -123,9 +104,9 @@ foreach ($sidoCds as $sidoCd) {
         // 1. 각 시도 작업에 대한 upload_history 레코드 생성
         $stmt = $conn->prepare("INSERT INTO upload_history (task_type, sido_param, status, started_at, parent_history_id, log_message) VALUES (?, ?, ?, NOW(), ?, ?)");
         //$taskType = 'landcharacteristics_sido'; // 토지특성정보 시도별 캐시 타입
-        $taskType = 'characteristic'; // 토지특성정보 시도별 캐시 타입
+        $taskType = 'buildingregister'; // 토지특성정보 시도별 캐시 타입
         $status = 'processing';
-        $subLogMessage = "Sido {$sidoCd} 토지특성정보 캐시 작업 시작.";
+        $subLogMessage = "Sido {$sidoCd} 건축물대장 데이터를 가져오기 작업 시작.";
         $stmt->bind_param("sssis", $taskType, $sidoCd, $status, $parentHistoryId, $subLogMessage);
         $stmt->execute();
         $sidoChildHistoryId = $conn->insert_id;
@@ -136,7 +117,7 @@ foreach ($sidoCds as $sidoCd) {
         }
 
         //log_to_db($sidoChildHistoryId, "Sido {$sidoCd} 토지특성정보 캐시 작업 시작.", $conn, 'INFO');
-        update_history_status($sidoChildHistoryId, 'processing', "Sido {$sidoCd} 작업 초기화 중.", $conn);
+        update_history_status($sidoChildHistoryId, 'processing', "Sido {$sidoCd} 건축물대장 데이터를 가져오기 작업 초기화 중.", $conn);
 
         // =============================================================
         // === 2. 마스터 작업 취소 여부 재확인 (Sido 자식 작업 시작 전) ===
@@ -145,20 +126,23 @@ foreach ($sidoCds as $sidoCd) {
         
         // 각 시도별 캐시 스크립트 실행 (헬퍼 스크립트가 log_to_db를 내부적으로 사용해야 합니다)
         // 헬퍼 스크립트에도 historyId, sidoCd를 넘겨주도록 수정 필요
-        $command = 'php ' . $project_base . '/admin/download_realPrice_land_characteristics_fast_helper.php' .
-                   ' --historyId=' . $sidoChildHistoryId .
-                   ' --sidoCd=' . $sidoCd . ' 2>&1'; // <-- 여기 ' 2>&1' 부분을 추가합니다.
+        $command = 'php ' . $project_base . '/admin/download_buildingregister_fast_helper.php ' .
+                   escapeshellarg('historyId=' . $parentHistoryId) . ' ' .
+                   escapeshellarg('sidoCds=' . $sidoCd) . 
+                   ' 2>&1'; // <-- 여기 ' 2>&1' 부분을 추가합니다.
         //log_to_db($sidoChildHistoryId, "실행될 헬퍼 명령어: " . $command, $conn, 'DEBUG');                   
-        $output = shell_exec($command);
+        $output = trim((string)shell_exec($command));
+        if ($output === '') {
+            throw new Exception('CLI 워커 실행 실패 (PID 없음)');
+        }
 
         if (strpos($output, 'SUCCESS') === false) {
-            throw new Exception("Sido {$sidoCd} 토지특성정보 캐시 생성 실패: " . $output);
+            throw new Exception("Sido {$sidoCd} 건축물대장 데이터를 가져오기 생성 실패: " . $output);
         }
-        //log_to_db($sidoChildHistoryId, "Sido {$sidoCd} 토지특성정보 Redis 캐시 생성 완료: " . $output, $conn, 'INFO');
         $sidoFinalStatus = 'success';
 
     } catch (Exception $e) {
-        $logMessage = "Sido {$sidoCd} 처리 중 오류 발생: " . $e->getMessage();
+        $logMessage = "Sido {$sidoCd} 건축물대장 데이터를 가져오기 처리 중 오류 발생: " . $e->getMessage();
         log_to_db($sidoChildHistoryId ?: $parentHistoryId, $logMessage, $conn, 'ERROR'); // 자식 ID 없으면 마스터 ID에 기록
         $sidoErrors++;
         $sidoFinalStatus = 'failed';
@@ -171,15 +155,25 @@ foreach ($sidoCds as $sidoCd) {
 
         // --- 수정된 부분: 헬퍼 스크립트의 출력에서 totalProcessed 건수 파싱 ---
         $processedCount = 0;
-        // '총' 뒤에 공백이 있을 수도 있고 없을 수도 있음을 고려
-        if (preg_match('/총\s*(\d+)건 처리/', $output, $matches)) {
-            $processedCount = (int) $matches[1];
-        } else {
-            // 정규표현식이 매칭되지 않았을 때 디버깅을 위해 로그를 남기는 것이 좋습니다.
-            log_to_db($sidoChildHistoryId, "[ERROR] 헬퍼 스크립트 출력에서 처리된 건수를 파싱하지 못했습니다. 출력: {$output}", $conn, 'ERROR', $log_conn);
-        }
+        
+        // 1️⃣ JSON 블록 추출 (앞에 CLI 로그가 붙어 있는 경우 대응)
+        if (preg_match('/(\{.*\})/s', $output, $jsonMatch)) {
+            $json = json_decode($jsonMatch[1], true);
 
-        $sidoFinalMessage = "Sido {$sidoCd} 토지특성정보 Redis 캐시 데이터 적재 완료.(오류: {$sidoErrors}건) 총 {$processedCount}건 처리. 소요 시간: {$currentSidoDurationFormatted}.";
+            if (json_last_error() === JSON_ERROR_NONE && isset($json['totalProcessedCount'])) {
+                $processedCount = (int)$json['totalProcessedCount'];
+            }
+        }
+        // 2️⃣ fallback: 기존 CLI 텍스트 포맷 대응 ("총 N건 처리")
+        elseif (preg_match('/총\s*(\d+)\s*건\s*처리/', $output, $matches)) {
+            $processedCount = (int)$matches[1];
+        }
+        // 3️⃣ 둘 다 실패 시 에러 로그
+        else {
+            log_to_db($sidoChildHistoryId, "[ERROR] 헬퍼 스크립트 출력에서 처리된 건수를 파싱하지 못했습니다. 출력: {$output}", $conn, 'ERROR');
+        }
+        
+        $sidoFinalMessage = "Sido {$sidoCd} 건축물대장 데이터를 가져오기 완료.(오류: {$sidoErrors}건) 총 {$processedCount}건 처리. 소요 시간: {$currentSidoDurationFormatted}.";
         log_to_db($sidoChildHistoryId ?: $parentHistoryId, $sidoFinalMessage, $conn, ($sidoErrors > 0) ? 'ERROR' : 'INFO');
         if ($sidoChildHistoryId) { // 자식 ID가 있는 경우에만 업데이트
             update_history_status($sidoChildHistoryId, $sidoFinalStatus, $sidoFinalMessage, $conn,true);
@@ -198,14 +192,14 @@ $seconds = (int)round(fmod($durationTotal, 60));
 $durationTotalFormatted = sprintf("%02d시 %02d분 %02d초", $hours, $minutes, $seconds);
 
 $masterFinalStatus = ($overallErrors > 0) ? 'failed' : 'success';
-$masterFinalMessage = "토지특성정보 캐시 업로드 마스터 배치 작업 완료 (총 시도: " . count($sidoCds) . ", 성공 시도: {$processedSidoCount}, 총 에러: {$overallErrors}). 총 소요 시간: {$durationTotalFormatted}.";
+$masterFinalMessage = "건축물대장 데이터를 가져오기 마스터 배치 작업 완료 (총 시도: " . count($sidoCds) . ", 성공 시도: {$processedSidoCount}, 총 에러: {$overallErrors}). 총 소요 시간: {$durationTotalFormatted}.";
 
 log_to_db($parentHistoryId, $masterFinalMessage, $conn, ($overallErrors > 0) ? 'ERROR' : 'INFO');
 update_history_status($parentHistoryId, $masterFinalStatus, $masterFinalMessage, $conn, true);
 
 
 if ($conn) $conn->close();
-if ($redis) $redis->close();
+
 exit(0);
 
 ?>

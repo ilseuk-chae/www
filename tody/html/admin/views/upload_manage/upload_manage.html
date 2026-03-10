@@ -116,21 +116,22 @@
                                     <div class="card-header align-items-center d-flex flex-wrap justify-content-between p-0">
                                         <ul id="upload_nav" class="nav nav-tabs nav-border-top nav-border-top-danger mb-0" role="tablist">
                                             <li class="nav-item" role="presentation">
-                                                <!-- Bootstrap 탭 토글은 여전히 href를 통해 활성화할 대상이 필요합니다.
-                                                     여기는 이제 콘텐츠 div가 아니므로, 더미 ID를 지정하고 JavaScript에서 컨트롤합니다.
-                                                     혹은 실제 콘텐츠를 포함하는 div 하나만 tab-pane으로 만들고
-                                                     그 안에서 나머지 동적인 내용을 JS로 교체하는 방식도 가능합니다.
-                                                     여기서는 Bootstrap 탭을 "순수하게 트리거" 역할만 하도록 조정합니다. -->
-                                                <a class="nav-link active" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="1" data-table="view" data-type="characteristic">토지 특성 정보 캐시 업로드 </a>
+                                                <a class="nav-link active" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="1" data-table="view" data-type="characteristic">토지 특성 정보 캐시 업로드(Redis)</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
-                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="2" data-table="view" data-type="realprice">국토부 실거래가 가져오기 </a>
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="2" data-table="view" data-type="buildingregister">국토부 건축물대장 가져오기(DB)</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
-                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="3" data-table="view" data-type="rediscache">실거래가 캐시 업로드</a>
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="3" data-table="view" data-type="buildingrediscache">건축물대장 캐시 업로드(Redis)</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
-                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="4" data-table="view" data-type="realpriceAverage">실거래 평균가 업데이트</a>
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="4" data-table="view" data-type="realprice">국토부 실거래가 가져오기(DB)</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="5" data-table="view" data-type="rediscache">실거래가 캐시 업로드(Redis)</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" data-bs-toggle="tab" href="#placeholder_tab_content" role="tab" aria-selected="false" data-his_no="6" data-table="view" data-type="realpriceAverage">실거래 평균가 업데이트(DB)</a>
                                             </li>
                                         </ul>
 
@@ -222,6 +223,9 @@
                                             </fieldset>
                                             <fieldset class="date-selection-group">
                                                 <div class="date-selection-flex-container">
+                                                    <div id="resetData" class="date-selection-field-group">
+                                                        <input type="checkbox" id="resetDataSet" checked>실행 전 Reset 하기
+                                                    </div>
                                                     <div id="startDate" class="date-selection-field-group">
                                                         <label for="startDate">시작 년 / 월</label>
                                                         <select id="startYear" class="form-select"></select>
@@ -234,7 +238,7 @@
                                                     </div>
                                                     <div id="baseDate" class="date-selection-field-group">
                                                         <label for="baseDate">평균 작성 기준 월</label>
-                                                        <select id="baseYear" class="form-select" disabled></select>
+                                                        <select id="baseYear" class="form-select"></select>
                                                         <select id="baseMonth" class="form-select"></select>
                                                     </div>
                                                 </div>
@@ -258,7 +262,7 @@
                                                 <h5 id="logHeading_redisTab"  style="color:blue; margin-top: 20px;">[최근 Redis 캐시 배치 스크립트 로그]</h5>
                                                 <pre id="batchLogViewer_redisTab" class="p-3 bg-light border rounded" style="max-height: 250px; overflow-y: scroll; font-size: 0.85em; font-family: 'Consolas', 'Monaco', monospace;"></pre>
                                                 <button id="refreshLogBtn_redisTab" class="btn btn-sm btn-info mt-2">로그 새로고침</button>
-                                                <p class="text-muted mt-2"><small>로그 파일 위치: `upload_batch_master_xxx.log` (xxx: historyID ,배치 스크립트와 동일 디렉토리)</small></p>
+                                                <!-- <p class="text-muted mt-2"><small>로그 파일 위치: `upload_batch_master_xxx.log` (xxx: historyID ,배치 스크립트와 동일 디렉토리)</small></p> -->
 
                                             </div>
                                             

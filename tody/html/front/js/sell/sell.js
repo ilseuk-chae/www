@@ -538,7 +538,7 @@ function initAction() {
             $("#estatgroup_all").addClass("active");
             $("#estatgroup_store").addClass("active");
             $("#estatgroup_office").addClass("active");
-            $("#estatgroup_factoty").addClass("active");
+            $("#estatgroup_factory").addClass("active");
             $("#estatgroup_knowledge").addClass("active");
             $("#estatgroup_building").addClass("active");
             $("#estatgroup_land").addClass("active");
@@ -3136,7 +3136,7 @@ function getEstateListFilterParams() {
     // 여기서 추가적인 처리가 필요 없을 수 있습니다.
     if (estate_value.length === 0) {
         // 예시: 아무것도 선택되지 않았을 때 모든 유형을 기본으로 선택
-        // estate_value.push("apt", "multi", "officetel", "land");
+        // estate_value.push("apt", "multi", "officetel", "land", "single", "commercial", "factory");
     }
 
     return estate_value;

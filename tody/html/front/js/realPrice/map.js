@@ -475,7 +475,7 @@ function updateEstateTypeFiltersFromUI() {
     if (isAllActive) {
         // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
         // // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
-        newEstateTypes.push("apt", "multi", "officetel", "land"); // 일괄 푸시
+        newEstateTypes.push("apt", "multi", "officetel", "land", "single", "commercial", "factory"); // 일괄 푸시
     } else {
         // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
         // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
@@ -488,7 +488,7 @@ function updateEstateTypeFiltersFromUI() {
 
     // 만약 아무것도 선택되지 않았다면 기본값으로 모두 포함하도록 설정
     if (newEstateTypes.length === 0) {
-        currentEstateTypes = ['apt', 'multi', 'officetel', 'land'];
+        currentEstateTypes = ["apt", "multi", "officetel", "land", "single", "commercial", "factory"];
     } else {
         currentEstateTypes = newEstateTypes;
     }
@@ -617,7 +617,8 @@ async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
 
     const sggCdsToFetch = Array.from(uniqueSggCds);
                         
-    console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개 (sggCds): ${sggCdsToFetch}`);
+    //console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개 (sggCds): ${sggCdsToFetch}`);
+    console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개`);
     const startTime = Date.now();
     const bboxParameterString = bboxArrayForApi.join(','); // 예: "126.9,37.5,127.1,37.6"
     

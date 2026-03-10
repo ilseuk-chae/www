@@ -212,14 +212,34 @@ async function loadListData(type) {
         language: {
             url: "/assets/libs/datatables/lang/ko.json",
         },
-        scrollX: true,
-        scrollY: "500px", // 세로 스크롤 활성화 및 높이 설정
-        scrollCollapse: true, // 테이s블 높이가 데이터보다 작을 경우 스크롤 영역 축소
+
+        initComplete: function(settings, json) {
+
+            var api = this.api();
+        
+            // 한 행 높이 구하기
+            var rowHeight = $('#results_table tbody tr:first').outerHeight();
+        
+            // 보여줄 행 개수 (5개)
+            var visibleRows = 5;
+        
+            // scroll-body 높이 강제 설정
+            $('.dt-scroll-body').css({
+                'max-height': (rowHeight * visibleRows) + 'px',
+                'height': (rowHeight * visibleRows) + 'px'
+            });
+        },
+
+        scrollX: false, //true,
+        scrollY: true,
+        //scrollY: "300px", // 세로 스크롤 활성화 및 높이 설정
+        scrollCollapse: false, // 테이블 높이가 데이터보다 작을 경우 스크롤 영역 축소
         processing: true,
-        responsive: true,
+        responsive: false, //true,
         lengthChange: false, // 페이지당 보이는 개수 드롭다운 숨기기
         paging: false, // 페이지네이션 숨기기
         searching: false, // 검색창 숨기기
+        autoWidth: false,
 
         createdRow: function (row, data, dataIndex) {
             // 행 클릭 시 상세 페이지로 이동하도록 data- 속성 추가

@@ -41,7 +41,8 @@ function deleteKeysByPattern(Redis $redis, string $pattern, int $count = 10000):
         $keys = $redis->scan($iterator, $pattern, $count);
         if ($keys === false) {
             // Redis 연결 오류 등으로 SCAN이 실패하면 예외 처리
-            throw new Exception("Redis SCAN failed for pattern {$pattern}");
+            //throw new Exception("Redis SCAN failed for pattern {$pattern}");
+            continue; // 오류 발생 시 해당 스캔을 건너뛰고 다음으로 진행
         }
 
         if (!empty($keys)) {

@@ -1053,6 +1053,7 @@
 /* map-estate-group 내의 모든 버튼에 공통적으로 적용될 스타일 */
 .realmap-estate-group {
   position: absolute; /* 부모 컨텍스트 기준으로 배치 */
+  flex-direction: column; 
   top: 0;
   left: 0;
   display: flex; /* 내부 버튼들을 가로로 배치 */
@@ -1065,19 +1066,22 @@
   /*margin-left: 634px;*/
 }
 .realmap-estate-group {
-  /*margin-left: 174px; /* realmap-sale-group과의 간격을 조정 */
-  margin-left: 54px;
+  margin-top: 58px;
+  margin-left: 4px;
 }
 .realmap-estate-group.active{
-  /*margin-left: 624px;  realmap-sale-group과의 간격을 조정 */
-  margin-left: 504px; /* realmap-sale-group과의 간격을 조정 */
+  margin-top: 58px;
+  margin-left: 454px;
 }
 
 .realmap-estate-group button {
   position: relative; /* ::before 가상 요소의 위치 기준을 위해 필요 */
   display: inline-block;
-  height: 32px;
-  padding: 7px 4px 7px 12px;  /* 6px <--> 4px */
+  /* height: 32px;
+  padding: 7px 4px 7px 12px;  6px <--> 4px */
+  height: 25px;      /* 30px <--> 25px */
+  width: 72px;
+  padding: 5px 0px 5px 2px;  /* 6px <--> 4px */
   font-size: 12px;
   line-height: 12px;
   letter-spacing: -1px;
@@ -1102,6 +1106,7 @@
   display: inline-block; /* 너비와 높이를 설정하기 위해 */
   width: 8px; /* 원의 너비 */
   height: 8px; /* 원의 높이 */
+  margin-right: 2px; /* 원과 텍스트 사이 간격 */
   border-radius: 50%; /* 원 형태로 만들기 */
   margin-right: 8px; /* 원과 텍스트 사이 간격 */
   vertical-align: middle; /* 텍스트와 세로 중앙 정렬 */
@@ -1124,12 +1129,12 @@
   /*border: #FEB912 1px solid;*/
 }
 .realmap-estate-info {
-  margin-top: 40px;
-  margin-left: 4px; 
+  /*margin-left: 174px; /* realmap-sale-group과의 간격을 조정 */
+  margin-left: 50px;
 }
 .realmap-estate-info.active {
-  margin-top: 40px;
-  margin-left: 454px;
+  /*margin-left: 624px;  realmap-sale-group과의 간격을 조정 */
+  margin-left: 500px; /* realmap-sale-group과의 간격을 조정 */
 }
 .my-select-box {
   height:13px; 
@@ -1174,14 +1179,14 @@
   /*border: #FEB912 1px solid;*/
 }
 .realmap-average-info {
-  margin-top: 100px;
-  margin-left: 4px; 
+  /* margin-top: 100px; */
+  margin-left: 124px; 
 }
 .realmap-average-info.active {
-  margin-top: 100px;
-  margin-left: 454px;
+  /*margin-top: 100px; */
+  margin-left: 574px;
 }
-
+/*
 @media all and (max-width: 1040px) {
   .realmap-estate-group {
     margin-top: 100px;
@@ -1194,6 +1199,7 @@
     flex-direction: column;   
   }
 }
+*/
 @media all and (max-width: 991px) {
   .realmap-estate-group{
     margin-left: 4px;
@@ -1201,12 +1207,20 @@
   .realmap-estate-group.active {
     margin-left: 4px;
   }
+
   .realmap-estate-info {
-    margin-left: 4px; 
+    margin-left: 50px; 
   }
   .realmap-estate-info.active {
-    margin-left: 4px;
-  }  
+    margin-left: 50px;
+  }
+  .realmap-average-info {
+    margin-left: 124px; 
+  }
+  .realmap-average-info.active {
+    margin-left: 124px; 
+  }
+  
 }
 
 
@@ -1225,24 +1239,24 @@
   background-color: #FE7D87; /* 예시 색상: color-red2 */
 }
 
-.realmap-estate-group button:nth-child(4)::before { /* "오피스텔" 버튼 */
+.realmap-estate-group button:nth-child(4)::before { /* "단독/다가구" 버튼 */
+  background-color: #702BFE; /* 예시 색상: color-violet1 */
+}
+
+.realmap-estate-group button:nth-child(5)::before { /* "오피스텔" 버튼 */
   background-color: #F4AFCA; /* 예시 색상: color-indigo2 */
 }
 
-.realmap-estate-group button:nth-child(5)::before { /* "토지" 버튼 */
-  background-color: #FEB912; /* 예시 색상:  color-yellow1*/
-}
-
-.realmap-estate-group button:nth-child(6)::before { /* "단독/다가구" 버튼 */
-  background-color: #FF4400; /* 예시 색상: color-orange1 */
-}
-
-.realmap-estate-group button:nth-child(7)::before { /* "상업/업무용" 버튼 */
+.realmap-estate-group button:nth-child(6)::before { /* "상업/업무용" 버튼 */
   background-color: #2973D6; /* 예시 색상: color-blue1 */
 }
 
-.realmap-estate-group button:nth-child(8)::before { /* "공장/창고" 버튼 */
-  background-color: #33A8A1; /* 예시 색상: color-aqua1 */
+.realmap-estate-group button:nth-child(7)::before { /* "공장/창고" 버튼 */
+  background-color: #039C55; /* 예시 색상: color-green1 */
+}
+
+.realmap-estate-group button:nth-child(8)::before { /* "토지" 버튼 */
+  background-color: #FEB912; /* 예시 색상:  color-yellow1*/
 }
 
 .realmap-estate-group button:nth-child(9)::before { /* "분양/입주권" 버튼 */

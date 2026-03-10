@@ -88,7 +88,10 @@ try {
         'apt' => "realPrice_apt_{$sidoCd}",
         'land' => "realPrice_land_{$sidoCd}",
         'officetel' => "realPrice_officetel_{$sidoCd}",
-        'multi' => "realPrice_multiFamily_{$sidoCd}"
+        'multi' => "realPrice_multiFamily_{$sidoCd}",
+        'single' => "realPrice_single_{$sidoCd}",
+        'commercial' => "realPrice_commercial_{$sidoCd}",
+        'factory' => "realPrice_factory_{$sidoCd}"
     ];
 
     // SQL 구문 설정
@@ -103,19 +106,66 @@ try {
     switch ($type) {
         case 'apt':
             // $table = 'realPrice_apt_41';
-            $sql = "SELECT rap.aptDong, rap.floor, rap.excluUseAr, '매매' AS saleType, 'apt' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            $sql = "SELECT rap.aptDong, rap.floor, rap.excluUseAr, '매매' AS saleType, 'apt' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
             break;
         case 'land':
             // $table = 'realPrice_land_41';        
-            $sql = "SELECT rap.dealArea, '매매' AS saleType, 'land' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            $sql = "SELECT rap.dealArea, '매매' AS saleType, 'land' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
             break;
         case 'officetel':
             // $table = 'realPrice_officetel_41';
-            $sql = "SELECT rap.floor, rap.excluUseAr, '매매' AS saleType, 'officetel' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            $sql = "SELECT rap.floor, rap.excluUseAr, '매매' AS saleType, 'officetel' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
             break;
         case 'multi':
             // $table = 'realPrice_multiFamily_41';
-            $sql = "SELECT rap.floor, rap.excluUseAr, rap.houseType, '매매' AS saleType, 'multi' AS estateType, rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, rap.dealAmount, rap.pnu FROM $table AS rap WHERE rap.pnu = ? ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            $sql = "SELECT rap.floor, rap.excluUseAr, rap.houseType, '매매' AS saleType, 'multi' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            break;
+        case 'single':
+            // $table = 'realPrice_single_41';
+            $sql = "SELECT rap.totalFloorAr, rap.houseType, '매매' AS saleType, 'single' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? AND rap.cdealDay IS NULL 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            break;
+        case 'commercial':
+            // $table = 'realPrice_commercial_41'; rap.buildingUse
+            $sql = "SELECT rap.floor, rap.buildingAr, '매매' AS saleType, 'commercial' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? AND rap.cdealDay IS NULL 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+            break;
+        case 'factory':
+            // $table = 'realPrice_factory_41'; rap.buildingUse
+            $sql = "SELECT rap.floor, rap.buildingAr, '매매' AS saleType, 'factory' AS estateType, 
+                           rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                           rap.dealAmount, rap.pnu 
+                    FROM $table AS rap 
+                    WHERE rap.pnu = ? AND rap.cdealDay IS NULL 
+                    ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
             break;
         default:
             responseApi(400, 'Invalid estate type', null);

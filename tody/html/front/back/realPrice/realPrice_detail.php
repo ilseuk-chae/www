@@ -35,29 +35,37 @@ foreach ($validations as $validation) {
 // 시도 코드 추출
 $sidoCd = substr($pnu, 0, 2);
 
+//error_log("type 1: " . $type);
 // Redis 키 설정
 $cacheKey = "realPrice:{$type}:{$pnu}";
 
+/*
 // 캐시에서 데이터 확인
 if ($redis->exists($cacheKey)) {
     $cachedData = json_decode($redis->get($cacheKey), true);
+    //error_log("cacheKey: " . $cacheKey);
     responseApi(200, 'SUCCESS', $cachedData);
     exit;
 }
-
+*/
 // 테이블명을 시도 코드에 맞춰 동적으로 변경
 $tableNames = [
     'apt' => "realPrice_apt_{$sidoCd}",
     'land' => "realPrice_land_{$sidoCd}",
     'officetel' => "realPrice_officetel_{$sidoCd}",
-    'multi' => "realPrice_multiFamily_{$sidoCd}"
+    'multi' => "realPrice_multiFamily_{$sidoCd}",
+    'single' => "realPrice_single_{$sidoCd}",
+    'commercial' => "realPrice_commercial_{$sidoCd}",
+    'factory' => "realPrice_factory_{$sidoCd}"
 ];
 
 // SQL 구문 설정
 if (!isset($tableNames[$type])) {
+    error_log("type 1-1: " . $type);
     responseApi(400, "잘못된 유형입니다.", null);
     exit;
 }
+//error_log("type 2: " . $type);
 
 $table = $tableNames[$type];
 
@@ -95,8 +103,53 @@ switch ($type) {
                 WHERE rap.pnu = ? 
                 ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
         break;
+    case 'single':
+        // $table = 'realPrice_single_41';
+        $sql = "SELECT rap.totalFloorAr, rap.houseType, '매매' AS saleType, 'single' AS estateType, 
+                        rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                        rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? AND rap.cdealDay IS NULL 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+        break;
+    
+    case 'commercial':
+        // $table = 'realPrice_commercial_41'; rap.buildingUse
+        $sql = "SELECT rap.floor, rap.buildingAr, '매매' AS saleType, 'commercial' AS estateType, 
+                        rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                        rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? AND rap.cdealDay IS NULL 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+        break;
+/*
+    case 'commercial':
+        $sql = "SELECT rap.floor, rap.buildingAr, '매매' AS saleType, 'commercial' AS estateType, "
+                . "rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, "
+                . "rap.dealAmount, rap.pnu "
+                . "FROM $table AS rap "
+                . "WHERE rap.pnu = ? "
+                . "ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+                error_log("SQL길이: " . strlen($sql));
+                error_log("SQL hex: " . bin2hex(substr($sql, -50))); // 끝부분 hex 확인
+        break;
+*/
+    case 'factory':
+        // $table = 'realPrice_factory_41'; rap.buildingUse
+        $sql = "SELECT rap.floor, rap.buildingAr, '매매' AS saleType, 'factory' AS estateType, 
+                        rap.dealYear, CONCAT(rap.dealYear, '.', LPAD(rap.dealMonth, 2, '0'), '.', LPAD(rap.dealDay, 2, '0')) AS dealDate, 
+                        rap.dealAmount, rap.pnu 
+                FROM $table AS rap 
+                WHERE rap.pnu = ? AND rap.cdealDay IS NULL 
+                ORDER BY STR_TO_DATE(CONCAT(rap.dealYear, '-', LPAD(rap.dealMonth, 2, '0'), '-', LPAD(rap.dealDay, 2, '0')), '%Y-%m-%d') DESC";
+        break;
+    default:
+        responseApi(400, 'Invalid estate type', null);
+        break;
 }
 
+//error_log("type 3: " . $type);
+//error_log("lans SQL: " . $sql);
 
 // 실행 및 결과 반환
 try {

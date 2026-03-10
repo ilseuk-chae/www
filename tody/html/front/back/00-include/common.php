@@ -1,6 +1,6 @@
 <?php
 // /www/tody/html/front/back/00-include/common.php
-
+date_default_timezone_set('Asia/Seoul');
 // ----------------------------------------------------
 // 1. CLI 환경에서도 $_SERVER['DOCUMENT_ROOT'] 사용을 위한 안전 장치
 // ----------------------------------------------------
@@ -1161,6 +1161,35 @@ function makeApiRequest($url, $queryParams) {
     return json_decode($response, true); // JSON 문자열을 PHP 배열로 변환
 }
 
+/**
+ * curl 통신 함수 (원본 응답 문자열 반환)
+ */
+function makeApiRequest_Xml($url, $queryParams) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url . $queryParams);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+    $response = curl_exec($ch);
+
+    if ($response === false) {
+        curl_close($ch);
+        return false;
+    }
+
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 200) {
+        return false;
+    }
+
+    // 🔴 파싱 금지 — 원본 그대로 반환
+    return $response;
+}
+
 function dump_go(...$vars_orig) { // <<<<< 이 부분을 이렇게 수정해주세요!
     // dump_go 함수 본문은 그대로 두셔도 됩니다.
     // ...
@@ -1215,3 +1244,75 @@ function log_message($message) {
     // 로그 메시지를 파일에 추가
     file_put_contents($logFile, $formattedMessage, FILE_APPEND);
 }
+function getBuildingUsage($usageStr) {
+    // usageStr이 null이거나 빈 문자열인 경우 처리
+    $rtnstr = "";
+    if (empty($usageStr)) {
+        $rtnstr ='알 수 없음';
+    }
+    else if (str_contains($usageStr, "단독")) $rtnstr= "단독";//단독주택
+    else if (str_contains($usageStr, "공동")) $rtnstr= "공동";//공동주택
+    else if (str_contains($usageStr, "1종근린")) $rtnstr= "1종근린";//제1종근린생활
+    else if (str_contains($usageStr, "2종근린")) $rtnstr= "2종근린";//제2종근린생활
+    else if (str_contains($usageStr, "3종근린")) $rtnstr= "3종근린";//제3종근린생활
+    else if (str_contains($usageStr, "판매")) $rtnstr= "판매";
+    else if (str_contains($usageStr, "업무")) $rtnstr= "업무";
+    else if (str_contains($usageStr, "공장")) $rtnstr= "공장";
+    else if (str_contains($usageStr, "창고")) $rtnstr= "창고";
+    else if (str_contains($usageStr, "교육연구")) $rtnstr= "교육연구";
+    else if (str_contains($usageStr, "의료")) $rtnstr= "의료";
+    else if (str_contains($usageStr, "문화집회")) $rtnstr= "문화";//문화집회
+    else if (str_contains($usageStr, "종교")) $rtnstr= "종교";
+    else if (str_contains($usageStr, "운동")) $rtnstr= "운동";//운동시설
+    else if (str_contains($usageStr, "자동차")) $rtnstr= "자동차"; //자동차 관련시설
+    else if (str_contains($usageStr, "숙박")) $rtnstr= "숙박";
+    else if (str_contains($usageStr, "위락")) $rtnstr= "위락";
+    else if (str_contains($usageStr, "위험물")) $rtnstr= "위험물"; //위험물 저장 및 처리시설
+    else if (str_contains($usageStr, "기숙사")) $rtnstr= "기숙사";
+    else if (str_contains($usageStr, "노유자")) $rtnstr= "노유자";//노유자시설
+    else if (str_contains($usageStr, "복지")) $rtnstr= "복지시설";//복지시설
+    else if (str_contains($usageStr, "유통")) $rtnstr= "유통";//물류시설
+    else if (str_contains($usageStr, "기타")) $rtnstr= "기타";  
+    else $rtnstr= "알 수 없음";
+    
+    return $rtnstr;
+}
+function gethouseType($houseTypeStr) {
+    // usageStr이 null이거나 빈 문자열인 경우 처리
+    $rtnstr = "";
+    if (empty($houseTypeStr)) {
+        $rtnstr ='알 수 없음';
+    }
+    else if (str_contains($houseTypeStr, "다세대")) $rtnstr= "다세대";
+    else if (str_contains($houseTypeStr, "연립")) $rtnstr= "연립";
+    else if (str_contains($houseTypeStr, "단독")) $rtnstr= "단독";
+    else if (str_contains($houseTypeStr, "다가구")) $rtnstr= "다가구";
+    else if (str_contains($houseTypeStr, "공동")) $rtnstr= "공동";
+    else if (str_contains($houseTypeStr, "아파트")) $rtnstr= "아파트";
+    else $rtnstr= "알 수 없음";
+    
+    return $rtnstr;
+}
+
+function pnuScoreLog($msg) {
+    $baseLogDir = realpath(__DIR__ . '/../../../../logs') . '/'; // realpath()를 사용하여 절대 경로 확보 및 슬래시 추가
+    $file =  $baseLogDir . '/pnu_score_debug.log';
+    $time = date('Y-m-d H:i:s');
+    file_put_contents(
+        $file,
+        "[$time] $msg\n",
+        FILE_APPEND | LOCK_EX
+    );
+}
+
+function pnuMatcheLog($msg) {
+    $baseLogDir = realpath(__DIR__ . '/../../../../logs') . '/'; // realpath()를 사용하여 절대 경로 확보 및 슬래시 추가
+    $file =  $baseLogDir . '/pnu_match_debug.log';
+    $time = date('Y-m-d H:i:s');
+    file_put_contents(
+        $file,
+        "[$time] $msg\n",
+        FILE_APPEND | LOCK_EX
+    );
+}
+?>

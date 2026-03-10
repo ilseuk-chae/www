@@ -204,6 +204,7 @@ function initAction() {
             realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
         }
     });
+
     $(".mo-tool > dl > dd > button").click(function () {
         $(".mo-tool").fadeOut(400, "easeOutQuad");
         $(".mo-tool-option").fadeOut(400, "easeOutQuad");
@@ -253,10 +254,12 @@ function initAction() {
         if ($(".map-content").hasClass("active")) {
             $(".realmap-estate-group").addClass("active");
             $(".realmap-estate-info").addClass("active");
+            $(".realmap-average-info").addClass("active");
         }
         else {
             $(".realmap-estate-group").removeClass("active");
             $(".realmap-estate-info").removeClass("active");
+            $(".realmap-average-info").removeClass("active");
         }
         // 합필분석 단기
         $(".mo-land").removeClass("active");
@@ -362,57 +365,32 @@ function initAction() {
 
     // 지도 - real estate 선택 20250722
     $(".realmap-estate-group").on("click", "button", function () {
-        const clickedButton = $(this);
-        const allButtons = $(".realmap-estate-group button");
-        const allToggleButton = allButtons.eq(0); // 첫 번째 버튼을 '전체' 버튼으로 간주
-        const nonAllButtons = allButtons.not(allToggleButton); // '전체' 버튼을 제외한 나머지 버튼들
-
-        // 0. 전체 버튼 (첫 번째 버튼) 클릭 시 로직
-        if (clickedButton.is(allToggleButton)) {
-            // 1. 첫 번째 버튼('전체')이 클릭되었을 때
-            if (allToggleButton.hasClass("active")) {
-                // '전체' 버튼이 이미 활성화 상태였다면, 토글하여 비활성화
-                allToggleButton.removeClass("active");
-                nonAllButtons.removeClass("active"); // 나머지 모든 버튼 비활성화
-                //allButtons.eq(1).addClass("active"); // 두 번째 버튼만 활성화 (요구사항 1.2)
-            } else {
-                // '전체' 버튼이 비활성화 상태였다면, 토글하여 활성화
-                allToggleButton.addClass("active");
-                nonAllButtons.addClass("active"); // 나머지 모든 버튼 활성화 (요구사항 1.1)
-            }
-        } else {
-            // '전체' 버튼이 아닌 다른 버튼이 클릭되었을 때
-            clickedButton.toggleClass("active"); // 클릭된 버튼의 active 상태 토글
-
-            // 나머지 버튼들의 상태를 확인하여 '전체' 버튼의 상태를 결정
-            let allOthersAreActive = true;
-            nonAllButtons.each(function() {
-                if (!$(this).hasClass("active")) {
-                    allOthersAreActive = false;
-                    return false; // 하나라도 비활성화된 버튼이 있으면 루프 중단
-                }
-            });
-
-            if (allOthersAreActive) {
-                // 3. '전체' 버튼이 아닌 나머지 버튼들이 모두 활성화되면 '전체' 버튼도 활성화
-                allToggleButton.addClass("active");
-            } else {
-                // 2. '전체' 버튼 이외에 하나라도 비활성화된 버튼이 있으면 '전체' 버튼 비활성화
-                allToggleButton.removeClass("active");
-            }
-        }
-        //estateNewList();
-        if(REALPRICE_POLYGON_MODE == 1){
-            fetchRealPriceAptBasedOnMapCenter(); //실거래가를 가져오기(원본)
-        }
-        else if(REALPRICE_POLYGON_MODE == 2){
-            fetchRealPriceAptArrayBasedOnMapCenter(); //실거래가를 가져오기 - array
-        }
-        //fetchRealPriceAptArrayBasedOnMapCenterWidthCash(); //실거래가를 가져오기 - cash
-        else if(REALPRICE_POLYGON_MODE == 3){
-            fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() //실거래가를 가져오기 - cash auto
-        }
         
+        const allButtons    = $(".realmap-estate-group button");
+        const allToggleBtn  = allButtons.eq(0);
+        const nonAllButtons = allButtons.not(allToggleBtn);
+        
+        // 전체 버튼 클릭
+        if ($(this).is(allToggleBtn)) {
+            const activate = !allToggleBtn.hasClass("active");
+            allToggleBtn.toggleClass("active", activate);
+            nonAllButtons.toggleClass("active", activate);
+
+        // 개별 버튼 클릭
+        } else {
+            $(this).toggleClass("active");
+
+            // 하나라도 off면 전체버튼 off, 모두 on이면 전체버튼 on
+            const hasOff = nonAllButtons.filter(":not(.active)").length > 0;
+            allToggleBtn.toggleClass("active", !hasOff);
+        }
+    
+        const fetchMap = {
+            1: fetchRealPriceAptBasedOnMapCenter,
+            2: fetchRealPriceAptArrayBasedOnMapCenter,
+            3: fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint,
+        };
+        fetchMap[REALPRICE_POLYGON_MODE]?.();
     });
 
     //지도 - real estate info 선택 - 정보 타입
@@ -460,12 +438,16 @@ function initAction() {
                 $(".mo-land").addClass("active");
                 $(".map-land").addClass("active");
                 realPriceOverlays.forEach((overlay) => overlay.setVisible(false));
+                //합필분석 일때 지도선택 버튼 4번(지적편집도) 활성화
+                //$(".map-select-group button").removeClass("active").eq(3).addClass("active");
             } else {
                 $(".mo-land").removeClass("active");
                 $(".map-land").removeClass("active");
                 realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
+                //합필분석 일때 지도선택 버튼 4번(지적편집도) 비활성화
+                //$(".map-select-group button").removeClass("active").eq(3).removeClass("active");
             }
-
+            $(".map-select-group button").eq(3).click();
             // $(".mo-land").css({ display: "block" });
             // $(".mo-land").animate({ opacity: "1" }, 400, "easeOutQuad");
             // $(".map-land").animate({ marginLeft: "0" }, 400, "easeOutQuad");
@@ -474,7 +456,7 @@ function initAction() {
             $(".mo-land").toggleClass("active");
             $(".map-land").toggleClass("active");
             realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
-
+            $(".map-select-group button").eq(3).click();
             // $(".mo-land").animate({ opacity: "0" }, 400, "easeOutQuad");
             // setTimeout(() => {
             //     $(".mo-land").css({ display: "none" });

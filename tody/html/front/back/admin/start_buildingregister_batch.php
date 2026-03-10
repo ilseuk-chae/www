@@ -1,8 +1,15 @@
 <?php
-// api/start_characteristics_batch.php
+// api/start_buildingregister_batch.php
 //웹 화면에서 호출되어 CLI 워커를 백그라운드로 실행시킵니다.
 
 header('Content-Type: application/json');
+error_log('### start_buildingregister_batch.php CALLED ###');
+// 환경 설정
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+set_time_limit(0);
+ini_set('memory_limit', '-1');
+
 // CORS 허용 (개발 환경에서 필요할 수 있음)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -52,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt === false) {
             throw new Exception("Failed to prepare history insert statement: " . $conn->error);
         }
-        $taskType = 'characteristic'; // 토지특성정보에 맞는 enum 값
+        $taskType = 'buildingregister'; // 토지특성정보에 맞는 enum 값
         $status = 'processing'; // 처음엔 'processing' 상태로 시작
         $logMessage = '작업 시작 대기 중...';
         $stmt->bind_param('sssss', $taskType, $sidoParam, $status, $logMessage, $triggeredByUserId);
@@ -66,24 +73,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 2. CLI 워커 스크립트를 백그라운드에서 실행
         // `nohup`으로 프로세스를 분리하고, `&`로 백그라운드 실행. 표준 출력/에러는 nohup.out으로 리다이렉트
-        $command = 'nohup php ' . __DIR__ . '/trigger_characteristics_batch_cli.php ' .
+        $baseLogDir = realpath(__DIR__ . '/../../../../logs');
+        if ($baseLogDir === false) {
+            throw new Exception('logs 디렉토리를 찾을 수 없습니다.');
+        }
+        $baseLogDir .= '/';
+        $logFile =  $baseLogDir . 'buildingregister_batch_debug.log';
+        
+        $command = 'nohup php ' . __DIR__ . '/trigger_buildingregister_batch_cli.php ' .
                    'historyId=' . $historyId . ' sidoCds=' . escapeshellarg($sidoParam) . 
-                   ' reset=' . escapeshellarg($resetType) . 
-                   ' > /dev/null 2>&1 & echo $!'; // PID를 반환받기 위함 (선택사항)
+                   ' reset=' . escapeshellarg($resetType) .
+                   ' > ' . $logFile . ' 2>&1 & echo $!'; 
+                   //' > /dev/null 2>&1 & echo $!'; // PID를 반환받기 위함 (선택사항)
 
-        $pid = shell_exec($command); // PID를 받아 추후 kill 명령에 사용할 수 있음
-        $conn->commit(); // ★★★ 이 라인이 있어야 변경사항이 DB에 최종 반영됩니다. ★★★
+        $pid = trim((string)shell_exec($command)); // PID를 받아 추후 kill 명령에 사용할 수 있음
+        //$conn->commit(); // ★★★ 이 라인이 있어야 변경사항이 DB에 최종 반영됩니다. ★★★
+
+        if ($pid === '') {
+            throw new Exception('CLI 워커 실행 실패 (PID 없음)');
+        }
 
         log_to_db($historyId, "백그라운드 워커 스크립트 실행 시작. historyId: " . trim($historyId) . " pid :" . $pid , $conn);
         //update_history_status($historyId, 'processing', 'batch_cli 실행 중...', $conn, false); // 이미 insert 시 started_at 지정됨
 
         http_response_code(202); // Accepted
-        echo json_encode(['success' => true, 'message' => '토지특성정보 캐시 업로드 작업을 시작합니다.', 'master_history_id' => $historyId, 'pid' => trim($pid)]);
+        echo json_encode(['success' => true, 'message' => '국토교통부 건축물대장 데이터를 가져오기 작업을 시작합니다.', 'master_history_id' => $historyId, 'pid' => trim($pid)]);
 
     } catch (Exception $e) {
-        if ($conn->in_transaction) { // 트랜잭션 중이었다면 롤백
-            $conn->rollback();
-        }
+        
+        error_log($e->getMessage());
+
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => '작업 시작 실패: ' . $e->getMessage()]);
         // 작업 시작 실패 시 historyId가 있으면 FAILED로 업데이트 (선택사항)

@@ -1,7 +1,7 @@
 const clusterersByType = {
     "all": null, // 아래 createClustererAll 함수에서 map 객체가 준비되면 초기화
     // 필요한 경우 estateType별 클러스터러 추가:
-    // "apt": null, "multi": null, "officetel": null, "land": null,
+    // "apt": null, "multi": null, "officetel": null, "land": null, "single" : null, "commercial" : null, "factory" : null
 };
 let realPriceData = []; // 실거래가 정보
 let realEstimatedPrice = null; // 추정가
@@ -35,7 +35,7 @@ function countEstateTypes(apiResponseObject) {
 
 
 // 전역 변수들: 기존 코드에서 사용하는 변수명과 일치시켜야 합니다.
-let currentEstateTypes = ['apt', 'multi', 'officetel', 'land']; // 현재 선택된 부동산 유형 (UI에 따라 동적으로 갱신)
+let currentEstateTypes = ["apt", "multi", "officetel", "land", "single", "commercial", "factory"]; // 현재 선택된 부동산 유형 (UI에 따라 동적으로 갱신)
 let realEstateMarkers = []; // 클러스터러에 추가되지 않는 일반 마커 (현재는 사용하지 않지만 기존 구조 유지를 위해 선언)
 
 // Kakao Geocoder 이후 주소 처리 및 기타 액션 함수들 (맵핑 후 바로 사용되므로 그대로 두는 것이 좋음)
@@ -120,22 +120,26 @@ function updateEstateTypeFiltersFromUI() {
     if (isAllActive) {
         // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
         // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
+        //"apt", "multi", "officetel", "land", "single", "commercial", "factory"
         newEstateTypes.push("apt");
         newEstateTypes.push("multi"); // 오타 수정!
         newEstateTypes.push("officetel");
         newEstateTypes.push("land");
+        newEstateTypes.push("single");
+        newEstateTypes.push("commercial");
+        newEstateTypes.push("factory");
     } else {
         // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
         // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
         $('.realmap-estate-group button.active').not(allToggleButton).each(function () {
             const btn_text = $(this).text().trim();
             // 개별 유형 버튼의 텍스트를 이용해 값을 추가
-            newEstateTypes.push(estateTypeToValue(btn_text));
+            newEstateTypes.push(estateTypeToValueEng(btn_text));
         });
     }
     // 만약 아무것도 선택되지 않았다면 기본값으로 모두 포함하도록 설정
     if (newEstateTypes.length === 0) {
-        currentEstateTypes = ['apt', 'multi', 'officetel', 'land'];
+        currentEstateTypes = ["apt", "multi", "officetel", "land", "single", "commercial", "factory"];
     } else {
         currentEstateTypes = newEstateTypes;
     }
@@ -155,17 +159,21 @@ function myformatPrice(price) {
 
 /**
  * 주어진 부동산 타입에 대한 가격 아이템 HTML 문자열을 생성합니다.
- * @param {string} estateType - 부동산 타입 ('apt', 'multi', 'officetel', 'land').
+ * @param {string} estateType - 부동산 타입 ("apt", "multi", "officetel", "land", "single", "commercial", "factory").
  * @param {object} sigunguData - 해당 시군구의 모든 데이터.
  * @param {boolean} isPyeongDisplay - 현재 오버레이의 단위 표시 상태 (true: 평, false: ㎡).
  * @returns {string} 가격 정보가 담긴 HTML 문자열.
  */
 function createPriceItem(estateType, sigunguData, isPyeongDisplay) { // isPyeongDisplay 인자 추가
     let estateTypeName = '';
-    if (estateType === 'apt') estateTypeName = '(아)';
-    else if (estateType === 'multi') estateTypeName = '(연)';
-    else if (estateType === 'officetel') estateTypeName = '(오)';
-    else if (estateType === 'land') estateTypeName = '(토)';
+    if (estateType === 'apt') estateTypeName = '(아파트)';
+    else if (estateType === 'multi') estateTypeName = '(연립)';
+    else if (estateType === 'officetel') estateTypeName = '(오피스)';
+    else if (estateType === 'land') estateTypeName = '(토지)';
+    else if (estateType === 'single') estateTypeName = '(단독)';
+    else if (estateType === 'commercial') estateTypeName = '(상업)';
+    else if (estateType === 'factory') estateTypeName = '(공장)';
+    else estateTypeName = '';
 
     const estateTypeData = sigunguData.estateTypes[estateType];
     let priceText = 'N/A';
@@ -236,7 +244,7 @@ function createPriceItem(estateType, sigunguData, isPyeongDisplay) { // isPyeong
  * 이 함수는 기존 `realPriceAptArray(sggCdArray)`의 역할을 완전히 대체합니다.
  *
  * @param {string[]} sggCdsToFetch - 조회할 시군구 PNU 코드들의 배열 (예: ['11110', '11140'])
- * @param {Array<string>} estateTypesToFetch - 조회할 부동산 유형 배열 (예: ['apt', 'multi', 'officetel', 'land'])
+ * @param {Array<string>} estateTypesToFetch - 조회할 부동산 유형 배열 (예: ["apt", "multi", "officetel", "land", "single", "commercial", "factory"])
  * @returns {Promise<void>} 데이터 로드 및 시각화 작업 완료 Promise
  */
 async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFeatures) {  /// estateTypesToFetch는 이제 collectMultiFilterParams에서 가져옴
@@ -333,6 +341,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
             //console.log('[실거래가] 그리기 시작 시간:', getFormattedDateTime()); // 디버깅용
 
             responseData.forEach((data) => {
+                
                 // 이제 'data' 객체 안에 'redis_cached_at' 필드가 포함되어 있습니다.
                 const cachedAt = data.redis_cached_at; // 이 변수에 Redis 캐시된 시간 정보가 담깁니다.
                 // console.log(`데이터 PNU: ${data.pnu}, Redis 캐시 시각: ${cachedAt}`); // 콘솔에서 확인 가능
@@ -375,16 +384,19 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     });
 
                     clusterersByType["all"].addMarker(marker); // 클러스터러에 마커 추가
-
+                    
                 } else if (zoomLevel === 4) { // 줌 레벨이 4일 경우 (점표시)
                     const smallMarker = document.createElement("div");
                     
                     // 부동산 유형에 따른 스타일 클래스 설정
                     switch(data.estate_type) {
-                        case "apt": markerString = "small-marker bg-orange2 border-orange2"; break;
-                        case "land": markerString = "small-marker bg-yellow1 border-yellow1"; break;
+                        case "apt": markerString = "small-marker bg-orange2 border-orange2"; break;  
+                        case "land": markerString = "small-marker bg-yellow1 border-yellow1"; break;  
                         case "multi": markerString = "small-marker bg-red2 border-red2"; break;
                         case "officetel": markerString = "small-marker bg-indigo2 border-indigo2"; break;
+                        case "single": markerString = "small-marker bg-violet1 border-violet1"; break;
+                        case "commercial": markerString = "small-marker bg-blue1 border-blue1"; break;
+                        case "factory": markerString = "small-marker bg-green1 border-green1"; break;
                         default: markerString = "small-marker bg-gray border-gray"; break;
                     }
                     
@@ -428,8 +440,9 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                         });
                     });
                     realPriceOverlays.push(smallMarkerOverlay); // 오버레이 배열에 작은 원형 점 추가
-
+                    
                 } else { // 줌 레벨이 3 이하일 경우 (상세도 상세표시) 
+                    
                     const iwContent = document.createElement("div"); 
                     iwContent.className = "real-price-marker cursor-pointer";
                     
@@ -437,18 +450,33 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     switch(data.estate_type) {
                         case "apt":
                             markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
-                            imgString = "icn_arr_mark.svg"; estateString = "아파트"; break;
+                            imgString = "icn_arr_mark_orange2.svg"; estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                         case "land":
                             markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
                             imgString = "icn_arr_mark_yellow1.svg";
                             if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
-                            estateString = jimokString ? `토지: ${jimokString}` : "토지"; break;
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                         case "multi":
                             markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
-                            imgString = "icn_arr_mark_red2.svg"; estateString = "연립/다세대"; break;
+                            imgString = "icn_arr_mark_red2.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                            break;
                         case "officetel":
                             markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
-                            imgString = "icn_arr_mark_indigo2.svg"; estateString = "오피스텔"; break;
+                            imgString = "icn_arr_mark_indigo2.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                        case "single":
+                            markerString = "border-violet1"; borderString = "border-bottom-violet1"; liString = "bg-violet1";
+                            imgString = "icn_arr_mark_violet1.svg";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                        case "commercial":
+                            markerString = "border-blue1"; borderString = "border-bottom-blue1"; liString = "bg-blue1";
+                            imgString = "icn_arr_mark_blue1.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type); break; //(상업용)
+                        case "factory":
+                            markerString = "border-green1"; borderString = "border-bottom-green1"; liString = "bg-green1";
+                            imgString = "icn_arr_mark_green1.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type); break;
                         default:    
                             markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
                             imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; break;
@@ -507,7 +535,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                         if ($(".mo-tool-option button").hasClass("active")) return;
                         if ($("#draw_toolbox a").hasClass("active")) return;
                         e.preventDefault(); // 기본 클릭 동작 (링크 이동 등) 방지
-
+                        
                         // Z-index 조절 로직
                         if (realPriceOverlay) { 
                             const currentZIndex = parseInt(realPriceOverlay.getZIndex() || 0, 10); 
@@ -558,18 +586,26 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
             //console.log('[실거래가] (읍면동)그리기 완료 시간:', getFormattedDateTime()); // 디버깅용
 
         } catch (error) {
-            //console.error("API Fetch Error:", error);
-            alert("데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
+            let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
+            if (error.message) {
+                userFriendlyMessage = "(10)데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
+            } else if (error instanceof TypeError) {
+                // 예를 들어 response.json()이 실패했거나, 네트워크 문제일 때 TypeError가 발생하기도 합니다.
+                userFriendlyMessage = "네트워크 문제 또는 서버 응답 처리 오류가 발생했습니다.";
+            } else if (error instanceof SyntaxError) {
+                userFriendlyMessage = "서버로부터 유효하지 않은 데이터가 수신되었습니다. (JSON 파싱 오류)";
+            }
+            alert(userFriendlyMessage); // 사용자에게 더 친화적인 메시지 표시
         } finally {
             hideLoadingSpinner(); // 로딩 스피너 숨김
         }
     } 
     // 시군구 단위 처리 추가
     else if(sggCdsToFetch[0].length === 5){
-        console.log('[실거래가] (시군구) 그리기 시작 시간:', getFormattedDateTime());
+        //console.log('[실거래가] (시군구) 그리기 시작 시간:', getFormattedDateTime());
 
         // 시군구 단위에서는 estateTypes를 고정 값으로 변경합니다.
-        requestBody.estateTypes = "apt,multi,officetel,land"; 
+        requestBody.estateTypes = "apt,multi,officetel,land,single,commercial,factory"; 
         
         try {
             const response = await fetch("/front/back/realPrice/realPrice_apt_sigungu_db.php", {
@@ -607,11 +643,15 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                         center_longitude: current.center_longitude,
                         estateTypes: {} ,// 이 시군구의 각 estate_type별 평균 데이터를 담을 객체
                         // 각 estate_type별 단위 표시 상태를 여기서 초기화 (기본: 평)
+                        
                         _unitDisplayStates: { 
                             'apt': true, 
                             'multi': true, 
                             'officetel': true, 
-                            'land': true 
+                            'land': true ,
+                            'single': true,
+                            'commercial': true,
+                            'factory': true
                         }
                     };
                 }
@@ -741,6 +781,9 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                             ${createPriceItem('multi', sigunguData, initialIsPyeongDisplay)}
                             ${createPriceItem('officetel', sigunguData, initialIsPyeongDisplay)}
                             ${createPriceItem('land', sigunguData, initialIsPyeongDisplay)}
+                            ${createPriceItem('single', sigunguData, initialIsPyeongDisplay)}
+                            ${createPriceItem('commercial', sigunguData, initialIsPyeongDisplay)}
+                            ${createPriceItem('factory', sigunguData, initialIsPyeongDisplay)}
                         </div>
                     </div>
                 `;
@@ -796,6 +839,9 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                                 ${createPriceItem('multi', sigunguData, newPyeongDisplay)}
                                 ${createPriceItem('officetel', sigunguData, newPyeongDisplay)}
                                 ${createPriceItem('land', sigunguData, newPyeongDisplay)}
+                                ${createPriceItem('single', sigunguData, newPyeongDisplay)}
+                                ${createPriceItem('commercial', sigunguData, newPyeongDisplay)}
+                                ${createPriceItem('factory', sigunguData, newPyeongDisplay)}
                             `;
 
                         } else { // 펼치기/접기 아이콘 또는 나머지 영역 클릭 시 (기존 로직)
@@ -822,13 +868,13 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             hideLoadingSpinner(); // 로딩 스피너 숨김
 
-            console.log('[실거래가] (시군구) 그리기 완료 시간:', getFormattedDateTime());
+            //console.log('[실거래가] (시군구) 그리기 완료 시간:', getFormattedDateTime());
 
         } catch (error) {
             
             let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
             if (error.message) {
-                userFriendlyMessage = "데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
+                userFriendlyMessage = "(5)데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
             } else if (error instanceof TypeError) {
                 // 예를 들어 response.json()이 실패했거나, 네트워크 문제일 때 TypeError가 발생하기도 합니다.
                 userFriendlyMessage = "네트워크 문제 또는 서버 응답 처리 오류가 발생했습니다.";
@@ -843,10 +889,10 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     } 
     // 시도 단위 처리 로직 (추후 구현)
     else if(sggCdsToFetch[0].length === 2){   
-        console.log('[실거래가] (시도) 그리기 시작 시간:', getFormattedDateTime());
+        //console.log('[실거래가] (시도) 그리기 시작 시간:', getFormattedDateTime());
         
         // 시도 단위에서는 estateTypes를 고정 값으로 변경합니다.
-        requestBody.estateTypes = "apt,multi,officetel,land"; 
+        requestBody.estateTypes = "apt,multi,officetel,land,single,commercial,factory"; 
 
         try {
             // 시도 API 엔드포인트 호출
@@ -885,7 +931,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                         estateTypes: {},
                         // 각 estate_type별 단위 표시 상태를 여기서 초기화 (기본: 평)
                         _unitDisplayStates: { 
-                            'apt': true, 'multi': true, 'officetel': true, 'land': true 
+                            'apt': true,'multi': true,'officetel': true,'land': true,'single': true,'commercial': true,'factory': true,
                         }
                     };
                 }
@@ -1010,6 +1056,9 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                             ${createPriceItem('multi', sidoData, initialIsPyeongDisplay)}
                             ${createPriceItem('officetel', sidoData, initialIsPyeongDisplay)}
                             ${createPriceItem('land', sidoData, initialIsPyeongDisplay)}
+                            ${createPriceItem('single', sidoData, initialIsPyeongDisplay)}
+                            ${createPriceItem('commercial', sidoData, initialIsPyeongDisplay)}
+                            ${createPriceItem('factory', sidoData, initialIsPyeongDisplay)}
                         </div>
                     </div>
                 `;
@@ -1065,6 +1114,9 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                                 ${createPriceItem('multi', sidoData, newPyeongDisplay)}
                                 ${createPriceItem('officetel', sidoData, newPyeongDisplay)}
                                 ${createPriceItem('land', sidoData, newPyeongDisplay)}
+                                ${createPriceItem('single', sidoData, newPyeongDisplay)}
+                                ${createPriceItem('commercial', sidoData, newPyeongDisplay)}
+                                ${createPriceItem('factory', sidoData, newPyeongDisplay)}
                             `;
 
                         } else { // 펼치기/접기 아이콘 또는 나머지 영역 클릭 시 (기존 로직)
@@ -1091,12 +1143,12 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             hideLoadingSpinner(); // 로딩 스피너 숨김
             
-            console.log('[실거래가] (시도) 그리기 완료 시간:', getFormattedDateTime());
+            //console.log('[실거래가] (시도) 그리기 완료 시간:', getFormattedDateTime());
 
         } catch (error) {
             let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
             if (error.message) {
-                userFriendlyMessage = "데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
+                userFriendlyMessage = "(2)데이터를 불러오는 중 오류가 발생했습니다: " + error.message;
             } else if (error instanceof TypeError) {
                 // 예를 들어 response.json()이 실패했거나, 네트워크 문제일 때 TypeError가 발생하기도 합니다.
                 userFriendlyMessage = "네트워크 문제 또는 서버 응답 처리 오류가 발생했습니다.";
@@ -1117,13 +1169,108 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
 } // realPriceAptArrayWithCache 함수 끝
 
+function makeEstateTypeName(estateTypes, jimok, usage_type="") {
+    //console.log("makeEstateTypeName called with:", estateTypes, jimok, usage_type);
+    let jimokString = "";
+    let rtnstring = "";
+    switch(estateTypes) {
+        case "apt":
+            rtnstring = "아파트"; 
+            break;
+        case "land":
+            if (jimok != null && typeof jimok === 'string') { jimokString = jimok.replace(/용지/g, ""); } else { jimokString =""; }
+            rtnstring = jimokString ? `토지: ${jimokString}` : "토지"; 
+            break;
+        case "multi":
+            if(jimok != null && typeof jimok === 'string') { 
+                if(jimok.toString().includes("연립")) {
+                    rtnstring = "연립"; 
+                } else if(jimok.toString().includes("다세대")) {
+                    rtnstring = "다세대";
+                } else {
+                    rtnstring = "연립/다세대";
+                }
+            } else { 
+                rtnstring = "연립/다세대";
+            }
+            break;
+        case "officetel":
+            rtnstring = "오피스텔"; 
+            break;
+        case "single":
+            if(jimok != null && typeof jimok === 'string') { 
+                if(jimok.toString().includes("단독")) {
+                    rtnstring = "단독"; 
+                } else if(jimok.toString().includes("다가구")) {
+                    rtnstring = "다가구";
+                } else {
+                    rtnstring = "단독/다가구";
+                }
+            } else {
+                rtnstring = "단독/다가구";
+            }
+            break;
+        case "commercial":
+            if((jimok != null && typeof jimok === 'string') && (usage_type != null && typeof usage_type === 'string')) { 
+                if(jimok.toString().includes("집합")) {
+                    rtnstring = "상가/사무실"; 
+                } else if(jimok.toString().includes("일반")) {
+                    if(usage_type.toString().includes("근린")) {
+                        rtnstring = "빌딩(근린)";
+                    } else if(usage_type.toString().includes("업무")) {
+                        rtnstring = "빌딩(업무)";
+                    } else if(usage_type.toString().includes("판매")) {
+                        rtnstring = "빌딩(판매)";
+                    } else if(usage_type.toString().includes("숙박")) {
+                        rtnstring = "빌딩(숙박)";
+                    } else if(usage_type.toString().includes("연구")) {
+                        rtnstring = "빌딩(연구)";
+                    } else {
+                        rtnstring = "빌딩(기타)";
+                    }
+                } else {
+                    rtnstring = "건물/상가"; 
+                }
+            }
+            else {
+                rtnstring = "건물/상가";
+            }
+            
+            break; //(상업용)
+        case "factory":
+            if((usage_type != null && typeof usage_type === 'string')) { 
+                if(usage_type.toString().includes("공장")) {
+                    rtnstring = "공장";
+                } else if(usage_type.toString().includes("창고")) {
+                    rtnstring = "창고";
+                }
+                else if(usage_type.toString().includes("자동차")) {
+                    rtnstring = "창고(자동차)";
+                }
+                else if(usage_type.toString().includes("위험물")) {
+                    rtnstring = "창고(위험물)";
+                }
+                 else {
+                    rtnstring = "공장/창고";
+                }
+            }
+            else {
+                rtnstring = "공장/창고";
+            }
+            break;
+        default:    
+            rtnstring = "-"; 
+            break;
+    }
+    return rtnstring;
+}
 
 /**
  * 10x10 multi point를 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
  * 지도 화면 내 여러 시군구 코드(sggCdArray)를 기준으로
  * 부동산 실거래가 정보를 가져와 지도에 시각화하는 비동기 함수.
  * @param {string[]} sggCdArray - 조회할 시군구 코드들의 배열 (예: ['11680', '11650'])
- * 추후 삭제 예정
+ * 사용하지 않음
  */
 async function realPriceAptArray(sggCdArray) { 
     return new Promise((resolve, reject) => { // Promise를 반환하도록 함수 수정
@@ -1187,6 +1334,9 @@ async function realPriceAptArray(sggCdArray) {
                             case "land": markerString = "small-marker bg-yellow1 border-yellow1"; break;
                             case "multi": markerString = "small-marker bg-red2 border-red2"; break;
                             case "officetel": markerString = "small-marker bg-indigo2 border-indigo2"; break;
+                            case "single": markerString = "small-marker bg-violet1 border-violet1"; break;
+                            case "commercial": markerString = "small-marker bg-blue1 border-blue1"; break;
+                            case "factory": markerString = "small-marker bg-green1 border-green1"; break;
                             default: markerString = "small-marker bg-gray border-gray"; break;
                         }
                         
@@ -1245,21 +1395,36 @@ async function realPriceAptArray(sggCdArray) {
                         switch(data.estate_type) {
                             case "apt":
                                 markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
-                                imgString = "icn_arr_mark.svg"; estateString = "아파트"; break;
+                                imgString = "icn_arr_mark.svg"; estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             case "land":
                                 markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
                                 imgString = "icn_arr_mark_yellow1.svg";
                                 if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
-                                estateString = jimokString ? `토지: ${jimokString}` : "토지"; break;
+                                estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             case "multi":
                                 markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
-                                imgString = "icn_arr_mark_red2.svg"; estateString = "연립/다세대"; break;
+                                imgString = "icn_arr_mark_red2.svg"; 
+                                estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                                break;
                             case "officetel":
                                 markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
-                                imgString = "icn_arr_mark_indigo2.svg"; estateString = "오피스텔"; break;
+                                imgString = "icn_arr_mark_indigo2.svg"; 
+                                estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                            case "single":
+                                markerString = "border-violet1"; borderString = "border-bottom-violet1"; liString = "bg-violet1";
+                                imgString = "icn_arr_mark_violet1.svg";
+                                estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                            case "commercial":
+                                markerString = "border-blue1"; borderString = "border-bottom-blue1"; liString = "bg-blue1";
+                                imgString = "icn_arr_mark_blue1.svg"; 
+                                estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type); break; //(상업용)
+                            case "factory":
+                                markerString = "border-green1"; borderString = "border-bottom-green1"; liString = "bg-green1";
+                                imgString = "icn_arr_mark_green1.svg"; 
+                                estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type); break;
                             default:    
                                 markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
-                                imgString = "icn_arr_mark_gray.svg"; estateString = "-"; break;
+                                imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; break;
                         }
                         
                         // 필터에 따른 정보 문자열 구성 (동일)
@@ -1378,6 +1543,7 @@ async function realPriceAptArray(sggCdArray) {
  * 지도 화면 내 여러 시군구 코드를 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
  * 부동산 실거래가 정보를 가져와 지도에 시각화하는 비동기 함수.
  * @param {string[]} sggCdArray - 조회할 시군구 코드들의 배열 (예: ['11680', '11650'])
+ * 사용하지 않음
  */
 async function realPriceApt(sggCd) {
     var bounds = map.getBounds();   //현재 지도 화면의 가시적인 사각 영역(Bounding Box) 객체를 반환합니다. 이 객체는 지도의 가장 남서쪽 지점과 가장 북동쪽 지점의 좌표 정보를 포함하고 있어요.
@@ -1424,22 +1590,16 @@ async function realPriceApt(sggCd) {
                     // 줌 레벨이 5 이하일 경우, 작은 원형 점으로 표시
                     const smallMarker = document.createElement("div");
                     //smallMarker.className = data.estate_type !== "land" ? "small-marker bg-main border-danger" : "small-marker bg-yellow1 border-yellow1";
+                    
                     switch(data.estate_type) {
-                        case "apt":
-                            markerString = "small-marker bg-orange2 border-orange2";
-                            break;
-                        case "land":
-                            markerString = "small-marker bg-yellow1 border-yellow1";
-                            break;
-                        case "multi":
-                            markerString = "small-marker bg-red2 border-red2";
-                            break;
-                        case "officetel":
-                            markerString = "small-marker bg-indigo2 border-indigo2";
-                            break;
-                        default:    
-                            markerString = "small-marker bg-gray border-gray";
-                            break;
+                        case "apt": markerString = "small-marker bg-orange2 border-orange2"; break;  //ok
+                        case "land": markerString = "small-marker bg-yellow1 border-yellow1"; break;  //ok
+                        case "multi": markerString = "small-marker bg-red2 border-red2"; break;
+                        case "officetel": markerString = "small-marker bg-indigo2 border-indigo2"; break;
+                        case "single": markerString = "small-marker bg-violet1 border-violet1"; break;
+                        case "commercial": markerString = "small-marker bg-blue1 border-blue1"; break;
+                        case "factory": markerString = "small-marker bg-green1 border-green1"; break;
+                        default: markerString = "small-marker bg-gray border-gray"; break;
                     }
                     
                     smallMarker.className = markerString;
@@ -1501,56 +1661,46 @@ async function realPriceApt(sggCd) {
                     let borderString = ""; // 초기화
                     let infoString = ""; // 초기화
                     let jimokString = ""; // 초기화
+
                     switch(data.estate_type) {
                         case "apt":
-                            markerString = "border-orange2";
-                            borderString = "border-bottom-orange2";
-                            liString = "bg-orange2";
-                            imgString = "icn_arr_mark.svg";
-                            estateString = "아파트";
+                            markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
+                            imgString = "icn_arr_mark.svg"; estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
                             break;
                         case "land":
-                            markerString = "border-yellow1";
-                            borderString = "border-bottom-yellow1";
-                            liString = "bg-yellow1";
+                            markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
                             imgString = "icn_arr_mark_yellow1.svg";
-                            // data.jimok이 undefined 또는 null이 아니고, string 타입일 경우에만 replace 실행
-                            if (data.jimok != null && typeof data.jimok === 'string') {
-                                jimokString = data.jimok.replace(/용지/g, "");
-                            } else {
-                                // data.jimok이 유효한 문자열이 아닐 경우
-                                //console.warn("data.jimok :", data.jimok);
-                                //console.warn("경고: data.jimok이 유효한 문자열이 아니거나 정의되지 않았습니다.", data.jimok);
-                                // jimokString은 초기값인 ""을 유지합니다.
-                                jimokString ="";
-                            }
-                            jimokString = jimokString ? jimokString : "";
-                            if(jimokString.length > 0) {
-                                estateString = `토지: ${jimokString}`;
-                            } else {
-                                estateString = "토지";
-                            }                            
+                            if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
                             break;
                         case "multi":
-                            markerString = "border-red2";
-                            borderString = "border-bottom-red2";
-                            liString = "bg-red2";
-                            imgString = "icn_arr_mark_red2.svg";
-                            estateString = "연립/다세대";
+                            markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
+                            imgString = "icn_arr_mark_red2.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
                             break;
                         case "officetel":
-                            markerString = "border-indigo2";
-                            borderString = "border-bottom-indigo2";
-                            liString = "bg-indigo2";
-                            imgString = "icn_arr_mark_indigo2.svg";
-                            estateString = "오피스텔";
+                            markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
+                            imgString = "icn_arr_mark_indigo2.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            break;
+                        case "single":
+                            markerString = "border-violet1"; borderString = "border-bottom-violet1"; liString = "bg-violet1";
+                            imgString = "icn_arr_mark_violet1.svg";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            break;
+                        case "commercial":
+                            markerString = "border-blue1"; borderString = "border-bottom-blue1"; liString = "bg-blue1";
+                            imgString = "icn_arr_mark_blue1.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type); 
+                            break; //(상업용)
+                        case "factory":
+                            markerString = "border-green1"; borderString = "border-bottom-green1"; liString = "bg-green1";
+                            imgString = "icn_arr_mark_green1.svg"; 
+                            estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type); 
                             break;
                         default:    
-                            markerString = "border-gray";
-                            borderString = "border-bottom-gray";
-                            liString = "bg-gray";
-                            imgString = "icn_arr_mark_gray.svg";
-                            estateString = "-";
+                            markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
+                            imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; 
                             break;
                     }
                     switch(filterObj.estateinfo) {
@@ -1762,14 +1912,14 @@ function getEstateListFilterParams() {
     if (isAllActive) {
         // '전체' 버튼이 활성화된 경우, 모든 부동산 유형을 명시적으로 추가
         // // 여기서 '전체' 버튼을 눌렀을 때만 실행되므로 중복될 일이 없습니다.
-        estate_value.push("apt", "multi", "officetel", "land"); // 일괄 푸시
+        estate_value.push("apt", "multi", "officetel", "land", "single", "commercial", "factory"); // 일괄 푸시
     } else {
         // '전체' 버튼이 비활성화된 경우, 활성화된 개별 유형 버튼들만 확인
         // 주의: 첫 번째 버튼(전체 버튼)은 여기 루프에서 제외해야 합니다.
         $('.realmap-estate-group button.active').not(allToggleButton).each(function () {
             const btn_text = $(this).text().trim();
             // 개별 유형 버튼의 텍스트를 이용해 값을 추가
-            estate_value.push(estateTypeToValue(btn_text));
+            estate_value.push(estateTypeToValueEng(btn_text));
         });
     }
 
@@ -1779,7 +1929,7 @@ function getEstateListFilterParams() {
     // 여기서 추가적인 처리가 필요 없을 수 있습니다.
     if (estate_value.length === 0) {
         // 예시: 아무것도 선택되지 않았을 때 모든 유형을 기본으로 선택
-        // estate_value.push("apt", "multi", "officetel", "land");
+        // estate_value.push("apt", "multi", "officetel", "land", "single", "commercial", "factory"); // 일괄 푸시
     }
     return estate_value;
     
@@ -1795,32 +1945,86 @@ function estateTypeToValue(estateType) {
             estateValue = "";
             break;
         case "아파트":
+        case "apt":
+            estateValue = "아파트";
+            break;
+        case "연립/다세대":
+        case "multi":
+            estateValue = "연립";
+            break;
+        case "오피스텔":
+        case "officetel":
+            estateValue = "오피스텔";
+            break;
+        case "토지":
+        case "land":
+            estateValue = "토지";
+            break;
+        case "단독/다가구":
+        case "single":
+            estateValue = "단독";
+            break;
+        case "상업/업무용":
+        case "commercial":
+            estateValue = "상업";
+            break;
+        case "공장/창고":
+        case "factory":
+            estateValue = "공장";
+            break;
+        case "분양/입주권":
+        case "preconstruction":
+            estateValue = "분양권";
+            break;
+        default:
+            estateValue = "";
+            console.error("유효하지 않은 매물유형입니다.(type: " + estateType + ")");
+            break;
+    }
+    return estateValue;
+}
+
+function estateTypeToValueEng(estateType) {
+    let estateValue;
+    switch (estateType) {
+        case "전체":
+            estateValue = "";
+            break;
+        case "아파트":
+        case "apt":
             estateValue = "apt";
             break;
         case "연립/다세대":
+        case "multi":
             estateValue = "multi";
             break;
         case "오피스텔":
+        case "officetel":
             estateValue = "officetel";
             break;
         case "토지":
+        case "land":
             estateValue = "land";
             break;
         case "단독/다가구":
+        case "single":
             estateValue = "single";
             break;
         case "상업/업무용":
+        case "commercial":
             estateValue = "commercial";
             break;
         case "공장/창고":
+        case "factory":
             estateValue = "factory";
             break;
         case "분양/입주권":
+        case "preconstruction":
             estateValue = "lots";
             break;
         default:
             estateValue = "";
-            console.error("유효하지 않은 매물유형입니다.");
+            console.error("유효하지 않은 매물유형입니다.(type: " + estateType + ")");
             break;
     }
     return estateValue;
@@ -2264,25 +2468,8 @@ function updateRealPriceTable() {
     const realPriceHtml = realPriceData
         .map(function (data, index) {
             const type = data.estateType || "";
-            let typeKor = "";
-
-            switch (type) {
-                case "apt":
-                    typeKor = "아파트";
-                    break;
-                case "land":
-                    typeKor = "토지";
-                    break;
-                case "multi":
-                    typeKor = "연립/다세대";
-                    break;
-                case "officetel":
-                    typeKor = "오피스텔";
-                    break;
-                default:
-                    typeKor = "";
-                    break;
-            }
+            let typeKor = estateTypeToValue(type);
+            
             const buttonHtml = `<p>${typeKor}</p>`;
             $(".mcrl-sale-type").html(buttonHtml);
 
@@ -2290,7 +2477,8 @@ function updateRealPriceTable() {
             const dealAmount = formatPrice(data.dealAmount.replace(/,/g, ""), "all", false);
 
             // 면적 단위 전환
-            let area = data.excluUseAr ? parseFloat(data.excluUseAr) : data.dealArea ? parseFloat(data.dealArea) : "";
+            //let area = data.excluUseAr ? parseFloat(data.excluUseAr) : data.dealArea ? parseFloat(data.dealArea) : "";
+            let area = data.excluUseAr ? parseFloat(data.excluUseAr) : data.dealArea ? parseFloat(data.dealArea) : data.totalFloorAr ? parseFloat(data.totalFloorAr) : data.buildingAr ? parseFloat(data.buildingAr) : "";
             if (area) {
                 area = currentUnit === "pyeong" ? (area / 3.3058).toFixed(2) : area.toFixed(2);
             }
@@ -2425,9 +2613,11 @@ async function estimatedPrice(firstData) {
 /**
  * 추정가 바인딩 함수
  */
+/*
 function updateRealEstimatedPrice() {
+    
     const firstDate = realPriceData[0];
-    if (!firstDate || firstDate.lenth == 0) {
+    if (!firstDate || firstDate.length == 0) {
         return;
     }
     if (!realEstimatedPrice || realEstimatedPrice == 0) {
@@ -2435,12 +2625,21 @@ function updateRealEstimatedPrice() {
                             <p class="color-gray fw-normal">AI 추정가를 제공하지 않는 장소입니다.</p>
                          </div>`;
         $("#ai_estimated_price").html(nonHtml);
+        return;
     }
 
     let priceHtml = "";
     if (firstDate.estateType !== "land") {
         const estateType = firstDate.estateType;
-        const excluUseAr = firstDate.excluUseAr;
+
+        //const excluUseAr = firstDate.excluUseAr ? firstDate.excluUseAr : firstDate.dealArea ? firstDate.dealArea : firstDate.totalFloorAr ? firstDate.totalFloorAr : firstDate.buildingAr ? firstDate.buildingAr : "";
+        let excluUseAr = "";
+        if(firstDate.estateType == "single")
+            excluUseAr = firstDate.totalFloorAr;
+        else if((firstDate.estateType == "commercial") || (firstDate.estateType == "factory"))
+            excluUseAr = firstDate.buildingAr;
+        else  
+            excluUseAr = firstDate.excluUseAr;
         const floor = firstDate.floor;
 
         // 면적 단위 전환
@@ -2458,3 +2657,67 @@ function updateRealEstimatedPrice() {
     }
     $("#ai_estimated_price").html(priceHtml);
 }
+    */
+function updateRealEstimatedPrice() {
+
+    if (!realPriceData || realPriceData.length === 0) {
+        return;
+    }
+
+    const firstDate = realPriceData[0];
+
+    if (!realEstimatedPrice || realEstimatedPrice == 0) {
+        const nonHtml = `
+            <div class="no_data_area_inner d-flex flex-column justify-content-center gap-3 text-center fs-14">
+                <p class="color-gray fw-normal">AI 추정가를 제공하지 않는 장소입니다.</p>
+            </div>`;
+        $("#ai_estimated_price").html(nonHtml);
+        return;
+    }
+
+    let priceHtml = "";
+
+    if (firstDate.estateType !== "land") {
+
+        let excluUseAr = "";
+
+        if (firstDate.estateType == "single")
+            excluUseAr = firstDate.totalFloorAr;
+        else if (firstDate.estateType == "commercial" || firstDate.estateType == "factory")
+            excluUseAr = firstDate.buildingAr;
+        else
+            excluUseAr = firstDate.excluUseAr;
+
+        const floor = firstDate.floor || "-";
+
+        let area = Number(excluUseAr);
+
+        // 숫자 검증
+        if (!area || isNaN(area)) {
+            $("#ai_estimated_price").html(
+                `<span>면적 정보 없음</span>`
+            );
+            return;
+        }
+
+        // 단위 변환
+        if (currentUnit === "pyeong") {
+            area = area / 3.3058;
+        }
+
+        const areaUnit = currentUnit === "pyeong" ? "평" : "㎡";
+        const pricePerM2 = realEstimatedPrice / area;
+
+        priceHtml = `
+            <span>${formatPrice(pricePerM2, "all", false)}원/${areaUnit}</span>
+            <span class="d-block text-center color-main fs-14 fw-normal">
+                ${floor}층 ${area.toFixed(2)}${areaUnit} 기준
+            </span>`;
+
+    } else {
+        priceHtml = `<span>${formatPrice(realEstimatedPrice, "all", false)}원</span>`;
+    }
+
+    $("#ai_estimated_price").html(priceHtml);
+}
+

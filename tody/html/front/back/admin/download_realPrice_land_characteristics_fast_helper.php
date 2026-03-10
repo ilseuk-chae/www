@@ -96,12 +96,12 @@ local indexKey = KEYS[2]
 local saddMember = ARGV[#ARGV]
 
 -- 디버깅 정보 출력
-redis.log(redis.LOG_WARNING, "HMSET Key: " .. hashKey)
-redis.log(redis.LOG_WARNING, "SADD Key: " .. indexKey .. ", Member: " .. saddMember)
+-- redis.log(redis.LOG_WARNING, "HMSET Key: " .. hashKey)
+-- redis.log(redis.LOG_WARNING, "SADD Key: " .. indexKey .. ", Member: " .. saddMember)
 local hmset_result = redis.call('HMSET', hashKey, unpack(ARGV, 1, #ARGV - 1))
 local sadd_result = redis.call('SADD', indexKey, saddMember)
-redis.log(redis.LOG_WARNING, "HMSET Result for " .. hashKey .. ": " .. tostring(hmset_result))
-redis.log(redis.LOG_WARNING, "SADD Result for " .. indexKey .. ": " .. tostring(sadd_result))
+-- redis.log(redis.LOG_WARNING, "HMSET Result for " .. hashKey .. ": " .. tostring(hmset_result))
+-- redis.log(redis.LOG_WARNING, "SADD Result for " .. indexKey .. ": " .. tostring(sadd_result))
 
 return sadd_result -- 또는 hmset_result 등 최종 결과
 

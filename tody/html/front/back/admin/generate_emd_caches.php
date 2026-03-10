@@ -40,7 +40,7 @@ $project_base = dirname($script_root, 1); // /var/www/tody/html/front/back/ (adm
 // -----------------------------------------------------------
 $options = getopt("", ["sido:", "parent-history-id:", "reset:", "base-year::", "base-month::"]);
 $sidoParamRaw = $options['sido'] ?? null;
-$resetType = $options['reset'] ?? "part";
+$resetType = $options['reset'] ?? 'false';
 //$resetType = isset($options['reset']) ? ($options['reset'] === false ? true : 
 $baseYear = (int)($options['base-year'] ?? 0);
 $baseMonth = (int)($options['base-month'] ?? 0);
@@ -126,11 +126,16 @@ if (!$redis || !$redis->ping()) {
 
 // 이 아래에서 $rpEmdCachePrefix 가 정의됩니다. (대략 131 라인 근처)
 $rpEmdCachePrefix = 'realPrice:emd:latest:'; 
-$polygonCenterCachePrefix = 'polygon:center:';
 
+log_to_db($parentHistoryId, "[generate_emd_caches] resetType: " . $resetType, $conn, 'INFO');
 // 마스터 작업 초기 상태 업데이트: 'processing' 상태 유지, log_message 업데이트
-if($resetType === 'all') {
+/*
+if($resetType == 'true' || $resetType == 'yes' || $resetType == 1) {
+    
     update_history_status($parentHistoryId, 'processing', '실거래가 캐시 reset 작업 시작', $conn, false);
+    
+    // 1. Redis 초기화 스크립트 실행 (마스터 작업에 속함)
+    log_to_db($parentHistoryId, "전체 실거래가 Redis 캐시 초기화 스크립트 실행.", $conn, 'INFO');
     
     // 1. Redis 초기화 스크립트 실행 (마스터 작업에 속함)
     log_to_db($parentHistoryId, "전체 실거래가 Redis 캐시 초기화 스크립트 실행.", $conn, 'INFO');
@@ -148,10 +153,11 @@ if($resetType === 'all') {
     }
     log_to_db($parentHistoryId, "실거래가 Redis 캐시 초기화 완료. " . $resetOutput, $conn, 'INFO');
     update_history_status($parentHistoryId, 'processing', '실거래가 캐시 reset 작업 완료', $conn, false);
+
 } else {
     log_to_db($parentHistoryId, "부분 실거래가 캐시 업로드 작업으로 실거래가 Redis 초기화 작업을 하지 않습니다.", $conn, 'INFO');
 }
-
+*/
 
 $overallErrors = 0; 
 $processedSidoCount = 0; 
@@ -184,12 +190,30 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
             throw new Exception("Sido {$sidoCd}의 upload_history 레코드 생성 실패: " . $conn->error);
         }
 
-        log_to_db($historyId, "Sido {$sidoCd} 실거래가 Redis 캐시 작업 시작.", $conn, 'INFO');
-        update_history_status($historyId, 'processing', "Sido {$sidoCd} 작업 초기화 중.", $conn);
+        if($resetType == 'true' || $resetType == 'yes' || $resetType == 1) {
+            $redisKeysPattern = $rpEmdCachePrefix . ":$sidoCd*";
+            update_history_status($historyId, 'processing', "Sido {$sidoCd} 작업 초기화 중.", $conn);
 
+            log_to_db($historyId, "Sido {$sidoCd} 실거래가 Redis 캐시 Reset 작업 시작.", $conn, 'INFO');
+            // 해당 시도의 실거래가 캐시 키 삭제
+            try {
+                // keys() 대신 scan() 기반 함수 사용
+                $deletedCount = deleteKeysByPattern($redis, $redisKeysPattern);
+        
+                if ($deletedCount > 0) {
+                    log_to_db($historyId, "Deleted {$deletedCount} real price cache keys for Sido {$sidoCd}.", $conn, 'INFO');
+                } else {
+                    log_to_db($historyId, "No real price cache keys found to delete for Sido {$sidoCd}.", $conn, 'INFO');
+                }
+            } catch (Exception $e) {
+                log_to_db($historyId, "Error deleting Redis keys for Sido {$sidoCd}: " . $e->getMessage(), $conn, 'ERROR');
+            }
+        }
+        update_history_status($historyId, 'processing', "Sido {$sidoCd} Redis 캐시중...", $conn);
+        log_to_db($historyId, "Sido {$sidoCd} 실거래가 Redis 캐시 작업 시작.", $conn, 'INFO');
 
         // ===>>> EMD 코드 추출 전: 마스터 ID를 전달 <<<===
-        check_cancellation($parentHistoryId, $conn); 
+        check_cancellation($historyId, $conn); 
 
 
         // --- 테이블 매핑 초기화 (현재 시도에만 해당) ---
@@ -198,7 +222,10 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
             'apt'       => "realPrice_apt_{$sidoCd}",
             'multi'     => "realPrice_multiFamily_{$sidoCd}",
             'officetel' => "realPrice_officetel_{$sidoCd}",
-            'land'      => "realPrice_land_{$sidoCd}"
+            'land'      => "realPrice_land_{$sidoCd}",
+            'single'      => "realPrice_single_{$sidoCd}",
+            'commercial'      => "realPrice_commercial_{$sidoCd}",
+            'factory'      => "realPrice_factory_{$sidoCd}"
         ];
         $adminTableName = "AL_D002_{$sidoCd}"; 
         
@@ -225,7 +252,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
         }
 
         // ===>>> EMD 코드 목록 추출 완료 후: 마스터 ID를 전달 <<<===
-        check_cancellation($parentHistoryId, $conn);
+        check_cancellation($historyId, $conn);
 
         // --- 각 EMD 코드별 데이터 조회, 가공, Redis 저장 (현재 시도 내 EMD 루프) ---
         $processedEmdCount = 0;
@@ -244,11 +271,10 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
             // ===============================================================
             // === 2. 각 EMD 코드 처리 중 주기적으로 취소 여부 확인 (선택적, 권장) ===
             // ===============================================================
-            if ($emdIndex % 10 === 0) { // 매 10번째 EMD 코드마다 확인하여 DB 부하 감소
-                check_cancellation($parentHistoryId, $conn); // 마스터 작업이 취소됐는지 확인
-                // 선택 사항: 개별 Sido 작업 ($historyId)이 취소되었는지도 확인 가능
-                // check_cancellation($historyId, $conn); 
+            if (check_cancellation($historyId, $conn)) {
+                throw new Exception("Sido {". $sidoCd ."} 작업 도중 사용자 중단 요청 감지. 작업 중단.", 500);
             }
+            
             //log_to_db($historyId, "EMD 코드 '{$emdCdInner}' 처리 중... (" . ($emdIndex + 1) . "/" . count($currentSidoEmdCodes) . ")", $conn, 'INFO');
             
             $queryPnuLike = substr($emdCdInner, 0, 8) . '%'; 
@@ -273,6 +299,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                         rap.dealAmount, 
                         rap.pnu,
                         NULL AS jimok,
+                        NULL AS usage_type,
                         'apt' AS estate_type,
                         ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
                         -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
@@ -313,7 +340,8 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                         rmf.dealDay, 
                         rmf.dealAmount, 
                         rmf.pnu,
-                        NULL AS jimok,
+                        rmf.housetype AS jimok,          -- Multi-Family의 경우 housetype을 jimok로 매핑(예: 단독주택, 다가구주택)
+                        NULL AS usage_type,
                         'multi' AS estate_type,
                         ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
                         -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
@@ -355,6 +383,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                         rot.dealAmount, 
                         rot.pnu,
                         NULL AS jimok,
+                        NULL AS usage_type,
                         'officetel' AS estate_type,
                         ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
                         -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
@@ -372,7 +401,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                     ) AS latest
                         ON rot.pnu = latest.pnu
                         AND CONCAT(rot.dealYear, LPAD(rot.dealMonth, 2, '0'), LPAD(rot.dealDay, 2, '0')) = latest.max_date
-                    WHERE rot.pnu LIKE ? AND rot.cdealDay IS NULL
+                    WHERE rot.pnu LIKE ? AND rot.cdealDay IS NULL 
                     -- GROUP BY 절에 PNU와 admg.WKT가 모두 포함되어야 일관된 결과를 얻을 수 있습니다.
                     -- GROUP BY rot.pnu, admg.WKT
                     {$filter5Y_for_union_query} -- 이 부분에 5년 필터링 조건 추가 ✨
@@ -396,6 +425,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                         rl.dealAmount, 
                         rl.pnu,
                         rl.jimok,
+                        NULL AS usage_type,
                         'land' AS estate_type,
                         ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
                         -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
@@ -413,11 +443,137 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                     ) AS latest
                         ON rl.pnu = latest.pnu
                         AND CONCAT(rl.dealYear, LPAD(rl.dealMonth, 2, '0'), LPAD(rl.dealDay, 2, '0')) = latest.max_date
-                    WHERE rl.pnu LIKE ? AND rl.jimok != '도로' AND rl.cdealDay IS NULL
+                    WHERE rl.pnu LIKE ? AND rl.jimok != '도로' AND rl.cdealDay IS NULL AND rl.shareDealingType IS NULL
                     -- GROUP BY 절에 PNU와 admg.WKT가 모두 포함되어야 일관된 결과를 얻을 수 있습니다.
                     -- GROUP BY rl.pnu, admg.WKT
                     {$filter5Y_for_union_query} -- 이 부분에 5년 필터링 조건 추가 ✨
                     GROUP BY rl.pnu
+                ");
+                $bindParams[] = $queryPnuLike;
+                $typesString .= 's';
+            }
+
+            // --- single Query ---
+            $filter5Y_for_union_query = " AND (rs.dealYear > {$startMonthDate5Y->format('Y')} OR (rs.dealYear = {$startMonthDate5Y->format('Y')} AND rs.dealMonth >= {$startMonthDate5Y->format('n')})) AND (rs.dealYear < {$targetYear} OR (rs.dealYear = {$targetYear} AND rs.dealMonth <= {$targetMonth}))";
+            if (isset($propertyTypeTableNames['single'])) {
+                $singleTableName = $propertyTypeTableNames['single'];
+                $unionQueries[] = trim("
+                    SELECT
+                        rs.idx AS id,
+                        rs.plottageAr as excluUseAr,  -- 대지면적을 excluUseAr로 매핑
+                        rs.dealYear, 
+                        rs.dealMonth, 
+                        rs.dealDay, 
+                        rs.dealAmount, 
+                        rs.pnu,
+                        rs.housetype AS jimok,          -- single의 경우 housetype을 jimok로 매핑(예: 단독주택, 다가구주택)
+                        NULL AS usage_type,
+                        'single' AS estate_type,
+                        ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
+                        -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
+                        -- ST_X(ST_Centroid(admg.WKT)) AS center_longitude  -- 경도 (X 좌표)
+                        NULL AS center_latitude,  -- <<< DB에서 계산하지 않고 NULL로 가져옴
+                        NULL AS center_longitude  -- <<< DB에서 계산하지 않고 NULL로 가져옴
+                    FROM `{$singleTableName}` AS rs
+                    INNER JOIN `{$adminTableName}` AS admg 
+                    ON admg.pnu_cd = rs.pnu -- ON admg.bjd_cd = SUBSTRING(rs.pnu, 1, 10)
+                    INNER JOIN
+                    (
+                        SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                        FROM `{$singleTableName}`
+                        GROUP BY pnu
+                    ) AS latest
+                        ON rs.pnu = latest.pnu
+                        AND CONCAT(rs.dealYear, LPAD(rs.dealMonth, 2, '0'), LPAD(rs.dealDay, 2, '0')) = latest.max_date
+                    WHERE rs.pnu LIKE ? AND rs.cdealDay IS NULL
+                    -- GROUP BY 절에 PNU와 admg.WKT가 모두 포함되어야 일관된 결과를 얻을 수 있습니다.
+                    -- GROUP BY rs.pnu, admg.WKT
+                    {$filter5Y_for_union_query} -- 이 부분에 5년 필터링 조건 추가 ✨
+                    GROUP BY rs.pnu 
+                ");
+                $bindParams[] = $queryPnuLike;
+                $typesString .= 's';
+            }
+
+            // --- commercial Query ---
+            $filter5Y_for_union_query = " AND (rc.dealYear > {$startMonthDate5Y->format('Y')} OR (rc.dealYear = {$startMonthDate5Y->format('Y')} AND rc.dealMonth >= {$startMonthDate5Y->format('n')})) AND (rc.dealYear < {$targetYear} OR (rc.dealYear = {$targetYear} AND rc.dealMonth <= {$targetMonth}))";
+            if (isset($propertyTypeTableNames['commercial'])) {
+                $commercialTableName = $propertyTypeTableNames['commercial'];
+                $unionQueries[] = trim("
+                    SELECT
+                        rc.idx AS id,
+                        rc.buildingAr as excluUseAr,  -- 건물면적(전용)을 excluUseAr로 매핑
+                        rc.dealYear, 
+                        rc.dealMonth, 
+                        rc.dealDay, 
+                        rc.dealAmount, 
+                        rc.pnu,
+                        rc.buildingType AS jimok,          -- commercial 경우 buildingType jimok로 매핑(예: 일반(상가/사무실), 집합(빌딩))
+                        rc.buildingUse AS usage_type,      -- 집합 건물주용도(예: 업무,근린 판매
+                        'commercial' AS estate_type,
+                        ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
+                        -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
+                        -- ST_X(ST_Centroid(admg.WKT)) AS center_longitude  -- 경도 (X 좌표)
+                        NULL AS center_latitude,  -- <<< DB에서 계산하지 않고 NULL로 가져옴
+                        NULL AS center_longitude  -- <<< DB에서 계산하지 않고 NULL로 가져옴
+                    FROM `{$commercialTableName}` AS rc
+                    INNER JOIN `{$adminTableName}` AS admg 
+                    ON admg.pnu_cd = rc.pnu -- ON admg.bjd_cd = SUBSTRING(rc.pnu, 1, 10)
+                    INNER JOIN
+                    (
+                        SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                        FROM `{$commercialTableName}`
+                        GROUP BY pnu
+                    ) AS latest
+                        ON rc.pnu = latest.pnu
+                        AND CONCAT(rc.dealYear, LPAD(rc.dealMonth, 2, '0'), LPAD(rc.dealDay, 2, '0')) = latest.max_date
+                    WHERE rc.pnu LIKE ? AND rc.cdealDay IS NULL AND rc.shareDealingType IS NULL
+                    -- GROUP BY 절에 PNU와 admg.WKT가 모두 포함되어야 일관된 결과를 얻을 수 있습니다.
+                    -- GROUP BY rc.pnu, admg.WKT
+                    {$filter5Y_for_union_query} -- 이 부분에 5년 필터링 조건 추가 ✨
+                    GROUP BY rc.pnu 
+                ");
+                $bindParams[] = $queryPnuLike;
+                $typesString .= 's';
+            }
+
+            // --- factory Query ---
+            $filter5Y_for_union_query = " AND (rf.dealYear > {$startMonthDate5Y->format('Y')} OR (rf.dealYear = {$startMonthDate5Y->format('Y')} AND rf.dealMonth >= {$startMonthDate5Y->format('n')})) AND (rf.dealYear < {$targetYear} OR (rf.dealYear = {$targetYear} AND rf.dealMonth <= {$targetMonth}))";
+            if (isset($propertyTypeTableNames['factory'])) {
+                $factoryTableName = $propertyTypeTableNames['factory'];
+                $unionQueries[] = trim("
+                    SELECT
+                        rf.idx AS id,
+                        rf.buildingAr as excluUseAr,  -- 건물면적(전용)을 excluUseAr로 매핑
+                        rf.dealYear, 
+                        rf.dealMonth, 
+                        rf.dealDay, 
+                        rf.dealAmount, 
+                        rf.pnu,
+                        rf.buildingType AS jimok,          -- factory 경우 buildingType을 jimok로 매핑(예: 일반, 집합)
+                        rf.buildingUse AS usage_type,      -- 집합 건물주용도(예: 공장,창고시설)
+                        'factory' AS estate_type,
+                        ST_AsText(admg.WKT) AS poligon, -- WKT 문자열로 가져오기
+                        -- ST_Y(ST_Centroid(admg.WKT)) AS center_latitude,  -- 위도 (Y 좌표)
+                        -- ST_X(ST_Centroid(admg.WKT)) AS center_longitude  -- 경도 (X 좌표)
+                        NULL AS center_latitude,  -- <<< DB에서 계산하지 않고 NULL로 가져옴
+                        NULL AS center_longitude  -- <<< DB에서 계산하지 않고 NULL로 가져옴
+                    FROM `{$factoryTableName}` AS rf
+                    INNER JOIN `{$adminTableName}` AS admg 
+                    ON admg.pnu_cd = rf.pnu -- ON admg.bjd_cd = SUBSTRING(rf.pnu, 1, 10)
+                    INNER JOIN
+                    (
+                        SELECT pnu, MAX(CONCAT(dealYear, LPAD(dealMonth, 2, '0'), LPAD(dealDay, 2, '0'))) AS max_date
+                        FROM `{$factoryTableName}`
+                        GROUP BY pnu
+                    ) AS latest
+                        ON rf.pnu = latest.pnu
+                        AND CONCAT(rf.dealYear, LPAD(rf.dealMonth, 2, '0'), LPAD(rf.dealDay, 2, '0')) = latest.max_date
+                    WHERE rf.pnu LIKE ? AND rf.cdealDay IS NULL AND rf.shareDealingType IS NULL
+                    -- GROUP BY 절에 PNU와 admg.WKT가 모두 포함되어야 일관된 결과를 얻을 수 있습니다.
+                    -- GROUP BY rf.pnu, admg.WKT
+                    {$filter5Y_for_union_query} -- 이 부분에 5년 필터링 조건 추가 ✨
+                    GROUP BY rf.pnu 
                 ");
                 $bindParams[] = $queryPnuLike;
                 $typesString .= 's';
@@ -592,7 +748,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
         $logMessage = "Sido {$sidoCd} 처리 중 치명적인 오류 발생: " . $e->getMessage();
         if ($historyId) {
             log_to_db($historyId, $logMessage, $conn, 'CRITICAL');
-            update_history_status($historyId, 'failed', $logMessage, $conn);
+            update_history_status($historyId, 'failed', $logMessage, $conn, true);
         } else {
             log_to_db($parentHistoryId, $logMessage . " (History ID 생성 전 발생 for Sido {$sidoCd})", $conn, 'CRITICAL');
         }
@@ -641,6 +797,29 @@ function extractCoordinates($polygonText) {
         $coords[] = [$polygonCoords];
     }
     return $coords;
+}
+
+// (기존 파일에서 deleteKeysByPattern 함수 복사)
+function deleteKeysByPattern(Redis $redis, string $pattern, int $count = 10000): int
+{
+    $deleted = 0;
+    $iterator = null;
+
+    do {
+        $keys = $redis->scan($iterator, $pattern, $count);
+        // false는 에러가 아니라 "이 배치에 매칭 키 없음"을 의미합니다. 따라서 false인 경우에도 continue로 넘어가서 다음 배치를 시도해야 합니다.
+        if ($keys === false) {
+            // Redis 연결 오류 등으로 SCAN이 실패하면 예외 처리
+            //throw new Exception("Redis SCAN failed for pattern {$pattern}");
+            continue;
+        }
+
+        if (!empty($keys)) {
+            $deleted += $redis->del($keys);
+        }
+    } while ($iterator !== 0);
+
+    return $deleted;
 }
 /*
 function extractCoordinates($polygonText) {

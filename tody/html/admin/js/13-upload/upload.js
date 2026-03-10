@@ -7,13 +7,22 @@ $(document).ready(async function () {
     // 전역/공유 변수 및 DOM 요소 캐싱
 
     // 날짜 선택 select 요소 캐싱
+    const startDate = document.getElementById('startDate');
     const startYearSelect = document.getElementById('startYear');
-    const endYearSelect = document.getElementById('endYear');
-    const baseYearSelect = document.getElementById('baseYear');
     const startMonthSelect = document.getElementById('startMonth');
+
+    const endDate = document.getElementById('endDate');
+    const endYearSelect = document.getElementById('endYear');
     const endMonthSelect = document.getElementById('endMonth');
+
+    const baseDate = document.getElementById('baseDate');
+    const baseYearSelect = document.getElementById('baseYear');
     const baseMonthSelect = document.getElementById('baseMonth');
+
+    const resetData = document.getElementById('resetData');
+    const resetSelect = document.getElementById('resetDataSet');
     
+        
     // 메인 페이지 본문의 시도 체크박스 그룹 (fieldset.sido-checkboxes-group)
     const sidoAllCheck_mainPage = document.getElementById('sidoAllCheck'); // "전체 시도 (ALL)"
     const sidoCheckboxes_mainPage = document.querySelectorAll('.sido-checkboxes-container .sido-checkbox'); // 개별 시도 체크박스들
@@ -86,6 +95,7 @@ $(document).ready(async function () {
         let descriptionContent = '';
         let buttonText = '시작 버튼';
         let showDateSelection = true; // 기본적으로 dateSelectionGroup을 보이게 설정
+        let showresetSelect = false;
         let showstartDateSelection = true; 
         let showendDateSelection = true; 
         let showbaseDateSelection = true; 
@@ -97,13 +107,38 @@ $(document).ready(async function () {
                 descriptionContent  = '<p>Redis의 토지특성정보를 초기화하고 DB에서 토지 특성 정보를 Redis 캐시에 저장합니다. <span style="color: red;">(시도 선택 필수)</span></p>';
                 buttonText = '토지 특성 정보를 Redis 캐시에 업로드 시작';
                 logHeading.textContent = '[토지 특성 정보 Redis 캐시 배치 스크립트 로그]';
-                showDateSelection = false;
+                showDateSelection = true;
+                showresetSelect = true;
+                showstartDateSelection = false;
+                showendDateSelection = false;
+                showbaseDateSelection = false;
+                break;
+            case 'buildingregister':
+                descriptionContent  = '<p>국토교통부 건축HUB 건축물대장정보를 수집하여 DB에 저장합니다. 대량의 데이터 처리로 시간이 소요될 수 있습니다. <span style="color: red;">(시도 선택 필수)</span></p>';
+                buttonText = '건축물대장 정보를 가져오기 시작';
+                logHeading.textContent = '[국토교통부에서 건축물대장 데이터를 가져오기 스크립트 로그]';
+                showDateSelection = true;
+                showresetSelect = true;
+                showstartDateSelection = false;
+                showendDateSelection = false;
+                showbaseDateSelection = false;
+                break;
+            case 'buildingrediscache':
+                descriptionContent  = '<p>Redis의 건축물대장정보를 초기화하고 DB에서 건축물대장정보를 Redis 캐시에 저장합니다. <span style="color: red;">(시도 선택 필수)</span></p>';
+                buttonText = '건축물대장 정보를 Redis 캐시에 업로드 시작';
+                logHeading.textContent = '[건축물대장 정보 Redis 캐시 배치 스크립트 로그]';
+                showDateSelection = true;
+                showresetSelect = true;
+                showstartDateSelection = false;
+                showendDateSelection = false;
+                showbaseDateSelection = false;
                 break;
             case 'realprice':
                 descriptionContent  = '<p>국토교통부 실거래가 데이터를 수집하여 DB에 저장합니다. 대량의 데이터 처리로 시간이 소요될 수 있습니다. <span style="color: red;">(시도, 시작, 종료 연월 선택 필수)</span></p>';
                 buttonText = '국토교통부에서 실거래가 데이터를 가져오기 시작';
                 logHeading.textContent = '[국토교통부에서 실거래가 데이터를 가져오기 스크립트 로그]';
                 showDateSelection = true;
+                showresetSelect = false;
                 showstartDateSelection = true;
                 showendDateSelection = true;
                 showbaseDateSelection = false;
@@ -113,15 +148,17 @@ $(document).ready(async function () {
                 buttonText = '실거래가(읍면동 단위)를 Redis 캐시에 업로드 시작'; // 메인 시작 버튼의 텍스트
                 logHeading.textContent = '[실거래가(읍면동 단위) Redis 캐시 배치 스크립트 로그]';
                 showDateSelection = true; 
+                showresetSelect = true;
                 showstartDateSelection = false;
                 showendDateSelection = false;
                 showbaseDateSelection = true;
                 break;
             case 'realpriceAverage':
-                descriptionContent  = '<p>시도/시군구/읍면동 단위로 실거래 평균가 데이터를 업데이트합니다.(전체,5년,1년,3개월,1개월:지준 월 대비)</p>';
+                descriptionContent  = '<p>시도/시군구/읍면동 단위로 실거래 평균가 데이터를 업데이트합니다.(5년,1년,3개월,1개월:기준월 대비)</p>';
                 buttonText = '실거래 평균가를 테이블에 업데이트 시작'; // 메인 시작 버튼의 텍스트
                 logHeading.textContent = '[실거래가 평균가 테이블 업데이트 스크립트 로그]';
-                showDateSelection = true; 
+                showDateSelection = true;
+                showresetSelect = false;
                 showstartDateSelection = false;
                 showendDateSelection = false;
                 showbaseDateSelection = true;
@@ -146,26 +183,49 @@ $(document).ready(async function () {
         if (dateSelectionGroup) {
              // dateSelectionGroup은 순수 DOM 객체이므로 style.display를 직접 조작합니다.
             dateSelectionGroup.style.display = showDateSelection ? '' : 'none';
-            if(showbaseDateSelection){
-                startYearSelect.parentElement.style.display = 'none';
-                startMonthSelect.parentElement.style.display = 'none';
-                endYearSelect.parentElement.style.display = 'none';
-                endMonthSelect.parentElement.style.display = 'none';
-                baseYearSelect.parentElement.style.display = '';
-                baseMonthSelect.parentElement.style.display = '';
-            }
-            else {
-                startYearSelect.parentElement.style.display = '';
-                startMonthSelect.parentElement.style.display = '';
-                endYearSelect.parentElement.style.display = '';
-                endMonthSelect.parentElement.style.display = '';
-                baseYearSelect.parentElement.style.display = 'none';
-                baseMonthSelect.parentElement.style.display = 'none';
-            }
-            
+            if(showDateSelection) {
+                resetData.style.display = showresetSelect ? '' : 'none';
+                //resetSelect.parentElement.style.display = showresetSelect ? '' : 'none';
+                // 실거래가 Redis 캐시에서는 시도전체를 선택했을때를 제외하고는 Reset 하기를  하지못하도록 한다. (즉, 시도 전체 선택 시에만 reset이 적용 가능하고, 개별 시도 선택 시에는  reset이 적용 되지 않도록)
+                
+                /*
+                if (showresetSelect)
+                {
+                    handelResetSelectState(dataType); // "전체 시도 (ALL)" 체크박스 상태 변경 시 reset 선택 상태 업데이트
+                }
+                */
 
+                startDate.style.display = showstartDateSelection ? '' : 'none';
+                //startYearSelect.parentElement.style.display = showstartDateSelection ? '' : 'none';
+                //startMonthSelect.parentElement.style.display = showstartDateSelection ? '' : 'none';
+
+                endDate.style.display = showendDateSelection ? '' : 'none';
+                //endYearSelect.parentElement.style.display = showendDateSelection ? '' : 'none';
+                //endMonthSelect.parentElement.style.display = showendDateSelection ? '' : 'none';
+
+                baseDate.style.display = showbaseDateSelection ? '' : 'none';
+                //baseYearSelect.parentElement.style.display = showbaseDateSelection ? '' : 'none';
+                //baseMonthSelect.parentElement.style.display = showbaseDateSelection ? '' : 'none';
+            }
         }
         
+        $('#sidoAllCheck').on('change', function() {
+            const isChecked = $(this).prop('checked');
+            // 모든 개별 체크박스들을 전체 체크박스 상태와 동기화
+            $('.sido-checkbox').prop('checked', isChecked);
+            //handelResetSelectState(activeTaskType); // "전체 시도 (ALL)" 체크박스 상태 변경 시 reset 선택 상태 업데이트
+        });
+        // 2. 개별 지역 체크박스 클릭 시 이벤트
+        $('.sido-checkbox').on('change', function() {
+            const total = $('.sido-checkbox').length;
+            const checked = $('.sido-checkbox:checked').length;
+
+            // 모든 개별 체크박스가 선택되면 "전체" 체크박스도 체크, 아니면 해제
+            $('#sidoAllCheck').prop('checked', total === checked);
+            
+            // 특정 함수 호출
+            //handelResetSelectState(activeTaskType); // "전체 시도 (ALL)" 체크박스 상태 변경 시 reset 선택 상태 업데이트
+        });
         
         // 특정 탭 선택 시 관련 UI 요소들의 표시 여부
         $('.discription-section').show();
@@ -195,6 +255,20 @@ $(document).ready(async function () {
         historyTitle.textContent = getHistoryTitle(dataType);
     }
 
+    function handelResetSelectState(dataType){
+        if(dataType === 'rediscache'){
+
+            if (sidoAllCheck_mainPage && sidoAllCheck_mainPage.checked) {
+                resetSelect.disabled = false; // "전체 시도 (ALL)" 선택 시 reset 선택 활성화
+                resetSelect.checked = true; // "전체 시도 (ALL)" 선택 해제 시 reset 선택 해제
+            } else {
+                resetSelect.checked = false; // "전체 시도 (ALL)" 선택 해제 시 reset 선택 해제
+                resetSelect.disabled = true; // "전체 시도 (ALL)" 선택 해제 시 reset 선택 비활성화
+            }
+        }else{
+            resetSelect.disabled = false; // 다른 탭에서는 reset 선택 항상 활성화
+        }
+    }
     // 초기 로딩 시 특정 task_type의 최신 배치 상태를 가져와 UI 업데이트
     async function loadInitialBatchStatus(taskType) {
         
@@ -335,6 +409,8 @@ $(document).ready(async function () {
             const baseYear = baseYearSelect.value;
             const baseMonth = baseMonthSelect.value;
 
+            const isChecked = resetSelect.checked;
+
             let selectedSidos = [];
             // "전체 시도" 체크박스 상태 확인
             if (sidoAllCheck_mainPage && sidoAllCheck_mainPage.checked) {
@@ -374,10 +450,29 @@ $(document).ready(async function () {
                     apiUrl = '/front/back/admin/start_characteristics_batch.php';
                     // 토지특성은 날짜 선택이 필요 없으므로 requestBody에 날짜 파라미터는 생략
                     Object.assign(requestBody, {
-                        task_type: currentDataType, 
+                        task_type: currentDataType,
+                        reset : isChecked, 
                         sido: sidoParam 
                     });
                     //추후 개발
+                    break;
+                case 'buildingregister':
+                    apiUrl = '/front/back/admin/start_buildingregister_batch.php';
+                    // 토지특성은 날짜 선택이 필요 없으므로 requestBody에 날짜 파라미터는 생략
+                    Object.assign(requestBody, {
+                        task_type: currentDataType,
+                        reset : isChecked, 
+                        sido: sidoParam 
+                    });
+                    break;
+                case 'buildingrediscache':
+                    apiUrl = '/front/back/admin/start_buildingredis_batch.php';
+                    // 건축물 대장 정보는 날짜 선택이 필요 없으므로 requestBody에 날짜 파라미터는 생략
+                    Object.assign(requestBody, {
+                        task_type: currentDataType,
+                        reset : isChecked, 
+                        sido: sidoParam 
+                    });
                     break;
                 case 'realprice':
                     apiUrl = '/front/back/admin/start_realPrice_batch.php';
@@ -394,6 +489,7 @@ $(document).ready(async function () {
                     apiUrl = '/front/back/admin/trigger_cache_batch.php';
                     Object.assign(requestBody, {
                         task_type: currentDataType,
+                        reset : isChecked, 
                         baseYear: baseYear,
                         baseMonth: baseMonth,
                         sido: sidoParam                        
@@ -490,7 +586,8 @@ $(document).ready(async function () {
                 if(currentDataType === 'realpriceAverage' || currentDataType === 'rediscache'){
                     apiUrl = '/front/back/admin/cancel_batch.php'; // 공통 취소 API 엔드포인트
                 }
-                else if(currentDataType === 'characteristic' || currentDataType === 'realprice'){
+                else if(currentDataType === 'characteristic' || currentDataType === 'realprice' 
+                       || currentDataType === 'buildingregister' || currentDataType === 'buildingrediscache'){
                     apiUrl = '/front/back/admin/cancel_batch_new.php'; // 공통 취소 API 엔드포인트
                 }
                 const response = await fetch(apiUrl, {
@@ -633,13 +730,17 @@ $(document).ready(async function () {
     function historyTablerefresh(dataType) {
         if (dataType === 'characteristic') {
             initHistoryViewCharacter(10, 0);
+        } else if (dataType === 'buildingregister') {
+            initHistoryViewBuildingRegister(10, 0);
+        } else if (dataType === 'buildingrediscache') {
+            initHistoryViewBuildingRedis(10, 0);
         } else if (dataType === 'realprice') {
             initHistoryViewRealPrice(10, 0);
         } else if (dataType === 'rediscache') {
             initHistoryViewRealcache(10, 0);
         } else if (dataType === 'realpriceAverage') {
             initHistoryViewRealAverage(10, 0);
-        }
+        }       
     }
 
     function getUploadStartBtnText(taskType) {
@@ -647,6 +748,12 @@ $(document).ready(async function () {
         switch (taskType) {
             case 'characteristic':
                 buttonText = '토지 특성 정보를 Redis 캐시에 업로드 시작';
+                break;
+            case 'buildingregister':
+                buttonText = '국토교통부에서 건축물대장 데이터를 가져오기 시작';
+                break;
+            case 'buildingrediscache':
+                buttonText = '건축물대장 정보를 Redis 캐시에 업로드 시작';
                 break;
             case 'realprice':
                 buttonText = '국토교통부에서 실거래가 데이터를 가져오기 시작';
@@ -667,6 +774,12 @@ $(document).ready(async function () {
             case 'characteristic':
                 title = '[토지 특성 정보 Redis 캐시 업로드 이력]';
                 break;
+            case 'buildingregister':
+                title = '[국토교통부 건축물대장 가져오기 이력]';
+                break;
+            case 'buildingrediscache':
+                title = '건축물대장 정보 Redis 캐시 업로드 이력';
+                break;
             case 'realprice':
                 title = '[국토교통부 실거래가 가져오기 이력]';
                 break;
@@ -675,6 +788,31 @@ $(document).ready(async function () {
                 break;
             case 'realpriceAverage':
                 title = '[실거래 평균가를 테이블에 업데이트 이력]';
+                break;
+        }
+        return title;
+    }
+
+    function getTesktypeName(taskType) {
+        let title = '';
+        switch (taskType) {
+            case 'characteristic':
+                title = '[토지 특성 캐시 업로드]';
+                break;
+            case 'buildingregister':
+                title = '[건축물대장 가져오기]';
+                break;
+            case 'buildingrediscache':
+                title = '[건축물대장 캐시 업로드]';
+                break;
+            case 'realprice':
+                title = '[실거래가 가져오기]';
+                break;
+            case 'rediscache':
+                title = '[실거래가 캐시 업로드]';
+                break;
+            case 'realpriceAverage':
+                title = '[실거래 평균가 업데이트]';
                 break;
         }
         return title;
@@ -755,7 +893,7 @@ $(document).ready(async function () {
                     tbodyHtml += `
                         <tr class="master-row">
                             <td>${masterItem.id}</td>
-                            <td>${masterItem.task_type}</td>
+                            <td>${getTesktypeName(masterItem.task_type)}</td>
                             <td>${masterItem.sido_param}</td>
                             <td>${masterItem.start_year_month|| '-'} </td>
                             <td>${masterItem.end_year_month || '-'}</td>
@@ -779,7 +917,7 @@ $(document).ready(async function () {
                         tbodyHtml += `
                             <tr class="child-row">
                                 <td class="child-id">${childItem.id}</td>
-                                <td>${childItem.task_type}</td>
+                                <td>${getTesktypeName(childItem.task_type)}</td>
                                 <td><span class="child-sido">${childItem.sido_param}</span></td>
                                 <td>${childItem.start_year_month || '-'}</td>
                                 <td>${childItem.end_year_month || '-'}</td>
@@ -810,19 +948,23 @@ $(document).ready(async function () {
                     </style>
                 `);
             } else {
-                //console.error(`[getAndRenderHistory] Failed to load ${taskType} history:`, result.message);
                 batchHistorySectionContent.html(`<p class="text-danger">이력 로드 실패: ${result.message}</p>`);
-                //console.error(`Failed to load ${taskType} history:`, result.message);
             }
         } catch (error) {
-            //console.error(`[getAndRenderHistory] Error fetching ${taskType} history:`, error);
             batchHistorySectionContent.html(`<p class="text-danger">이력 로드 중 오류 발생: ${error.message}</p>`);
-            //console.error(`Error fetching ${taskType} history:`, error);
         }
     }
 
     async function initHistoryViewCharacter(limit, offset) {
         await getAndRenderHistory('characteristic', limit, offset);
+    }
+
+    async function initHistoryViewBuildingRegister(limit, offset) {
+        await getAndRenderHistory('buildingregister', limit, offset);
+    }
+    
+    async function initHistoryViewBuildingRedis(limit, offset) {
+        await getAndRenderHistory('buildingrediscache', limit, offset);
     }
 
     async function initHistoryViewRealPrice(limit, offset) {
@@ -836,5 +978,4 @@ $(document).ready(async function () {
     async function initHistoryViewRealAverage(limit, offset) {
         await getAndRenderHistory('realpriceAverage', limit, offset); 
     }
-
-}); // $(document).ready 끝
+});

@@ -1,5 +1,5 @@
 <?php
-// api/start_characteristics_batch.php
+// api/start_buildingredis_batch.php
 //웹 화면에서 호출되어 CLI 워커를 백그라운드로 실행시킵니다.
 
 header('Content-Type: application/json');
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt === false) {
             throw new Exception("Failed to prepare history insert statement: " . $conn->error);
         }
-        $taskType = 'characteristic'; // 토지특성정보에 맞는 enum 값
+        $taskType = 'buildingrediscache'; // 건축물대장 정보에 맞는 enum 값
         $status = 'processing'; // 처음엔 'processing' 상태로 시작
         $logMessage = '작업 시작 대기 중...';
         $stmt->bind_param('sssss', $taskType, $sidoParam, $status, $logMessage, $triggeredByUserId);
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 2. CLI 워커 스크립트를 백그라운드에서 실행
         // `nohup`으로 프로세스를 분리하고, `&`로 백그라운드 실행. 표준 출력/에러는 nohup.out으로 리다이렉트
-        $command = 'nohup php ' . __DIR__ . '/trigger_characteristics_batch_cli.php ' .
+        $command = 'nohup php ' . __DIR__ . '/trigger_buildingrediscache_batch_cli.php ' .
                    'historyId=' . $historyId . ' sidoCds=' . escapeshellarg($sidoParam) . 
                    ' reset=' . escapeshellarg($resetType) . 
                    ' > /dev/null 2>&1 & echo $!'; // PID를 반환받기 위함 (선택사항)
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //update_history_status($historyId, 'processing', 'batch_cli 실행 중...', $conn, false); // 이미 insert 시 started_at 지정됨
 
         http_response_code(202); // Accepted
-        echo json_encode(['success' => true, 'message' => '토지특성정보 캐시 업로드 작업을 시작합니다.', 'master_history_id' => $historyId, 'pid' => trim($pid)]);
+        echo json_encode(['success' => true, 'message' => '건축물대장 정보 캐시 업로드 작업을 시작합니다.', 'master_history_id' => $historyId, 'pid' => trim($pid)]);
 
     } catch (Exception $e) {
         if ($conn->in_transaction) { // 트랜잭션 중이었다면 롤백

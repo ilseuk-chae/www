@@ -30,6 +30,7 @@ $sidoParamRaw = isset($input['sido']) ? trim($input['sido']) : null;
 $baseYear = isset($input['baseYear']) ? trim($input['baseYear']) : null;
 $baseMonth = isset($input['baseMonth']) ? trim($input['baseMonth']) : null;
 $userId = isset($input['user_id']) ? trim($input['user_id']) : null; // 프론트엔드에서 user_id를 넘겨준다면 사용
+$resetType = (!empty($input['reset']) && $input['reset'] === true) ? 'true' : 'false';
 
 if (empty($sidoParamRaw)) {
     $response['message'] = 'Sido 파라미터가 누락되었습니다.';
@@ -51,7 +52,6 @@ $allSupportedSidoCodesForTrigger = ['11','26','27','28','29','30','31','36','41'
 $sidoCodesToPass = []; // generate_emd_caches.php에 전달할 실제 시도 코드들
 if ($sidoParamRaw === 'ALL') {
     $sidoCodesToPass = $allSupportedSidoCodesForTrigger;
-    $resetType='all';
 } else {
     $inputSidoCodes = explode(',', $sidoParamRaw);
     foreach ($inputSidoCodes as $sidoCode) {
@@ -63,7 +63,6 @@ if ($sidoParamRaw === 'ALL') {
         }
     }
     $sidoCodesToPass = array_unique($sidoCodesToPass);
-    $resetType='part';
 }
 
 if (empty($sidoCodesToPass)) {

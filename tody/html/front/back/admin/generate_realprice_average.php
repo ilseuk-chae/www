@@ -24,12 +24,6 @@ if ($web_root === false) { // 경로 찾기 실패시 비상 로직
     exit(1); 
 }
 
-// === DB 연결 로드 (이제 $web_root를 사용합니다!) ===
-//require_once $web_root . '/front/back/00-include/dbconnect.php'; 
-//require_once $web_root . '/front/back/00-include/common.php';     
-//require_once $web_root . '/front/back/realPrice/poligon_center.php'; 
-
-//require_once $_SERVER['DOCUMENT_ROOT'] . "/vendor/autoload.php";
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 // --- 여기서부터 수정 ---
@@ -42,15 +36,6 @@ require_once $web_root . '/front/back/00-include/dbconnect.php';
 require_once $web_root . '/front/back/00-include/common.php';
 require_once $web_root . '/front/back/admin/batch_helpers.php';     
 require_once $web_root . '/front/back/realPrice/poligon_center.php';
-
-//$dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
-//$dotenv->load();
-
-//require_once $_SERVER['DOCUMENT_ROOT'] . `/front/back/00-include/dbconnect.php`; 
-//require_once $_SERVER['DOCUMENT_ROOT'] . `/front/back/00-include/common.php`;
-//require_once $_SERVER['DOCUMENT_ROOT'] . `/front/back/realPrice/poligon_center.php`;
-// Autoloader 및 Dotenv 로드
-
 
 // DB 연결 확인 (database.php에서 $conn 변수 생성 가정)
 if (!isset($conn) || ($conn instanceof mysqli && $conn->connect_error)) {
@@ -65,7 +50,10 @@ $estateTypes = [
     'apt'       => 'realPrice_apt',
     'multi'     => 'realPrice_multiFamily',
     'officetel' => 'realPrice_officetel',
-    'land'      => 'realPrice_land'
+    'land'      => 'realPrice_land',
+    'single'    => 'realPrice_single',
+    'commercial'=> 'realPrice_commercial',
+    'factory'   => 'realPrice_factory'
 ];
 
 // GeoJSON 파일 경로 기본 설정
@@ -156,7 +144,7 @@ try {
     $baseYear = (int)($options['base-year'] ?? 0);
     $baseMonth = (int)($options['base-month'] ?? 0);
 
-    $baseDate = sprintf("%04d년 %02d월", $baseYear, $baseMonth);
+    $baseDate = sprintf("%04d/%02d", $baseYear, $baseMonth);
 
     if ($masterHistoryId === 0 || $baseYear === 0 || $baseMonth === 0) {
         throw new Exception("Master history ID, base year, or base month is missing in worker script arguments.");
@@ -215,7 +203,7 @@ try {
         $sidoCount++;
         $sidoCode = $sidoRow['sido_code'];
         $sidoName = $sidoRow['sido_name'];
-        log_to_db($historyId, "  Processing SIDO: {$sidoName} ({$sidoCode}) - ({$sidoCount}/{$totalSidos})", $conn, "INFO");
+        log_to_db($historyId, "Processing SIDO: {$sidoName} ({$sidoCode}) - ({$sidoCount}/{$totalSidos})", $conn, "INFO");
 
         // 항상 GeoJSON에서 좌표 계산
         $geojsonFilePath = $web_root . '/front/assets/data/CTPRVN_CD_' . $sidoCode . '.geojson'; // <<-- 경로 수정!
@@ -307,6 +295,8 @@ try {
         foreach ($estateTypes as $type => $tablePrefix) {
             $tableName = "{$tablePrefix}_{$sidoCode}";
 
+            //log_to_db($historyId, "estateTypes:  {$type}", $conn, "INFO");
+
             $checkTableSql = "SHOW TABLES LIKE '{$tableName}'";
             $tableExistsResult = $conn->query($checkTableSql);
             if ($tableExistsResult->num_rows == 0) {
@@ -315,19 +305,41 @@ try {
             }
 
             $whereClause = "`pnu` LIKE '{$sidoCode}%' AND `cdealDay` IS NULL";
-            $areaColumn = ($type === 'land') ? 'dealArea' : 'excluUseAr';
+            $areaColumn = '';
+            switch ($type) {
+                case 'apt':
+                case 'officetel':
+                case 'multi':
+                    $areaColumn = 'excluUseAr';
+                    break;
+                case 'land':
+                    $areaColumn = 'dealArea';
+                    break;
+                case 'single':
+                    $areaColumn = 'totalFloorAr';
+                    break;
+                case 'commercial':
+                case 'factory':
+                    $areaColumn = 'buildingAr';
+                    break;
+                default:
+                    $areaColumn = 'excluUseAr'; // 기본값
+                    break;
+            }
+
+            //log_to_db($historyId, "areaColumn: {$areaColumn}", $conn, "INFO");
 
             $stats = calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseYear, $baseMonth, $whereClause);
             
             $stmt = $conn->prepare("
                 INSERT INTO realPrice_Average_sido 
-                (code, code_name, estate_type, all_average, all_count, 
+                (code, code_name, estate_type, base_year_month, all_average, all_count, 
                  last5Year_average, last5Year_count, last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
                  last1Month_average, last1Month_count, 
                  center_latitude, center_longitude, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
-                    code_name = VALUES(code_name), estate_type = VALUES(estate_type),
+                    code_name = VALUES(code_name), estate_type = VALUES(estate_type), base_year_month = VALUES(base_year_month),
                     all_average = VALUES(all_average), all_count = VALUES(all_count),
                     last5Year_average = VALUES(last5Year_average), last5Year_count = VALUES(last5Year_count),
                     last1Year_average = VALUES(last1Year_average), last1Year_count = VALUES(last1Year_count),
@@ -337,8 +349,8 @@ try {
                     description = VALUES(description);
             ");
             $descriptionValue = "시도별 통계 ({$type})[{$todayDateString}]";
-            $stmt->bind_param("sssdididisdiddds", 
-                $sidoCode, $sidoName, $type, 
+            $stmt->bind_param("ssssdididisdiddds", 
+                $sidoCode, $sidoName, $type, $baseDate,
                 $stats['all_average'], $stats['all_count'],
                 $stats['last5Year_average'], $stats['last5Year_count'],
                 $stats['last1Year_average'], $stats['last1Year_count'],
@@ -377,7 +389,7 @@ try {
         $sggCode = $sggRow['sgg_code'];
         $sggName = $sggRow['sgg_name'];
         $sidoCodeFromSgg = substr($sggCode, 0, 2);
-        log_to_db($historyId, "  Processing SGG: {$sggName} ({$sggCode}) - ({$sggCount}/{$totalSggs})", $conn, "INFO");
+        log_to_db($historyId, "Processing SGG: {$sggName} ({$sggCode}) - ({$sggCount}/{$totalSggs})", $conn, "INFO");
 
         // 항상 GeoJSON에서 좌표 계산
         $geojsonFilePath = $web_root . '/front/assets/data/SIG_CD_' . $sggCode . '.geojson'; // <<-- 경로 수정!
@@ -479,19 +491,40 @@ try {
             }
 
             $whereClause = "`pnu` LIKE '{$sggCode}%' AND `cdealDay` IS NULL";
-            $areaColumn = ($type === 'land') ? 'dealArea' : 'excluUseAr';
+            $areaColumn = '';
+            switch ($type) {
+                case 'apt':
+                case 'officetel':
+                case 'multi':
+                    $areaColumn = 'excluUseAr';
+                    break;
+                case 'land':
+                    $areaColumn = 'dealArea';
+                    break;
+                case 'single':
+                    $areaColumn = 'totalFloorAr';
+                    break;
+                case 'commercial':
+                case 'factory':
+                    $areaColumn = 'buildingAr';
+                    break;
+                default:
+                    $areaColumn = 'excluUseAr'; // 기본값
+                    break;
+            }
 
             $stats = calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseYear, $baseMonth, $whereClause);
             
             $stmt = $conn->prepare("
                 INSERT INTO realPrice_Average_sgg 
-                (code, code_name, estate_type, all_average, all_count, 
+                (code, code_name, estate_type, base_year_month, all_average, all_count, 
                  last5Year_average, last5Year_count, last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
                  last1Month_average, last1Month_count, 
                  center_latitude, center_longitude, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                
                 ON DUPLICATE KEY UPDATE
-                    code_name = VALUES(code_name), estate_type = VALUES(estate_type),
+                    code_name = VALUES(code_name), estate_type = VALUES(estate_type),base_year_month = VALUES(base_year_month),
                     all_average = VALUES(all_average), all_count = VALUES(all_count),
                     last5Year_average = VALUES(last5Year_average), last5Year_count = VALUES(last5Year_count),
                     last1Year_average = VALUES(last1Year_average), last1Year_count = VALUES(last1Year_count),
@@ -501,8 +534,8 @@ try {
                     description = VALUES(description);
             ");
             $descriptionValue = "시군구별 통계 ({$type})[{$todayDateString}]";
-            $stmt->bind_param("sssdididisdiddds", 
-                $sggCode, $sggName, $type, 
+            $stmt->bind_param("ssssdididisdiddds", 
+                $sggCode, $sggName, $type, $baseDate,
                 $stats['all_average'], $stats['all_count'],
                 $stats['last5Year_average'], $stats['last5Year_count'],
                 $stats['last1Year_average'], $stats['last1Year_count'],
@@ -544,7 +577,7 @@ try {
 
         $emdCode = substr($emdCode, 0, 8);  // EMD_CODE를 8자리로 자르기 (EMD_CD_xxxxxxxx00 ==> EMD_CD_xxxxxxxx)
 
-        log_to_db($historyId, "  Processing EMD: {$emdName} ({$emdCode}) - ({$emdCount}/{$totalEmds})", $conn, "INFO");
+        log_to_db($historyId, "Processing EMD: {$emdName} ({$emdCode}) - ({$emdCount}/{$totalEmds})", $conn, "INFO");
 
         // 항상 GeoJSON에서 좌표 계산
         $geojsonFilePath = $web_root . '/front/assets/data/EMD_CD_' . $emdCode . '.geojson'; // <<-- 경로 수정!
@@ -644,20 +677,41 @@ try {
 
             $pnuPrefix8 = substr($emdCode, 0, 8); 
             $whereClause = "`pnu` LIKE '{$pnuPrefix8}%' AND `cdealDay` IS NULL";
-            $areaColumn = ($type === 'land') ? 'dealArea' : 'excluUseAr';
+            $areaColumn = '';
+            switch ($type) {
+                case 'apt':
+                case 'officetel':
+                case 'multi':
+                    $areaColumn = 'excluUseAr';
+                    break;
+                case 'land':
+                    $areaColumn = 'dealArea';
+                    break;
+                case 'single':
+                    $areaColumn = 'totalFloorAr';
+                    break;
+                case 'commercial':
+                case 'factory':
+                    $areaColumn = 'buildingAr';
+                    break;
+                default:
+                    $areaColumn = 'excluUseAr'; // 기본값
+                    break;
+            }
 
             $stats = calculateEstateStats($conn, $historyId, $tableName, $areaColumn, $baseYear, $baseMonth, $whereClause);
             
             $stmt = $conn->prepare("
                 INSERT INTO realPrice_Average_emd 
-                (code, code_name, estate_type, all_average, all_count,
+                (code, code_name, estate_type, base_year_month, all_average, all_count,
                  last5Year_average, last5Year_count, 
                  last1Year_average, last1Year_count, last3Month_average, last3Month_count, 
                  last1Month_average, last1Month_count, 
                  center_latitude, center_longitude, description)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                
                 ON DUPLICATE KEY UPDATE
-                    code_name = VALUES(code_name), estate_type = VALUES(estate_type),
+                    code_name = VALUES(code_name), estate_type = VALUES(estate_type),base_year_month = VALUES(base_year_month),
                     all_average = VALUES(all_average), all_count = VALUES(all_count),
                     last5Year_average = VALUES(last5Year_average), last5Year_count = VALUES(last5Year_count),
                     last1Year_average = VALUES(last1Year_average), last1Year_count = VALUES(last1Year_count),
@@ -667,8 +721,8 @@ try {
                     description = VALUES(description);
             ");
             $descriptionValue = "읍면동별 통계 ({$type})[{$todayDateString}]";
-            $stmt->bind_param("sssdididisdiddds", 
-                $emdCode, $emdName, $type, 
+            $stmt->bind_param("ssssdididisdiddds", 
+                $emdCode, $emdName, $type, $baseDate,
                 $stats['all_average'], $stats['all_count'],
                 $stats['last5Year_average'], $stats['last5Year_count'],
                 $stats['last1Year_average'], $stats['last1Year_count'],
@@ -713,7 +767,7 @@ try {
     log_to_db($historyId, $masterFinalMessage, $conn, ($overallSuccess) ? 'INFO' : 'ERROR');
 
     // 2. update_history_status를 호출하여 최종 상태를 업데이트합니다.
-    update_history_status($historyId, $masterFinalStatus, $masterFinalMessage, $conn);
+    update_history_status($historyId, $masterFinalStatus, $masterFinalMessage, $conn,true);
         
     // !!! 중요한 부분: update_history_status의 변경 사항을 즉시 반영 !!!
     // mysqli_autocommit(false) 상태이므로, update_history_status는 자체 트랜잭션으로 처리되어야 함.
