@@ -85,7 +85,7 @@
             <!-- MOBILE - 상단/메뉴/하단영역 -->
             <div class="mobile"> </div>
             <script>
-                fetch('00-include/mobile.html')
+                fetch('../00-include/mobile.html')
                 .then(response => response.text())
                 .then(html => {
                     const container = document.querySelector('.mobile');
@@ -1760,7 +1760,7 @@
         <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
         <script src="/front/assets/js/mfb.js"></script>
 
-        <!-- 카카오맵 -->
+        <!-- 카카오맵 defer -->
         <script 
             type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"

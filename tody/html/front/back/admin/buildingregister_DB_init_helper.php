@@ -46,8 +46,9 @@ $failedSidos = []; // 실패한 시도 추적
 
 foreach ($sidoList as $sidoCd) {
     try {
-        log_to_db($historyId, "건축물대장 테이블 초기화 시도: {$sidoCd}", $conn, 'INFO');
+        log_to_db($historyId, "건축물대장 테이블 초기화  시작 시도: {$sidoCd}", $conn, 'INFO');
         truncateBuildingRegisterTables($conn, $sidoCd);
+        log_to_db($historyId, "건축물대장 테이블 초기화  완료 시도: {$sidoCd}", $conn, 'INFO');
         $totalProcessedCount += 1; // total/title 테이블 1개 (통합 1개로)
     } catch (Exception $e) {
         fwrite(STDERR, "FAILED: {$sidoCd} → {$e->getMessage()}" . PHP_EOL);

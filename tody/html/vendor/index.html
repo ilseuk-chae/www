@@ -72,7 +72,8 @@
             <!-- MOBILE - 상단-메뉴영역 -->
             <div class="mobile"></div>
             <script>
-                fetch('/tody/html/front/view/00-include/mobile.html')
+                //fetch('/tody/html/front/view/00-include/mobile.html')
+                fetch('../front/view/00-include/mobile.html')
                     .then(response => response.text())
                     .then(html => {
                         const container = document.querySelector('.mobile');

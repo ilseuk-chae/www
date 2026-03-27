@@ -738,13 +738,15 @@ function callApiAbort(url, method, data, eventKey) {
 
                 if (textStatus === "abort") {
                     console.log("Request was aborted");
-                } else {
+                    resolve(null); // ✅ abort 는 null 로 명시적 반환 후 종료
+                    return;        // ✅ 아래 resolve 실행 방지
+                } 
+                //else {
                     //console.error("API 호출 에러 발생", textStatus, errorThrown);
                     // reject(errorThrown);
-                }
+                //}
 
-                // const { message, statusCode } = responseJSON;
-
+                console.error("API 호출 에러 발생", textStatus, errorThrown);
                 resolve(jqXHR.responseJSON);
             },
             complete: function () {

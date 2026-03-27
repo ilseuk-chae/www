@@ -188,7 +188,7 @@ try {
     // 1. realPrice_Average_sido 테이블 업데이트
     // ----------------------------------------------------
     log_to_db($historyId, "Processing realPrice_Average_sido data...", $conn, "INFO");
-    $sidoSelectStmt = $conn->prepare("SELECT DISTINCT sido_code, sido_name FROM SIDO_EMD_CODE WHERE use_yn = '1' AND sido_code IS NOT NULL");
+    $sidoSelectStmt = $conn->prepare("SELECT DISTINCT sido_code, sido_name FROM SIDO_EMD_CODE WHERE use_yn = 'Y' AND sido_code IS NOT NULL");
     $sidoSelectStmt->execute();
     $sidoResult = $sidoSelectStmt->get_result();
     $totalSidos = $sidoResult->num_rows;
@@ -374,7 +374,7 @@ try {
     // 2. realPrice_Average_sgg 테이블 업데이트
     // ----------------------------------------------------
     log_to_db($historyId, "Processing realPrice_Average_ssg data...", $conn, "INFO");
-    $sggSelectStmt = $conn->prepare("SELECT DISTINCT sgg_code, sgg_name FROM SIDO_EMD_CODE WHERE use_yn = '1' AND sgg_code IS NOT NULL");
+    $sggSelectStmt = $conn->prepare("SELECT DISTINCT sgg_code, sgg_name FROM SIDO_EMD_CODE WHERE use_yn = 'Y' AND sgg_code IS NOT NULL");
     $sggSelectStmt->execute();
     $sggResult = $sggSelectStmt->get_result();
     $totalSggs = $sggResult->num_rows;
@@ -559,7 +559,7 @@ try {
     // 3. realPrice_Average_emd 테이블 업데이트
     // ----------------------------------------------------
     log_to_db($historyId, "Processing realPrice_Average_emd data...", $conn, "INFO");
-    $emdSelectStmt = $conn->prepare("SELECT DISTINCT emd_code, emd_name FROM SIDO_EMD_CODE WHERE use_yn = '1' AND emd_code IS NOT NULL");
+    $emdSelectStmt = $conn->prepare("SELECT DISTINCT emd_code, emd_name FROM SIDO_EMD_CODE WHERE use_yn = 'Y' AND emd_code IS NOT NULL");
     $emdSelectStmt->execute();
     $emdResult = $emdSelectStmt->get_result();
     $totalEmds = $emdResult->num_rows;

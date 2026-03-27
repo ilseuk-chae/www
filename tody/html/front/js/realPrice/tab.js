@@ -266,7 +266,17 @@ async function BuildingDetail(pnu) {
     const dataObj = {
         pnu: pnu,
     };
+
+    // ✅ 디버깅 로그 추가
+//    console.log("BuildingDetail 호출 pnu:", pnu);
+
     const responseData = await callApiAbort(`/front/back/realPrice/buiding_register_title_info.php`, "POST", dataObj, "BuildingDetail");
+
+    // ✅ 실제 응답값 확인
+//    console.log("responseData 원본:", responseData);
+//    console.log("responseData 타입:", typeof responseData);
+//    console.log("brTitleInfo:", responseData?.brTitleInfo);
+//    console.log("brRecapTitleInfo:", responseData?.brRecapTitleInfo);
 
     // ===>> 여기에서 responseData가 유효한지 먼저 확인합니다. <<===
     const buildingButton = $('.tab-btn[data-target="mc-building"]'); // 건물 탭
@@ -337,7 +347,7 @@ async function BuildingDetail(pnu) {
         globalBrTitleInfo = [items];
     } else { // items 자체가 빈 값 (undefined, null, 빈 문자열 등)일 경우
         globalBrTitleInfo = [];
-}
+    }
 
     // 건물 버튼 생성
     createBuildingButtons(globalBrTitleInfo);
@@ -348,41 +358,59 @@ async function BuildingDetail(pnu) {
  * @param {*} info
  * @returns
  */
+
 async function landDetail(pnu) {
     if (isMultiSelectMode) {
         $("html").attr("data-preloader", "enable");
     }
 
-    // pnu의 처음 15자리만 추출(시도, 시군구, 읍면동, 리, 필지구분, 본번까지)
-    // pnu = pnu.substring(0, 15);
+    const dataObj = { pnu: pnu };
+    const responseData = await callApiAbort(
+        `/front/back/realPrice/land_characteristics.php`,
+        "POST", dataObj, "landDetail"
+    );
 
-    const dataObj = {
-        pnu: pnu,
-    };
-    const responseData = await callApiAbort(`/front/back/realPrice/land_characteristics.php`, "POST", dataObj, "landDetail");
-
-    if (!responseData || responseData.length == 0) {
-        console.log("데이터가 없습니다.");
+    if (!responseData || responseData.length === 0) {
+        console.warn("데이터가 없습니다.");
         return;
     }
 
-    // landCharacteristicss가 배열인지 확인하고, 배열이 아니면 단일 객체로 처리
-    if (Array.isArray(responseData.landCharacteristicss)) {
-        globalLandCharacter = responseData.landCharacteristicss;
-    } else {
-        globalLandCharacter = [responseData.landCharacteristicss]; // 단일 객체를 배열로 변환하여 일관성 유지
+    // ✅ landCharacteristicss 유효성 검사 추가
+    const landCharacteristicss = responseData.landCharacteristicss;
+    // ✅ 기존 if (!landCharacteristicss) 블록을 아래로 교체
+    if (!landCharacteristicss || landCharacteristicss.length === 0) {
+        console.warn("토지특성 데이터 없음 - pnu:", pnu);
+        globalLandCharacter = [];  // ✅ 이 줄 추가
+        // 공시지가만 있으면 공시지가 테이블만 표시
+        globalLandPrices = responseData.indvdLandPrices;
+        if (globalLandPrices && globalLandPrices.length > 0) {
+            landPriceTable(pnu);
+        }
+        return;
     }
+
+    // ✅ 배열 여부에 따라 처리
+    globalLandCharacter = Array.isArray(landCharacteristicss)
+        ? landCharacteristicss
+        : [landCharacteristicss];
+
+    // ✅ undefined/null 요소 필터링
+    globalLandCharacter = globalLandCharacter.filter(item => item != null && item.pnu);
+
+    if (globalLandCharacter.length === 0) {
+        console.warn("유효한 landCharacter 데이터가 없습니다.");
+        return;
+    }
+
     globalLandPrices = responseData.indvdLandPrices;
 
-    // 부번 버튼 생성
-    createMnnmSlnoButtons(responseData.landCharacteristicss);
+    createMnnmSlnoButtons(globalLandCharacter);
 
     if (isMultiSelectMode) {
         landAnalysis();
         $("html").attr("data-preloader", "disable");
     }
 }
-
 /**
  * 건물 관련 버튼을 동적으로 생성하는 함수
  *
@@ -437,27 +465,40 @@ function createBuildingButtons(brTitleInfo) {
  *
  * @param {*} landCharacteristics
  */
+
 function createMnnmSlnoButtons(landCharacteristics) {
     const $btnGroup = $("#mnnmSlno_btn_group");
-    $btnGroup.empty(); // 기존 버튼 초기화
+    $btnGroup.empty();
 
-    // $("#mnnmSlno_length").text(landCharacteristics.length);
+    // ✅ globalLandCharacter 유효성 검사
+    if (!globalLandCharacter || globalLandCharacter.length === 0) {
+        console.warn('globalLandCharacter 가 비어있습니다.');
+        return;
+    }
+
     $.each(globalLandCharacter, function (index, land) {
+
+        // ✅ land 개별 요소 undefined 체크
+        if (!land || !land.pnu) {
+            console.warn(`[index: ${index}] land 또는 land.pnu 가 없습니다.`, land);
+            return true; // $.each 에서 continue 역할 → 다음 요소로 넘어감
+        }
+
         const pnu = land.pnu;
         const $button = $("<button>")
             .addClass("mnnmSlno-btn font14 p-2")
             .text(`${land.mnnmSlno || String(land.mnnm) + "-" + String(land.slno)}`)
             .on("click", function () {
-                $(".mnnmSlno-btn").removeClass("active"); // 모든 버튼에서 active 클래스 제거
-                $(this).addClass("active"); // 현재 클릭된 버튼에 active 클래스 추가
-                landCharacterTable(land); // 토지특성속성 테이블 생성
-                landPriceTable(pnu); // 개별공시지가 테이블 생성
+                $(".mnnmSlno-btn").removeClass("active");
+                $(this).addClass("active");
+                landCharacterTable(land);
+                landPriceTable(pnu);
             });
 
         if (index === 0) {
             $button.addClass("active");
-            landCharacterTable(land); // 첫 번째 부번의 데이터를 기본으로 토지특성속성 표시
-            landPriceTable(pnu); // 첫 번째 부분의 데이터를 기본으로 개별공시지가 테이블 생성
+            landCharacterTable(land);
+            landPriceTable(pnu);
         }
 
         $btnGroup.append($button);
@@ -626,11 +667,26 @@ function landPriceTable(pnu) {
                 // 마지막 item의 공시지가
                 if (index === 0) {
                     let officialPrice = 0;
-                    officialPrice = parseInt(item.pblntfPclnd) * parseInt(globalLandCharacter[0].lndpclAr); // 총 공시지가 = 공시지가 * 토지면적
-                    officialPrice = Math.floor(officialPrice / 10000); // 총 공시지가(만 단위 까지) = (공시지가 * 토지면적) / 10000
-                    officialPrice = formatPrice(officialPrice, "only-uk"); // 총 공시지가(억 단위 까지)
+                    // ✅ globalLandCharacter[0] 과 lndpclAr 존재 여부 확인
+                    const lndpclAr = globalLandCharacter?.[0]?.lndpclAr;
 
-                    $("#top_official_land_price").text("공시지가 " + officialPrice);
+                    //officialPrice = parseInt(item.pblntfPclnd) * parseInt(globalLandCharacter[0].lndpclAr); // 총 공시지가 = 공시지가 * 토지면적
+                    //officialPrice = Math.floor(officialPrice / 10000); // 총 공시지가(만 단위 까지) = (공시지가 * 토지면적) / 10000
+                    //officialPrice = formatPrice(officialPrice, "only-uk"); // 총 공시지가(억 단위 까지)
+
+                    //$("#top_official_land_price").text("공시지가 " + officialPrice);
+
+                    if (lndpclAr) {
+                        officialPrice = parseInt(item.pblntfPclnd) * parseInt(lndpclAr);
+                        officialPrice = Math.floor(officialPrice / 10000);
+                        officialPrice = formatPrice(officialPrice, "only-uk");
+                        $("#top_official_land_price").text("공시지가 " + officialPrice);
+                    } else {
+                        // 토지면적 없을 때 공시지가(단가)만 표시
+                        console.warn("lndpclAr 없음 - globalLandCharacter:", globalLandCharacter);
+                        officialPrice = formatAreaPrice(parseInt(item.pblntfPclnd));
+                        $("#top_official_land_price").text("공시지가 " + officialPrice + "/㎡");
+                    }
                 }
 
                 // 개별공시지가
@@ -762,6 +818,7 @@ function formatDate(dateString) {
  * 카테고리 검색을 요청하는 함수입니다
  * @returns
  */
+/*
 async function searchArroundPlaces(coords) {
     
     // 합필분석 모드에서는 중단
@@ -793,7 +850,57 @@ async function searchArroundPlaces(coords) {
     searchCategory(coords, "OL7");
     searchBusStop(coords);
 }
+*/
+// ✅ searchArroundPlaces 상단에 실행 중 플래그 추가
+let isSearchingPlaces = false;
+// ✅ map.js 에서 searchArroundPlaces 호출 부분에 debounce 적용
+const debouncedSearchArroundPlaces = debounce(searchArroundPlaces, 500);
+   
 
+async function searchArroundPlaces(coords) {
+
+    // 합필분석 모드에서는 중단
+    if (isMultiSelectMode) return;
+
+    // ✅ 이미 실행 중이면 이전 것 취소하고 새로 시작
+    if (isSearchingPlaces) {
+        //console.warn("searchArroundPlaces 중복 호출 - 이전 취소 후 재시작");
+        isSearchingPlaces = false;
+    }
+    
+    isSearchingPlaces = true; // 실행 시작
+    try {
+        // 지도에 표시되고 있는 마커를 제거합니다
+        removeMarker(placeMarkers);
+        // 커스텀 오버레이를 숨깁니다
+        placeOverlay.setMap(null);
+        // 반경 폴리곤 제거
+        if (placeRangePolygon) placeRangePolygon.setMap(null);
+
+        // ✅ 동시 호출 → 100ms 간격 순차 호출로 변경
+        const categoryCodes = [
+            "SW8", "SC4", "PS3", "AC5", "BK9", "PO3",
+            "PM9", "HP8", "MT1", "CS2", "FD6", "CE7",
+            "CT1", "AT4", "AD5", "PK6", "OL7"
+        ];
+
+        for (const code of categoryCodes) {
+            if (!isSearchingPlaces) break; // ✅ 취소 신호 감지 시 중단
+            await searchCategory(coords, code);
+            await delay(100); // 100ms 간격으로 순차 호출
+        }
+
+        // 버스 정류장은 카카오 카테고리 API 와 별도이므로 마지막에 호출
+        if (isSearchingPlaces) searchBusStop(coords);
+
+    } finally {
+        isSearchingPlaces = false; // ✅ 완료 후 반드시 해제
+    }
+}
+// ✅ delay 유틸 함수 (파일 상단에 추가)
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 /**
  * 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
  * @param {*} data
@@ -983,31 +1090,38 @@ function addPlaceMarker(position, icon) {
  * @param {*} code - 카테고리 그룹 코드 (예: HP8는 병원, FD6는 음식점 등)
  */
 async function searchCategory(coords, code) {
-    $.ajax({
-        url: "https://dapi.kakao.com/v2/local/search/category.json",
-        type: "GET",
-        data: {
-            category_group_code: code, // 카테고리 코드
-            x: coords.lng, // 중심 좌표의 경도 (longitude)
-            y: coords.lat, // 중심 좌표의 위도 (latitude)
-            radius: 1000, // 반경 m단위
-            size: 15, // 한 페이지에 보여질 결과 개수
-            page: 1, // 결과 페이지 번호
-            sort: "distance", // 결과 정렬 순서 (거리 기준)
-        },
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", `KakaoAK ${REST_API_KEY}`); // API 키 설정
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "https://dapi.kakao.com/v2/local/search/category.json",
+            type: "GET",
+            data: {
+                category_group_code: code, // 카테고리 코드
+                x: coords.lng, // 중심 좌표의 경도 (longitude)
+                y: coords.lat, // 중심 좌표의 위도 (latitude)
+                radius: 1000, // 반경 m단위
+                size: 15, // 한 페이지에 보여질 결과 개수
+                page: 1, // 결과 페이지 번호
+                sort: "distance", // 결과 정렬 순서 (거리 기준)
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `KakaoAK ${REST_API_KEY}`); // API 키 설정
 
-            $(`.place-${code} .count`).text(0); // place-contents 요소 비우기
-            $(`.place-${code} .place-contents`).empty(); // place-contents 요소 비우기
-        },
-        success: function (response) {
-            searchArroundPlacesTable(response, coords);
-        },
-        error: function (xhr, status, error) {
-            console.log("coords:",coords, " code: ", code);
-            console.error("API 요청 중 오류 발생:", status, error);
-        },
+                $(`.place-${code} .count`).text(0); // place-contents 요소 비우기
+                $(`.place-${code} .place-contents`).empty(); // place-contents 요소 비우기
+            },
+            success: function (response) {
+                searchArroundPlacesTable(response, coords);
+                resolve(response); // ✅ 완료 신호
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 429) {
+                    console.warn(`[${code}] API 호출 한도 초과 (429) - 잠시 후 재시도`);
+                } else {
+                    console.error(`[${code}] API 요청 오류:`, status, error);
+                }
+                resolve(null); // ✅ 에러여도 다음 진행
+            },
+        });
     });
 }
 

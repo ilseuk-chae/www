@@ -235,7 +235,7 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
         $currentSidoEmdCodes = [];
         log_to_db($historyId, "Sido '{$sidoCd}'에서 EMD 코드를 추출 중...", $conn);
 
-        $sqlEmd = "SELECT emd_code FROM SIDO_EMD_CODE WHERE use_yn = '1' AND sido_code = '{$sidoCd}' ORDER BY emd_code";
+        $sqlEmd = "SELECT emd_code FROM SIDO_EMD_CODE WHERE use_yn = 'Y' AND sido_code = '{$sidoCd}' ORDER BY emd_code";
         $resultEmd = $conn->query($sqlEmd);
         if ($resultEmd) {
             while ($rowEmd = $resultEmd->fetch_assoc()) {

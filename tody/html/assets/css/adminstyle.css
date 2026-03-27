@@ -81,6 +81,19 @@
     gap: 20px; /* 자식 요소들 사이에 20px 간격을 줍니다. */
 }
 
+.target-conents-section{
+    /*display: flex;             /* 플렉스 박스 활성화 */
+    justify-content: center;   /* 내부 요소를 수평 가운데 정렬 */
+    margin: 20px 0;            /* 위아래 마진으로 다른 섹션과 분리 (선택 사항) */
+    /*width: 80%;  */ 
+    height: 100%;   
+    border-radius: 5px;
+    background-color: rgb(253, 252, 251);
+    gap: 20px; /* 자식 요소들 사이에 20px 간격을 줍니다. */
+}
+
+
+
 /* Redis 캐시 생성/업데이트 버튼 */
 #uploadStartBtn {
     width: 330px;              /* 버튼 너비 200px 고정 */

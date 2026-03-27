@@ -237,6 +237,26 @@ function createPriceItem(estateType, sigunguData, isPyeongDisplay) { // isPyeong
 // }, { once: true }); // 타일 로드 후 한 번만 실행
 
 
+// 앱 초기화 시 한 번만 실행하여 문제 있는 feature 목록 출력
+function validateGeoJson(geojsonData) {
+    const issues = [];
+    geojsonData.features.forEach(f => {
+        const code = String(f.properties.BJCD || f.properties.SGC || '알수없음');
+        if (!f.geometry) {
+            issues.push({ code, reason: 'geometry 없음' });
+        } else if (!['Polygon', 'MultiPolygon'].includes(f.geometry.type)) {
+            issues.push({ code, reason: `예상치 못한 타입: ${f.geometry.type}` });
+        } else if (!f.geometry.coordinates?.length) {
+            issues.push({ code, reason: 'coordinates 비어있음' });
+        }
+    });
+
+    if (issues.length > 0) {
+        console.warn('⚠️ GeoJSON 유효성 문제 목록:', issues);
+    } else {
+        console.log('✅ GeoJSON 전체 유효');
+    }
+}
 /**
  * 최종 목표
  * 지도 화면 내 여러 시군구 코드를 자동으로 찾아 그 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
@@ -270,17 +290,30 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     })() : null; // map 객체나 getBounds가 없으면 null 할당
 
     const isValidPolygon = (geometry) => {
-        return (
-            geometry &&
-            (geometry.type === "Polygon" || geometry.type === "MultiPolygon") &&
-            Array.isArray(geometry.coordinates) &&
-            geometry.coordinates.length > 0 &&
-            Array.isArray(geometry.coordinates[0]) &&
-            geometry.coordinates[0].length >= 4 &&
-            geometry.coordinates[0][0].length === 2 // [lng, lat] 형식 확인
-        );
-    };
+        if (!geometry) return false;
+        if (!Array.isArray(geometry.coordinates) || geometry.coordinates.length === 0) return false;
 
+        // 단일 링 유효성 검사 (외곽 + 내부 링 모두 적용)
+        const isValidRing = (ring) =>
+            Array.isArray(ring) &&
+            ring.length >= 4 &&
+            Array.isArray(ring[0]) &&
+            ring[0].length === 2;
+
+        if (geometry.type === 'Polygon') {
+            // 외곽링 존재 + 모든 링(외곽 + hole) 검사
+            return geometry.coordinates.length > 0 && geometry.coordinates.every(isValidRing);
+        }
+
+        if (geometry.type === 'MultiPolygon') {
+            // 모든 폴리곤의 모든 링 검사 (빈 polygon 배열도 걸러냄)
+            return geometry.coordinates.every(
+                (polygon) => Array.isArray(polygon) && polygon.length > 0 && polygon.every(isValidRing)
+            );
+        }
+
+        return false;
+    };
     // 2. 클라이언트 필터 파라미터 수집 (API에는 직접 전달하지 않지만 시각화에 필요할 수 있음)
     const filterObj = collectMultiFilterParams();
     // API에 보낼 estateTypes는 filterObj.estateType 입니다.
@@ -309,7 +342,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     
     // 추후 sggCdsToFetch 길이로 읍면동/시군구/시도 단위 처리 분기 가능
     if(sggCdsToFetch[0].length === 10){
-        //console.log('[실거래가] (읍면동)그리기 시작 시간:', getFormattedDateTime()); // 디버깅용
         // 읍면동 단위 처리 로직 
         try {
             const response = await fetch("/front/back/realPrice/realPrice_apt_emd_cache.php", {
@@ -337,14 +369,12 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
             const zoomLevel = map.getLevel(); // 현재 줌 레벨
 
             // 6. 데이터 반복 및 지도 객체 생성 (기존 로직과 거의 동일)
-            console.log('[실거래가] 표시할 실거래가 개수:', responseData.length);
-            //console.log('[실거래가] 그리기 시작 시간:', getFormattedDateTime()); // 디버깅용
-
+            console.log('[실거래가:읍면동] 표시할 실거래가 개수:', responseData.length);
+            
             responseData.forEach((data) => {
                 
                 // 이제 'data' 객체 안에 'redis_cached_at' 필드가 포함되어 있습니다.
                 const cachedAt = data.redis_cached_at; // 이 변수에 Redis 캐시된 시간 정보가 담깁니다.
-                // console.log(`데이터 PNU: ${data.pnu}, Redis 캐시 시각: ${cachedAt}`); // 콘솔에서 확인 가능
                 let markerString = ""; // 줌 레벨 4 이하에서 사용
                 let estateString = "";
                 let borderString = "";
@@ -583,8 +613,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     realPriceOverlays.push(realPriceOverlay); // 오버레이 배열에 인포윈도우 스타일 마커 추가
                 }
             }); // responseData.forEach((data) => 끝
-            //console.log('[실거래가] (읍면동)그리기 완료 시간:', getFormattedDateTime()); // 디버깅용
-
+        
         } catch (error) {
             let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
             if (error.message) {
@@ -602,8 +631,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     } 
     // 시군구 단위 처리 추가
     else if(sggCdsToFetch[0].length === 5){
-        //console.log('[실거래가] (시군구) 그리기 시작 시간:', getFormattedDateTime());
-
         // 시군구 단위에서는 estateTypes를 고정 값으로 변경합니다.
         requestBody.estateTypes = "apt,multi,officetel,land,single,commercial,factory"; 
         
@@ -616,18 +643,19 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             if (!response.ok) {
                 const errorText = await response.text();
-                //console.error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
                 hideLoadingSpinner();
                 return;
             }
 
             const result = await response.json();
             if (!result.success) {
-                //console.error("API Error:", result.message);
                 alert("시군구 데이터를 가져오는 중 오류가 발생했습니다: " + result.message);
                 return;
             }
             const responseData = result.data; // 시군구별, 타입별 평균 데이터 배열
+
+            //console.log('[실거래가:시군구] 표시할 실거래가 개수:', responseData.length);
+
             if (!responseData || responseData.length === 0) {
                 hideLoadingSpinner();
                 return;
@@ -667,8 +695,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 return acc;
             }, {});
 
-            //console.log("groupedData : ", groupedData);
-
             // 그룹화된 데이터를 순회하며 지도에 표시
             Object.values(groupedData).forEach((sigunguData) => {  // sigunguData 변수 사용
                 // 개별 타입이 아니라 마커 전체의 단일 상태로 관리
@@ -683,83 +709,91 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 //    이 feature는 현재 화면에 보이는 GeoJSON 파일(예: SIG_CD_3pro.geojson)에서 와야 합니다.
                 //    'currentVisibleGeoJsonFeatures'는 이미 화면 경계와 교차하는 필터링된 feature 배열이라고 가정합니다.
                 // 해당 시군구의 GeoJSON feature 찾기 (Gist와 동일)
+                // 1. GeoJSON feature 찾기
                 const correspondingGeoJsonFeature = currentVisibleGeoJsonFeatures.find(
                     (feature) => {
                         const featureCode = String(feature.properties.BJCD || feature.properties.SGC).substring(0, sigunguData.code.length);
                         return featureCode === sigunguData.code;
                     }
                 );
-
-                // --- turf.intersect 호출 전에 유효성 검사 강화 ---
-                const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
-                const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
                
-                if (isFeatureGeometryValid && isMapBoundsValid) {
-                    try {
-                        
-                        // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
-                        const feature1_for_intersect = correspondingGeoJsonFeature; 
-                        // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
-                        const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
-                        // 두 Feature를 FeatureCollection으로 만듭니다.
-                        const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
-                        // turf.intersect에 FeatureCollection을 전달합니다.
-                        // 2. 해당 GeoJSON feature의 geometry와 현재 지도 화면의 경계(mapBoundsPolygon)가 교차하는 영역을 계산합니다.
-                        const intersection = turf.intersect(featuresToIntersect);
+                // ✅ correspondingGeoJsonFeature 존재 여부 먼저 체크
+                if (!correspondingGeoJsonFeature) {
+                    console.warn(`[${sigunguData.code}] GeoJSON feature 없음 → DB centroid 사용`);
+                    // markerPosition은 이미 DB centroid로 초기화되어 있으므로 그대로 사용
+                } else {
+                    // --- turf.intersect 호출 전에 유효성 검사 강화 ---
+                    const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
+                    const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
+                
+                    if (isFeatureGeometryValid && isMapBoundsValid) {
+                        try {
+                            
+                            // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
+                            const feature1_for_intersect = correspondingGeoJsonFeature; 
+                            // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
+                            const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
+                            // 두 Feature를 FeatureCollection으로 만듭니다.
+                            const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
+                            // turf.intersect에 FeatureCollection을 전달합니다.
+                            // 2. 해당 GeoJSON feature의 geometry와 현재 지도 화면의 경계(mapBoundsPolygon)가 교차하는 영역을 계산합니다.
+                            const intersection = turf.intersect(featuresToIntersect);
 
-                        if (intersection) { // 교차 영역이 유효하게 반환된 경우
-                            // 3. 교차 영역의 중심점을 계산합니다.
-                            const visibleCentroid = turf.centroid(intersection);
-                            markerPosition = new kakao.maps.LatLng(
-                            visibleCentroid.geometry.coordinates[1], // 위도
-                            visibleCentroid.geometry.coordinates[0] // 경도
-                            );
-                        } else {
-                            // 교차 영역은 없지만, 해당 feature의 원래 중심점을 사용
-                            //console.warn("No intersection found between feature and map bounds.");
-                            const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
-                            markerPosition = new kakao.maps.LatLng(
-                            featureCentroid.geometry.coordinates[1],
-                            featureCentroid.geometry.coordinates[0]
-                            );
-                            //console.warn(`[sigunguData.code: ${sigunguData.code}] No actual intersection between feature and map bounds, using feature's centroid.`);
+                            if (intersection) { // 교차 영역이 유효하게 반환된 경우
+                                // 3. 교차 영역의 중심점을 계산합니다.
+                                const visibleCentroid = turf.centroid(intersection);
+                                markerPosition = new kakao.maps.LatLng(
+                                visibleCentroid.geometry.coordinates[1], // 위도
+                                visibleCentroid.geometry.coordinates[0] // 경도
+                                );
+                            } else {
+                                // 교차 영역은 없지만, 해당 feature의 원래 중심점을 사용
+                                //console.warn("No intersection found between feature and map bounds.");
+                                const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                                markerPosition = new kakao.maps.LatLng(
+                                featureCentroid.geometry.coordinates[1],
+                                featureCentroid.geometry.coordinates[0]
+                                );
+                                //console.warn(`[sigunguData.code: ${sigunguData.code}] No actual intersection between feature and map bounds, using feature's centroid.`);
 
+                            }
+                        } catch (turfError) {
+                            // turf.intersect 내부에서 발생한 다른 예외 처리
+                            console.warn(`[turf.intersect Error] for code ${sigunguData.code}:`, turfError.message);
+                            //console.warn(`[geometry dump] type=${correspondingGeoJsonFeature?.geometry?.type}, rings=${JSON.stringify(correspondingGeoJsonFeature?.geometry?.coordinates?.map(r => r.length))}`);
+                            // 에러 발생 시 fallback: feature의 중심점 사용
+                            if (isFeatureGeometryValid) {
+                                const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                                markerPosition = new kakao.maps.LatLng(
+                                featureCentroid.geometry.coordinates[1],
+                                featureCentroid.geometry.coordinates[0]
+                                );
+                            } else {
+                                markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
+                            }
                         }
-                    } catch (turfError) {
-                        // turf.intersect 내부에서 발생한 다른 예외 처리
-                        console.error(`[turf.intersect Error] for sido code ${sigunguData.code}:`, turfError);
-                        // 에러 발생 시 fallback: feature의 중심점 사용
+                    } else {
+                        // 유효성 검사를 통과하지 못한 경우 (Feature Geometry가 없거나 Map Bounds Polygon이 유효하지 않음)
                         if (isFeatureGeometryValid) {
                             const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
                             markerPosition = new kakao.maps.LatLng(
                             featureCentroid.geometry.coordinates[1],
                             featureCentroid.geometry.coordinates[0]
                             );
+                            console.warn(`[sigunguData.code: ${sigunguData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
                         } else {
+                            // GeoJSON feature 자체도 문제가 있는 경우
                             markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
+                            console.warn(`[sigunguData.code: ${sigunguData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
                         }
                     }
-                } else {
-                    // 유효성 검사를 통과하지 못한 경우 (Feature Geometry가 없거나 Map Bounds Polygon이 유효하지 않음)
-                    if (isFeatureGeometryValid) {
-                        const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
-                        markerPosition = new kakao.maps.LatLng(
-                        featureCentroid.geometry.coordinates[1],
-                        featureCentroid.geometry.coordinates[0]
-                        );
-                        console.warn(`[sigunguData.code: ${sigunguData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
-                    } else {
-                        // GeoJSON feature 자체도 문제가 있는 경우
-                        markerPosition = new kakao.maps.LatLng(sigunguData.center_latitude, sigunguData.center_longitude);
-                        console.warn(`[sigunguData.code: ${sigunguData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
-                    }
+                    // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
                 }
-                // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
 
-                // 1. markerPosition의 유효성 검사 (추가)
-                if (!markerPosition instanceof kakao.maps.LatLng || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
-                    console.error(`[DEBUG ERROR] Invalid markerPosition for code ${sigunguData.code}:`, markerPosition);
-                    return; // 이 시군구에 대한 오버레이는 생성하지 않고 건너뜁니다.
+                // ✅ 올바른 코드 - 괄호로 묶기
+                if (!(markerPosition instanceof kakao.maps.LatLng) || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
+                    console.error(`[ERROR] Invalid markerPosition for code ${sigunguData.code}`);
+                    return;
                 }
                 
                 // 초기 단위 상태 및 텍스트 결정 (Gist 수정)
@@ -804,7 +838,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     //console.error(`[DEBUG ERROR] Failed to get DOM element for CustomOverlay of code ${sigunguData.code}. Overlay might not be properly rendered.`);
                     // 이 경우에도 계속 진행은 가능하지만, 이벤트 리스너는 붙지 않을 것입니다.
                 } else {
-                    //console.log(`[DEBUG]   DOM element retrieved successfully for code ${sigunguData.code}.`);
                 }
                 const nameLineDiv = customOverlayElement.querySelector('.name-line');
                 const detailPricesDiv = customOverlayElement.querySelector('.detail-prices');
@@ -868,8 +901,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             hideLoadingSpinner(); // 로딩 스피너 숨김
 
-            //console.log('[실거래가] (시군구) 그리기 완료 시간:', getFormattedDateTime());
-
         } catch (error) {
             
             let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
@@ -889,7 +920,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     } 
     // 시도 단위 처리 로직 (추후 구현)
     else if(sggCdsToFetch[0].length === 2){   
-        //console.log('[실거래가] (시도) 그리기 시작 시간:', getFormattedDateTime());
         
         // 시도 단위에서는 estateTypes를 고정 값으로 변경합니다.
         requestBody.estateTypes = "apt,multi,officetel,land,single,commercial,factory"; 
@@ -904,17 +934,19 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 
             if (!response.ok) {
             const errorText = await response.text();
-            //console.error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
             hideLoadingSpinner();
             return;
         }
             const result = await response.json();
             if (!result.success) {
-                //console.error("API Error:", result.message);
                 alert("시도 데이터를 가져오는 중 오류가 발생했습니다: " + result.message);
                 return;
             }
             const responseData = result.data; 
+
+            // 6. 데이터 반복 및 지도 객체 생성 (기존 로직과 거의 동일)
+            //console.log('[실거래가:시도] 표시할 실거래가 개수:', responseData.length);
+
             if (!responseData || responseData.length === 0) {
                 hideLoadingSpinner();
                 return;
@@ -945,7 +977,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 return acc;
             }, {});
 
-            //console.log("groupedData : ", groupedData);
             // 그룹화된 데이터를 순회하며 지도에 표시
             Object.values(groupedData).forEach((sidoData) => { // sidoData 변수 사용
                 // 개별 타입이 아니라 마커 전체의 단일 상태로 관리
@@ -966,73 +997,78 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     }
                 );
 
-                // --- turf.intersect 호출 전에 유효성 검사 강화 ---
-                const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
-                const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
+                // ✅ correspondingGeoJsonFeature 존재 여부 먼저 체크
+                if (!correspondingGeoJsonFeature) {
+                    console.warn(`[${sigunguData.code}] GeoJSON feature 없음 → DB centroid 사용`);
+                    // markerPosition은 이미 DB centroid로 초기화되어 있으므로 그대로 사용
+                } else {
 
-                //console.log("isFeatureGeometryValid, isMapBoundsValid  ", isFeatureGeometryValid, " ", isMapBoundsValid );
+                    // --- turf.intersect 호출 전에 유효성 검사 강화 ---
+                    const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
+                    const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
 
-                if (isFeatureGeometryValid && isMapBoundsValid) {
-                    try {
+                    if (isFeatureGeometryValid && isMapBoundsValid) {
+                        try {
 
-                        // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
-                        const feature1_for_intersect = correspondingGeoJsonFeature; 
-                        // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
-                        const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
-                        // 두 Feature를 FeatureCollection으로 만듭니다.
-                        const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
-                        // turf.intersect에 FeatureCollection을 전달합니다.
-                        // 2. 해당 GeoJSON feature의 geometry와 현재 지도 화면의 경계(mapBoundsPolygon)가 교차하는 영역을 계산합니다.
-                        const intersection = turf.intersect(featuresToIntersect);
+                            // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
+                            const feature1_for_intersect = correspondingGeoJsonFeature; 
+                            // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
+                            const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
+                            // 두 Feature를 FeatureCollection으로 만듭니다.
+                            const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
+                            // turf.intersect에 FeatureCollection을 전달합니다.
+                            // 2. 해당 GeoJSON feature의 geometry와 현재 지도 화면의 경계(mapBoundsPolygon)가 교차하는 영역을 계산합니다.
+                            const intersection = turf.intersect(featuresToIntersect);
 
-                        if (intersection) { // 교차 영역이 유효하게 반환된 경우
-                            // 3. 교차 영역의 중심점을 계산합니다.
-                            const visibleCentroid = turf.centroid(intersection);
-                            markerPosition = new kakao.maps.LatLng(
-                            visibleCentroid.geometry.coordinates[1], // 위도
-                            visibleCentroid.geometry.coordinates[0] // 경도
-                            );
-                        } else {
-                            // 교차 영역은 없지만, 해당 feature의 원래 중심점을 사용
-                            const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
-                            markerPosition = new kakao.maps.LatLng(
-                            featureCentroid.geometry.coordinates[1],
-                            featureCentroid.geometry.coordinates[0]
-                            );
-                            //console.warn(`[sidoData.code: ${sidoData.code}] No actual intersection between feature and map bounds, using feature's centroid.`);
+                            if (intersection) { // 교차 영역이 유효하게 반환된 경우
+                                // 3. 교차 영역의 중심점을 계산합니다.
+                                const visibleCentroid = turf.centroid(intersection);
+                                markerPosition = new kakao.maps.LatLng(
+                                visibleCentroid.geometry.coordinates[1], // 위도
+                                visibleCentroid.geometry.coordinates[0] // 경도
+                                );
+                            } else {
+                                // 교차 영역은 없지만, 해당 feature의 원래 중심점을 사용
+                                const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                                markerPosition = new kakao.maps.LatLng(
+                                featureCentroid.geometry.coordinates[1],
+                                featureCentroid.geometry.coordinates[0]
+                                );
+                                //console.warn(`[sidoData.code: ${sidoData.code}] No actual intersection between feature and map bounds, using feature's centroid.`);
+                            }
+                        } catch (turfError) {
+                            // turf.intersect 내부에서 발생한 다른 예외 처리
+                            //console.error(`[turf.intersect Error] for sido code ${sidoData.code}:`, turfError);
+                            // 에러 발생 시 fallback: feature의 중심점 사용
+                            if (isFeatureGeometryValid) {
+                                const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
+                                markerPosition = new kakao.maps.LatLng(
+                                featureCentroid.geometry.coordinates[1],
+                                featureCentroid.geometry.coordinates[0]
+                                );
+                            } else {
+                                markerPosition = new kakao.maps.LatLng(sidoData.center_latitude, sidoData.center_longitude);
+                            }
                         }
-                    } catch (turfError) {
-                        // turf.intersect 내부에서 발생한 다른 예외 처리
-                        //console.error(`[turf.intersect Error] for sido code ${sidoData.code}:`, turfError);
-                        // 에러 발생 시 fallback: feature의 중심점 사용
+                    } else {
+                        // 유효성 검사를 통과하지 못한 경우 (Feature Geometry가 없거나 Map Bounds Polygon이 유효하지 않음)
                         if (isFeatureGeometryValid) {
                             const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
                             markerPosition = new kakao.maps.LatLng(
                             featureCentroid.geometry.coordinates[1],
                             featureCentroid.geometry.coordinates[0]
                             );
+                            //console.warn(`[sidoData.code: ${sidoData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
                         } else {
+                            // GeoJSON feature 자체도 문제가 있는 경우
                             markerPosition = new kakao.maps.LatLng(sidoData.center_latitude, sidoData.center_longitude);
+                            console.warn(`[sidoData.code: ${sidoData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
                         }
                     }
-                } else {
-                    // 유효성 검사를 통과하지 못한 경우 (Feature Geometry가 없거나 Map Bounds Polygon이 유효하지 않음)
-                    if (isFeatureGeometryValid) {
-                        const featureCentroid = turf.centroid(correspondingGeoJsonFeature.geometry);
-                        markerPosition = new kakao.maps.LatLng(
-                        featureCentroid.geometry.coordinates[1],
-                        featureCentroid.geometry.coordinates[0]
-                        );
-                        //console.warn(`[sidoData.code: ${sidoData.code}] Invalid mapBoundsPolygon or geometry for intersection, using feature's centroid.`);
-                    } else {
-                        // GeoJSON feature 자체도 문제가 있는 경우
-                        markerPosition = new kakao.maps.LatLng(sidoData.center_latitude, sidoData.center_longitude);
-                        //console.warn(`[sidoData.code: ${sidoData.code}] No valid GeoJSON feature geometry found for intersection, using DB centroid.`);
-                    }
+                    // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
                 }
-                // --- 유효성 검사 및 마커 위치 결정 로직 끝 ---
                 // 1. markerPosition의 유효성 검사 (추가)
-                if (!markerPosition instanceof kakao.maps.LatLng || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
+                if (!(markerPosition instanceof kakao.maps.LatLng) || isNaN(markerPosition.getLat()) || isNaN(markerPosition.getLng())) {
                     //console.error(`[DEBUG ERROR] Invalid markerPosition for code ${sidoData.code}:`, markerPosition);
                     return; // 이 시도에 대한 오버레이는 생성하지 않고 건너뜁니다.
                 }
@@ -1079,7 +1115,7 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     //console.error(`[DEBUG ERROR] Failed to get DOM element for CustomOverlay of code ${sidoData.code}. Overlay might not be properly rendered.`);
                     // 이 경우에도 계속 진행은 가능하지만, 이벤트 리스너는 붙지 않을 것입니다.
                 } else {
-                    //console.log(`[DEBUG]   DOM element retrieved successfully for code ${sidoData.code}.`);
+                
                 }
                 const nameLineDiv = customOverlayElement.querySelector('.name-line');
                 const detailPricesDiv = customOverlayElement.querySelector('.detail-prices');
@@ -1142,8 +1178,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
             }); // groupedData.forEach((sidoData) => { ... }) 끝
 
             hideLoadingSpinner(); // 로딩 스피너 숨김
-            
-            //console.log('[실거래가] (시도) 그리기 완료 시간:', getFormattedDateTime());
 
         } catch (error) {
             let userFriendlyMessage = "데이터를 불러오는 중 알 수 없는 오류가 발생했습니다.";
@@ -1162,7 +1196,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
     }
     // 알 수 없는 sggCdsToFetch 길이
     else {
-        //console.warn("알 수 없는 sggCdsToFetch 길이:", sggCdsToFetch);
         hideLoadingSpinner(); // 로딩 스피너 숨김
     }
 
@@ -1170,7 +1203,6 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
 } // realPriceAptArrayWithCache 함수 끝
 
 function makeEstateTypeName(estateTypes, jimok, usage_type="") {
-    //console.log("makeEstateTypeName called with:", estateTypes, jimok, usage_type);
     let jimokString = "";
     let rtnstring = "";
     switch(estateTypes) {
@@ -1801,16 +1833,13 @@ async function realPriceApt(sggCd) {
                         if (realPriceOverlay) { // realPriceOverlay가 유효한지 확인
                             // 현재 CustomOverlay의 z-index 값을 가져옵니다.
                             const currentZIndex = parseInt(realPriceOverlay.getZIndex() || 0, 10); 
-                            //console.log("실거래가 상세 오버레이 읽은 z-index:" + currentZIndex);
-
+                            
                             // 매물 클러스터에서 사용하셨던 동일한 최상위 로직 적용
                             if (currentZIndex >= globalClusterZIndex) { 
                                 globalClusterZIndex = currentZIndex + 1; // 현재 ZIndex보다 1 크게 설정
                             } else {
                                 globalClusterZIndex++; // 전역 ZIndex를 1 증가
                             }
-                            //console.log("실거래가 상세 오버레이 설정 z-index:" + globalClusterZIndex);
-
                             // realPriceOverlay의 z-index를 새로운 값으로 설정하여 최상위에 보이게 합니다.
                             realPriceOverlay.setZIndex(globalClusterZIndex); 
                         }
@@ -2203,8 +2232,6 @@ function createClustererAll(type) {
  * 특정 estate_type과 sale_type에 대한 클러스터러 생성 함수
  */
 function createClusterer(estateType) {
-    //console.log(estateType);
-
     // const key = `${estateType}_${saleType}`;
     const key = `${estateType}`;
 
@@ -2314,14 +2341,12 @@ function initClusterEvent(clusterer) {
             const clusterMarker = cluster.getClusterMarker();
             if (clusterMarker) {
                 const currentZIndex = parseInt(clusterMarker.getZIndex() || 0, 10); // 현재 z-index 값 읽기
-                //console.log("읽은 z-index:" + currentZIndex);
                 if(currentZIndex >= globalClusterZIndex) {
                     globalClusterZIndex = currentZIndex + 1; // 전역 z-index 값을 현재 값보다 크게 설정
                 }
                 else {
                     globalClusterZIndex++; // 클릭할 때마다 전역 z-index 값 증가
                 }
-                //console.log("설정 z-index:" + globalClusterZIndex);
                 clusterMarker.setZIndex(globalClusterZIndex); // z-index 값을 1 증가
             }
             // --- 클러스터 z-index 조절 로직 끝 ---

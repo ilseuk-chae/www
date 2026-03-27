@@ -190,7 +190,7 @@ function getGeoJsonFileName(pnu, zoomLevel) {
     let fileNamePrefix;
     let pnuPart;
     
-    if(flag){
+    if(flag){  // 현재는 flag가 false로 사용하지 않고 있음
         // 줌 레벨에 따른 데이터 파일 명 결정 (onedol님 제안 기준)
         if (zoomLevel <= 5) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson)  //zoomLevel 변경 5->6
             fileNamePrefix = "BJCD_";
@@ -205,7 +205,7 @@ function getGeoJsonFileName(pnu, zoomLevel) {
             pnuPart = pnu.substring(0, 2) + '00000000';
             
         }
-    } else {
+    } else {  //현재는 flag가 true로 사용하고 있음
         if (zoomLevel <= 5) { // 줌 5이하: 읍면동 (BJCD_xxxxxxxx00.geojson) //zoomLevel 변경 5->6 
             fileNamePrefix = "EMD_CD_";
             //pnuPart = pnu.substring(0, 8) + '00';
@@ -471,7 +471,7 @@ function calculatePolygonCentroid(paths) {
 function clearLocalForageData() {
     localforage.clear().then(function() {
         // 모든 스토리지가 지워졌습니다.
-        //console.log('All data in localforage has been cleared.');
+        
     }).catch(function(err) {
         // 오류가 발생했을 때
         //console.error('Error clearing localforage:', err);

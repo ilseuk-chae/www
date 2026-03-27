@@ -703,6 +703,7 @@ html, body {
 }
 .mobile-footer > ul > li p img {
     width: 24px;
+    height: 24px;
 }
 .mobile-footer > ul > li div {
     padding-top: 8px;

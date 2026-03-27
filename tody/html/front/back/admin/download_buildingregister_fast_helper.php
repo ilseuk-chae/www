@@ -70,7 +70,7 @@ try {
                 region_cd
             FROM bjd_master
             WHERE depth = 3
-            AND ri_cd = '00'
+            AND (ri_cd = '00' OR ri_cd = '0')
             AND LEFT(region_cd, 2) = ?
             ORDER BY CAST(LEFT(region_cd, 5) AS UNSIGNED), 
                      CAST(RIGHT(region_cd, 5) AS UNSIGNED);

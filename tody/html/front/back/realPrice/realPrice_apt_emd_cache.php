@@ -94,7 +94,7 @@ if (!empty($sggCdsParam)) {
         }
         $sggCdsPlaceholders = implode(',', array_fill(0, count($sggCds), '?'));
 
-        $sql = "SELECT emd_code FROM SIDO_EMD_CODE WHERE {$columnToQuery} IN ({$sggCdsPlaceholders}) AND use_yn = '1'"; 
+        $sql = "SELECT emd_code FROM SIDO_EMD_CODE WHERE {$columnToQuery} IN ({$sggCdsPlaceholders}) AND use_yn = 'Y'"; 
 
         try {
             if ($stmt = $conn->prepare($sql)) {

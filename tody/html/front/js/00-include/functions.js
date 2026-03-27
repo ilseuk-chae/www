@@ -903,14 +903,13 @@ function callApiAbort(url, method, data, eventKey) {
 
                 if (textStatus === "abort") {
                     console.log("Request was aborted");
+                    resolve(null); // ✅ abort 는 null 로 명시적 반환 후 종료
+                    return;        // ✅ 아래 resolve 실행 방지
                 } else {
                     console.error("API 호출 에러 발생", textStatus, errorThrown);
                     // reject(errorThrown);
+                    resolve(jqXHR.responseJSON);
                 }
-
-                // const { message, statusCode } = responseJSON;
-
-                resolve(jqXHR.responseJSON);
             },
             complete: function () {
                 // 어떤 요청이 중간에 취소되거나 새로운 요청이 같은 eventKey로 발행되었을 경우, 이전 요청이 complete 상태가 되더라도 그 요청이 이미 삭제되었는지 확인

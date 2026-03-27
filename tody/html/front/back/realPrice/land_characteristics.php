@@ -11,11 +11,43 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable($_SERVER['DOCUMENT_ROOT']);
 $dotenv->load();
 
-function getLandCharacteristics($pnu, $year = "2024") {
+function getLandCharacteristics($pnu, $year = "2025") {
     $serviceKey = $_ENV['vworld_key'];
     $domain = $_ENV['domain'];
 
     $url = "http://api.vworld.kr/ned/data/getLandCharacteristics";
+
+    // ✅ year 지정 시 해당 연도만, 미지정 시 최근 4년 순차 조회
+    $yearsToTry = $year 
+        ? [$year] 
+        : [date('Y'), date('Y') - 1, date('Y') - 2, date('Y') - 3];
+    
+    foreach ($yearsToTry as $tryYear) {
+        $queryParams = "?" . http_build_query([
+            'key'        => $serviceKey,
+            'domain'     => $domain,
+            'pnu'        => $pnu,
+            'stdrYear'   => $tryYear,
+            'json'       => 'json',
+            'numOfRows'  => '20',
+            'pageNo'     => '1'
+        ]);
+
+        $result = makeApiRequest($url, $queryParams);
+
+        // ✅ 데이터 찾으면 바로 반환
+        if (isset($result['landCharacteristicss']['field'])) {
+            error_log("pnu: $pnu | stdrYear: $tryYear 데이터 찾음");
+            return $result;
+        }
+
+        error_log("pnu: $pnu | stdrYear: $tryYear 데이터 없음");
+    }
+
+    // 모든 연도 실패 시 빈 배열 반환
+    error_log("pnu: $pnu | 모든 연도 데이터 없음");
+    return [];
+    /*
     $queryParams = "?" . http_build_query([
         'key' => $serviceKey,
         'domain' => $domain,
@@ -27,6 +59,7 @@ function getLandCharacteristics($pnu, $year = "2024") {
     ]);
 
     return makeApiRequest($url, $queryParams);
+    */
 }
 
 function getLandCharacteristicsWFS($pnu) {
@@ -64,19 +97,20 @@ function getIndvdLandPrices($pnu) {
     return makeApiRequest($url, $queryParams);
 }
 
-
+/*
 function getLandData($pnu) {
     $response_array = [];
 
     // 토지특성속성조회
     $landCharacteristics = getLandCharacteristics($pnu);
     if (isset($landCharacteristics['landCharacteristicss']['field'])) {
-        $response_array['landCharacteristicss'] = $landCharacteristics['landCharacteristicss']['field'];
+        $response_array['landCharacteristicss'] = $landCharacteristics['landCharacteristicss']['field']; // ✅ 성공 시
     } else {
         $landCharacteristicsWFS = getLandCharacteristicsWFS($pnu);
         if (isset($landCharacteristicsWFS['features'][0]['properties'])) {
-            $response_array['landCharacteristicss'] = $landCharacteristicsWFS['features'][0]['properties'];
+            $response_array['landCharacteristicss'] = $landCharacteristicsWFS['features'][0]['properties']; // ✅ 성공 시
         }
+        // ❌ 둘 다 실패하면 landCharacteristicss 키 자체가 없음!
     }
 
     // 개별공시지가속성조회
@@ -84,6 +118,41 @@ function getLandData($pnu) {
     if (isset($indvdLandPrices['indvdLandPrices']['field'])) {
         $response_array['indvdLandPrices'] = $indvdLandPrices['indvdLandPrices']['field'];
     }
+
+    return $response_array;
+}
+    */
+function getLandData($pnu) {
+    $response_array = [];
+    $landCharacteristicssData = null; // ✅ 초기값 설정
+
+    // 1차: 토지특성속성조회 API
+    $landCharacteristics = getLandCharacteristics($pnu);
+    if (isset($landCharacteristics['landCharacteristicss']['field'])) {
+        $landCharacteristicssData = $landCharacteristics['landCharacteristicss']['field'];
+    }
+
+    // 2차: 1차 실패 시 WFS API 시도
+    if ($landCharacteristicssData === null) {
+        $landCharacteristicsWFS = getLandCharacteristicsWFS($pnu);
+        if (isset($landCharacteristicsWFS['features'][0]['properties'])) {
+            $landCharacteristicssData = $landCharacteristicsWFS['features'][0]['properties'];
+        }
+    }
+
+    // ✅ 성공/실패 여부와 관계없이 항상 키 포함 (실패 시 빈 배열)
+    $response_array['landCharacteristicss'] = $landCharacteristicssData ?? [];
+
+    // 개별공시지가속성조회
+    $indvdLandPrices = getIndvdLandPrices($pnu);
+    if (isset($indvdLandPrices['indvdLandPrices']['field'])) {
+        $response_array['indvdLandPrices'] = $indvdLandPrices['indvdLandPrices']['field'];
+    } else {
+        $response_array['indvdLandPrices'] = []; // ✅ 이것도 항상 포함
+    }
+
+    // ✅ 디버깅용 로그 (해결 후 제거)
+    //error_log("pnu: $pnu | landCharacteristicss: " . json_encode($landCharacteristicssData));
 
     return $response_array;
 }

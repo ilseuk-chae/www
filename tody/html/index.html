@@ -66,8 +66,12 @@
             <!-- MOBILE - 상단-메뉴영역 -->
             <div class="mobile"></div>
             <script>
-                fetch('/tody/html/front/view/00-include/mobile.html')
-                    .then(response => response.text())
+                //fetch('/tody/html/front/views/00-include/mobile.html')
+                fetch('/front/views/00-include/mobile.html')
+                .then(response => {
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
+                        return response.text();
+                    })
                     .then(html => {
                         const container = document.querySelector('.mobile');
                         container.innerHTML = html;
@@ -87,7 +91,7 @@
                         }
                         */
                     })
-                    .catch(console.error);
+                    .catch(err => console.error('fetch 실패:', err));
               </script>
             <!-- MOBILE - 상단-메뉴영역 끝 -->
 
