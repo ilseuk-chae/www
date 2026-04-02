@@ -104,7 +104,7 @@ $(document).ready(async function () {
         
         switch (dataType) {
             case 'characteristic':
-                descriptionContent  = '<p>Redis의 토지특성정보를 초기화하고 DB에서 토지 특성 정보를 Redis 캐시에 저장합니다. <span style="color: red;">(시도 선택 필수)</span></p>';
+                descriptionContent  = '<p>Redis의 토지특성정보를 초기화하고 DB에서 토지 특성 정보를 Redis 캐시에 저장합니다. <span style="color: red;">(시도 선택 필수), reset check 일때는 반드시 전체 시도</span></p>';
                 buttonText = '토지 특성 정보를 Redis 캐시에 업로드 시작';
                 logHeading.textContent = '[토지 특성 정보 Redis 캐시 배치 스크립트 로그]';
                 showDateSelection = true;

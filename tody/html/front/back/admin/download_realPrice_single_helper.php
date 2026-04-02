@@ -257,6 +257,7 @@ while ($start_date <= $end_date) {
                 } else {
                     $processed = 0;
                     $historyCount = 0;
+                    $count = 0;
                 }   
                 $insert_sql = "INSERT INTO realprice_down_his (type, bjdCd, date, count) VALUES ('single', ?, ?, ?)";
                 $insert_stmt = $conn->prepare($insert_sql);
@@ -388,7 +389,7 @@ function generatePnu($item)
     }
     
     // 1️⃣ 거래취소 제외
-    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === NULL) {
+    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === '') {  //cdealDay이 존재하고, 그 값이 null 또는 빈 문자열인 경우
         return null;
     }
     global $conn;
@@ -453,7 +454,9 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     $jibun = $item['jibun'];
     $umdNm = $item['umdNm'];
     $umdCd = getUmdCdByName($sggCd, $umdNm);
+    // ✅ 디버그 추가
     if (!$umdCd){
+        pnuScoreLog("[DEBUG] umdNm={$umdNm}, sggCd={$sggCd}, umdCd=" . ($umdCd ?? 'NULL'));
         //pnuScoreLog("[debug][umdCd 없음] sggCd={$sggCd} umdNm={$umdNm}");
         return null;
     }
@@ -483,8 +486,10 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     //pnuScoreLog("[debug] indexKey={$indexKey}");
 
     $candidatePnus = $redis->sMembers($indexKey);
-    
+
+    // ✅ 디버그 추가
     if (empty($candidatePnus)) {
+        pnuScoreLog("[DEBUG] indexKey={$indexKey}, candidates=" . count($candidatePnus));
         //pnuScoreLog("[debug][전체 후보 없음]");
         return null;
     }
@@ -520,10 +525,16 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     // 🔥 한번에 Redis 실행
     $results = $pipe->exec();
 
+    if ($results === false || !is_array($results)) {
+        error_log("[ERROR] Redis pipeline exec 실패 (단독/다가구 조회). sggCd={$sggCd}, dongNm={$dongNm}");
+        return null;
+    }
+
     foreach ($results as $data) {
 
         if (empty($data)) continue;
         //$data['pnu'] = $pnu;   // 🔥 추가
+       // $data['pnu'] = $candidatePnus[$idx]; // ✅ 인덱스로 매핑
         $bonbun = (int)($data['bonbun'] ?? 0);
 
         if ($bonbun < $min || $bonbun > $max) {
@@ -612,7 +623,7 @@ function parseMaskedJibun(string $jibun): ?array
 
     if (mb_substr($jibun, 0, 1) === '산') {
         $mCode = 2;
-        $jibun = mb_substr($jibun, 1);
+        $jibun = trim(mb_substr($jibun, 1)); // ✅ 공백 제거
     }
 
     // '*' → 0000~0009

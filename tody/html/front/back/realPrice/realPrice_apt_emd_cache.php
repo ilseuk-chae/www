@@ -30,7 +30,7 @@ try {
 // Input 스트림에서 JSON 데이터를 읽어옵니다.
 $input = file_get_contents('php://input');
 $requestData = json_decode($input, true); // JSON 데이터를 PHP 배열로 디코딩
-error_log("[DEBUG] Request Data: " . json_encode($requestData));
+//error_log("[DEBUG] Request Data: " . json_encode($requestData));
 
 // JSON 디코딩 실패 처리
 if (json_last_error() !== JSON_ERROR_NONE || !is_array($requestData)) {
@@ -51,9 +51,9 @@ $minLng = isset($requestData['minLng']) ? (float)$requestData['minLng'] : null;
 $maxLat = isset($requestData['maxLat']) ? (float)$requestData['maxLat'] : null;
 $maxLng = isset($requestData['maxLng']) ? (float)$requestData['maxLng'] : null;
 
-error_log("[DEBUG] Client BBOX: minLat={$minLat}, minLng={$minLng}, maxLat={$maxLat}, maxLng={$maxLng}");
-error_log("[DEBUG] Client estateTypes:  {$estateTypesParam}");
-error_log("[DEBUG] Target sggCds: " . json_encode($sggCdsParam));
+//error_log("[DEBUG] Client BBOX: minLat={$minLat}, minLng={$minLng}, maxLat={$maxLat}, maxLng={$maxLng}");
+//error_log("[DEBUG] Client estateTypes:  {$estateTypesParam}");
+//error_log("[DEBUG] Target sggCds: " . json_encode($sggCdsParam));
 
 // 필수 파라미터 유효성 검사 (예: Bbox 범위는 필수)
 if (is_null($minLat) || is_null($minLng) || is_null($maxLat) || is_null($maxLng)) {
@@ -126,7 +126,7 @@ if (empty($targetEmdCds)) { // ✨ $targetEmdCds를 확인합니다. ✨
     echo json_encode(['success' => true, 'data' => []]);
     exit();
 }
-error_log("[DEBUG] Extracted Target EMD Cds: " . json_encode($targetEmdCds)); // ✨ DB 조회 성공 시 로그 추가 ✨
+//error_log("[DEBUG] Extracted Target EMD Cds: " . json_encode($targetEmdCds)); // ✨ DB 조회 성공 시 로그 추가 ✨
 
 // ----- Redis에서 데이터 조회 및 필터링 -----
 $allEstateData = [];
@@ -155,10 +155,10 @@ if (!empty($cacheKeys)) {
 }
 
 // ✨ MGET 결과 로그는 MGET 호출 후에 배치합니다. ✨
-error_log("[DEBUG] After Redis MGET, cacheKeys count: " . count($cacheKeys) . ", Cached Data Array count: " . count($cachedDataArray));
+//error_log("[DEBUG] After Redis MGET, cacheKeys count: " . count($cacheKeys) . ", Cached Data Array count: " . count($cachedDataArray));
 if (!empty($cachedDataArray)) {
     // 첫 번째 데이터 엔트리의 첫 200자만 찍어봅니다.
-    error_log("[DEBUG] Sample Cached Data: " . substr($cachedDataArray[array_key_first($cachedDataArray)], 0, 200));
+    //error_log("[DEBUG] Sample Cached Data: " . substr($cachedDataArray[array_key_first($cachedDataArray)], 0, 200));
 }
 
 foreach ($cachedDataArray as $dataJson) {
@@ -201,7 +201,7 @@ foreach ($cachedDataArray as $dataJson) {
 }
 
 // 최종 응답
-error_log("[DEBUG] Final result count for allEstateData: " . count($allEstateData));
+//error_log("[DEBUG] Final result count for allEstateData: " . count($allEstateData));
 echo json_encode(['success' => true, 'data' => $allEstateData]);
 
 // DB 연결 닫기 (여기서는 DB를 열고 썼다면 닫는게 좋습니다)

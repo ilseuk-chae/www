@@ -63,6 +63,14 @@ $processedSidoCount = 0; // 성공적으로 처리된 시도 수 카운트
 $overallErrors = 0; // 전체 에러 카운트
 $getSidoCount =0;
 
+$bApt = true;
+$bMultiFamily = true;
+$bOfficetel = true;
+$bLand = true;
+$bSingle = true;
+$bCommercial = true;
+$bFactory = true;
+
 foreach ($sidoCds as $sidoCd) {
     $getSidoCount = 0; 
     // =============================================================
@@ -111,311 +119,316 @@ foreach ($sidoCds as $sidoCd) {
             log_to_db($sidoChildHistoryId, "[{$sidoCd}] 사용자 중단 요청 감지. 작업 중단.", $conn, 'WARN'); 
             break;
         }
-      
-        // 2. 실거래가(아파트) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_apartment_renewal_helper.php ' .
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
+   
+        if($bApt) {
+            // 2. 실거래가(아파트) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_apartment_renewal_helper.php ' .
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
 
-        //log_to_db($sidoChildHistoryId, "[DEBUG] 헬퍼 스크립트 호출 명령어: " . $fastCommand, $conn, 'DEBUG'); // [수정] $log_conn 제거
+            //log_to_db($sidoChildHistoryId, "[DEBUG] 헬퍼 스크립트 호출 명령어: " . $fastCommand, $conn, 'DEBUG'); // [수정] $log_conn 제거
 
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음 // <--- 여기서 아파트 스크립트가 완전히 끝날 때까지 대기합니다.
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
-        }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음 // <--- 여기서 아파트 스크립트가 완전히 끝날 때까지 대기합니다.
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
 
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
-        }
-
-        // 3. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
-        }
-
-        // 4. 실거래가(연립) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_multiFamily_helper.php ' . // 스크립트 경로 뒤 공백!
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
-
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
-        }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
-
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
-        }
-        // 5. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
-        }
-
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(아파트) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
         
-        // 6. 실거래가(오피스텔) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_officetel_helper.php ' . // 스크립트 경로 뒤 공백!
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음 // <--- 여기서 오피스텔 스크립트가 완전히 끝날 때까지 대기합니다.
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
+            // 3. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }
         }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
+        if($bMultiFamily) {
+            // 4. 실거래가(연립) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_multiFamily_helper.php ' . // 스크립트 경로 뒤 공백!
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
 
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
+
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(연립) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
+            // 5. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }
         }
+        if($bOfficetel) {
+            // 6. 실거래가(오피스텔) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_officetel_helper.php ' . // 스크립트 경로 뒤 공백!
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음 // <--- 여기서 오피스텔 스크립트가 완전히 끝날 때까지 대기합니다.
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
 
-        // 7. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(오피스텔) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
+
+            // 7. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }
         }
+        if($bLand) {
+            // 8. 실거래가(토지) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_land_redis_helper.php ' . // 스크립트 경로 뒤 공백!
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 토지 스크립트가 완전히 끝날 때까지 대기합니다.
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
 
-        // 8. 실거래가(토지) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_land_redis_helper.php ' . // 스크립트 경로 뒤 공백!
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 토지 스크립트가 완전히 끝날 때까지 대기합니다.
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
+            // 9. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }        
         }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
-
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
-        }
-
-        // 9. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
-        }        
-
         //20260119 추가
-        // 10. 실거래가(단독) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(단독) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_single_helper.php ' . // 스크립트 경로 뒤 공백!
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
+        if($bSingle) {
+            // 10. 실거래가(단독) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(단독) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_single_helper.php ' . // 스크립트 경로 뒤 공백!
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
 
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
 
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(토지) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
+
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(단독) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(단독) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
+
+            // 11. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }
         }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
+        if($bCommercial) {
+            // 12. 실거래가(상업/업무용) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_commercial_helper.php ' . // 스크립트 경로 뒤 공백!
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
 
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(단독) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(단독) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
+
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
+
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
+
+            // 13. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }
         }
+        if($bFactory) {
+            // 14. 실거래가(공장/창고) 가져오기 스크립트 실행
+            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 스크립트 실행.", $conn, 'INFO');
+            $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_factory_helper.php ' . // 스크립트 경로 뒤 공백!
+                '"historyId=' . $sidoChildHistoryId . '" ' .
+                '"sidoCd=' . $sidoCd . '" ' .
+                '"start=' . $startYearMonth . '" ' .
+                '"end=' . $endYearMonth . '" ' .
+                '2>&1';
 
-        // 11. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
+            $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
+            if (strpos($fastOutput, 'SUCCESS') === false) {
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                break;
+            }
+            // JSON 디코딩 시도
+            $outputData = json_decode($fastOutput, true);
+
+            if ($outputData === null || !isset($outputData['status'])) {
+                // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
+                $success = false;
+                // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
+                // continue; // 아니면 다음 작업으로 넘어갈지
+            } elseif ($outputData['status'] === 'SUCCESS') {
+                $processedCount = $outputData['totalProcessedCount'] ?? 0;
+                $message = $outputData['message'] ?? '완료.';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
+                // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
+                $getSidoCount += $processedCount;
+            } else { // status === 'FAILED'
+                $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
+                log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
+                $success = false;
+                // break; // 또는 다른 실패 처리
+            }
+
+            // 15. 중단 요청 확인
+            if (check_cancellation($parentHistoryId, $conn)) {
+                $success = false;
+                break;
+            }
         }
-
-        // 12. 실거래가(상업/업무용) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_commercial_helper.php ' . // 스크립트 경로 뒤 공백!
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
-
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
-
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
-        }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
-
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(상업/업무) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
-        }
-
-        // 13. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
-        }
-
-        // 14. 실거래가(공장/창고) 가져오기 스크립트 실행
-        log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 스크립트 실행.", $conn, 'INFO');
-        $fastCommand = 'php ' . $project_base . '/admin/download_realPrice_factory_helper.php ' . // 스크립트 경로 뒤 공백!
-               '"historyId=' . $sidoChildHistoryId . '" ' .
-               '"sidoCd=' . $sidoCd . '" ' .
-               '"start=' . $startYearMonth . '" ' .
-               '"end=' . $endYearMonth . '" ' .
-               '2>&1';
-
-        $fastOutput = shell_exec($fastCommand); // 헬퍼 스크립트의 표준 출력을 받음// <--- 여기서 연립 스크립트가 완전히 끝날 때까지 대기합니다.
-        if (strpos($fastOutput, 'SUCCESS') === false) {
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            break;
-        }
-        // JSON 디코딩 시도
-        $outputData = json_decode($fastOutput, true);
-
-        if ($outputData === null || !isset($outputData['status'])) {
-            // JSON 파싱 실패 또는 status 키 없음 (예상치 못한 출력)
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 헬퍼 스크립트 응답 파싱 실패: " . $fastOutput, $conn, 'ERROR');
-            $success = false;
-            // exit(1); // 이 상황에서 부모 스크립트도 종료할지 결정
-            // continue; // 아니면 다음 작업으로 넘어갈지
-        } elseif ($outputData['status'] === 'SUCCESS') {
-            $processedCount = $outputData['totalProcessedCount'] ?? 0;
-            $message = $outputData['message'] ?? '완료.';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 완료. {$message} 처리 건수: {$processedCount}", $conn, 'INFO');
-            // $totalProcessedCount를 필요하다면 부모 스크립트에서도 누적 가능
-            $getSidoCount += $processedCount;
-        } else { // status === 'FAILED'
-            $errorMessage = $outputData['message'] ?? '알 수 없는 실패';
-            log_to_db($sidoChildHistoryId, "[{$sidoCd}] 국토교통부 실거래가(공장/창고) 가져오기 실패: {$errorMessage} " . ($outputData['error'] ?? ''), $conn, 'ERROR');
-            $success = false;
-            // break; // 또는 다른 실패 처리
-        }
-
-        // 15. 중단 요청 확인
-        if (check_cancellation($parentHistoryId, $conn)) {
-            $success = false;
-            break;
-        }
-
         $sidoFinalStatus = 'success';
 
     } catch (Exception $e) {

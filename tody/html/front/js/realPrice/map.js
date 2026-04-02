@@ -588,41 +588,52 @@ async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
     const currentVisibleGeoJsonFeatures = []; // 이 배열에 현재 화면에 보이는 GeoJSON feature들을 담을 겁니다.
     // GeoJSON 데이터가 제대로 로드되었는지 확인 후 forEach 실행
     if (geojsonToProcess.features && Array.isArray(geojsonToProcess.features)) {
+
+        // ✅ 추가
+        //console.log(`[DEBUG] 총 features 수: ${geojsonToProcess.features.length}`);
+        let passedBJCD = 0, passedGeometry = 0, passedIntersects = 0;
+
         geojsonToProcess.features.forEach(feature => {  //
             // GeoJSON 파일에 포함된 각 행정구역(GeoJSON feature)을 순회 개별적으로 처리
             if (feature.properties && feature.properties.BJCD) {
+                passedBJCD++;
                 // 1. 현재 지도 화면 경계 내에 GeoJSON 폴리곤이 있는지 확인
                 //각 feature 객체에 행정 코드가 담긴 properties 속성이 있고, 그 properties 안에 실제 코드(여기서는 BJCD)가 존재하는지 확인
                 if (mapBoundsPolygon && mapBoundsPolygon.geometry && feature.geometry) { // null 체크 
-                    
-                    if (turf.booleanIntersects(mapBoundsPolygon.geometry, feature.geometry)) { // 특정 지리적 객체가 현재 지도 화면에 보이는지 판단
-                                            //지금 사용자가 보고 있는 지도 영역과 GeoJSON feature의 지오메트리가 공간적으로 교차하는지 확인
-                        //지도 화면에 보이는 영역(mapBoundsPolygon) 안에 현재 feature의 지오메트리(feature.geometry)가 일부라도 걸쳐 있는지 공간적으로 교차하는지 확인
-                        const pnuCodeFull = String(feature.properties.BJCD); // GeoJSON에서 가져온 코드 (문자열로 변환)
-                        let sggCd = "";
-        
-                        // 2. 현재 줌 레벨(currentLevel)에 따라 필요한 행정 코드 길이 결정
-                        // GeoJSON의 'BJCD' 속성이 이 로직에 맞게 10자리 PNU 코드를 포함하고 있어야 합니다.
-                        if (currentLevel <= 3) {
-                            sggCd = pnuCodeFull.substring(0, 10);
-                        } else if (currentLevel >= 4 && currentLevel <= 5) {  //10자리: 읍면동
-                            sggCd = pnuCodeFull.substring(0, 10);
-                        //} else if (currentLevel === 7) {
-                        //    sggCd = pnuCodeFull.substring(0, 8);
-                        } else if (currentLevel >= 6 && currentLevel <= 8) {  //5자리: 시군구 (SGG)
-                            sggCd = pnuCodeFull.substring(0, 5);
-                        } else if (currentLevel >= 9) {
-                            sggCd = pnuCodeFull.substring(0, 2);               //2자리: 시도 (SIDO)
+                    passedGeometry++;
+                    try {
+                        if (turf.booleanIntersects(mapBoundsPolygon.geometry, feature.geometry)) { // 특정 지리적 객체가 현재 지도 화면에 보이는지 판단
+                            passedIntersects++;
+                            //지금 사용자가 보고 있는 지도 영역과 GeoJSON feature의 지오메트리가 공간적으로 교차하는지 확인
+                            //지도 화면에 보이는 영역(mapBoundsPolygon) 안에 현재 feature의 지오메트리(feature.geometry)가 일부라도 걸쳐 있는지 공간적으로 교차하는지 확인
+                            const pnuCodeFull = String(feature.properties.BJCD); // GeoJSON에서 가져온 코드 (문자열로 변환)
+                            let sggCd = "";
+            
+                            // 2. 현재 줌 레벨(currentLevel)에 따라 필요한 행정 코드 길이 결정
+                            // GeoJSON의 'BJCD' 속성이 이 로직에 맞게 10자리 PNU 코드를 포함하고 있어야 합니다.
+                            if (currentLevel <= 3) {
+                                sggCd = pnuCodeFull.substring(0, 10);
+                            } else if (currentLevel >= 4 && currentLevel <= 5) {  //10자리: 읍면동
+                                sggCd = pnuCodeFull.substring(0, 10);
+                            //} else if (currentLevel === 7) {
+                            //    sggCd = pnuCodeFull.substring(0, 8);
+                            } else if (currentLevel >= 6 && currentLevel <= 8) {  //5자리: 시군구 (SGG)
+                                sggCd = pnuCodeFull.substring(0, 5);
+                            } else if (currentLevel >= 9) {
+                                sggCd = pnuCodeFull.substring(0, 2);               //2자리: 시도 (SIDO)
+                            }
+                            // 3. 중복을 제거하며 추출된 코드 저장(중복된 값을 허용하지 않는 자료구조)
+                        //console.log(`추출된 sggCd: ${sggCd} from BJCD: ${pnuCodeFull} at level ${currentLevel}`);
+                            uniqueSggCds.add(sggCd);
+                            
+                            // 현재 지도 화면 경계와 교차하는 feature를 저장합니다.
+                            currentVisibleGeoJsonFeatures.push(feature); 
                         }
-                        // 3. 중복을 제거하며 추출된 코드 저장(중복된 값을 허용하지 않는 자료구조)
-                    
-                        uniqueSggCds.add(sggCd);
-                        
-                        // 현재 지도 화면 경계와 교차하는 feature를 저장합니다.
-                        currentVisibleGeoJsonFeatures.push(feature); 
-                    }
+                    } catch(e) {
+                        console.error('[DEBUG] booleanIntersects 에러:', e, feature.properties.BJCD);
+                    }    
                 } else {
-                    //console.warn("mapBoundsPolygon.geometry 또는 feature.geometry가 유효하지 않습니다.");
+                    console.warn('[DEBUG] geometry 없음:', feature.properties.BJCD);
                 } 
                 
             } else {
@@ -630,6 +641,8 @@ async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
                 //console.warn(`[${getFormattedDateTime()}] Feature missing 'properties' or 'BJCD' for GeoJSON type ${geojsonTypeToLoad}:`, feature);
             }
         });
+        // ✅ 추가
+        //console.log(`[DEBUG] BJCD통과: ${passedBJCD}, geometry통과: ${passedGeometry}, intersects통과: ${passedIntersects}`);
     } else {
         // 에러: 로드된 GeoJSON 데이터가 유효한 'features' 배열을 포함하지 않을 때
         //console.error(`[${getFormattedDateTime()}] Loaded GeoJSON data does not contain a valid 'features' array.`, geojsonToProcess);
@@ -638,7 +651,9 @@ async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
 
     const sggCdsToFetch = Array.from(uniqueSggCds);
                         
-    //console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개`);
+    console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개`);
+    //console.log(`모드3 지도에서 샘플 포인트 개수(level:${currentLevel}):(${sggCdsToFetch.length})개 (sggCds): ${sggCdsToFetch}`);
+
     const startTime = Date.now();
     const bboxParameterString = bboxArrayForApi.join(','); // 예: "126.9,37.5,127.1,37.6"
     
@@ -651,7 +666,7 @@ async function fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint() {
             
         } catch (error) {
             //console.error(`[${getFormattedDateTime()}] 데이터 로드 중 에러 발생:`, error);
-            alert("부동산 데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
+            console.error("부동산 데이터를 불러오는 중 오류가 발생했습니다: " + error.message);
         } finally {
             hideLoadingSpinner();
         }
@@ -1720,10 +1735,15 @@ async function handleMapClick(coords) {
         let returnLandPolygons = [];
 
         // 폴리곤 정보 가져오기
-//        console.log("realprice>map>handleMapClick(coords)", coords);
+    //    console.log("realprice>map>handleMapClick(coords)", coords);
         const polygons = await getLandBuildingPolygon(coords);
         const { buildingPolygon, buildingPolygon2, landPolygon } = polygons;
 
+        if (!landPolygon || !landPolygon.response || landPolygon.response.status !== 'OK') {
+            console.warn("지적도 정보를 가져올 수 없는 위치입니다.");
+            return;
+        }
+        
         // 건물 정보와 토지 정보를 동시에 가져옴
         await Promise.all([
             getBuilindInfo({ buildingPolygon, buildingPolygon2 }), // 건물 정보 가져오기
@@ -1928,8 +1948,8 @@ async function initializeMap() {
             fetchRealPriceAptArrayBasedOnMapCenter();
         }
         else if(REALPRICE_POLYGON_MODE == 3){
-            //fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint();
-            debouncedFetchRealPrice(); // ✅ 300ms 내 마지막 호출만 실행
+            fetchRealPriceAptArrayBasedOnMapCenterWidthCash_AutoPoint();
+            //debouncedFetchRealPrice(); // ✅ 300ms 내 마지막 호출만 실행
         } else {
         
         }
@@ -2590,6 +2610,10 @@ async function getBuilindInfo(buildingInfos) {
 
     // buildingPolygon과 buildingPolygon2의 features 처리 함수
     function processPolygon(polygonData) {
+        if (!polygonData) {
+            console.warn("Polygon data is undefined or null(map.js):", polygonData);
+            return;
+        }
         const features = polygonData.features;
 
         // features가 비어있지 않으면 처리

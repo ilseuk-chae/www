@@ -340,6 +340,11 @@ function searchClosestPnuByPrefix($redis, $prefix, $sggCd, $mountainCode, $start
         }
         $results = $redis->exec();
 
+        if ($results === false || !is_array($results)) {
+            error_log("[ERROR] Redis pipeline exec 실패 (조회). indexKey=$indexKey");
+            continue;
+        }
+
         foreach ($results as $i => $data) {
             if (!is_array($data) || empty($data)) continue;
 

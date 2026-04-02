@@ -37,11 +37,11 @@ function getLandCharacteristics($pnu, $year = "2025") {
 
         // ✅ 데이터 찾으면 바로 반환
         if (isset($result['landCharacteristicss']['field'])) {
-            error_log("pnu: $pnu | stdrYear: $tryYear 데이터 찾음");
+            //error_log("pnu: $pnu | stdrYear: $tryYear 데이터 찾음");
             return $result;
         }
 
-        error_log("pnu: $pnu | stdrYear: $tryYear 데이터 없음");
+        //error_log("pnu: $pnu | stdrYear: $tryYear 데이터 없음");
     }
 
     // 모든 연도 실패 시 빈 배열 반환

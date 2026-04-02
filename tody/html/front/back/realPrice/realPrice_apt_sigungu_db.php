@@ -16,7 +16,7 @@ $dotenv->load();
 // 클라이언트 요청 데이터 수신 (POST 방식으로 JSON 데이터 수신)
 $input = file_get_contents('php://input');
 $requestData = json_decode($input, true); // JSON 데이터를 PHP 배열로 디코딩
-error_log("[DEBUG] realPrice_apt_sigungu_db.php Request Data: " . json_encode($requestData));
+//error_log("[DEBUG] realPrice_apt_sigungu_db.php Request Data: " . json_encode($requestData));
 
 // JSON 디코딩 실패 처리 및 필수 파라미터 유효성 검사
 if (json_last_error() !== JSON_ERROR_NONE || !is_array($requestData)) {
@@ -150,6 +150,6 @@ try {
 }
 
 // 최종 응답
-error_log("[DEBUG] Final result count for realPrice_Average_sgg: " . count($data));
+//error_log("[DEBUG] Final result count for realPrice_Average_sgg: " . count($data));
 echo json_encode(['success' => true, 'data' => $data]);
 ?>

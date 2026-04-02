@@ -79,8 +79,8 @@ try {
      $redis = new Redis();
      //$redis->connect('127.0.0.1', 6379);
      $redis->connect('127.0.0.1', 6379,10); // 10초 타임아웃 설정);
-     //$redis->setOption(Redis::OPT_READ_TIMEOUT, -1); // 무한 타임아웃
-     $redis->setOption(Redis::OPT_READ_TIMEOUT, 10); //  추가적으로 Read Timeout도 설정
+     $redis->setOption(Redis::OPT_READ_TIMEOUT, -1); // 무한 타임아웃
+     //$redis->setOption(Redis::OPT_READ_TIMEOUT, 60); //  추가적으로 Read Timeout도 설정 (Lua pipeline flush 대응)
      //log_to_db($historyId, "Redis 서버 연결 성공.", $conn, 'DEBUG');
 
     // Lua 스크립트 및 파이프라인 설정 (기존 로직 그대로)
@@ -107,9 +107,14 @@ return sadd_result -- 또는 hmset_result 등 최종 결과
 
 LUA;
     $luaSha = $redis->script('load', $luaScript);
+    if ($luaSha === false) {
+        throw new Exception("Redis Lua script load 실패. Redis 연결 또는 스크립트 문법을 확인하세요.", 500);
+    }
+
     $pipeline = $redis->multi(Redis::PIPELINE);
     $pipelineOps = 0;
-    $pipelineFlushSize = isset($cliOptions['pipeFlush']) ? max(1000, (int) $cliOptions['pipeFlush']) : 50000; // CLI 인자로 pipeFlush 받기
+    $pipelineFlushSize = isset($cliOptions['pipeFlush']) ? max(1000, (int) $cliOptions['pipeFlush']) : 5000; // CLI 인자로 pipeFlush 받기 (timeout 방지를 위해 5000으로 축소)
+    $totalFlushErrors = 0; // pipeline flush 실패 누적 카운트
 
     // 배치 처리/테이블 설정 (기존 로직 그대로)
     $prefix = 'land_pnu:';
@@ -195,7 +200,33 @@ LUA;
             $pipelineOps++;
 
             if ($pipelineOps >= $pipelineFlushSize) {
-                $pipeline->exec();
+                $pipeResults = $pipeline->exec();
+
+                // pipeline exec 결과 검증
+                if ($pipeResults === false) {
+                    $totalFlushErrors += $pipelineOps;
+                    log_to_db($historyId, "[ERROR] Redis pipeline exec 실패 (timeout/연결 끊김). 처리중 PNU: {$lastPnu}, 누적 실패: {$totalFlushErrors}건", $conn, 'ERROR');
+                    // Redis 재연결 시도
+                    try {
+                        $redis->close();
+                        $redis = new Redis();
+                        $redis->connect('127.0.0.1', 6379, 10);
+                        $redis->setOption(Redis::OPT_READ_TIMEOUT, 60);
+                        $luaSha = $redis->script('load', $luaScript);
+                    } catch (Exception $reconEx) {
+                        throw new Exception("Redis 재연결 실패: " . $reconEx->getMessage(), 500);
+                    }
+                } elseif (is_array($pipeResults)) {
+                    $errCount = 0;
+                    foreach ($pipeResults as $r) {
+                        if ($r === false) $errCount++;
+                    }
+                    if ($errCount > 0) {
+                        $totalFlushErrors += $errCount;
+                        log_to_db($historyId, "[WARN] Redis pipeline 부분 실패: {$errCount}/{$pipelineOps}건. 누적 실패: {$totalFlushErrors}건", $conn, 'WARN');
+                    }
+                }
+
                 //log_to_db($historyId, "Sido {$sidoCd} 캐시 적재 진행 중. 현재 처리된 PNU: {$totalProcessed}건.", $conn, 'INFO');
                 $pipeline = $redis->multi(Redis::PIPELINE);
                 $pipelineOps = 0;
@@ -210,16 +241,38 @@ LUA;
     }
 
     if ($pipelineOps > 0) {
-        $pipeline->exec();
-        //log_to_db($historyId, "Sido {$sidoCd} 남은 캐시 데이터 Flush 완료. 총 PNU: {$totalProcessed}건.", $conn, 'INFO');
+        $pipeResults = $pipeline->exec();
+        if ($pipeResults === false) {
+            $totalFlushErrors += $pipelineOps;
+            log_to_db($historyId, "[ERROR] Redis 마지막 pipeline exec 실패. 누적 실패: {$totalFlushErrors}건", $conn, 'ERROR');
+        } elseif (is_array($pipeResults)) {
+            $errCount = 0;
+            foreach ($pipeResults as $r) {
+                if ($r === false) $errCount++;
+            }
+            if ($errCount > 0) {
+                $totalFlushErrors += $errCount;
+                log_to_db($historyId, "[WARN] Redis 마지막 pipeline 부분 실패: {$errCount}/{$pipelineOps}건. 누적 실패: {$totalFlushErrors}건", $conn, 'WARN');
+            }
+        }
+    }
+
+    // 적재 후 샘플 검증: 마지막 PNU가 실제 Redis에 존재하는지 확인
+    if ($lastPnu !== '') {
+        $verifyExists = $redis->exists($prefix . $lastPnu);
+        if (!$verifyExists) {
+            $totalFlushErrors++;
+            log_to_db($historyId, "[ERROR] 적재 검증 실패: Redis에 {$prefix}{$lastPnu} 키가 존재하지 않습니다.", $conn, 'ERROR');
+        }
     }
 
     $endTime = microtime(true);
     $duration = $endTime - $startTime;
     $durationFormatted = sprintf("%02d분 %02d초", (int)floor($duration / 60), (int)round(fmod($duration, 60)));
 
-    // --- 수정된 부분: totalProcessed 건수를 메시지에 포함 ---
-    $successMessage = "Sido {$sidoCd} 토지특성정보 Redis 캐시 적재 완료. 총 {$totalProcessed}건 처리. 소요 시간: {$durationFormatted}. SUCCESS";
+    // 실패 건수가 있으면 경고 포함
+    $errorSuffix = $totalFlushErrors > 0 ? " (Redis 실패 {$totalFlushErrors}건 발생)" : "";
+    $successMessage = "Sido {$sidoCd} 토지특성정보 Redis 캐시 적재 완료. 총 {$totalProcessed}건 처리{$errorSuffix}. 소요 시간: {$durationFormatted}. SUCCESS";
     // ----------------------------------------------------
 
     log_to_db($historyId, $successMessage, $conn, 'INFO');

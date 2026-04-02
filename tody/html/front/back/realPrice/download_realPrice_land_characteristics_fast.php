@@ -56,7 +56,8 @@ if (!preg_match('/^\d{2}$/', $sidoCd)) {
 
 // 토지 특성 데이터를 저장할 Redis 연결 준비
 $redis = new Redis();
-$redis->connect('127.0.0.1', 6379);
+$redis->connect('127.0.0.1', 6379, 10);
+$redis->setOption(Redis::OPT_READ_TIMEOUT, 60);
 $debugMode = isset($_GET['debug']) && $_GET['debug'] !== '0';
 $debugInterval = isset($_GET['debugInterval']) ? max(1, (int) $_GET['debugInterval']) : 200000;
 $debug = static function (string $message) use ($debugMode) {
@@ -71,9 +72,13 @@ redis.call('HMSET', KEYS[1], unpack(ARGV, 1, #ARGV - 1))
 return redis.call('SADD', KEYS[2], ARGV[#ARGV])
 LUA;
 $luaSha = $redis->script('load', $luaScript);
+if ($luaSha === false) {
+    throw new Exception("Redis Lua script load 실패. Redis 연결 또는 스크립트 문법을 확인하세요.", 500);
+}
 $pipeline = $redis->multi(Redis::PIPELINE);
 $pipelineOps = 0;
-$pipelineFlushSize = isset($_GET['pipeFlush']) ? max(1000, (int) $_GET['pipeFlush']) : 50000;
+$pipelineFlushSize = isset($_GET['pipeFlush']) ? max(1000, (int) $_GET['pipeFlush']) : 5000;
+$totalFlushErrors = 0;
 
 // 배치 처리/테이블 설정
 $prefix = 'land_pnu:';
@@ -114,7 +119,10 @@ while (true) {
 
         if ($pnu === $lastFetchedPnu) {
             echo "[WARN] Detected repeated PNU {$pnu}. Stopping to avoid infinite loop.\n";
-            $pipeline->exec();
+            $pipeResults = $pipeline->exec();
+            if ($pipeResults === false) {
+                error_log("[ERROR] Redis pipeline exec 실패 (중복 PNU exit). PNU: {$pnu}");
+            }
             mysqli_free_result($result);
             exit;
         }
@@ -160,8 +168,31 @@ while (true) {
         $pipelineOps++;
 
         if ($pipelineOps >= $pipelineFlushSize) {
-            $pipeline->exec();
-            $debug('[PIPELINE] flushed');
+            $pipeResults = $pipeline->exec();
+            if ($pipeResults === false) {
+                $totalFlushErrors += $pipelineOps;
+                error_log("[ERROR] Redis pipeline exec 실패. 처리중 PNU: {$lastPnu}, 누적 실패: {$totalFlushErrors}건");
+                // Redis 재연결 시도
+                try {
+                    $redis->close();
+                    $redis = new Redis();
+                    $redis->connect('127.0.0.1', 6379, 10);
+                    $redis->setOption(Redis::OPT_READ_TIMEOUT, 60);
+                    $luaSha = $redis->script('load', $luaScript);
+                } catch (Exception $reconEx) {
+                    throw new Exception("Redis 재연결 실패: " . $reconEx->getMessage(), 500);
+                }
+            } elseif (is_array($pipeResults)) {
+                $errCount = 0;
+                foreach ($pipeResults as $r) {
+                    if ($r === false) $errCount++;
+                }
+                if ($errCount > 0) {
+                    $totalFlushErrors += $errCount;
+                    error_log("[WARN] Redis pipeline 부분 실패: {$errCount}/{$pipelineOps}건. 누적 실패: {$totalFlushErrors}건");
+                }
+            }
+            $debug("[PIPELINE] flushed (errors: {$totalFlushErrors})");
             $pipeline = $redis->multi(Redis::PIPELINE);
             $pipelineOps = 0;
         }
@@ -181,8 +212,31 @@ while (true) {
 }
 
 if ($pipelineOps > 0) {
-    $pipeline->exec();
+    $pipeResults = $pipeline->exec();
+    if ($pipeResults === false) {
+        $totalFlushErrors += $pipelineOps;
+        error_log("[ERROR] Redis 마지막 pipeline exec 실패. 누적 실패: {$totalFlushErrors}건");
+    } elseif (is_array($pipeResults)) {
+        $errCount = 0;
+        foreach ($pipeResults as $r) {
+            if ($r === false) $errCount++;
+        }
+        if ($errCount > 0) {
+            $totalFlushErrors += $errCount;
+            error_log("[WARN] Redis 마지막 pipeline 부분 실패: {$errCount}/{$pipelineOps}건. 누적 실패: {$totalFlushErrors}건");
+        }
+    }
     $debug('[PIPELINE] final flush');
 }
 
-echo "✅ Optimized Redis load complete (table: {$tableName})\n";
+// 적재 후 샘플 검증
+if ($lastPnu !== '') {
+    $verifyExists = $redis->exists($prefix . $lastPnu);
+    if (!$verifyExists) {
+        $totalFlushErrors++;
+        error_log("[ERROR] 적재 검증 실패: Redis에 {$prefix}{$lastPnu} 키가 존재하지 않습니다.");
+    }
+}
+
+$errorInfo = $totalFlushErrors > 0 ? " (Redis 실패 {$totalFlushErrors}건 발생)" : "";
+echo "Optimized Redis load complete (table: {$tableName}){$errorInfo}\n";

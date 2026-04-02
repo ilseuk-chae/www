@@ -35,7 +35,7 @@ $stmt->bind_param("s",$sido);
 $stmt->execute();
 
 $historyId = $stmt->insert_id;
-error_log("[DEBUG]error_log historyId :" . $historyId ); 
+//error_log("[DEBUG]error_log historyId :" . $historyId ); 
 /* ---------------------------------
    2. CLI worker 실행
 --------------------------------- */

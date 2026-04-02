@@ -252,6 +252,7 @@ while ($start_date <= $end_date) {
                 } else {
                     $processed = 0;
                     $historyCount = 0;
+                    $count = 0;
                 }
                 $insert_sql = "INSERT INTO realprice_down_his (type, bjdCd, date, count) VALUES ('factory', ?, ?, ?)";
                 $insert_stmt = $conn->prepare($insert_sql);
@@ -428,7 +429,7 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     }
 
     // 1️⃣ 거래취소 제외
-    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === NULL) {
+    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === '') {
         return null;
     }
 
@@ -476,6 +477,11 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
 
     // 🔥 한번에 Redis 실행
     $results = $pipe->exec();
+
+    if ($results === false || !is_array($results)) {
+        error_log("[ERROR] Redis pipeline exec 실패 (공장 조회). sggCd={$sggCd}, dongNm={$dongNm}");
+        return null;
+    }
 
     foreach ($results as $data) {
 
@@ -581,7 +587,7 @@ function parseMaskedJibun(string $jibun): ?array
 
     if (mb_substr($jibun, 0, 1) === '산') {
         $mCode = 2;
-        $jibun = mb_substr($jibun, 1);
+        $jibun = trim(mb_substr($jibun, 1)); // ✅ 공백 제거
     }
 
     // '*' → 0000~0009
@@ -677,6 +683,11 @@ function resolveUmdQueryInfo($umdNm) //토지와동일
     $parts = preg_split('/\s+/u', $cleaned);
     if ($parts === false || empty($parts)) {
         $parts = [$cleaned];
+    }
+
+    $lastPart = end($parts);
+    if ($lastPart === false) {
+        $lastPart = $cleaned;
     }
 
     $lastPart = end($parts);

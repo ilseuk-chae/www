@@ -396,12 +396,12 @@ function searchClosestPnuByPrefix($redis, $prefix, $sggCd, $mountainCode, $start
     $smallestDifference = PHP_INT_MAX;
 
     $umdCd = getUmdCdByName($sggCd, $umdNm); // 예: '129'
-    if ($umdCd === null) 
+    if ($umdCd === null)
     {
         //error_log("[debug][getUmdCdByName 내용이 없습니다  (sggCd): $sggCd ,(umdNm): $umdNm]");
         return null;
     }
-    
+
     $targetJimok = normalizeLandString($jimok);
     $targetLandUse = normalizeLandString($landUse);
 
@@ -410,8 +410,8 @@ function searchClosestPnuByPrefix($redis, $prefix, $sggCd, $mountainCode, $start
         $indexKey = "land_pnu_idx:$sggCd:$umdCd:$mountainCode:$bonbunStr";
 
         $pnuList = $redis->sMembers($indexKey);
-        if (empty($pnuList)) 
-        { 
+        if (empty($pnuList))
+        {
             //error_log("[debug][pnuList가 없습니다  (indexKey): $indexKey ]");
             continue;
         }
@@ -423,10 +423,15 @@ function searchClosestPnuByPrefix($redis, $prefix, $sggCd, $mountainCode, $start
         }
         $results = $redis->exec();
 
+        if ($results === false || !is_array($results)) {
+            error_log("[ERROR] Redis pipeline exec 실패 (조회). indexKey=$indexKey");
+            continue;
+        }
+
         foreach ($results as $i => $data) {
             // $data는 배열일 수도 있고, Redis에서 데이터를 제대로 가져오지 못하면 false나 빈 배열일 수 있습니다.
             // print_r($data, true)를 사용하여 어떤 형태의 데이터인지 로그로 남기는 것이 디버깅에 유리합니다.
-            if (!is_array($data) || empty($data) || (!isset($data['lndcgrCodeNm']) && !isset($data['prposArea1Nm']) && !isset($data['lndpclAr']))) { 
+            if (!is_array($data) || empty($data) || (!isset($data['lndcgrCodeNm']) && !isset($data['prposArea1Nm']) && !isset($data['lndpclAr']))) {
                 //error_log("[debug][Redis에서 PNU 상세 속성을 제대로 가져오지 못했거나 데이터가 비어있습니다. PNU: " . ($pnuList[$i] ?? 'unknown') . ", data: " . print_r($data, true) . " ]");
                 continue; // 다음 $data 항목으로 넘어감
             }

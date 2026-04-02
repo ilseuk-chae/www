@@ -191,7 +191,8 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
         }
 
         if($resetType == 'true' || $resetType == 'yes' || $resetType == 1) {
-            $redisKeysPattern = $rpEmdCachePrefix . ":$sidoCd*";
+            //$redisKeysPattern = $rpEmdCachePrefix . ":$sidoCd*";
+            $redisKeysPattern = $rpEmdCachePrefix . $sidoCd . "*";
             update_history_status($historyId, 'processing', "Sido {$sidoCd} 작업 초기화 중.", $conn);
 
             log_to_db($historyId, "Sido {$sidoCd} 실거래가 Redis 캐시 Reset 작업 시작.", $conn, 'INFO');
@@ -674,13 +675,28 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
                 if ($pipelineOps >= $pipelineFlushSize) {
 
                     try {
-                        $redisPipeline->exec(); // 명령 실행
+                        $pipeResults = $redisPipeline->exec(); // 명령 실행
+                        // exec()가 예외 없이 false를 반환하는 경우 (연결 끊김 등) 처리
+                        if ($pipeResults === false) {
+                            throw new Exception("Pipeline exec returned false (연결 끊김 또는 timeout)");
+                        }
                         log_to_db($historyId, "Redis 파이프라인 {$pipelineFlushSize}개 명령 플러시됨.", $conn, 'DEBUG');
                     } catch (Exception $e) {
-                        // 파이프라인 중간에 에러가 나면 처리하고 계속 진행하거나, 전체 중단
+                        // 파이프라인 중간에 에러가 나면 Redis 재연결 시도
                         $logMessage = "Redis pipeline execution failed mid-loop for EMD {$emdCdInner}: " . $e->getMessage();
                         log_to_db($historyId, $logMessage, $conn, 'CRITICAL');
                         $sidoErrors++; // 오류 카운트
+                        // Redis 재연결 시도
+                        try {
+                            $redis->close();
+                            $redis = new Redis();
+                            $redis->connect('127.0.0.1', 6379, 10);
+                            $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
+                            log_to_db($historyId, "Redis 재연결 성공.", $conn, 'INFO');
+                        } catch (Exception $reconEx) {
+                            log_to_db($historyId, "Redis 재연결 실패: " . $reconEx->getMessage(), $conn, 'CRITICAL');
+                            throw $reconEx; // 재연결 실패 시 전체 중단
+                        }
                     }
                     $redisPipeline = $redis->pipeline(); // 파이프라인 재초기화
                     $pipelineOps = 0; // 명령 카운트 리셋
@@ -704,16 +720,16 @@ foreach ($sidoCodesToProcessQueue as $sidoCd) {
 
         if ($pipelineOps > 0) { // 파이프라인에 아직 실행되지 않은 명령이 남아있다면
             try {
-                $redisPipeline->exec(); // 남아있는 명령 실행
-                log_to_db($historyId, "Redis 파이프라인 종료 전 남은 {$pipelineOps}개 명령 플러시됨.", $conn, 'DEBUG');
-                // 여기서는 이 메시지가 실행될 때만 INFO 레벨의 로그를 남기는 게 좋습니다.
+                $pipeResults = $redisPipeline->exec(); // 남아있는 명령 실행
+                if ($pipeResults === false) {
+                    throw new Exception("Pipeline exec returned false (연결 끊김 또는 timeout)");
+                }
                 log_to_db($historyId, "Redis 파이프라인 성공적으로 실행됨 (Sido {$sidoCd}). 처리된 EMD 수: {$processedEmdCount}. 에러 수: {$sidoErrors}.", $conn, 'INFO');
             } catch (Exception $e) {
                 $logMessage = "Redis pipeline execution failed at final flush for Sido {$sidoCd}: " . $e->getMessage();
                 log_to_db($historyId, $logMessage, $conn, 'CRITICAL');
                 $sidoErrors++; // 오류 카운트
-                // 여기서는 최종적인 실패 메시지 한 번만 기록
-                update_history_status($historyId, 'failed', $logMessage, $conn); // 최종 상태 업데이트 (필요시)
+                update_history_status($historyId, 'failed', $logMessage, $conn);
             }
         } else {
             // 파이프라인에 추가된 명령이 전혀 없었을 경우에도 성공 메시지는 남겨야 합니다.

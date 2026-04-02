@@ -289,30 +289,50 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
         ]]);
     })() : null; // map 객체나 getBounds가 없으면 null 할당
 
+    // 단일 링 유효성 검사 (외곽 + 내부 링 모두 적용)
+    const isValidRing = (ring) =>
+        Array.isArray(ring) &&
+        ring.length >= 4 &&
+        Array.isArray(ring[0]) &&
+        ring[0].length === 2 &&
+        ring.every(coord => Array.isArray(coord) && coord.length >= 2 && isFinite(coord[0]) && isFinite(coord[1]));
+
     const isValidPolygon = (geometry) => {
         if (!geometry) return false;
         if (!Array.isArray(geometry.coordinates) || geometry.coordinates.length === 0) return false;
 
-        // 단일 링 유효성 검사 (외곽 + 내부 링 모두 적용)
-        const isValidRing = (ring) =>
-            Array.isArray(ring) &&
-            ring.length >= 4 &&
-            Array.isArray(ring[0]) &&
-            ring[0].length === 2;
-
         if (geometry.type === 'Polygon') {
-            // 외곽링 존재 + 모든 링(외곽 + hole) 검사
             return geometry.coordinates.length > 0 && geometry.coordinates.every(isValidRing);
         }
 
         if (geometry.type === 'MultiPolygon') {
-            // 모든 폴리곤의 모든 링 검사 (빈 polygon 배열도 걸러냄)
             return geometry.coordinates.every(
                 (polygon) => Array.isArray(polygon) && polygon.length > 0 && polygon.every(isValidRing)
             );
         }
 
         return false;
+    };
+
+    // 유효하지 않은 링을 제거하여 geometry를 정리
+    const sanitizeGeometry = (geometry) => {
+        if (!geometry || !Array.isArray(geometry.coordinates)) return geometry;
+
+        if (geometry.type === 'Polygon') {
+            const validRings = geometry.coordinates.filter(isValidRing);
+            if (validRings.length === 0) return null; // 외곽링도 무효하면 사용 불가
+            return { ...geometry, coordinates: validRings };
+        }
+
+        if (geometry.type === 'MultiPolygon') {
+            const validPolygons = geometry.coordinates
+                .map(polygon => (Array.isArray(polygon) ? polygon.filter(isValidRing) : []))
+                .filter(polygon => polygon.length > 0); // 외곽링이 남아있는 폴리곤만 유지
+            if (validPolygons.length === 0) return null;
+            return { ...geometry, coordinates: validPolygons };
+        }
+
+        return geometry;
     };
     // 2. 클라이언트 필터 파라미터 수집 (API에는 직접 전달하지 않지만 시각화에 필요할 수 있음)
     const filterObj = collectMultiFilterParams();
@@ -723,16 +743,17 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     // markerPosition은 이미 DB centroid로 초기화되어 있으므로 그대로 사용
                 } else {
                     // --- turf.intersect 호출 전에 유효성 검사 강화 ---
-                    const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
-                    const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
-                
+                    const sanitizedFeatureGeom = sanitizeGeometry(correspondingGeoJsonFeature.geometry);
+                    const sanitizedMapBoundsGeom = sanitizeGeometry(mapBoundsPolygon.geometry);
+                    const isFeatureGeometryValid = sanitizedFeatureGeom && isValidPolygon(sanitizedFeatureGeom);
+                    const isMapBoundsValid = sanitizedMapBoundsGeom && isValidPolygon(sanitizedMapBoundsGeom);
+
                     if (isFeatureGeometryValid && isMapBoundsValid) {
                         try {
-                            
-                            // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
-                            const feature1_for_intersect = correspondingGeoJsonFeature; 
-                            // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
-                            const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
+
+                            // 정리된 geometry로 Feature 객체 생성
+                            const feature1_for_intersect = turf.feature(sanitizedFeatureGeom, correspondingGeoJsonFeature.properties);
+                            const feature2_for_intersect = turf.feature(sanitizedMapBoundsGeom);
                             // 두 Feature를 FeatureCollection으로 만듭니다.
                             const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
                             // turf.intersect에 FeatureCollection을 전달합니다.
@@ -1004,16 +1025,17 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 } else {
 
                     // --- turf.intersect 호출 전에 유효성 검사 강화 ---
-                    const isFeatureGeometryValid = isValidPolygon(correspondingGeoJsonFeature.geometry);
-                    const isMapBoundsValid = isValidPolygon(mapBoundsPolygon.geometry);
+                    const sanitizedFeatureGeom = sanitizeGeometry(correspondingGeoJsonFeature.geometry);
+                    const sanitizedMapBoundsGeom = sanitizeGeometry(mapBoundsPolygon.geometry);
+                    const isFeatureGeometryValid = sanitizedFeatureGeom && isValidPolygon(sanitizedFeatureGeom);
+                    const isMapBoundsValid = sanitizedMapBoundsGeom && isValidPolygon(sanitizedMapBoundsGeom);
 
                     if (isFeatureGeometryValid && isMapBoundsValid) {
                         try {
 
-                            // correspondingGeoJsonFeature는 이미 Feature 객체로 가정합니다.
-                            const feature1_for_intersect = correspondingGeoJsonFeature; 
-                            // mapBoundsPolygon.geometry는 Geometry 객체이므로 turf.feature로 Feature 객체로 래핑합니다.
-                            const feature2_for_intersect = turf.feature(mapBoundsPolygon.geometry); 
+                            // 정리된 geometry로 Feature 객체 생성
+                            const feature1_for_intersect = turf.feature(sanitizedFeatureGeom, correspondingGeoJsonFeature.properties);
+                            const feature2_for_intersect = turf.feature(sanitizedMapBoundsGeom);
                             // 두 Feature를 FeatureCollection으로 만듭니다.
                             const featuresToIntersect = turf.featureCollection([feature1_for_intersect, feature2_for_intersect]);
                             // turf.intersect에 FeatureCollection을 전달합니다.
