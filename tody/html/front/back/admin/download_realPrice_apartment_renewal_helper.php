@@ -108,8 +108,13 @@ while ($start_date <= $end_date) {
 
     // 시군구 단위로 월별 실거래 데이터를 적재
     foreach ($bjd_list as $bjd_cd) {
+        /*-- 테스트용 특정 시군구만 처리 ( 반드시 살려 놓을것)
+        if($bjd_cd !== '41461'){ 
+            continue;
+        }
+        */
+
         // 월별 다운로드 이력 확인
-        
         $select_sql = "SELECT COUNT(*)
         FROM realprice_down_his 
         WHERE type = 'apt' 

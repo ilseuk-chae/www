@@ -123,17 +123,13 @@ while ($start_date <= $end_date) {
     $ymd = $start_date->format('Ym');
 
     foreach ($bjd_list as $bjd_cd) {
-        // 월별 다운로드 이력 확인
-/*
-        //if(($bjd_cd === '52111') || ($bjd_cd === '52113')|| 
-        //   ($bjd_cd === '41192') || ($bjd_cd === '41194') || ($bjd_cd === '41196')) {
-        //}
-        if(($bjd_cd === '41196') ){
-        }
-        else {
+
+        /*-- 테스트용 특정 시군구만 처리 ( 반드시 살려 놓을것)
+        if($bjd_cd !== '41461'){ 
             continue;
         }
-*/
+        */
+        // 월별 다운로드 이력 확인
         $select_sql = "SELECT COUNT(*)
         FROM realprice_down_his
         WHERE type = 'land'

@@ -134,6 +134,13 @@ while ($start_date <= $end_date) {
     $ymd = $start_date->format('Ym'); // 조회 대상 연월
 
     foreach ($bjd_list as $bjd_cd) {
+
+        /*-- 테스트용 특정 시군구만 처리 ( 반드시 살려 놓을것)
+        if($bjd_cd !== '41461'){ 
+            continue;
+        }
+        */
+
         // 월별 다운로드 이력 확인
         $select_sql = "SELECT COUNT(*)
         FROM realprice_down_his
@@ -479,7 +486,7 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     $results = $pipe->exec();
 
     if ($results === false || !is_array($results)) {
-        error_log("[ERROR] Redis pipeline exec 실패 (공장 조회). sggCd={$sggCd}, dongNm={$dongNm}");
+        error_log("[ERROR] Redis pipeline exec 실패 (공장 조회). sggCd={$sggCd}, dongNm={$umdNm}");
         return null;
     }
 

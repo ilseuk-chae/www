@@ -134,6 +134,12 @@ while ($start_date <= $end_date) {
     
     foreach ($bjd_list as $bjd_cd) {
 
+        /*-- 테스트용 특정 시군구만 처리 ( 반드시 살려 놓을것)
+        if($bjd_cd !== '41461'){ 
+            continue;
+        }
+        */
+        
         // ✅ 시군구 루프마다 취소 체크 추가!
         if (check_cancellation($historyId, $conn)) {
             throw new Exception("Sido {". TARGET_REGION_PREFIX ."} bjd_cd={$bjd_cd} 작업 도중 사용자 중단 요청 감지. 작업 중단.", 500);
@@ -526,7 +532,7 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     $results = $pipe->exec();
 
     if ($results === false || !is_array($results)) {
-        error_log("[ERROR] Redis pipeline exec 실패 (단독/다가구 조회). sggCd={$sggCd}, dongNm={$dongNm}");
+        error_log("[ERROR] Redis pipeline exec 실패 (단독/다가구 조회). sggCd={$sggCd}, dongNm={$umdNm}");
         return null;
     }
 

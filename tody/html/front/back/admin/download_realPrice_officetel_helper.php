@@ -102,6 +102,13 @@ while ($start_date <= $end_date) {
     $ymd = $start_date->format('Ym'); // 조회 대상 연월
 
     foreach ($bjd_list as $bjd_cd) {
+        
+        /*-- 테스트용 특정 시군구만 처리 ( 반드시 살려 놓을것)
+        if($bjd_cd !== '41461'){ 
+            continue;
+        }
+        */
+
         // 월별 다운로드 이력 확인
         $select_sql = "SELECT COUNT(*) FROM realprice_down_his WHERE type = 'officetel' AND bjdCd = ? AND date = ?";
         $select_stmt = $conn->prepare($select_sql);
