@@ -189,12 +189,16 @@
 
                     <!-- 우측 옵션 -->
                     <div class="map-option">
-                        <!-- 우측 옵션 열기  검색필터 추가로 삭제 
+                        <!-- 우측 옵션 열기  검색필터 추가로 삭제
                         <button type="button" id="mobile_filter_btn" class="bg-main py-2" data-izimodal-open="#modalSellFilter" data-izimodal-transitionin="fadeInDown">
                             <i class="fa-light fa-sliders color-white"></i>
                             <span class="color-white">필터</span>
                         </button>
                         -->
+                        <button id="mapMyLocation" class="tooltip-target" onclick="moveToMyLocation(map)">
+                            <i class="fa-sharp fa-light fa-location-crosshairs"></i>
+                            <span>내<br />위치</span>
+                        </button>
                         <button id="mapOptionTooltip" class="tooltip-target">
                             <i class="fa-sharp fa-light fa-hire-a-helper "></i>
                             <span>도움<br />툴팁</span>
@@ -427,7 +431,7 @@
                     <!-- 이력관리 끝 -->
 
                     <!-- 매물정보 -->
-                    <div class="map-content">
+                    <div class="map-content active" >
                         <div class="mc-mo-open-close" id="mapContentMoOpenClose">
                             <i class="fa-regular fa-chevron-up" id="mapContentMoUp"></i>
                             <i class="fa-regular fa-chevron-down" id="mapContentMoDown"></i>

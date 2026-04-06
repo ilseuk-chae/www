@@ -230,6 +230,10 @@
 
                     <!-- 우측 옵션 -->
                     <div class="map-option">
+                        <button id="mapMyLocation" class="tooltip-target" onclick="moveToMyLocation(map)">
+                            <i class="fa-sharp fa-light fa-location-crosshairs"></i>
+                            <span>내<br />위치</span>
+                        </button>
                         <button id="mapOptionTooltip" class="tooltip-target">
                             <i class="fa-sharp fa-light fa-hire-a-helper"></i>
                             <span>도움<br />툴팁</span>
@@ -697,7 +701,7 @@
                     <!-- 이력관리 끝 -->
 
                     <!-- 실거래가 -->
-                    <div class="map-content">  
+                    <div class="map-content active" >  
                         <div class="mc-mo-open-close" id="mapContentMoOpenClose">
                             <i class="fa-regular fa-chevron-up" id="mapContentMoUp"></i>
                             <i class="fa-regular fa-chevron-down" id="mapContentMoDown"></i>

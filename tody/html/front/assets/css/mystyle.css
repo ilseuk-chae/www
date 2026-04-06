@@ -1981,3 +1981,210 @@
   justify-content: center;
   align-items: center;
 }
+
+/* 로고 기본 크기 */
+.mylogo {
+  
+  /*
+  width: 214px;
+  height: 35px;*/
+  width: clamp(97px, 20vw, 169px);
+}
+
+/* 아이콘 애니메이션 */
+.mylogo .icon {
+  transform: translateY(10px);
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+/* 메인 텍스트 */
+.mylogo .text-main {
+  opacity: 0;
+  transform: translateX(10px);
+  animation: fadeRight 0.6s ease forwards;
+  animation-delay: 0.3s;
+}
+
+/* 서브 텍스트 */
+.mylogo .text-sub {
+  opacity: 0;
+  transform: translateX(10px);
+  animation: fadeRight 0.6s ease forwards;
+  animation-delay: 0.5s;
+}
+
+/* hover 효과 */
+.mylogo-wrap:hover .logo .text-sub {
+  fill: #03C75A;
+}
+
+/* 애니메이션 */
+@keyframes fadeUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeRight {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media all and (max-width:479px) {
+  .mylogo {
+    width: 97px;
+    /*height: 20px;*/
+  }
+}
+@media all and (min-width:480px) and (max-width:767px) {
+  
+}
+@media all and (min-width:768px) and (max-width:991px) {
+  
+}
+@media all and (min-width:992px) and (max-width:1199px) {
+ 
+}
+@media all and (min-width:1200px) and (max-width:1399px) {
+
+}
+@media all and (min-width:1400px) {
+
+}
+
+/* 지도 우측 옵션 버튼 - active 시 파란색 공통 (검색조건/도구사용/합필분석 제외) */
+.map-option > button#mapOptionTooltip.active,
+.map-option > button#mapOptionAreaOpen.active,
+.map-option > button#mapOptionBoundary.active,
+.map-option > button#mapOptionMemoOpen.active,
+.map-option > button#mapOptionMemoOpen2.active,
+#mapOptionTooltip.active,
+#mapOptionAreaOpen.active,
+#mapOptionBoundary.active,
+#mapOptionMemoOpen.active,
+#mapOptionMemoOpen2.active {
+    background: #1e90ff !important;
+    background-color: #1e90ff !important;
+    border-color: #1e90ff !important;
+}
+.map-option > button#mapOptionTooltip.active i,
+.map-option > button#mapOptionTooltip.active span,
+.map-option > button#mapOptionAreaOpen.active i,
+.map-option > button#mapOptionAreaOpen.active span,
+.map-option > button#mapOptionBoundary.active i,
+.map-option > button#mapOptionBoundary.active span,
+.map-option > button#mapOptionMemoOpen.active i,
+.map-option > button#mapOptionMemoOpen.active span,
+.map-option > button#mapOptionMemoOpen2.active i,
+.map-option > button#mapOptionMemoOpen2.active span,
+#mapOptionTooltip.active i,
+#mapOptionTooltip.active span,
+#mapOptionAreaOpen.active i,
+#mapOptionAreaOpen.active span,
+#mapOptionBoundary.active i,
+#mapOptionBoundary.active span,
+#mapOptionMemoOpen.active i,
+#mapOptionMemoOpen.active span,
+#mapOptionMemoOpen2.active i,
+#mapOptionMemoOpen2.active span,
+#mapOptionTooltip.active *,
+#mapOptionAreaOpen.active *,
+#mapOptionBoundary.active *,
+#mapOptionMemoOpen.active *,
+#mapOptionMemoOpen2.active * {
+    color: #ffffff !important;
+}
+
+/* 내 위치 버튼 공통 */
+#mapMyLocation {
+    -webkit-tap-highlight-color: transparent;
+    outline: none !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+#mapMyLocation:focus { outline: none !important; }
+
+/* 비활성 상태 — :not(.active)로 active 클래스와 충돌 제거 */
+#mapMyLocation:not(.active),
+#mapMyLocation:not(.active):focus,
+#mapMyLocation:not(.active):hover,
+#mapMyLocation:not(.active):active {
+    background: #fff !important;
+    border-color: #e9e9e9 !important;
+}
+#mapMyLocation:not(.active) i,
+#mapMyLocation:not(.active) span {
+    color: #111 !important;
+}
+
+/* 활성 상태 — 파란색 */
+#mapMyLocation.active,
+#mapMyLocation.active:focus,
+#mapMyLocation.active:hover,
+#mapMyLocation.active:active {
+    background: #1e90ff !important;
+    border-color: #1e90ff !important;
+}
+#mapMyLocation.active i,
+#mapMyLocation.active span {
+    color: #fff !important;
+}
+
+/* 현재 위치 마커 */
+.my-location-marker {
+    position: relative !important;
+    width: 44px !important;
+    height: 44px !important;
+    pointer-events: none;
+    z-index: 99999 !important;
+}
+.my-location-marker .my-loc-dot {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: -8px 0 0 -8px !important;
+    background: #1e90ff !important;
+    border: 3px solid #fff !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 6px rgba(30, 144, 255, 0.9), 0 1px 4px rgba(0, 0, 0, 0.35);
+    z-index: 99999 !important;
+    animation: myLocBlink 1s ease-in-out infinite;
+}
+.my-location-marker .my-loc-pulse {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 44px !important;
+    height: 44px !important;
+    margin: -22px 0 0 -22px !important;
+    background: rgba(30, 144, 255, 0.35) !important;
+    border: 2px solid rgba(30, 144, 255, 0.6) !important;
+    border-radius: 50% !important;
+    z-index: 99998 !important;
+    animation: myLocPulse 1.6s ease-out infinite;
+}
+@keyframes myLocPulse {
+    0% {
+        transform: scale(0.4);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+@keyframes myLocBlink {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 6px rgba(30, 144, 255, 0.9), 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+    50% {
+        opacity: 0.45;
+        box-shadow: 0 0 14px rgba(30, 144, 255, 1), 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+}

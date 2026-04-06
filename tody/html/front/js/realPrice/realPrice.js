@@ -250,6 +250,7 @@ function initAction() {
         $("#rvWrapper").toggleClass("full");
         $(".realmap-estate-group").toggleClass("active");
         $(".realmap-estate-info").toggleClass("active");
+        $(".realmap-average-info").toggleClass("active");
         // $("#mapContentOpenClose i").toggleClass("fa-rotate-180");
         if ($(".map-content").hasClass("active")) {
             $(".realmap-estate-group").addClass("active");
@@ -288,23 +289,27 @@ function initAction() {
 
     // 지도 - 모바일 - 컨텐츠 열고 닫기 //
     $(".mc-mo-open-close").click(function () {
-        if ($(this).hasClass("active full")) {
+        if ($(this).hasClass("active")) { //full
             //$(".map-content").removeClass("active full");
-            //$(this).removeClass("active full");
+            $(this).removeClass("active");
             $(".map-bg").addClass("full");
             $(".map-history").removeClass("active");
             $(".realmap-estate-group").removeClass("active");
             $(".realmap-estate-info").removeClass("active");
-        } else if ($(this).hasClass("active")) {
+        }
+        /*
+        else if ($(this).hasClass("active")) {
             //$(".map-content").addClass("full");
             //$(this).addClass("full");
             $(".map-bg").removeClass("full");
             $(".map-history").addClass("active");
             $(".realmap-estate-group").addClass("active");
             $(".realmap-estate-info").addClass("active");
-        } else {
+        } 
+        */
+        else {
             //$(".map-content").addClass("active full");
-            //$(this).addClass("active full");
+            $(this).addClass("active");
             $(".map-bg").removeClass("full");
             $(".map-history").addClass("active");
             $(".realmap-estate-group").addClass("active");
@@ -316,11 +321,27 @@ function initAction() {
         const $mapContent = $(".map-content");
         const $mcMoOpenClose = $("#mapContentMoOpenClose"); // 클래스를 추가/제거할 대상 부모 div
         
-        if (!$mapContent.hasClass("active") && !$mapContent.hasClass("full")) {
+        /*
+        if ($mapContent.hasClass("active")) {
             // 현재 'active' 상태 (not full) 이면 -> 'active full'로
-            $mapContent.addClass("active full");
-            $mcMoOpenClose.addClass("active full"); // 부모 div에도 클래스 동기화
+            $mapContent.addClass("full");
+            $mcMoOpenClose.addClass("full"); // 부모 div에도 클래스 동기화
         } 
+        else {
+            // 현재 'None' (클래스 없음) 이면 -> 'active'로
+            $mapContent.addClass("active");
+            $mcMoOpenClose.addClass("active"); // 부모 div에도 클래스 동기화
+        }
+        */
+       
+        if ($mapContent.hasClass("active") ) {
+            // 현재 'active' 상태 (not full) 이면 -> 'active full'로
+        }
+        else {
+
+            $mapContent.addClass("active");
+            $mcMoOpenClose.addClass("active"); // 부모 div에도 클래스 동기화
+        }
         
         // 상태 변경 후 아이콘 가시성 업데이트
         updateMapContentIcons();
@@ -331,12 +352,26 @@ function initAction() {
         const $mapContent = $(".map-content");
         const $mcMoOpenClose = $("#mapContentMoOpenClose"); // 클래스를 추가/제거할 대상 부모 div
 
-        if ($mapContent.hasClass("active full")) {
+        /*
+        if ($mapContent.hasClass("full")) {
             // 현재 'active full' 상태이면 -> 'active'로 (full 클래스만 제거)
-            $mapContent.removeClass("active full");
-            $mcMoOpenClose.removeClass("active full"); // 부모 div에도 클래스 동기화
-        } 
-        
+            $mapContent.removeClass("full");
+            $mcMoOpenClose.removeClass("full"); // 부모 div에도 클래스 동기화
+        } else if ($mapContent.hasClass("active")) {
+            // 현재 'active' 상태 (not full) 이면 -> 'None'으로 (active 클래스 제거)
+            $mapContent.removeClass("active");
+            $mcMoOpenClose.removeClass("active"); // 부모 div에도 클래스 동기화
+        }
+        */
+       
+        if ($mapContent.hasClass("active") ) {
+            // 현재 'active' 상태 (not full) 이면 -> 'active full'로
+            $mapContent.removeClass("active");
+            $mcMoOpenClose.removeClass("active"); // 부모 div에도 클래스 동기화
+        }
+        else {
+        }
+       
         updateMapContentIcons();
     });
     // var mapContentMoChk = 0;
@@ -619,15 +654,18 @@ function updateMapContentIcons() {
     const $mapContentMoDown = $("#mapContentMoDown");
 
     //if ($mapContent.hasClass("active") && $mapContent.hasClass("full")) {
-    if ($mapContent.hasClass("active full")) {
+    if ($mapContent.hasClass("active")) {  // full
         // 현재 'active full' 상태
         $mapContentMoUp.hide();
         $mapContentMoDown.show();
-    } else if ($mapContent.hasClass("active")) {
+    } 
+    /*
+    else if ($mapContent.hasClass("active")) {
         // 현재 'active' 상태 (full 아님)
         $mapContentMoUp.show();
         $mapContentMoDown.show();
-    } else {
+    */
+    else {
         // 현재 'None' (클래스 없음) 상태
         $mapContentMoUp.show();
         $mapContentMoDown.hide();
