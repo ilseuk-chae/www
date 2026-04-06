@@ -315,17 +315,7 @@ function initAction() {
     $("#mapContentMoUp").click(function () {
         const $mapContent = $(".map-content");
         const $mcMoOpenClose = $("#mapContentMoOpenClose"); // 클래스를 추가/제거할 대상 부모 div
-        /*
-        if ($mapContent.hasClass("active")) {
-            // 현재 'active' 상태 (not full) 이면 -> 'active full'로
-            $mapContent.addClass("full");
-            $mcMoOpenClose.addClass("full"); // 부모 div에도 클래스 동기화
-        } else {
-            // 현재 'None' (클래스 없음) 이면 -> 'active'로
-            $mapContent.addClass("active");
-            $mcMoOpenClose.addClass("active"); // 부모 div에도 클래스 동기화
-        }
-        */
+        
         if (!$mapContent.hasClass("active") && !$mapContent.hasClass("full")) {
             // 현재 'active' 상태 (not full) 이면 -> 'active full'로
             $mapContent.addClass("active full");
@@ -341,17 +331,6 @@ function initAction() {
         const $mapContent = $(".map-content");
         const $mcMoOpenClose = $("#mapContentMoOpenClose"); // 클래스를 추가/제거할 대상 부모 div
 
-        /*
-        if ($mapContent.hasClass("full")) {
-            // 현재 'active full' 상태이면 -> 'active'로 (full 클래스만 제거)
-            $mapContent.removeClass("full");
-            $mcMoOpenClose.removeClass("full"); // 부모 div에도 클래스 동기화
-        } else if ($mapContent.hasClass("active")) {
-            // 현재 'active' 상태 (not full) 이면 -> 'None'으로 (active 클래스 제거)
-            $mapContent.removeClass("active");
-            $mcMoOpenClose.removeClass("active"); // 부모 div에도 클래스 동기화
-        }
-        */
         if ($mapContent.hasClass("active full")) {
             // 현재 'active full' 상태이면 -> 'active'로 (full 클래스만 제거)
             $mapContent.removeClass("active full");

@@ -150,13 +150,11 @@ function updateEstateTypeFiltersFromUI() {
 // 헬퍼 함수: 가격을 보기 좋게 포맷 (예: 소수점 둘째 자리까지)
 function myformatPrice(price) {
     if (isNaN(price) || price === null) return 'N/A';
-    // 가격이 1000 이상이면 콤마 추가, 소수점 둘째 자리까지
-    // (이전 formatPrice가 .toFixed(2)만 있었다면 확장)
-    //const formatted = parseFloat(price).toFixed(2);
-    const formatted = parseFloat(price);
-    return formatted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const formatted = parseFloat(price).toFixed(2);
+    const [intPart, decPart] = formatted.split('.');
+    const intWithComma = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return decPart ? `${intWithComma}.${decPart}` : intWithComma;
 }
-
 /**
  * 주어진 부동산 타입에 대한 가격 아이템 HTML 문자열을 생성합니다.
  * @param {string} estateType - 부동산 타입 ("apt", "multi", "officetel", "land", "single", "commercial", "factory").
@@ -206,7 +204,7 @@ function createPriceItem(estateType, sigunguData, isPyeongDisplay) { // isPyeong
         
         if (!isPyeongDisplay) { // '㎡'로 표시해야 하는 경우
             // 1평 = 3.30578 제곱미터. 평당 가격을 제곱미터당 가격으로 변환.
-            displayPrice = displayPrice / 3.30578; 
+            displayPrice = displayPrice / 3.3058; 
         }
         priceText = myformatPrice(displayPrice) + '만원'; // '/평' 또는 '/㎡' 단위를 제거합니다.
     }
@@ -1326,6 +1324,8 @@ function makeEstateTypeName(estateTypes, jimok, usage_type="") {
  * @param {string[]} sggCdArray - 조회할 시군구 코드들의 배열 (예: ['11680', '11650'])
  * 사용하지 않음
  */
+
+/*
 async function realPriceAptArray(sggCdArray) { 
     return new Promise((resolve, reject) => { // Promise를 반환하도록 함수 수정
         // 1. 현재 지도 화면의 바운딩 박스(Bounding Box) 추출
@@ -1592,6 +1592,8 @@ async function realPriceAptArray(sggCdArray) {
             });
     });
 }
+*/
+
 /**
  * //원래 함수 original function name: realPriceApt(sggCd)
  * 지도 화면 내 여러 시군구 코드를 기준으로 realPriceApt 데이터를 백엔드에서 가져오는 함수.
@@ -1599,6 +1601,7 @@ async function realPriceAptArray(sggCdArray) {
  * @param {string[]} sggCdArray - 조회할 시군구 코드들의 배열 (예: ['11680', '11650'])
  * 사용하지 않음
  */
+/*
 async function realPriceApt(sggCd) {
     var bounds = map.getBounds();   //현재 지도 화면의 가시적인 사각 영역(Bounding Box) 객체를 반환합니다. 이 객체는 지도의 가장 남서쪽 지점과 가장 북동쪽 지점의 좌표 정보를 포함하고 있어요.
     var sw = bounds.getSouthWest(); // 남서쪽 좌표 남서쪽(South-West) 끝 지점의 좌표 객체를 가져옵니다. 남서쪽은 위도(latitude)가 가장 낮고, 경도(longitude)가 가장 낮은 지점
@@ -1809,37 +1812,7 @@ async function realPriceApt(sggCd) {
                         yAnchor: 1.2,
                         zIndex: 1,
                     });
-                /*
-                    let hoverTimeout; // 마우스 오버 지연을 위한 타이머 변수
-                    iwContent.addEventListener("mouseover", function () {
-                        // 이전 타이머가 있다면 지웁니다. (만약 다른 오버레이에서 빠르게 옮겨왔다면)
-                        clearTimeout(hoverTimeout); 
-
-                        // 0.5초 (500ms) 후에 실행될 함수를 예약합니다.
-                        hoverTimeout = setTimeout(() => {
-                            // 이 블록 안의 코드는 마우스가 0.3초 이상 머물렀을 때만 실행됩니다.
-                            const currentZ = realPriceOverlay.getZIndex(); // 현재 오버레이의 z-index를 가져옵니다.
-                            // 이 값을 realPriceOverlay 객체의 임시 속성으로 저장해두어 mouseout 시 복원할 수 있도록 합니다.
-                            if(currentZ >= globalClusterZIndex) {
-                                globalClusterZIndex = currentZ + 1; // 전역 z-index 값을 현재 값보다 크게 설정
-                            }
-                            else {
-                                globalClusterZIndex++; // 클릭할 때마다 전역 z-index 값 증가
-                            }
-    
-                            realPriceOverlay.setZIndex(globalClusterZIndex); // 일시적으로 매우 높게 설정
-                        }, 500); // 0.3초 = 500밀리초
-                    });
-
-                   
-                    iwContent.addEventListener("mouseout", function () {
-                        // 마우스 아웃 시에는 원래 zIndex 또는 클릭으로 설정된 zIndex로 돌아와야 합니다.
-                        // 이 부분은 복잡할 수 있으므로, "클릭"에 의한 zIndex 최상위 유지를 우선한다면
-                        // 마우스 오버/아웃에 의한 zIndex 변화 로직을 제거하는 것을 고려해볼 수 있습니다.
-                        // 여기서는 예시로 초기 ZIndex로 돌아가도록 했습니다.
-                       // realPriceOverlay.setZIndex(initialOverlayZIndex); 
-                    });
-                */                
+                                
                     
                    // HTML 내부의 toggle-unit 요소에 직접 클릭 이벤트 추가 (이것이 realPriceOverlay 클릭 시 이벤트)
                     iwContent.addEventListener("click", function (e) {
@@ -1912,7 +1885,7 @@ async function realPriceApt(sggCd) {
             console.log(error);
         });
 }
-
+*/
 /**
  * 멀티 필터 파라미터를 수집하는 함수( 추가)
  * @returns {Object} 필터 파라미터 객체
