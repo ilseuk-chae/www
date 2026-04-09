@@ -199,6 +199,33 @@
         // 애니메이션 keyframes 보장
         _ensureMyLocationKeyframes();
 
+        // Permissions API로 권한 상태 사전 체크 (지원 브라우저 한정)
+        if (navigator.permissions && navigator.permissions.query) {
+            navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+                if (result.state === 'denied') {
+                    alert('위치 권한이 차단되어 있습니다.\n\n' +
+                        '해제 방법:\n' +
+                        '1. 주소창 왼쪽 자물쇠(🔒) 아이콘 클릭\n' +
+                        '2. "사이트 설정" 클릭\n' +
+                        '3. 위치 → "허용"으로 변경\n' +
+                        '4. 페이지 새로고침');
+                    return;
+                }
+                // granted 또는 prompt → 정상 진행
+                _requestGeolocation(map, level);
+            }).catch(function () {
+                // Permissions API 실패 시 기존 로직으로 진행
+                _requestGeolocation(map, level);
+            });
+        } else {
+            _requestGeolocation(map, level);
+        }
+    }
+
+    // 실제 Geolocation 요청 (권한 체크 후 호출)
+    function _requestGeolocation(map, level) {
+        if (!map) return;
+
         function onSuccess(position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
@@ -260,7 +287,18 @@
             let msg;
             switch (err && err.code) {
                 case 1: // PERMISSION_DENIED
-                    msg = '위치 권한이 차단되어 있습니다.\n브라우저 주소창 좌측의 자물쇠 아이콘에서 “위치 허용”으로 변경해주세요.';
+                    msg = '위치 정보를 사용할 수 없습니다.\n\n' +
+                        '브라우저 설정은 "허용"이지만 실제 요청이 차단되었습니다.\n' +
+                        '다음을 확인해주세요:\n\n' +
+                        '[Windows]\n' +
+                        '① 설정 → 개인정보 및 보안 → 위치\n' +
+                        '② "위치 서비스" 켜기\n' +
+                        '③ "앱이 사용자의 위치에 액세스하도록 허용" 켜기\n' +
+                        '④ 브라우저(Chrome/Edge) 항목 켜기\n\n' +
+                        '[기타]\n' +
+                        '· 확장 프로그램(광고 차단/프라이버시) 일시 중지\n' +
+                        '· 시크릿 모드에서 재시도\n' +
+                        '· 브라우저 재시작';
                     break;
                 case 2: // POSITION_UNAVAILABLE
                     msg = '현재 위치를 확인할 수 없습니다.\n네트워크(Wi-Fi) 연결 상태를 확인해주세요.';
@@ -275,44 +313,48 @@
             alert(msg);
         }
 
-        // 모바일 감지
-        const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        // 브라우저/디바이스 감지
+        const ua = navigator.userAgent;
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+        const isChrome = /Chrome/.test(ua) && !/Edg/.test(ua) && !/OPR/.test(ua);
+        const skipLowAccuracy = isChrome && !isMobile;
 
         let settled = false;
         const finish = (cb) => { if (!settled) { settled = true; cb(); } };
 
-        // 캐시된 위치 우선 시도 (있으면 즉시 반환, 없으면 1~2초 내 에러)
-        // 모바일 첫 호출 시 10초 대기 없이 빠르게 실패 → 고정밀로 전환
+        function requestHighAccuracy() {
+            navigator.geolocation.getCurrentPosition(
+                function (pos) { finish(() => onSuccess(pos)); },
+                function (err2) {
+                    console.warn('[moveToMyLocation] 고정밀 실패:', err2);
+                    finish(() => onError(err2));
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 25000,
+                    maximumAge: 300000
+                }
+            );
+        }
+
+        if (skipLowAccuracy) {
+            requestHighAccuracy();s
+            return;
+        }
+
         navigator.geolocation.getCurrentPosition(
             function (pos) { finish(() => onSuccess(pos)); },
             function (err1) {
                 console.warn('[moveToMyLocation] 1차(캐시/저정밀) 실패:', err1);
-                // 권한 거부는 재시도해도 동일
                 if (err1 && err1.code === 1) {
                     finish(() => onError(err1));
                     return;
                 }
-                // 2차: 고정밀(GPS) — 모바일 첫 측위는 시간 소요
-                navigator.geolocation.getCurrentPosition(
-                    function (pos) { finish(() => onSuccess(pos)); },
-                    function (err2) {
-                        console.warn('[moveToMyLocation] 2차(고정밀) 실패:', err2);
-                        finish(() => onError(err2));
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 25000,
-                        // 5분 이내 캐시가 있으면 재사용 → 재호출 시 즉시 반환
-                        maximumAge: 300000
-                    }
-                );
+                requestHighAccuracy();
             },
             {
-                // 모바일: 저정밀을 3초만 대기 후 바로 고정밀로 — 체감속도 개선
-                // PC: 10초 대기 (WiFi/IP 측위가 주력)
                 enableHighAccuracy: false,
                 timeout: isMobile ? 3000 : 10000,
-                // 5분 이내 캐시 재사용 → 페이지 이동 후 재호출 시 즉시 반환
                 maximumAge: 300000
             }
         );

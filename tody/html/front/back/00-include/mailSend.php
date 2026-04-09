@@ -96,6 +96,57 @@ function sendMail($email, $subject, $content)
 // =============================================================================================
 
 
+/**
+ * 첨부파일 지원 메일 발송
+ * @param string $email        수신자 이메일
+ * @param string $subject      제목 (UTF-8)
+ * @param string $content      본문 HTML
+ * @param array  $attachments  [['path'=>서버절대경로, 'name'=>원본파일명], ...]
+ * @return string 'SUCCESS' | 에러메시지
+ */
+function sendMailWithAttachments($email, $subject, $content, $attachments = [])
+{
+    $fromName  = $_ENV['GOOGLE_FROM_NAME'];
+    $sendEmail = $_ENV['GOOGLE_SEND_EMAIL'];
+    $fromEmail = $_ENV['GOOGLE_FROM_EMAIL'];
+    $password  = $_ENV['GOOGLE_PASSWORD'];
+    $addEmail  = $_ENV['GOOGLE_ADD_EMAIL'];
 
+    $mail = new PHPMailer(true);
+    try {
+        $mail->IsSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $sendEmail;
+        $mail->Password   = $password;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
+
+        $mail->CharSet  = 'UTF-8';
+        $mail->Encoding = 'base64';
+        $mail->SetFrom($fromEmail, $fromName);
+        $mail->addAddress($email);
+        $mail->addReplyTo($addEmail, $fromName);
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->MsgHTML($content);
+
+        if (!empty($attachments) && is_array($attachments)) {
+            foreach ($attachments as $f) {
+                if (!empty($f['path']) && file_exists($f['path'])) {
+                    $mail->addAttachment($f['path'], $f['name'] ?? basename($f['path']));
+                }
+            }
+        }
+
+        if (!$mail->send()) {
+            return 'Failed to send email. Error: ' . $mail->ErrorInfo;
+        }
+        return 'SUCCESS';
+    } catch (Exception $e) {
+        return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
 
 ?>

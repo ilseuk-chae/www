@@ -298,21 +298,22 @@ async function initSwiper() {
             loop: true,
             slidesPerView: 7, // 한 번에 7 슬라이드씩
             spaceBetween: 0, // 슬라이드 간의 간격
-            loop: true, // 무한 루프 설정
             direction: "horizontal", // 수평 모드로 전환
-            navigation: true,
             navigation: {
-                nextEl: '.swiper-button-next', // 다음 버튼 선택자
-                prevEl: '.swiper-button-prev', // 이전 버튼 선택자
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
             },
+            // 연속 마퀴 모드: delay 0 + 큰 speed + linear
             autoplay: {
-                delay: 1500, // 1.5초 간격으로 슬라이드 변경
-                disableOnInteraction: false, // 사용자가 상호작용해도 자동 재생 계속
+                delay: 1000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true, // 호버 시 일시정지
             },
-            slidesPerGroup: 1, // 한 번에 이동할 슬라이드 수
-            effect: 'slide', // 슬라이드 효과 설정
-            speed: 500, // 슬라이드 속도 설정
-            cssMode: false, // CSS 모드 비활성화 (linear 타이밍을 위해)
+            slidesPerGroup: 1,
+            effect: 'slide',
+            speed: 1000, // 끊김 없이 자연스러운 흐름
+            allowTouchMove: false,
+            cssMode: false,
             // linear 전환 효과 설정
             on: {
                 init: function() {

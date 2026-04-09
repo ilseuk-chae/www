@@ -32,9 +32,9 @@ $(function () {
     });
 
     // footer
-    loadMobile("/front/views/00-include/footer.html", ".footer").done(function () {
-        
-        policyTotal();
+    loadMobile("/front/views/00-include/footer.html", ".footer").done(async function () {
+
+        await policyTotal();
 
         // 모달 - 이용절차안내 //
         $("#terms").iziModal({
@@ -578,12 +578,23 @@ async function policyTotal() {
 
             // 탭 컨텐츠
             contentsHtml += `<div class="terms-area ta-modal tab-pane ${index == 0 ? "active show" : ""}" id="term_${item.pol_no}" role="tabpanel">
-                                <p>${item.content}</p>
+                                ${item.content}
                             </div>`;
         });
 
         $("#terms .nav-tabs").html(navHtml);
         $("#terms .tab-content").html(contentsHtml);
+
+        // 모바일 메뉴 약관 링크: 클릭 시 해당 탭 활성화
+        $(".js-open-term").off("click.termTab").on("click.termTab", function () {
+            const idx = parseInt($(this).data("term-index"), 10) || 0;
+            setTimeout(() => {
+                $("#terms .nav-tabs .nav-link").removeClass("active").attr("aria-selected", "false");
+                $("#terms .tab-content .tab-pane").removeClass("active show");
+                $("#terms .nav-tabs .nav-link").eq(idx).addClass("active").attr("aria-selected", "true");
+                $("#terms .tab-content .tab-pane").eq(idx).addClass("active show");
+            }, 50);
+        });
 
         // URL 해시 값 처리
         const hash = window.location.hash; // URL에서 # 뒤의 값 가져오기
