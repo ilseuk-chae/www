@@ -1,0 +1,18 @@
+# 로그 파일
+tody/logs/
+*.log
+
+# DB 백업 파일
+tody/todyMariaDB.sql
+tody/todyMariaDB.sql.gz
+tody/todyPostgreSQL.sql.gz
+
+# 환경변수 (민감정보)
+tody/html/.env
+
+# IDE 설정
+.vscode/
+
+# OS 파일
+.DS_Store
+Thumbs.db
