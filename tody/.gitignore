@@ -9,7 +9,7 @@ html/.env
 .vscode/
 
 # Composer 패키지 (vendor는 composer install로 재생성 가능)
-# html/vendor/
+html/vendor/
 
 # OS 파일
 .DS_Store
