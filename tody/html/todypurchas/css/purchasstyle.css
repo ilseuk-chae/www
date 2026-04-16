@@ -1,3 +1,50 @@
+/* ===== CUSTOM ALERT ===== */
+#customAlertOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999999;
+  align-items: center;
+  justify-content: center;
+}
+#customAlertOverlay.show { display: flex; }
+.ca-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 36px 40px 28px;
+  min-width: 300px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.22);
+  animation: caFadeIn .18s ease;
+}
+@keyframes caFadeIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ca-msg {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #222;
+  letter-spacing: -0.3px;
+  margin-bottom: 24px;
+  word-break: keep-all;
+}
+.ca-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 36px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+.ca-btn:hover { background: var(--primary-dark); }
+
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -394,12 +441,12 @@ ul { list-style: none; }
   padding-bottom: 44px; border-bottom: 1px solid rgba(255,255,255,.07);
 }
 .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.footer-logo-main { display: block; font-size: .92rem; font-weight: 800; color: rgba(255,255,255,.8); }
+.footer-logo-main { display: block; font-size: .92rem; font-weight: 800; color: rgba(255,255,255,.5); }
 .footer-logo-sub  { display: block; font-size: .72rem; color: rgba(255,255,255,.35); }
-.footer-brand p { font-size: .85rem; color: rgba(255,255,255,.3); line-height: 1.7; }
-.footer-col strong { font-size: .82rem; color: rgba(255,255,255,.45); display: block; margin-bottom: 14px; letter-spacing: .05em; }
-.footer-col ul { display: flex; flex-direction: column; gap: 10px; }
-.footer-col ul li a { font-size: .85rem; color: rgba(255,255,255,.35); transition: color var(--transition); }
+.footer-brand p { font-size: .85rem; color: rgba(255,255,255,.5); line-height: 1.7; }
+.footer-col strong { font-size: .82rem; color: rgba(255,255,255,.45); display: block; margin-bottom: 3px; margin-top: 10px; letter-spacing: .05em; }
+.footer-col ul { display: flex; flex-direction: column; gap: 0px; margin-top: 7px;}
+.footer-col ul li a { font-size: .72rem; color: rgba(255,255,255,.35); transition: color var(--transition); }
 .footer-col ul li a:hover { color: var(--white); }
 .footer-bottom { padding: 18px 0; }
 .footer-bottom p { font-size: .8rem; color: rgba(255,255,255,.2); text-align: center; }
@@ -527,3 +574,99 @@ ul { list-style: none; }
   padding: 0 4px;
 }
 .attachment-list .attachment-remove:hover { color: #f00; }
+
+/* ===== MODAL - 이용약관 & 개인정보처리방침 ===== */
+.modal-area { width: 100%; border-radius: 10px; box-shadow: 0 0 20px 0 rgba(0,0,0,0.2); overflow: hidden; }
+.modal-area .ma-header { display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; padding: 25px 30px; background: #f5f5f5; z-index: 99999; }
+.modal-area .ma-header dt { font-weight: 600; font-size: 20px; line-height: 20px; color: #111; letter-spacing: -1px; align-self: center; }
+.modal-area .ma-header dd { font-size: 24px; line-height: 22px; color: #111; cursor: pointer; }
+
+/* nav-tabs 가로 배치 (Bootstrap CSS 없는 환경 대응) */
+#terms .nav-tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+  gap: 0;
+}
+#terms .nav-tabs dt {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #999;
+  line-height: 1;
+}
+#terms .nav-tabs .nav-item {
+  display: inline-flex;
+  align-items: center;
+}
+#terms .nav-tabs .nav-link {
+  display: inline-block;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+}
+#terms .nav-tabs .nav-link.active { color: #111; font-weight: 700; }
+#terms .nav-tabs .nav-link:hover { color: #111; }
+
+/* 약관 내용 영역 */
+.terms-area { width: 90%; margin: 0 auto; padding: 0 0 70px 0; }
+.terms-area.ta-modal { width: 90%; padding: 50px 0; }
+#terms .tab-content { display: block; }
+#terms .tab-pane { display: none; }
+#terms .tab-pane.active.show { display: block; }
+
+/* 모달 내 기본 폰트 크기 (토디 기준 14px) */
+#terms .terms-area {
+  font-size: 14px;
+  line-height: 24px;
+  color: #222;
+  letter-spacing: -0.3px;
+}
+
+/* 제목 */
+#terms .terms-area > h2,
+#terms .terms-area h2 { font-size: 24px; line-height: 28px; color: #222; letter-spacing: -0.5px; margin-top: 30px; }
+#terms .terms-area > h3,
+#terms .terms-area h3 { margin-top: calc(0.6em * 1.5); margin-bottom: 0.5rem; font-size: 16px; line-height: 22px; font-weight: 600; color: #222; letter-spacing: -0.5px; }
+
+/* 단락 */
+#terms .terms-area > p,
+#terms .terms-area p { line-height: 26px; color: #222; letter-spacing: -0.5px; margin-top: 8px; }
+
+/* 직접 자식 div */
+#terms .terms-area > div,
+#terms .terms-area div { margin-top: 10px; font-size: 14px; line-height: 24px; color: #222; }
+
+/* 번호 목록 (ul, ol 모두 대응) */
+#terms .terms-area ul,
+#terms .terms-area ol {
+  margin-top: 12px;
+  padding-left: 30px;
+  list-style-type: decimal;
+}
+#terms .terms-area li {
+  padding: 4px 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: #222;
+  letter-spacing: -0.3px;
+}
+
+/* 최상위 ul은 inside bullet */
+#terms .terms-area > ul {
+  list-style: inside;
+  padding-left: 0;
+}

@@ -1,3 +1,32 @@
+/* ===== CUSTOM ALERT ===== */
+function customAlert(msg, callback) {
+  let overlay = document.getElementById('customAlertOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'customAlertOverlay';
+    overlay.innerHTML =
+      '<div class="ca-box">' +
+        '<p class="ca-msg"></p>' +
+        '<button class="ca-btn">확인</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    const close = function () {
+      overlay.classList.remove('show');
+      if (typeof overlay._cb === 'function') overlay._cb();
+      overlay._cb = null;
+    };
+    overlay.querySelector('.ca-btn').addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === 'Escape') && overlay.classList.contains('show')) close();
+    });
+  }
+  overlay.querySelector('.ca-msg').textContent = msg;
+  overlay._cb = callback || null;
+  overlay.classList.add('show');
+  overlay.querySelector('.ca-btn').focus();
+}
+
 /* ===== HEADER SCROLL ===== */
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {
@@ -42,9 +71,24 @@ fadeTargets.forEach(el => fadeObs.observe(el));
 
 /* ===== CONTACT FORM ===== */
 document.getElementById('contactForm').addEventListener('submit', async function (e) {
-  console.log('[contactForm] submit fired');  // 이 줄 추가
   e.preventDefault();
   const form = this;
+
+  /* 클라이언트 검증 (서버 메시지와 동일) */
+  const type    = form.type.value.trim();
+  const name    = form.name.value.trim();
+  const company = form.company.value.trim();
+  const phone   = form.phone.value.trim();
+  const message = form.message.value.trim();
+  const agree   = form.agree.checked;
+
+  if (!['purchas', 'credit', 'other'].includes(type)) { customAlert('신청 구분을 선택해주세요.',   () => form.type.focus());    return; }
+  if (!name)    { customAlert('담당자명을 입력해주세요.',            () => form.name.focus());    return; }
+  if (!company) { customAlert('회사/상호명를 입력해주세요.',         () => form.company.focus()); return; }
+  if (!phone)   { customAlert('연락처를 입력해주세요.',              () => form.phone.focus());   return; }
+  if (!message) { customAlert('문의 내용을 입력해주세요.',           () => form.message.focus()); return; }
+  if (!agree)   { customAlert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+
   const btn = form.querySelector('.btn-submit');
   const successEl = document.getElementById('formSuccess');
   btn.disabled = true;
@@ -71,11 +115,11 @@ document.getElementById('contactForm').addEventListener('submit', async function
       setTimeout(() => successEl.classList.remove('show'), 6000);
     } else {
       const msg = (data && data.message) ? data.message : '전송에 실패했습니다. 잠시 후 다시 시도해주세요.';
-      alert(msg);
+      customAlert(msg);
     }
   } catch (err) {
     console.error(err);
-    alert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    customAlert('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   } finally {
     btn.textContent = '신청서 제출하기';
     btn.disabled = false;

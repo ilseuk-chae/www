@@ -35,6 +35,7 @@ if (!in_array($type, ['purchas','credit','other'], true)) {
     responseApi(400, '신청 구분을 확인해주세요.', null);
 }
 if ($name === '')    responseApi(400, '담당자명을 확인해주세요.', null);
+if ($company === '') responseApi(400, '회사/상호명를 확인해주세요.', null);
 if ($phone === '')   responseApi(400, '연락처를 확인해주세요.', null);
 if ($message === '') responseApi(400, '문의 내용을 확인해주세요.', null);
 if ($agree !== 'Y')  responseApi(400, '개인정보 수집 및 이용에 동의해주세요.', null);

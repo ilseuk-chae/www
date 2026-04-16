@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>알파와오메가 | 건설·건축 원자재 구매대행 서비스</title>
   <link rel="stylesheet" href="css/purchasstyle.css" />
+  <link rel="stylesheet" href="/front/assets/css/iziModal.css" />
+  <link rel="stylesheet" href="/front/assets/css/fontawesome.css" />
 </head>
 <body>
 
@@ -379,10 +381,12 @@
           <button class="faq-q">구매대행 수수료는 어떻게 되나요?<span class="faq-arrow">▼</span></button>
           <div class="faq-a"><p>수수료는 공사 규모, 원자재 종류, 정산 방식(선지급 여부) 등을 종합적으로 고려하여 산정됩니다. 정확한 수수료는 상담 후 안내해드립니다. 별도의 숨겨진 비용은 없습니다.</p></div>
         </div>
+        <!--
         <div class="faq-item">
           <button class="faq-q">소규모 건축 공사도 신청 가능한가요?<span class="faq-arrow">▼</span></button>
           <div class="faq-a"><p>네, 대형 건설 현장뿐 아니라 소규모 건축 공사(단독주택, 근린생활시설 등)도 신청 가능합니다. 규모에 상관없이 상담해주시면 적합한 서비스 방안을 안내해드립니다.</p></div>
         </div>
+        -->
       </div>
     </div>
   </section>
@@ -417,11 +421,11 @@
             <p>서로 상생하고 성장하는 기업으로<br />부동산 경기 활성화에 기여하겠습니다.</p>
           </div>
         </div>
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" novalidate>
           <div class="form-row">
             <div class="form-group">
               <label for="type">신청 구분 <span class="required">*</span></label>
-              <select id="type" name="type" required>
+              <select id="type" name="type">
                 <option value="">선택해주세요</option>
                 <option value="purchas">구매대행</option>
                 <option value="credit">구매대행(신용)</option>
@@ -430,17 +434,17 @@
             </div>
             <div class="form-group">
               <label for="name">담당자명 <span class="required">*</span></label>
-              <input type="text" id="name" name="name" placeholder="홍길동" required />
+              <input type="text" id="name" name="name" placeholder="홍길동" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="company">회사/상호명</label>
+              <label for="company">회사/상호명<span class="required">*</span></label>
               <input type="text" id="company" name="company" placeholder="(주)건축회사" />
             </div>
             <div class="form-group">
               <label for="phone">연락처 <span class="required">*</span></label>
-              <input type="tel" id="phone" name="phone" placeholder="010-0000-0000" required />
+              <input type="tel" id="phone" name="phone" placeholder="010-0000-0000" />
             </div>
           </div>
           <div class="form-group">
@@ -463,7 +467,7 @@
           
           <div class="form-group">
             <label for="message">문의 내용 <span class="required">*</span></label>
-            <textarea id="message" name="message" rows="5" placeholder="공사 개요, 필요 원자재 종류, 공사 일정 등 자세히 기재해 주시면 더 정확한 안내가 가능합니다." required></textarea>
+            <textarea id="message" name="message" rows="5" placeholder="공사 개요, 필요 원자재 종류, 공사 일정 등 자세히 기재해 주시면 더 정확한 안내가 가능합니다."></textarea>
           </div>
 
           <div class="form-group">
@@ -480,8 +484,8 @@
 
           <div class="form-group form-check">
             <label class="check-label">
-              <input type="checkbox" id="agree" name="agree" value="Y" required />
-              <span>개인정보 수집 및 이용에 동의합니다. <a href="#" class="link-privacy">내용보기</a></span>
+              <input type="checkbox" id="agree" name="agree" value="Y" />
+              <span>개인정보 수집 및 이용에 동의합니다. <a href="javascript:void(0);" class="link-privacy" data-policy-type="purchas_consent">내용보기</a></span>
             </label>
           </div>
           <button type="submit" class="btn-submit">신청서 제출하기</button>
@@ -504,8 +508,13 @@
             <span class="footer-logo-sub">건설·건축 원자재 구매대행</span>
           </div>
         </div>
-
         <p>서로 상생하고 성장하는 기업으로<br />부동산 경기 활성화에 기여하겠습니다.</p>
+        <div class="footer-logo-sub">
+          <br/>
+          대표자 : 심정일 &nbsp; | &nbsp; 사업자등록번호 : 891-81-02801 <br/>
+          이메일 : info@2sproperty.com &nbsp; | &nbsp;전화번호 : 031-292-4001<br/> 
+          주소 : 경기도 수원시 권선구 호매실로90번길 49, 603호(호매실동) <br />
+      </div>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -527,8 +536,7 @@
         <div class="footer-col">
           <strong>정책</strong>
           <ul>
-            <li><a href="#">이용약관</a></li>
-            <li><a href="#">개인정보처리방침</a></li>
+            <li><a href="javascript:void(0);" data-policy-type="purchas">이용약관 및 개인정보처리방침</a></li>
           </ul>
         </div>
       </div>
@@ -540,6 +548,53 @@
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/purchas.js"></script>
+
+  <!-- 모달 - 이용약관 & 개인정보처리방침 -->
+  <div class="modal-area" id="terms">
+    <dl class="ma-header">
+      <ul class="nav nav-tabs" role="tablist"></ul>
+      <dd data-izimodal-close=""><i class="fa-light fa-xmark"></i></dd>
+    </dl>
+    <div class="tab-content">
+      <div class="terms-area ta-modal tab-pane active show" id="term_tab" role="tabpanel"></div>
+    </div>
+  </div>
+
+  <!-- jQuery, Bootstrap, iziModal, functions -->
+  <script src="/front/assets/js/jquery-3.3.1.js"></script>
+  <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/front/assets/js/iziModal.js"></script>
+  <script src="/front/js/00-include/functions.js"></script>
+
+  <script>
+    $(function () {
+      // iziModal 초기화
+      $("#terms").iziModal({ width: "750px", transitionIn: "fadeInDown" });
+      $("#terms").iziModal("setTop", 70);
+      $("#terms").iziModal("setBottom", 70);
+
+      // 링크 클릭 시 type에 따라 내용 로드 후 모달 오픈
+      $('[data-policy-type]').on('click', async function (e) {
+        e.preventDefault();
+        const type = $(this).data('policy-type');
+        await policyTotal(type);
+        $("#terms").iziModal("open");
+      });
+    });
+
+    async function policyTotal(type) {
+      const result = await callApi("POST", "/front/back/00-include/policy_total.php", { type: type });
+      if (!result || result.statusCode !== 200) return;
+      let navHtml = "", contentsHtml = "";
+      result.responseData.forEach(function (item, index) {
+        if (index !== 0) navHtml += '<dt>|</dt>';
+        navHtml += '<dt class="nav-item"><a class="nav-link ' + (index === 0 ? 'active' : '') + '" data-bs-toggle="tab" href="#term_' + item.pol_no + '" role="tab">' + item.title + '</a></dt>';
+        contentsHtml += '<div class="terms-area ta-modal tab-pane ' + (index === 0 ? 'active show' : '') + '" id="term_' + item.pol_no + '" role="tabpanel">' + item.content + '</div>';
+      });
+      $("#terms .nav-tabs").html(navHtml);
+      $("#terms .tab-content").html(contentsHtml);
+    }
+  </script>
 </body>
 </html>

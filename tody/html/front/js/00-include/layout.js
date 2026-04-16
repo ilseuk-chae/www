@@ -34,7 +34,7 @@ $(function () {
     // footer
     loadMobile("/front/views/00-include/footer.html", ".footer").done(async function () {
 
-        await policyTotal();
+        await policyTotal('tody');
 
         // 모달 - 이용절차안내 //
         $("#terms").iziModal({
@@ -553,9 +553,11 @@ async function toolsWebsite() {
  * 이용약관 가져오는 함수
  * @returns
  */
-async function policyTotal() {
+async function policyTotal(type) {
     try {
-        const dataObj = {};
+        const dataObj = {
+            type: type, // tody: 전체
+        };
         const result = await callApi("POST", "/front/back/00-include/policy_total.php", dataObj);
 
         if (!result || result.statusCode !== 200 || result.message !== "SUCCESS") {

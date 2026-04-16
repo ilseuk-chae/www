@@ -12,11 +12,6 @@ $(document).ready(function () {
     // 	touchpadSupport : false,
     // });
 
-    // AOS 모션 //
-    AOS.init({
-        duration: 1200,
-    });
-
     // 화면전환 - 모션 //
     gsap.to(".panel", {
         scaleY: 0,
@@ -31,6 +26,11 @@ $(document).ready(function () {
         } else {
             //$('.header').css({ borderBottom : 'none', background : 'none' });
         }
+    });
+
+    // AOS 모션 //
+    AOS.init({
+        duration: 1200,
     });
 
     // // 삽니다 - 등록 - 이미지

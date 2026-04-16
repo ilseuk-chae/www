@@ -57,6 +57,17 @@ async function login() {
     const id = $("#login_id").val();
     const password = $("#login_pw").val();
 
+    if (!id) {
+        sweetAlertMessage("아이디를 입력하세요.", "", "w");
+        $("#user_id").focus();
+        return;
+    }
+    if (!password) {
+        sweetAlertMessage("비밀번호를 입력하세요.", "", "w");
+        $("#user_password").focus();
+        return;
+    }
+    
     // client.js에서 초기화된 currentClientSessionId를 가져옵니다.
     // client.js가 먼저 로드되고 initializeClientSessionId()가 호출되어 currentClientSessionId가 설정되어 있어야 합니다.
     // 만약 currentClientSessionId가 아직 설정되지 않았다면, initializeClientSessionId()를 호출하여 강제로 초기화합니다.

@@ -1002,8 +1002,8 @@
               e && e.nodeName && "undefined" != e.nodeName && ((t = e.nodeName), (a[t] = e.nodeValue), sessionStorage.setItem(t, e.nodeValue));
           }),
           sessionStorage.setItem("defaultAttribute", JSON.stringify(a)),
-          q(a),
-          (i = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]')) && i.click()),
+          q(a)),
+          //(i = document.querySelector('.btn[data-bs-target="#theme-settings-offcanvas"]')) && i.click()),
         v(),
         // 2. 검색 기능 초기화
         // 검색 창이 포커스되거나 키보드 입력이 발생할 때 이벤트를 처리하여 검색 결과를 필터링하고, 검색 창이 닫히는 등의 동작을 관리합니다.

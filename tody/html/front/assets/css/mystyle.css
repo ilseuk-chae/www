@@ -2188,3 +2188,10 @@
         box-shadow: 0 0 14px rgba(30, 144, 255, 1), 0 1px 4px rgba(0, 0, 0, 0.35);
     }
 }
+a[data-izimodal-open="#terms"] {
+  color: blue;
+}
+
+a[data-izimodal-open="#terms"]:hover {
+  color: #ef8779;
+}

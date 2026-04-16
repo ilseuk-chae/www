@@ -10,6 +10,7 @@ include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/dbconnect.php');
 
 $no = isset($_POST['no']) ? urldecode($_POST['no']) : '';
+$type = isset($_POST['type']) ? urldecode($_POST['type']) : 'tody';
 
 try {
     // SQL 쿼리
@@ -22,10 +23,11 @@ try {
             DATE_FORMAT(a.lst_date, '%Y.%m.%d') AS lst_date
     
         FROM policy_master AS a
+        WHERE a.type = ? 
         ";
 
-    $params = [];
-    $types = '';
+    $params = [$type];
+    $types = 's';
     $stmt = executeQuery($conn, $sql, $types, $params);
     $result = mysqli_stmt_get_result($stmt);
 

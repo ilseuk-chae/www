@@ -5559,3 +5559,28 @@ function handleMapContentClass() {
     updateMapContentIcons();
 }
 
+// ===== 매물 요약 모달 =====
+function openSummaryInput() {
+    var iframe = document.getElementById('summaryIframe');
+    iframe.src = '/front/views/summary/summary_input.html';
+    var $modal = $('#summaryModal');
+    var modal = new bootstrap.Modal($modal[0]);
+    modal.show();
+
+    // jQuery UI draggable 적용 (헤더를 드래그 핸들로 사용)
+    $modal.on('shown.bs.modal', function () {
+        $modal.find('.modal-dialog').draggable({
+            handle: '.modal-header',
+            containment: 'window',
+            cursor: 'move'
+        });
+    });
+
+    // 모달 닫힐 때 iframe 초기화 + 위치 리셋
+    $modal.on('hidden.bs.modal', function () {
+        iframe.src = '';
+        $modal.find('.modal-dialog').css({ top: '', left: '' });
+        $modal.off('shown.bs.modal hidden.bs.modal');
+    });
+}
+

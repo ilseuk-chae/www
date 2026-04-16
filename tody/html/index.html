@@ -50,8 +50,19 @@
         <link href="/todyloan/css/loanstyle.css" rel="stylesheet" type="text/css" />
        
         <style>
+            html {
+                scroll-behavior: smooth;
+            }
             .main-search > div > dl dt span {
                 display: inline;
+            }
+            /* AOS 스크롤 애니메이션 폴백: 해당 섹션 요소 항상 표시 */
+            #main-intro [data-aos],
+            .main-service [data-aos],
+            .main-faq [data-aos],
+            .main-news [data-aos] {
+                opacity: 1 !important;
+                transform: none !important;
             }
         </style>
     </head>

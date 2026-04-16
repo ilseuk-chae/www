@@ -17,6 +17,11 @@
 @import url('board.css');
 @import url('content.css');
 
+/* 스무스 스크롤 (SmoothScroll.min.js 대체) */
+html {
+    scroll-behavior: smooth;
+}
+
 /* 공통 */
 :root {
   --var-header-height-web: 77px;
