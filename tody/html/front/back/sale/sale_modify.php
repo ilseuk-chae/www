@@ -204,7 +204,7 @@ try {
 
     // 조건 추가
     $params = [
-        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, $exchange_fg, urgent_sale_fg,
+        $pnu, $postal_code, $address_jibun, $address_road, $address_detail, $estate_type, $sale_type, $exchange_fg, $urgent_sale_fg,
         $lndcgrCode, $lndcgrCodeNm, $prposArea, $prposAreaNm, 
         $strctCd, $strctCdNm, $etcStrct, $useAprDay, 
         $mainPurpsCd, $mainPurpsCdNm, $realPurpsNm, 
