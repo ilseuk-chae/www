@@ -17,7 +17,7 @@ $(document).ready(async function () {
     fileManager = initEvents(); // 클로저에서 반환된 객체를 저장
     initValidation();
 
-    // 구합니다 - 상세 - 이미지
+    // 삽니다 - 상세 - 이미지
     swiper = new Swiper(".fw-file", {
         slidesPerView: "auto",
         spaceBetween: 15,

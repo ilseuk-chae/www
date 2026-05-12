@@ -21,7 +21,7 @@ $(function () {
 
 // 이벤트 초기화 함수
 function initEvents(user) {
-    // [Event] 구합니다 알림 체크 이벤트
+    // [Event] 삽니다 알림 체크 이벤트
     $("#find_rcv_fg").on("change", function () {
         if (!$(this).prop("checked")) {
             // 체크박스의 부모 div 내의 모든 ul 요소를 숨기기
@@ -32,7 +32,7 @@ function initEvents(user) {
         }
     });
 
-    // [Event] 내놓습니다 알림 체크 이벤트
+    // [Event] 팝니다 알림 체크 이벤트
     $("#put_rcv_fg").on("change", function () {
         if (!$(this).prop("checked")) {
             // 체크박스의 부모 div 내의 모든 ul 요소를 숨기기
@@ -52,23 +52,23 @@ function initEvents(user) {
         sggSelector.empty().append(sidoOptions);
     });
 
-    // [EVENT] 구합니다 추가 버튼 클릭
+    // [EVENT] 삽니다 추가 버튼 클릭
     $("#find_add_btn").on("click", function () {
         find_group_add();
     });
 
-    // [EVENT] 구합니다 제거 버튼 클릭
+    // [EVENT] 삽니다 제거 버튼 클릭
     $("#find_group_ul").on("click", "button.delete-btn", function () {
         const li = $(this).parents("li");
         li_delete(li);
     });
 
-    // [EVENT] 구합니다 추가 버튼 클릭
+    // [EVENT] 삽니다 추가 버튼 클릭
     $("#put_add_btn").on("click", function () {
         put_group_add();
     });
 
-    // [EVENT] 구합니다 제거 버튼 클릭
+    // [EVENT] 삽니다 제거 버튼 클릭
     $("#put_group_ul").on("click", "button.delete-btn", function () {
         const li = $(this).parents("li");
         li_delete(li);
@@ -241,7 +241,7 @@ async function sgg_get(sidoCd) {
 }
 
 /**
- * 구합니다 알림 구역 추가 함수
+ * 삽니다 알림 구역 추가 함수
  * @returns
  */
 async function find_group_add() {
@@ -324,7 +324,7 @@ async function find_group_add() {
 }
 
 /**
- * 내놓습니다 알림 구역 추가 함수
+ * 팝니다 알림 구역 추가 함수
  * @returns
  */
 async function put_group_add() {

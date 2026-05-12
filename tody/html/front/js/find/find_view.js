@@ -262,7 +262,7 @@ function copyUrl() {
 function initShareEvents() {
     Kakao.init("847d6b0bbbc2dbfe6b7c0c1f82d8cd71");
     const logoSrc = `${window.location.origin + (location.port ? ":" + location.port : "")}/front/assets/image/favicon.png`;
-    const title = `[구합니다] #토디 #구합니다 #부동산\n${$("#address").text()} ${$("#estate_type").text()} ${$("#sale_type").text()}\n${$("#price").text()}\n${$("#area").text()}`;
+    const title = `[삽니다] #토디 #삽니다 #부동산\n${$("#address").text()} ${$("#estate_type").text()} ${$("#sale_type").text()}\n${$("#price").text()}\n${$("#area").text()}`;
     const currentUrl = location.href;
     console.log(currentUrl);
 
@@ -274,29 +274,7 @@ function initShareEvents() {
             mobileWebUrl: currentUrl,
             webUrl: currentUrl,
         },
-        // content: {
-        //     title: title,
-        //     description: "#토디 #구합니다 #부동산",
-        //     // imageUrl: logoSrc,
-        //     link: {
-        //         // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-        //         mobileWebUrl: "http://tody.it7.kr/front/views/find/find_view.html?viewNo=35",
-        //         webUrl: "http://tody.it7.kr/front/views/find/find_view.html?viewNo=35",
-        //     },
-        // },
-        // social: {
-        // likeCount: 286,
-        // commentCount: 45,
-        // sharedCount: 845,
-        // },
-        // buttons: [
-        //     {
-        //         title: "게시글 보기",
-        //         link: {
-        //             webUrl: "http://tody.it7.kr/front/views/find/find_view.html?viewNo=35",
-        //         },
-        //     },
-        // ],
+        
     });
 }
 

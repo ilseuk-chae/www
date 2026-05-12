@@ -102,6 +102,34 @@ function initTabEvents() {
         }
     });
 
+    // 주변 시설 내부 탭 전환 (Bootstrap JS 간섭 방지 — inline style로 직접 제어)
+    $(document).on("click", ".mcs-tab-menu .nav-link", function () {
+        const $btn = $(this);
+        const target = $btn.attr("data-bs-target") || $btn.attr("href");
+        if (!target) return;
+
+        // 버튼 active 상태 전환
+        $btn.closest("dt").find(".nav-link").removeClass("active").attr("aria-selected", "false");
+        $btn.addClass("active").attr("aria-selected", "true");
+
+        // tab-pane 전환: inline style로 강제 제어 (Bootstrap CSS display:none 완전 차단)
+        const $tabContent = $btn.closest(".mc-surrounding").find(".tab-content");
+        $tabContent.find(".tab-pane").removeClass("active show").css("display", "none");
+        $tabContent.find(target).addClass("active show").css("display", "block");
+    });
+
+    // 주변 시설 초기 active 탭 강제 표시 (Bootstrap이 inline style로 숨길 경우 대비)
+    // map-content가 동적으로 열릴 수 있으므로 MutationObserver로 감지
+    const _surroundingObserver = new MutationObserver(function () {
+        $(".mc-surrounding .tab-pane.active").css("display", "block");
+    });
+    const _mcEl = document.querySelector(".map-content");
+    if (_mcEl) {
+        _surroundingObserver.observe(_mcEl, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    }
+    // 즉시 1회 실행
+    $(".mc-surrounding .tab-pane.active").css("display", "block");
+
     // 실거래가 '더보기' 버튼 클릭 이벤트
     $("#more_realPrice_btn").on("click", function () {
         const rows = $(".more-realPrice");
@@ -173,6 +201,16 @@ function initTabEvents() {
                 buildingTotalArea += parseFloat(building.totArea); // 총 건물 면적 계산
             });
             $("#top_build_area").text(formatArea(buildingTotalArea) + "(" + globalBrTitleInfo.length + "동)");
+        }
+
+        // 지도에 표시된 모든 마커 단위 일괄 변환 (실거래가/매물정보)
+        if (typeof updateAllMarkerUnits === 'function') {
+            updateAllMarkerUnits(currentUnit);
+        }
+
+        // 매물정보 탭이 활성화 상태라면 목록 재렌더링 (면적 단위 반영)
+        if (typeof layerState !== 'undefined' && layerState.estate && typeof estateNewList === 'function') {
+            estateNewList();
         }
     });
 

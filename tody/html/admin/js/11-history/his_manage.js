@@ -1,1 +1,518 @@
-const a38_0x2d68bf=a38_0x3bb0;(function(_0x5b8502,_0x295d3f){const _0x199bb9=a38_0x3bb0,_0x245a39=_0x5b8502();while(!![]){try{const _0x14f5c9=-parseInt(_0x199bb9(0x1cb))/0x1*(parseInt(_0x199bb9(0x1d6))/0x2)+-parseInt(_0x199bb9(0x1fa))/0x3+parseInt(_0x199bb9(0x1e0))/0x4+parseInt(_0x199bb9(0x1f2))/0x5*(parseInt(_0x199bb9(0x1f5))/0x6)+-parseInt(_0x199bb9(0x1af))/0x7+-parseInt(_0x199bb9(0x1bd))/0x8*(-parseInt(_0x199bb9(0x1b7))/0x9)+-parseInt(_0x199bb9(0x1ea))/0xa*(-parseInt(_0x199bb9(0x1aa))/0xb);if(_0x14f5c9===_0x295d3f)break;else _0x245a39['push'](_0x245a39['shift']());}catch(_0x5ab68e){_0x245a39['push'](_0x245a39['shift']());}}}(a38_0x5f4e,0xd146f));const mapContainer=document[a38_0x2d68bf(0x1be)](a38_0x2d68bf(0x1b0));let geocoder=new kakao[(a38_0x2d68bf(0x1f1))]['services']['Geocoder'](),ps=new kakao[(a38_0x2d68bf(0x1f1))][(a38_0x2d68bf(0x1c9))][(a38_0x2d68bf(0x1f9))]();$(document)['ready'](async function(){'use strict';initSelect(),initEvents(),initTable();});function initEvents(){const _0x7eb923=a38_0x2d68bf;$(_0x7eb923(0x1db))['on'](_0x7eb923(0x1c6),function(){const _0x5e65d6=_0x7eb923,_0x37d805=$(this)[_0x5e65d6(0x1f3)](),_0x4bc503=$(_0x5e65d6(0x1db))[_0x5e65d6(0x1f3)]()?$('#sido\x20option:selected')[_0x5e65d6(0x1e2)]():'',_0x3bf9e9=$(_0x5e65d6(0x1ef))[_0x5e65d6(0x1f3)]()?$(_0x5e65d6(0x1c5))[_0x5e65d6(0x1e2)]():'',_0x4e4d44=(_0x4bc503+'\x20'+_0x3bf9e9)[_0x5e65d6(0x1b3)]();sgg_get(_0x37d805);}),$('#sgg')['on'](_0x7eb923(0x1c6),function(){const _0x324cfa=_0x7eb923,_0x551209=$(this)['val'](),_0x13967a=$(_0x324cfa(0x1fd))['text'](),_0x33d98d=$(_0x324cfa(0x1c5))[_0x324cfa(0x1e2)](),_0x18a559=(_0x13967a+'\x20'+_0x33d98d)[_0x324cfa(0x1b3)]();}),$(_0x7eb923(0x1c8))['on'](_0x7eb923(0x1c6),function(){const _0x50fb58=_0x7eb923,_0x122926=$(_0x50fb58(0x1fd))['text'](),_0x5ac3a6=$(_0x50fb58(0x1c5))[_0x50fb58(0x1e2)](),_0x5b2194=$(_0x50fb58(0x1c0))[_0x50fb58(0x1e2)]();}),$(_0x7eb923(0x1d7))['on'](_0x7eb923(0x1d8),async function(){const _0x4db16a=_0x7eb923,_0x261da8=$('#history_nav\x20.nav-link.active')[_0x4db16a(0x1b6)]('data-table'),_0x2dbab2=$(_0x4db16a(0x1a6))[_0x4db16a(0x1b6)](_0x4db16a(0x1a0));initTable(0xa,0x0);}),$(_0x7eb923(0x1d2))['on']('click',async function(){const _0x4e23bc=_0x7eb923,_0x4ffc1c=$(_0x4e23bc(0x1e4)),_0x920dd2=_0x4ffc1c[_0x4e23bc(0x1ec)](_0x4e23bc(0x1cd))[_0x4e23bc(0x1d5)],_0x18b2c9=await initHistoryViewRealPrice(0xa,_0x920dd2);if(!_0x18b2c9[_0x4e23bc(0x1a9)]){}else _0x4ffc1c[_0x4e23bc(0x1ec)]('tbody')['append'](_0x18b2c9[_0x4e23bc(0x1a9)]);}),$('#sale_more_btn')['on'](_0x7eb923(0x1d8),async function(){const _0x4275a2=_0x7eb923,_0x3d58be=$(_0x4275a2(0x1bb)),_0x50bbac=_0x3d58be['find']('tbody\x20tr')[_0x4275a2(0x1d5)],_0x39c7e8=await initHistoryViewSale(0xa,_0x50bbac);if(!_0x39c7e8[_0x4275a2(0x1a9)]){}else _0x3d58be[_0x4275a2(0x1ec)]('tbody')['append'](_0x39c7e8[_0x4275a2(0x1a9)]);}),$('#find_more_btn')['on'](_0x7eb923(0x1d8),async function(){const _0x43583e=_0x7eb923,_0x2f3263=$(_0x43583e(0x1e1)),_0x11fa70=_0x2f3263[_0x43583e(0x1ec)](_0x43583e(0x1cd))[_0x43583e(0x1d5)],_0x94e234=await initHistoryViewFind(0xa,_0x11fa70);if(!_0x94e234['tbodyHtml']){}else _0x2f3263['find'](_0x43583e(0x1f7))[_0x43583e(0x1c1)](_0x94e234[_0x43583e(0x1a9)]);}),$(_0x7eb923(0x1cc))['on'](_0x7eb923(0x1d8),async function(){const _0x300a71=_0x7eb923,_0xb00a4=$(_0x300a71(0x1f4)),_0x33a2e4=_0xb00a4['find']('tbody\x20tr')['length'],_0x3e4aec=await initHistoryViewPut(0xa,_0x33a2e4);if(!_0x3e4aec[_0x300a71(0x1a9)]){}else _0xb00a4[_0x300a71(0x1ec)](_0x300a71(0x1f7))[_0x300a71(0x1c1)](_0x3e4aec[_0x300a71(0x1a9)]);});}async function initTable(){const _0x7d7dd4=a38_0x2d68bf,[_0x3a39e2,_0x14d96c,_0x45f943,_0xbc7652]=await Promise['all']([initHistoryViewRealPrice(0xa,0x0),initHistoryViewSale(0xa,0x0),initHistoryViewFind(0xa,0x0),initHistoryViewPut(0xa,0x0)]);$(_0x7d7dd4(0x1e4))[_0x7d7dd4(0x1ec)](_0x7d7dd4(0x1d4))[_0x7d7dd4(0x1dc)]()[_0x7d7dd4(0x1c1)](_0x3a39e2[_0x7d7dd4(0x1fb)]),$('#history_view_realPrice')[_0x7d7dd4(0x1ec)](_0x7d7dd4(0x1f7))['empty']()[_0x7d7dd4(0x1c1)](_0x3a39e2['tbodyHtml']),$(_0x7d7dd4(0x1bb))['find']('thead')[_0x7d7dd4(0x1dc)]()[_0x7d7dd4(0x1c1)](_0x14d96c[_0x7d7dd4(0x1fb)]),$(_0x7d7dd4(0x1bb))[_0x7d7dd4(0x1ec)](_0x7d7dd4(0x1f7))['empty']()[_0x7d7dd4(0x1c1)](_0x14d96c['tbodyHtml']),$(_0x7d7dd4(0x1e1))[_0x7d7dd4(0x1ec)](_0x7d7dd4(0x1d4))[_0x7d7dd4(0x1dc)]()[_0x7d7dd4(0x1c1)](_0x45f943[_0x7d7dd4(0x1fb)]),$(_0x7d7dd4(0x1e1))['find'](_0x7d7dd4(0x1f7))[_0x7d7dd4(0x1dc)]()[_0x7d7dd4(0x1c1)](_0x45f943[_0x7d7dd4(0x1a9)]),$(_0x7d7dd4(0x1f4))[_0x7d7dd4(0x1ec)]('thead')[_0x7d7dd4(0x1dc)]()[_0x7d7dd4(0x1c1)](_0xbc7652['theadHtml']),$(_0x7d7dd4(0x1f4))[_0x7d7dd4(0x1ec)]('tbody')['empty']()['append'](_0xbc7652[_0x7d7dd4(0x1a9)]);}function a38_0x5f4e(){const _0xc5bf59=['theadHtml','/admin/back/11-history/history_view_find.php','#sido\x20option:selected','/admin/back/11-history/history_search_real.php','umd_cd','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr\x20class=\x22table-light\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>주소</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>조회수</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>액션</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>','data-type','addressSearch','address_name','&curLng=','Status','\x22\x20class=\x22link-info\x22>보러가기\x20<i\x20class=\x22ri-arrow-right-line\x20align-middle\x22></i></a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>','#history_nav\x20.nav-link.active','/front/views/realPrice/realPrice.html?curLat=','finally','tbodyHtml','1107590cDwoBi','longitude','latitude','#find_more_btn','join','8721118MSzORi','map_bg','<option\x20value=\x22\x22>선택하세요.</option>','#sale_more_btn','trim','board_no','/front/views/sell/sell.html?curLat=','attr','36bVwdAB','map','count','</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>','#history_view_sale','/admin/back/11-history/history_view_realPrice.php','2247088HtMBxD','getElementById','</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-start\x22></font>\x20','#umd\x20option:selected','append','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20class=\x22fw-semibold\x22>','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>','/admin/back/04-estate/umd_get.php','#sgg\x20option:selected','change','/front/views/put/put_view.html?viewNo=','#umd','services','POST','1eEPfam','#put_more_btn','tbody\x20tr','/admin/back/04-estate/sgg_get.php','API\x20호출\x20실패','/admin/back/04-estate/sido_get.php','$estateNo=','#realPrice_more_btn','#period','thead','length','1277398WgvsNZ','#search_btn','click','error','</option>','#sido','empty','locallow_nm','<option\x20value=\x22\x22>시/군/구</option>','/admin/back/11-history/history_view_put.php','4549056xEwYJX','#history_view_find','text','sort','#history_view_realPrice','address_jibun','localeCompare','</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-start\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20target=\x22_blank\x22\x20href=\x22','show','data-address','50nTzrAN','responseData','find','then','</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-start\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22','#sgg','/admin/back/11-history/history_view_sale.php','maps','5VlDLxK','val','#history_view_put','5844702JfuyAB','hide','tbody','catch','Places','2989809rSuJsS'];a38_0x5f4e=function(){return _0xc5bf59;};return a38_0x5f4e();}async function initHistoryViewRealPrice(_0x32453a,_0x1fbd68){const _0x3024cf=a38_0x2d68bf,_0x146928=adminUserInfo(),_0x436bb1=$(_0x3024cf(0x1d3))[_0x3024cf(0x1f3)](),_0xe48edf=$(_0x3024cf(0x1db))['val'](),_0x48f864=$(_0x3024cf(0x1ef))[_0x3024cf(0x1f3)](),_0x348a7c=_0xe48edf+_0x48f864,_0x382cd6={..._0x146928,'period':encodeURIComponent(_0x436bb1),'pnu':encodeURIComponent(_0x348a7c),'limit':_0x32453a,'offset':_0x1fbd68};try{const _0x2e125d=await callApi(_0x3024cf(0x1ca),_0x3024cf(0x1bc),_0x382cd6),_0x300135=_0x2e125d[_0x3024cf(0x1eb)][_0x3024cf(0x1b8)](function(_0x5ab6c9,_0x1ed60c){const _0x1a4c92=_0x3024cf,_0x460b17=_0x1a4c92(0x1a7)+_0x5ab6c9[_0x1a4c92(0x1ac)]+'&curLng='+_0x5ab6c9[_0x1a4c92(0x1ab)];return _0x1a4c92(0x1c3)+_0x5ab6c9[_0x1a4c92(0x1e5)]+_0x1a4c92(0x1bf)+_0x5ab6c9[_0x1a4c92(0x1b9)]+_0x1a4c92(0x1e7)+_0x460b17+_0x1a4c92(0x1a5);})[_0x3024cf(0x1ae)](''),_0x298f54=_0x3024cf(0x19f);return _0x2e125d['responseData'][_0x3024cf(0x1d5)]<0xa?$(_0x3024cf(0x1d2))[_0x3024cf(0x1f6)]():$('#realPrice_more_btn')[_0x3024cf(0x1e8)](),{'theadHtml':_0x298f54,'tbodyHtml':_0x300135};}catch(_0x4780cc){}}async function initHistoryViewSale(_0x273385,_0x3a7bcf){const _0x594c67=a38_0x2d68bf,_0x204738=adminUserInfo(),_0x1d27a6=$('#period')[_0x594c67(0x1f3)](),_0x5c9a1b=$('#sido')['val'](),_0x3b8196=$(_0x594c67(0x1ef))['val'](),_0x5aebe4=_0x5c9a1b+_0x3b8196,_0x37ba37={..._0x204738,'period':encodeURIComponent(_0x1d27a6),'pnu':encodeURIComponent(_0x5aebe4),'limit':_0x273385,'offset':_0x3a7bcf};try{const _0x3ff9dc=await callApi(_0x594c67(0x1ca),_0x594c67(0x1f0),_0x37ba37),_0x5ce847=_0x3ff9dc[_0x594c67(0x1eb)]['map'](function(_0x1cddbc,_0x357d2a){const _0xd9fdec=_0x594c67,_0x4168b1=_0xd9fdec(0x1b5)+_0x1cddbc['latitude']+_0xd9fdec(0x1a3)+_0x1cddbc[_0xd9fdec(0x1ab)];return _0xd9fdec(0x1c2)+_0x1cddbc['estate_no']+_0xd9fdec(0x1ba)+_0x1cddbc[_0xd9fdec(0x1e5)]+'</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-start\x22></font>\x20'+_0x1cddbc[_0xd9fdec(0x1b9)]+'</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20class=\x22text-start\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22'+_0x4168b1+_0xd9fdec(0x1d1)+_0x1cddbc['estate_no']+'\x22\x20class=\x22link-info\x22>보러가기\x20<i\x20class=\x22ri-arrow-right-line\x20align-middle\x22></i></a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>';})['join'](''),_0x1cd4c0='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr\x20class=\x22table-light\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>매물\x20번호</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>주소</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>조회수</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>액션</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>';return _0x3ff9dc['responseData'][_0x594c67(0x1d5)]<0xa?$(_0x594c67(0x1b2))[_0x594c67(0x1f6)]():$(_0x594c67(0x1b2))[_0x594c67(0x1e8)](),{'theadHtml':_0x1cd4c0,'tbodyHtml':_0x5ce847};}catch(_0xc14ac4){}}async function initHistoryViewFind(_0x4906a3,_0x48ad74){const _0x466405=a38_0x2d68bf,_0x2a4680=adminUserInfo(),_0x357e2f=$(_0x466405(0x1d3))[_0x466405(0x1f3)](),_0x40e6cc=$(_0x466405(0x1db))[_0x466405(0x1f3)](),_0x5ff183=$(_0x466405(0x1ef))[_0x466405(0x1f3)](),_0x45e94e=_0x40e6cc+_0x5ff183,_0x1f75b2={..._0x2a4680,'period':encodeURIComponent(_0x357e2f),'pnu':encodeURIComponent(_0x45e94e),'limit':_0x4906a3,'offset':_0x48ad74};try{const _0x45ac84=await callApi(_0x466405(0x1ca),_0x466405(0x1fc),_0x1f75b2),_0x4ce6c1=_0x45ac84[_0x466405(0x1eb)][_0x466405(0x1b8)](function(_0xa0616e,_0x5a741c){const _0x26dc9f=_0x466405,_0x22b9e8='/front/views/find/find_view.html?viewNo='+_0xa0616e[_0x26dc9f(0x1b4)];return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20class=\x22fw-semibold\x22>'+_0xa0616e[_0x26dc9f(0x1b4)]+_0x26dc9f(0x1ba)+_0xa0616e['address_jibun']+_0x26dc9f(0x1bf)+_0xa0616e[_0x26dc9f(0x1b9)]+_0x26dc9f(0x1ee)+_0x22b9e8+_0x26dc9f(0x1a5);})[_0x466405(0x1ae)](''),_0x576d87='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr\x20class=\x22table-light\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>게시글\x20번호</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>주소</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>조회수</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>액션</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>';return _0x45ac84[_0x466405(0x1eb)][_0x466405(0x1d5)]<0xa?$(_0x466405(0x1ad))['hide']():$(_0x466405(0x1ad))[_0x466405(0x1e8)](),{'theadHtml':_0x576d87,'tbodyHtml':_0x4ce6c1};}catch(_0x785b16){}}async function initHistoryViewPut(_0x27b89c,_0x16d95b){const _0x533367=a38_0x2d68bf,_0xe7ab90=adminUserInfo(),_0x34157b=$(_0x533367(0x1d3))[_0x533367(0x1f3)](),_0x34cfdc=$(_0x533367(0x1db))[_0x533367(0x1f3)](),_0x4d95e4=$(_0x533367(0x1ef))['val'](),_0x490cc1=_0x34cfdc+_0x4d95e4,_0x3fed1f={..._0xe7ab90,'period':encodeURIComponent(_0x34157b),'pnu':encodeURIComponent(_0x490cc1),'limit':_0x27b89c,'offset':_0x16d95b};try{const _0x300165=await callApi('POST',_0x533367(0x1df),_0x3fed1f),_0x4b4d4e=_0x300165[_0x533367(0x1eb)][_0x533367(0x1b8)](function(_0x1529c6,_0x1fa849){const _0x13c4c2=_0x533367,_0xf4f15f=_0x13c4c2(0x1c7)+_0x1529c6[_0x13c4c2(0x1b4)];return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20class=\x22fw-semibold\x22>'+_0x1529c6[_0x13c4c2(0x1b4)]+_0x13c4c2(0x1ba)+_0x1529c6[_0x13c4c2(0x1e5)]+_0x13c4c2(0x1bf)+_0x1529c6[_0x13c4c2(0x1b9)]+_0x13c4c2(0x1ee)+_0xf4f15f+'\x22\x20class=\x22link-info\x22>보러가기\x20<i\x20class=\x22ri-arrow-right-line\x20align-middle\x22></i></a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>';})[_0x533367(0x1ae)](''),_0x1f95c6='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr\x20class=\x22table-light\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>게시글\x20번호</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22>주소</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>조회수</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<th\x20scope=\x22col\x22\x20class=\x22text-start\x22>액션</th>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>';return _0x300165[_0x533367(0x1eb)]['length']<0xa?$('#put_more_btn')[_0x533367(0x1f6)]():$(_0x533367(0x1cc))['show'](),{'theadHtml':_0x1f95c6,'tbodyHtml':_0x4b4d4e};}catch(_0x5ccc31){}}async function initSearchHistory(_0x1372a0,_0x525ccd,_0x58e7a0,_0x6f2af8){const _0x2b8d53=a38_0x2d68bf;return;const _0x336ffc=adminUserInfo(),_0x1815e9=$(_0x2b8d53(0x1d3))[_0x2b8d53(0x1f3)](),_0x5c0d09=$('#sido')[_0x2b8d53(0x1f3)](),_0x45de67=$(_0x2b8d53(0x1ef))[_0x2b8d53(0x1f3)](),_0x2c5d1d={..._0x336ffc,'address':encodeURIComponent(_0x1372a0),'type':encodeURIComponent(_0x525ccd),'limit':_0x58e7a0,'offset':_0x6f2af8};try{const _0x593293=await callApi(_0x2b8d53(0x1ca),_0x2b8d53(0x1fe),_0x2c5d1d);}catch(_0x5e2e37){}}function initSelect(){sido_get();}async function sido_get(){const _0x2de3f9=a38_0x2d68bf,_0x595620=adminUserInfo(),_0x126331={..._0x595620};callApi('POST',_0x2de3f9(0x1d0),_0x126331)[_0x2de3f9(0x1ed)](_0x43f847=>{const _0x1a7369=_0x2de3f9;populateOptions(_0x1a7369(0x1db),_0x43f847[_0x1a7369(0x1eb)],'sido_cd','locallow_nm');})['catch'](_0x33315d=>{const _0x2a1e07=_0x2de3f9;console[_0x2a1e07(0x1d9)]('API\x20호출\x20실패',_0x33315d);})[_0x2de3f9(0x1a8)](async()=>{});}async function sgg_get(){const _0x148954=a38_0x2d68bf,_0xaba3b2=adminUserInfo(),_0x5a0a10={..._0xaba3b2,'sido_cd':encodeURIComponent($(_0x148954(0x1db))[_0x148954(0x1f3)]())};callApi(_0x148954(0x1ca),_0x148954(0x1ce),_0x5a0a10)['then'](_0x1277ce=>{const _0x1334a6=_0x148954;$(_0x1334a6(0x1ef))[_0x1334a6(0x1dc)]()[_0x1334a6(0x1c1)](_0x1334a6(0x1de)),populateOptions(_0x1334a6(0x1ef),_0x1277ce[_0x1334a6(0x1eb)],'sgg_cd','locatadd_nm');})[_0x148954(0x1f8)](_0x1aca55=>{const _0x33df5d=_0x148954;console['error'](_0x33df5d(0x1cf),_0x1aca55);})[_0x148954(0x1a8)](()=>{});}function a38_0x3bb0(_0x32d801,_0x5af90a){const _0x5f4edb=a38_0x5f4e();return a38_0x3bb0=function(_0x3bb057,_0xa9ff4e){_0x3bb057=_0x3bb057-0x19f;let _0x43a85c=_0x5f4edb[_0x3bb057];return _0x43a85c;},a38_0x3bb0(_0x32d801,_0x5af90a);}async function umd_get(){const _0x30ea94=a38_0x2d68bf,_0x31cc50=adminUserInfo(),_0x2ee1d4={..._0x31cc50,'sido_cd':encodeURIComponent($(_0x30ea94(0x1db))[_0x30ea94(0x1f3)]()),'sgg_cd':encodeURIComponent($(_0x30ea94(0x1ef))['val']())};callApi(_0x30ea94(0x1ca),_0x30ea94(0x1c4),_0x2ee1d4)[_0x30ea94(0x1ed)](_0x2464d6=>{const _0x1b5159=_0x30ea94;$(_0x1b5159(0x1c8))[_0x1b5159(0x1dc)]()[_0x1b5159(0x1c1)](_0x1b5159(0x1b1)),populateOptions('#umd',_0x2464d6['responseData'],_0x1b5159(0x1ff),_0x1b5159(0x1dd));})[_0x30ea94(0x1f8)](_0x1f0f22=>{const _0x1e2c96=_0x30ea94;console['error'](_0x1e2c96(0x1cf),_0x1f0f22);})[_0x30ea94(0x1a8)](()=>{});}async function searchAddress(_0x106512){const _0x5d4585=a38_0x2d68bf;geocoder[_0x5d4585(0x1a1)](_0x106512,async function(_0x2ac30f,_0x4e7527,_0x120d60){const _0x3bb86d=_0x5d4585;if(_0x4e7527===kakao[_0x3bb86d(0x1f1)][_0x3bb86d(0x1c9)][_0x3bb86d(0x1a4)]['OK']){const _0x54662d=_0x2ac30f[0x0],_0x2ca14c=_0x54662d[_0x3bb86d(0x1a2)];$(_0x3bb86d(0x1d7))[_0x3bb86d(0x1b6)](_0x3bb86d(0x1e9),_0x2ca14c);}});}function areValidCoordinatesInKorea(_0x4dea15,_0x56a2af){const _0x303cea=isValidCoordinate(_0x4dea15)&&_0x4dea15>=0x21&&_0x4dea15<=0x2b,_0xe2feee=isValidCoordinate(_0x56a2af)&&_0x56a2af>=0x7c&&_0x56a2af<=0x84;return _0x303cea&&_0xe2feee;}function isValidCoordinate(_0x388f2a){return _0x388f2a!==null&&_0x388f2a!==undefined&&_0x388f2a!==''&&!isNaN(_0x388f2a);}function populateOptions(_0x491347,_0x1ce4ab,_0x15837f,_0x5633c7){const _0x37f610=a38_0x2d68bf;if(_0x1ce4ab[_0x37f610(0x1d5)]>0x0){_0x1ce4ab[_0x37f610(0x1e3)]((_0x13a8bb,_0x448979)=>_0x13a8bb[_0x5633c7][_0x37f610(0x1e6)](_0x448979[_0x5633c7]));const _0x25a281=_0x1ce4ab[_0x37f610(0x1b8)](_0x393e92=>'<option\x20value=\x22'+_0x393e92[_0x15837f]+'\x22>'+_0x393e92[_0x5633c7]+_0x37f610(0x1da))[_0x37f610(0x1ae)]('');$(_0x491347)[_0x37f610(0x1c1)](_0x25a281);}}
+const mapContainer = document.getElementById("map_bg"); // 지도를 표시할 div
+let geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체를 생성합니다
+let ps = new kakao.maps.services.Places(); // 장소 검색 객체를 생성합니다
+
+// 문서가 완전히 로드되고 DOM이 준비되었을 때 실행
+$(document).ready(async function () {
+    "use strict"; // Use strict mode for the whole function
+
+    initSelect(); // 선택박스 초기화
+    initEvents(); // 이벤트 초기화
+    initTable(); // 테이블 초기화
+});
+
+/**
+ * 이벤트 모음 함수
+ */
+function initEvents() {
+    // [EVENT] 변경 이벤트 - 시/도 필터
+    $("#sido").on("change", function () {
+        const sido_cd = $(this).val();
+        const selectedSido = $("#sido").val() ? $("#sido option:selected").text() : ""; // 선택된 옵션의 텍스트값
+        const selectedSgg = $("#sgg").val() ? $("#sgg option:selected").text() : ""; // 선택된 옵션의 텍스트값
+        const keyword = (selectedSido + " " + selectedSgg).trim();
+
+        sgg_get(sido_cd); // 필터(시/군/구)
+        // searchAddress(keyword);
+    });
+
+    // [EVENT] 변경 이벤트 - 시/군/구 필터
+    $("#sgg").on("change", function () {
+        const sgg_cd = $(this).val();
+        const selectedSido = $("#sido option:selected").text(); // 선택된 옵션의 텍스트값
+        const selectedSgg = $("#sgg option:selected").text(); // 선택된 옵션의 텍스트값
+        const keyword = (selectedSido + " " + selectedSgg).trim();
+
+        // umd_get(sgg_cd); // 필터(읍/면/동)
+        // searchAddress(keyword);
+    });
+
+    // [EVENT] 변경 이벤트 - 읍/면/동 필터
+    $("#umd").on("change", function () {
+        const selectedSido = $("#sido option:selected").text(); // 선택된 옵션의 텍스트값
+        const selectedSgg = $("#sgg option:selected").text(); // 선택된 옵션의 텍스트값
+        const selectedUmd = $("#umd option:selected").text(); // 선택된 옵션의 텍스트값
+    });
+
+    // 검색
+    $("#search_btn").on("click", async function () {
+        const table = $("#history_nav .nav-link.active").attr("data-table");
+        const type = $("#history_nav .nav-link.active").attr("data-type");
+
+        initTable(10, 0);
+        // if (table === "view") {
+        // } else if (table === "view") {
+        // }
+    });
+
+    // 실거래가 - 더보기
+    $("#realPrice_more_btn").on("click", async function () {
+        const table = $("#history_view_realPrice");
+        const trLength = table.find("tbody tr").length;
+        const result = await initHistoryViewRealPrice(10, trLength);
+        if (!result.tbodyHtml) {
+            // $("#realPrice_more_btn").hide();
+        } else {
+            table.find("tbody").append(result.tbodyHtml);
+        }
+    });
+
+    // 매물정보 - 더보기
+    $("#sale_more_btn").on("click", async function () {
+        const table = $("#history_view_sale");
+        const trLength = table.find("tbody tr").length;
+        const result = await initHistoryViewSale(10, trLength);
+        if (!result.tbodyHtml) {
+            // $("#realPrice_more_btn").hide();
+        } else {
+            table.find("tbody").append(result.tbodyHtml);
+        }
+    });
+
+    // 구합니다 - 더보기
+    $("#find_more_btn").on("click", async function () {
+        const table = $("#history_view_find");
+        const trLength = table.find("tbody tr").length;
+        const result = await initHistoryViewFind(10, trLength);
+        if (!result.tbodyHtml) {
+            // $("#realPrice_more_btn").hide();
+        } else {
+            table.find("tbody").append(result.tbodyHtml);
+        }
+    });
+
+    // 내놓습니다 - 더보기
+    $("#put_more_btn").on("click", async function () {
+        const table = $("#history_view_put");
+        const trLength = table.find("tbody tr").length;
+        const result = await initHistoryViewPut(10, trLength);
+        if (!result.tbodyHtml) {
+            // $("#realPrice_more_btn").hide();
+        } else {
+            table.find("tbody").append(result.tbodyHtml);
+        }
+    });
+}
+
+/* =================================================================
+ * 테이블 관련 함수
+ * ================================================================= */
+
+/**
+ * 전체 테이블 초기화 함수
+ */
+async function initTable() {
+    // 세 개의 비동기 함수를 병렬로 실행
+    const [historyViewRealPrice, historyViewSale, historyViewFind, historyViewPut] = await Promise.all([initHistoryViewRealPrice(10, 0), initHistoryViewSale(10, 0), initHistoryViewFind(10, 0), initHistoryViewPut(10, 0)]);
+
+    $("#history_view_realPrice").find("thead").empty().append(historyViewRealPrice.theadHtml);
+    $("#history_view_realPrice").find("tbody").empty().append(historyViewRealPrice.tbodyHtml);
+
+    $("#history_view_sale").find("thead").empty().append(historyViewSale.theadHtml);
+    $("#history_view_sale").find("tbody").empty().append(historyViewSale.tbodyHtml);
+
+    $("#history_view_find").find("thead").empty().append(historyViewFind.theadHtml);
+    $("#history_view_find").find("tbody").empty().append(historyViewFind.tbodyHtml);
+
+    $("#history_view_put").find("thead").empty().append(historyViewPut.theadHtml);
+    $("#history_view_put").find("tbody").empty().append(historyViewPut.tbodyHtml);
+}
+
+/**
+ * 실거래가 주소 조회수 가져오는 함수
+ * @param {*} limitCount
+ * @param {*} offsetCount
+ * @returns
+ */
+async function initHistoryViewRealPrice(limitCount, offsetCount) {
+    const user = adminUserInfo();
+    const period = $("#period").val();
+    const sido = $("#sido").val();
+    const sgg = $("#sgg").val();
+    const pnu = sido + sgg;
+
+    const dataObj = {
+        ...user,
+        period: encodeURIComponent(period),
+        pnu: encodeURIComponent(pnu),
+        limit: limitCount,
+        offset: offsetCount,
+        v2_mode: (typeof v2_mode !== "undefined" && v2_mode) ? 1 : 0,
+    };
+
+    try {
+        const result = await callApi("POST", "/admin/back/11-history/history_view_realPrice.php", dataObj);
+
+        const tbodyHtml = result.responseData
+            .map(function (item, index) {
+                // v2_mode: 실거래가v2 페이지로 이동
+                const pageUrl = (typeof v2_mode !== "undefined" && v2_mode)
+                    ? `/front/views/realPrice/realPrice_v2.html?curLat=${item.latitude}&curLng=${item.longitude}`
+                    : `/front/views/realPrice/realPrice.html?curLat=${item.latitude}&curLng=${item.longitude}`;
+                return `
+                    <tr>
+                        <td>${item.address_jibun}</td>
+                        <td class="text-start"></font> ${item.count}</td>
+                        <td class="text-start">
+                            <a target="history_realPrice_window" href="${pageUrl}" class="link-info">보러가기 <i class="ri-arrow-right-line align-middle"></i></a>
+                        </td>
+                    </tr>`;
+            })
+            .join("");
+
+        const theadHtml = `
+            <tr class="table-light">
+                <th scope="col">주소</th>
+                <th scope="col" class="text-start">조회수</th>
+                <th scope="col" class="text-start">액션</th>
+            </tr>`;
+        if (result.responseData.length < 10) {
+            $("#realPrice_more_btn").hide();
+        } else {
+            $("#realPrice_more_btn").show();
+        }
+        return { theadHtml, tbodyHtml };
+    } catch (error) {}
+}
+
+/**
+ * 매물정보 주소 조회수 가져오는 함수
+ * @param {*} limitCount
+ * @param {*} offsetCount
+ * @returns
+ */
+async function initHistoryViewSale(limitCount, offsetCount) {
+    const user = adminUserInfo();
+    const period = $("#period").val();
+    const sido = $("#sido").val();
+    const sgg = $("#sgg").val();
+    const pnu = sido + sgg;
+
+    const dataObj = {
+        ...user,
+        period: encodeURIComponent(period),
+        pnu: encodeURIComponent(pnu),
+        limit: limitCount,
+        offset: offsetCount,
+        v2_mode: (typeof v2_mode !== "undefined" && v2_mode) ? 1 : 0,
+    };
+
+    try {
+        const result = await callApi("POST", "/admin/back/11-history/history_view_sale.php", dataObj);
+
+        const tbodyHtml = result.responseData
+            .map(function (item, index) {
+                // v2_mode: 매물정보는 V2에서 실거래가v2(통합) 페이지로 이동
+                // estateNo → 매물 상세 패널 자동 오픈 + 지도 이동
+                // curLat/curLng는 유효할 때만 추가 (0 또는 null이면 제외)
+                const _hasValidCoords = item.latitude && item.longitude && parseFloat(item.latitude) !== 0 && parseFloat(item.longitude) !== 0;
+                const pageUrl = (typeof v2_mode !== "undefined" && v2_mode)
+                    ? `/front/views/realPrice/realPrice_v2.html?${_hasValidCoords ? `curLat=${item.latitude}&curLng=${item.longitude}&` : ''}estateNo=${item.estate_no}`
+                    : `/front/views/sell/sell.html?curLat=${item.latitude}&curLng=${item.longitude}`;
+                return `
+                    <tr>
+                        <th class="fw-semibold">${item.estate_no}</th>
+                        <td>${item.address_jibun}</td>
+                        <td class="text-start"></font> ${item.count}</td>
+                        <td class="text-start">
+                            <a target="history_sale_window" href="${pageUrl}${(typeof v2_mode === "undefined" || !v2_mode) ? `$estateNo=${item.estate_no}` : ''}" class="link-info">보러가기 <i class="ri-arrow-right-line align-middle"></i></a>
+                        </td>
+                    </tr>`;
+            })
+            .join("");
+
+        const theadHtml = `
+            <tr class="table-light">
+                <th scope="col">매물 번호</th>
+                <th scope="col">주소</th>
+                <th scope="col" class="text-start">조회수</th>
+                <th scope="col" class="text-start">액션</th>
+            </tr>`;
+        if (result.responseData.length < 10) {
+            $("#sale_more_btn").hide();
+        } else {
+            $("#sale_more_btn").show();
+        }
+        return { theadHtml, tbodyHtml };
+    } catch (error) {}
+}
+
+/**
+ * 구합니다 주소 조회수 가져오는 함수
+ * @param {*} limitCount
+ * @param {*} offsetCount
+ * @returns
+ */
+async function initHistoryViewFind(limitCount, offsetCount) {
+    const user = adminUserInfo();
+    const period = $("#period").val();
+    const sido = $("#sido").val();
+    const sgg = $("#sgg").val();
+    const pnu = sido + sgg;
+
+    const dataObj = {
+        ...user,
+        period: encodeURIComponent(period),
+        pnu: encodeURIComponent(pnu),
+        limit: limitCount,
+        offset: offsetCount,
+        v2_mode: (typeof v2_mode !== "undefined" && v2_mode) ? 1 : 0,
+    };
+
+    try {
+        const result = await callApi("POST", "/admin/back/11-history/history_view_find.php", dataObj);
+
+        const tbodyHtml = result.responseData
+            .map(function (item, index) {
+                // v2_mode: 삽니다 V2 상세 페이지로 이동
+                const pageUrl = (typeof v2_mode !== "undefined" && v2_mode)
+                    ? `/front/views/find/find_view_v2.html?viewNo=${item.board_no}`
+                    : `/front/views/find/find_view.html?viewNo=${item.board_no}`;
+                return `
+                    <tr>
+                        <th class="fw-semibold">${item.board_no}</th>
+                        <td>${item.address_jibun}</td>
+                        <td class="text-start"></font> ${item.count}</td>
+                        <td class="text-start">
+                            <a target="history_find_window" href="${pageUrl}" class="link-info">보러가기 <i class="ri-arrow-right-line align-middle"></i></a>
+                        </td>
+                    </tr>`;
+            })
+            .join("");
+
+        const theadHtml = `
+            <tr class="table-light">
+                <th scope="col">게시글 번호</th>
+                <th scope="col">주소</th>
+                <th scope="col" class="text-start">조회수</th>
+                <th scope="col" class="text-start">액션</th>
+            </tr>`;
+        if (result.responseData.length < 10) {
+            $("#find_more_btn").hide();
+        } else {
+            $("#find_more_btn").show();
+        }
+        return { theadHtml, tbodyHtml };
+    } catch (error) {}
+}
+
+/**
+ * 내놓습니다 주소 조회수 가져오는 함수
+ * @param {*} limitCount
+ * @param {*} offsetCount
+ * @returns
+ */
+async function initHistoryViewPut(limitCount, offsetCount) {
+    const user = adminUserInfo();
+    const period = $("#period").val();
+    const sido = $("#sido").val();
+    const sgg = $("#sgg").val();
+    const pnu = sido + sgg;
+
+    const dataObj = {
+        ...user,
+        period: encodeURIComponent(period),
+        pnu: encodeURIComponent(pnu),
+        limit: limitCount,
+        offset: offsetCount,
+        v2_mode: (typeof v2_mode !== "undefined" && v2_mode) ? 1 : 0,
+    };
+
+    try {
+        const result = await callApi("POST", "/admin/back/11-history/history_view_put.php", dataObj);
+
+        const tbodyHtml = result.responseData
+            .map(function (item, index) {
+                // v2_mode: 팝니다 V2 상세 페이지로 이동
+                const pageUrl = (typeof v2_mode !== "undefined" && v2_mode)
+                    ? `/front/views/put/put_view_v2.html?viewNo=${item.board_no}`
+                    : `/front/views/put/put_view.html?viewNo=${item.board_no}`;
+                return `
+                    <tr>
+                        <th class="fw-semibold">${item.board_no}</th>
+                        <td>${item.address_jibun}</td>
+                        <td class="text-start"></font> ${item.count}</td>
+                        <td class="text-start">
+                            <a target="history_put_window" href="${pageUrl}" class="link-info">보러가기 <i class="ri-arrow-right-line align-middle"></i></a>
+                        </td>
+                    </tr>`;
+            })
+            .join("");
+
+        const theadHtml = `
+            <tr class="table-light">
+                <th scope="col">게시글 번호</th>
+                <th scope="col">주소</th>
+                <th scope="col" class="text-start">조회수</th>
+                <th scope="col" class="text-start">액션</th>
+            </tr>`;
+        if (result.responseData.length < 10) {
+            $("#put_more_btn").hide();
+        } else {
+            $("#put_more_btn").show();
+        }
+        return { theadHtml, tbodyHtml };
+    } catch (error) {}
+}
+
+async function initSearchHistory(address, type, limitCount, offsetCount) {
+    return;
+    const user = adminUserInfo();
+    const period = $("#period").val();
+    const sido = $("#sido").val();
+    const sgg = $("#sgg").val();
+    const dataObj = {
+        ...user,
+        address: encodeURIComponent(address),
+        type: encodeURIComponent(type),
+        limit: limitCount,
+        offset: offsetCount,
+    };
+
+    try {
+        const result = await callApi("POST", "/admin/back/11-history/history_search_real.php", dataObj);
+    } catch (error) {}
+}
+
+/* =================================================================
+ * 선택박스 관련 함수
+ * ================================================================= */
+
+/**
+ * 선택박스 초기화
+ */
+function initSelect() {
+    sido_get(); // 시/도
+}
+
+/**
+ * 시/도 가져오는 함수
+ * @returns
+ */
+async function sido_get() {
+    const user = adminUserInfo();
+    const dataObj = { ...user };
+
+    callApi("POST", "/admin/back/04-estate/sido_get.php", dataObj)
+        .then((response) => {
+            populateOptions("#sido", response.responseData, "sido_cd", "locallow_nm");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(async () => {
+            // sgg_get(sido);
+        });
+}
+
+/**
+ * 시/군/구 가져오는 함수
+ * @returns
+ */
+async function sgg_get() {
+    const user = adminUserInfo();
+    const dataObj = {
+        ...user,
+        sido_cd: encodeURIComponent($("#sido").val()),
+    };
+
+    callApi("POST", "/admin/back/04-estate/sgg_get.php", dataObj)
+        .then((response) => {
+            $("#sgg").empty().append('<option value="">시/군/구</option>');
+            populateOptions("#sgg", response.responseData, "sgg_cd", "locatadd_nm");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {});
+}
+
+/**
+ * 읍/면/동 가져오는 함수
+ * @returns
+ */
+async function umd_get() {
+    const user = adminUserInfo();
+    const dataObj = {
+        ...user,
+        sido_cd: encodeURIComponent($("#sido").val()),
+        sgg_cd: encodeURIComponent($("#sgg").val()),
+    };
+
+    callApi("POST", "/admin/back/04-estate/umd_get.php", dataObj)
+        .then((response) => {
+            $("#umd").empty().append('<option value="">선택하세요.</option>');
+            populateOptions("#umd", response.responseData, "umd_cd", "locallow_nm");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {});
+}
+
+/**
+ * 주소로 좌표 검색 및 지도 중심 이동
+ * @param {*} keyword - 검색 주소
+ */
+async function searchAddress(keyword) {
+    // 주소 검색
+    geocoder.addressSearch(keyword, async function (data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+            const result = data[0];
+            const address_name = result.address_name;
+            $("#search_btn").attr("data-address", address_name);
+        }
+    });
+}
+
+/* =================================================================
+ * helper 관련 함수
+ * ================================================================= */
+
+/**
+ * 좌표가 대한민국 내의 유효한 좌표인지 확인하는 함수
+ * @param {string|number} lat - 위도
+ * @param {string|number} lng - 경도
+ * @returns {boolean}
+ */
+function areValidCoordinatesInKorea(lat, lng) {
+    const isLatValid = isValidCoordinate(lat) && lat >= 33.0 && lat <= 43.0;
+    const isLngValid = isValidCoordinate(lng) && lng >= 124.0 && lng <= 132.0;
+    return isLatValid && isLngValid;
+}
+
+/**
+ * 좌표가 유효한지 확인하는 함수
+ * @param {*} value
+ * @returns
+ */
+function isValidCoordinate(value) {
+    return value !== null && value !== undefined && value !== "" && !isNaN(value);
+}
+
+/**
+ * 선택자를 이용해 옵션을 채우는 함수
+ * @param {string} selector jQuery 선택자
+ * @param {Array} data 데이터 배열
+ * @param {string} valueKey 값 키
+ * @param {string} textKey 텍스트 키
+ */
+function populateOptions(selector, data, valueKey, textKey) {
+    if (data.length > 0) {
+        // 텍스트 기준 오름차순
+        data.sort((a, b) => a[textKey].localeCompare(b[textKey]));
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        $(selector).append(optionHtml);
+    }
+}

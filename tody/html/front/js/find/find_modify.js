@@ -459,7 +459,7 @@ async function findDelete() {
 
     if (message === "SUCCESS") {
         const confirm = await sweetAlertForReturn("처리 되었습니다.", "", "s");
-        if (confirm) location.href = "/front/views/mypage/mypage_find";
+        if (confirm) location.href = "/front/views/mypage/mypage_find.html";
     } else {
         const confirm = await sweetAlertForReturn("삭제를 실패했습니다.", "", "e");
         if (confirm) location.reload();

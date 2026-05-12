@@ -7,6 +7,7 @@ let realPriceData = []; // 실거래가 정보
 let realEstimatedPrice = null; // 추정가
 
 
+
 function countEstateTypes(apiResponseObject) {
     // 1. 실제 데이터 배열이 존재하는지 확인합니다.
     const dataRecords = apiResponseObject.responseData;
@@ -400,6 +401,8 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                 let imgString = "";
                 let infoString = "";
                 let jimokString = "";
+                let badgeColor = "#999";
+                let lightColor = "#BBBBBB";
 
                 if (zoomLevel > 4) { // 줌 레벨이 5 이상일 경우 (원안에 숫자 표시)
                     // 클러스터러가 초기화되었는지 확인
@@ -498,38 +501,39 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     switch(data.estate_type) {
                         case "apt":
                             markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
-                            imgString = "icn_arr_mark_orange2.svg"; estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                            imgString = "icn_arr_mark_orange2.svg"; badgeColor = "#FE6900"; lightColor = "#FFA55A";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                         case "land":
                             markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
-                            imgString = "icn_arr_mark_yellow1.svg";
+                            imgString = "icn_arr_mark_yellow1.svg"; badgeColor = "#FEB912"; lightColor = "#FDD055";
                             if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
                             estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                         case "multi":
                             markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
-                            imgString = "icn_arr_mark_red2.svg"; 
+                            imgString = "icn_arr_mark_red2.svg"; badgeColor = "#FE7D87"; lightColor = "#FFB0B7";
                             estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             break;
                         case "officetel":
                             markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
-                            imgString = "icn_arr_mark_indigo2.svg"; 
+                            imgString = "icn_arr_mark_indigo2.svg"; badgeColor = "#F4AFCA"; lightColor = "#F8D0E3";
                             estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                         case "single":
                             markerString = "border-violet1"; borderString = "border-bottom-violet1"; liString = "bg-violet1";
-                            imgString = "icn_arr_mark_violet1.svg";
+                            imgString = "icn_arr_mark_violet1.svg"; badgeColor = "#702BFE"; lightColor = "#9B6DFE";
                             estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                         case "commercial":
                             markerString = "border-blue1"; borderString = "border-bottom-blue1"; liString = "bg-blue1";
-                            imgString = "icn_arr_mark_blue1.svg"; 
+                            imgString = "icn_arr_mark_blue1.svg"; badgeColor = "#2973D6"; lightColor = "#6BA4E8";
                             estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type); break; //(상업용)
                         case "factory":
                             markerString = "border-green1"; borderString = "border-bottom-green1"; liString = "bg-green1";
-                            imgString = "icn_arr_mark_green1.svg"; 
+                            imgString = "icn_arr_mark_green1.svg"; badgeColor = "#039C55"; lightColor = "#40BD80";
                             estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type); break;
-                        default:    
+                        default:
                             markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
-                            imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; break;
+                            imgString = "icn_arr_mark_gray_black.svg"; badgeColor = "#999"; lightColor = "#BBBBBB"; estateString = "-"; break;
                     }
-                    
+
                     // 필터에 따른 정보 문자열 구성
                     switch(filterObj.estateinfo) {
                         case "거래면적":
@@ -551,19 +555,20 @@ async function realPriceAptArrayWithCache(sggCdsToFetch, currentVisibleGeoJsonFe
                     
                     // HTML 콘텐츠 구성
                     iwContent.innerHTML = `
-                    <ul class="text-center bg-white border ${markerString} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
+                    <ul class="text-center bg-white overflow-hidden" style="min-width:60px; border-radius:10px; border: 1px solid ${lightColor};" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
                     }" ondragstart="return false;" onselectstart="return false;">
-                        <li class="up bg-white ${borderString} p-1" style="line-height: 11px;">
-                            <p class="font10">${estateString}</p>
+                        <li class="up bg-white p-1" style="line-height:11px; display:flex; align-items:center; justify-content:center; gap:3px; border-bottom: 1px solid ${lightColor};">
+                            <span style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:${badgeColor}; font-size:8px; font-weight:800; color:#fff; flex-shrink:0; line-height:1;">실</span>
+                            <span class="font10">${estateString}</span>
                         </li>
                         <li class="up bg-white p-1">
                             <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
                         </li>
-                        <li class="${liString} text-white">
+                        <li class="text-white" style="background: ${lightColor};">
                             ${infoString}
                         </li>
                     </ul>
-                    <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
+                    <div style="text-align:center; line-height:0; margin:0; padding:0;"><span style="display:inline-block; width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:10px solid ${lightColor};"></span></div>
                     `;
 
                     // CustomOverlay 생성 및 지도에 추가
@@ -1438,47 +1443,50 @@ async function realPriceAptArray(sggCdArray) {
                     } else { // 줌 레벨이 3 이하일 경우 (가장 낮은 상세도 뷰) // 인포윈도우 스타일 마커 생성 로직
                         const iwContent = document.createElement("div"); 
                         iwContent.className = "real-price-marker cursor-pointer";
-                        let liString = ""; 
-                        let imgString = ""; 
-                        let estateString = ""; 
-                        let borderString = ""; 
-                        let infoString = ""; 
-                        let jimokString = ""; 
+                        let liString = "";
+                        let imgString = "";
+                        let estateString = "";
+                        let borderString = "";
+                        let infoString = "";
+                        let jimokString = "";
+                        let badgeColor = "#999";
+                        let lightColor = "#BBBBBB";
 
                         // 부동산 유형에 따른 스타일 및 텍스트 설정 (동일)
                         switch(data.estate_type) {
                             case "apt":
                                 markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
-                                imgString = "icn_arr_mark.svg"; estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
+                                imgString = "icn_arr_mark.svg"; badgeColor = "#FE6900"; lightColor = "#FFA55A";
+                                estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             case "land":
                                 markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
-                                imgString = "icn_arr_mark_yellow1.svg";
+                                imgString = "icn_arr_mark_yellow1.svg"; badgeColor = "#FEB912"; lightColor = "#FDD055";
                                 if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
                                 estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             case "multi":
                                 markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
-                                imgString = "icn_arr_mark_red2.svg"; 
+                                imgString = "icn_arr_mark_red2.svg"; badgeColor = "#FE7D87"; lightColor = "#FFB0B7";
                                 estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                                 break;
                             case "officetel":
                                 markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
-                                imgString = "icn_arr_mark_indigo2.svg"; 
+                                imgString = "icn_arr_mark_indigo2.svg"; badgeColor = "#F4AFCA"; lightColor = "#F8D0E3";
                                 estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             case "single":
                                 markerString = "border-violet1"; borderString = "border-bottom-violet1"; liString = "bg-violet1";
-                                imgString = "icn_arr_mark_violet1.svg";
+                                imgString = "icn_arr_mark_violet1.svg"; badgeColor = "#702BFE"; lightColor = "#9B6DFE";
                                 estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); break;
                             case "commercial":
                                 markerString = "border-blue1"; borderString = "border-bottom-blue1"; liString = "bg-blue1";
-                                imgString = "icn_arr_mark_blue1.svg"; 
+                                imgString = "icn_arr_mark_blue1.svg"; badgeColor = "#2973D6"; lightColor = "#6BA4E8";
                                 estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type); break; //(상업용)
                             case "factory":
                                 markerString = "border-green1"; borderString = "border-bottom-green1"; liString = "bg-green1";
-                                imgString = "icn_arr_mark_green1.svg"; 
+                                imgString = "icn_arr_mark_green1.svg"; badgeColor = "#039C55"; lightColor = "#40BD80";
                                 estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type); break;
-                            default:    
+                            default:
                                 markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
-                                imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; break;
+                                imgString = "icn_arr_mark_gray_black.svg"; badgeColor = "#999"; lightColor = "#BBBBBB"; estateString = "-"; break;
                         }
                         
                         // 필터에 따른 정보 문자열 구성 (동일)
@@ -1502,19 +1510,20 @@ async function realPriceAptArray(sggCdArray) {
                         
                         // HTML 콘텐츠 구성 (동일)
                         iwContent.innerHTML = `
-                        <ul class="text-center bg-white border ${markerString} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
+                        <ul class="text-center bg-white overflow-hidden" style="min-width:60px; border-radius:10px; border: 1px solid ${lightColor};" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
                         }" ondragstart="return false;" onselectstart="return false;">
-                            <li class="up bg-white ${borderString} p-1" style="line-height: 11px;">
-                                <p class="font10">${estateString}</p>
+                            <li class="up bg-white p-1" style="line-height:11px; display:flex; align-items:center; justify-content:center; gap:3px; border-bottom: 1px solid ${lightColor};">
+                                <span style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:${badgeColor}; font-size:8px; font-weight:800; color:#fff; flex-shrink:0; line-height:1;">실</span>
+                                <span class="font10">${estateString}</span>
                             </li>
                             <li class="up bg-white p-1">
                                 <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
                             </li>
-                            <li class="${liString} text-white">
+                            <li class="text-white" style="background: ${lightColor};">
                                 ${infoString}
                             </li>
                         </ul>
-                        <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
+                        <div style="text-align:center; line-height:0; margin:0; padding:0;"><span style="display:inline-block; width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:10px solid ${lightColor};"></span></div>
                         `;
 
                         // CustomOverlay 생성 및 지도에 추가 (동일)
@@ -1718,46 +1727,49 @@ async function realPriceApt(sggCd) {
                     let borderString = ""; // 초기화
                     let infoString = ""; // 초기화
                     let jimokString = ""; // 초기화
+                    let badgeColor = "#999"; // 초기화
+                    let lightColor = "#BBBBBB"; // 초기화
 
                     switch(data.estate_type) {
                         case "apt":
                             markerString = "border-orange2"; borderString = "border-bottom-orange2"; liString = "bg-orange2";
-                            imgString = "icn_arr_mark.svg"; estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            imgString = "icn_arr_mark.svg"; badgeColor = "#FE6900"; lightColor = "#FFA55A";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, "");
                             break;
                         case "land":
                             markerString = "border-yellow1"; borderString = "border-bottom-yellow1"; liString = "bg-yellow1";
-                            imgString = "icn_arr_mark_yellow1.svg";
+                            imgString = "icn_arr_mark_yellow1.svg"; badgeColor = "#FEB912"; lightColor = "#FDD055";
                             if (data.jimok != null && typeof data.jimok === 'string') { jimokString = data.jimok.replace(/용지/g, ""); } else { jimokString =""; }
-                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, "");
                             break;
                         case "multi":
                             markerString = "border-red2"; borderString = "border-bottom-red2"; liString = "bg-red2";
-                            imgString = "icn_arr_mark_red2.svg"; 
-                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            imgString = "icn_arr_mark_red2.svg"; badgeColor = "#FE7D87"; lightColor = "#FFB0B7";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, "");
                             break;
                         case "officetel":
                             markerString = "border-indigo2"; borderString = "border-bottom-indigo2"; liString = "bg-indigo2";
-                            imgString = "icn_arr_mark_indigo2.svg"; 
-                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            imgString = "icn_arr_mark_indigo2.svg"; badgeColor = "#F4AFCA"; lightColor = "#F8D0E3";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, "");
                             break;
                         case "single":
                             markerString = "border-violet1"; borderString = "border-bottom-violet1"; liString = "bg-violet1";
-                            imgString = "icn_arr_mark_violet1.svg";
-                            estateString = makeEstateTypeName(data.estate_type,data.jimok, ""); 
+                            imgString = "icn_arr_mark_violet1.svg"; badgeColor = "#702BFE"; lightColor = "#9B6DFE";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, "");
                             break;
                         case "commercial":
                             markerString = "border-blue1"; borderString = "border-bottom-blue1"; liString = "bg-blue1";
-                            imgString = "icn_arr_mark_blue1.svg"; 
-                            estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type); 
+                            imgString = "icn_arr_mark_blue1.svg"; badgeColor = "#2973D6"; lightColor = "#6BA4E8";
+                            estateString = makeEstateTypeName(data.estate_type,data.jimok, data.usage_type);
                             break; //(상업용)
                         case "factory":
                             markerString = "border-green1"; borderString = "border-bottom-green1"; liString = "bg-green1";
-                            imgString = "icn_arr_mark_green1.svg"; 
-                            estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type); 
+                            imgString = "icn_arr_mark_green1.svg"; badgeColor = "#039C55"; lightColor = "#40BD80";
+                            estateString = makeEstateTypeName(data.estate_type, data.jimok, data.usage_type);
                             break;
-                        default:    
+                        default:
                             markerString = "border-gray"; borderString = "border-bottom-gray"; liString = "bg-gray";
-                            imgString = "icn_arr_mark_gray_black.svg"; estateString = "-"; 
+                            imgString = "icn_arr_mark_gray_black.svg"; badgeColor = "#999"; lightColor = "#BBBBBB"; estateString = "-";
                             break;
                     }
                     switch(filterObj.estateinfo) {
@@ -1784,22 +1796,22 @@ async function realPriceApt(sggCd) {
                     //<li class="${data.estate_type !== "land" ? "bg-main" : "bg-yellow1"} text-white">
                     //<p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${data.estate_type !== "land" ? "icn_arr_mark.svg" : "icn_arr_mark_yellow.svg"}" width="15" alt="" title=""></p>
                     iwContent.innerHTML = `
-                    <ul class="text-center bg-white border ${markerString} overflow-hidden" style="min-width:60px; border-radius:10px;" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
+                    <ul class="text-center bg-white overflow-hidden" style="min-width:60px; border-radius:10px; border: 1px solid ${lightColor};" data-lat="${data.center_latitude}" data-lng="${data.center_longitude}" data-type="${data.estate_type
                     }" ondragstart="return false;" onselectstart="return false;">
-                        <li class="up bg-white ${borderString} p-1" style="line-height: 11px;">
-                            <p class="font10">${estateString}</p>
+                        <li class="up bg-white p-1" style="line-height:11px; display:flex; align-items:center; justify-content:center; gap:3px; border-bottom: 1px solid ${lightColor};">
+                            <span style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:${badgeColor}; font-size:8px; font-weight:800; color:#fff; flex-shrink:0; line-height:1;">실</span>
+                            <span class="font10">${estateString}</span>
                         </li>
                         <li class="up bg-white p-1">
                             <!-- <p class="font11">${data.estate_type}</p> --!>
                             <!-- <p class="font11">${data.bonbun}</p> --!>
-                            <!-- class="font15" style="line-height: 20px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p> --!>
                             <p class="font12" style="line-height: 12px;">${formatPrice(data.dealAmount.replace(/,/g, ""), "all", false, true)}</p>
                         </li>
-                        <li class="${liString} text-white">
+                        <li class="text-white" style="background: ${lightColor};">
                             ${infoString}
                         </li>
                     </ul>
-                    <p class="position-absolute" style="margin:-5px 0 0 20px; "><img src="/front/assets/image/${imgString}" width="15" alt="" title=""></p>
+                    <div style="text-align:center; line-height:0; margin:0; padding:0;"><span style="display:inline-block; width:0; height:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:10px solid ${lightColor};"></span></div>
                     `;
 
                     let iwPosition = new kakao.maps.LatLng(data.center_latitude, data.center_longitude); //인포윈도우 표시 위치입니다

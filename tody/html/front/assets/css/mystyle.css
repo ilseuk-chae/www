@@ -477,6 +477,7 @@
 /* ==================== 하이라이트 및 비교 결과 스타일 ==================== */
 .dl-highlight-border {
   border: 3px solid orange !important;
+  overflow: hidden; /* 이미지 등 자식 요소가 테두리 밖으로 벗어나지 않도록 */
 }
 
 .mc-tab-menu3 .comparison-area-content {
@@ -790,14 +791,109 @@
 }
 
 @media all and (max-width: 991px) {
-  
+
+  /* 모바일에서도 비교 바 표시 (이전: display:none)
+     sticky: overflow-y:auto 스크롤 컨테이너 내에서 항상 상단 고정 */
   .mc-tab-menu3 {
-      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #fff;
+  }
+  .mc-tab-menu3 .comparison-area-content {
+      flex-direction: row;    /* column → row: 토글 버튼이 아래로 내려가지 않도록 */
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      gap: 5px;
+  }
+  .mc-tab-menu3 .comparison-left-group {
+      flex: 1;
+      min-width: 0;           /* flex child 텍스트 overflow 방지 */
+      flex-wrap: wrap;
+      gap: 8px;
+  }
+  .mc-tab-menu3 .unit-toggle-group {
+      flex-shrink: 0;         /* 항상 오른쪽 끝에 고정 */
   }
   .mc-tab-menu4 {
       padding: 4px 20px; /* 적절한 패딩 추가 */
   }
-  
+
+  /* ── 비교 모달 (모바일) ─────────────────────────────────── */
+  /* 모달 너비 95vw 제한 (JS adjustComparisonModalWidth 고정px 오버라이드) */
+  .compare-modal-content {
+      width: 95vw !important;
+      max-width: 95vw !important;
+  }
+
+  /* 모달 바디 → 단일 스크롤 컨테이너 (X·Y 모두 처리, 스크롤 1개) */
+  .compare-modal-body {
+      overflow: auto;           /* 기존 hidden → auto (X·Y 통합) */
+  }
+
+  /* 비교 내용 영역 → 스크롤 없음 (부모 .compare-modal-body 에 위임) */
+  .modal-body-scroll-content {
+      overflow: visible;        /* 기존 overflow-x:auto 제거 → 부모 스크롤 사용 */
+  }
+
+  /* 헤더/바디행/푸터 → 자연폭(max-content)으로 확장 → 가로 스크롤 범위 생성 */
+  .modal-body-header,
+  .property-detail-row,
+  .modal-body-footer {
+      min-width: max-content;
+  }
+
+  /* 헤더: 세로 스크롤 시 상단 고정 */
+  .modal-body-header {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: #ffffff;
+  }
+
+  /* 푸터: 세로 스크롤 시 하단 고정 */
+  .modal-body-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      background: #ffffff;
+  }
+
+  /* 레이블 컬럼: 가로 스크롤 시 좌측 고정 */
+  .modal-body-header .column-left,
+  .property-detail-row .property-label,
+  .modal-body-footer .column-left {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      flex-shrink: 0;
+  }
+  .modal-body-header .column-left {
+      background: #ffffff;
+  }
+  .property-detail-row .property-label {
+      background: #ececec;
+  }
+  .modal-body-footer .column-left {
+      background: #ffffff;
+  }
+
+  /* sell_v2: mc-tab-menu3 sticky 해제
+     → scroll container(.layer-tab-content) 없어 viewport 상단에 렌더링됨 방지
+     → realprice_v2는 .layer-tab-content{overflow-y:auto}가 있어 sticky 유지 */
+  body[data-screen-type="sell"] .mc-tab-menu3 {
+      position: static;
+  }
+
+  /* 모바일 푸터: 현재 페이지 메뉴 active 표시 */
+  .mobile-footer > ul > li.active div {
+      color: var(--var-color-main-1, #ef8779);
+      font-weight: 600;
+  }
+  .mobile-footer > ul > li.active p img {
+      filter: invert(64%) sepia(40%) saturate(600%) hue-rotate(315deg) brightness(100%);
+  }
+
 }
 
 .highlight-difference {
@@ -859,59 +955,94 @@
   text-align: center;
 }
 
-#mapOptionSearch.active,
-#mapOptionBoundary.active,
-#mapOptionMemoOpen2.active,
-#mapOptionTooltip.active {
-  /*background-color: #ef8779; /* 활성화된 상태의 배경색 */
-  border: 1px solid #ef8779; /* 활성화된 상태의 테두리 */
+/* 지도 우측 옵션 컨테이너/버튼 기본 스타일 (content.css 미로드 대비) */
+.map-option {
+    position: absolute;
+    top: 100px;
+    right: 3px;
+    z-index: 1;
 }
-#mapOptionSearch.tooltip-target.active i,
-#mapOptionSearch.tooltip-target.active span,
-#mapOptionBoundary.tooltip-target.active i,
-#mapOptionBoundary.tooltip-target.active span,
-#mapOptionMemoOpen2.tooltip-target.active i,
-#mapOptionMemoOpen2.tooltip-target.active span,
-#mapOptionTooltip.tooltip-target.active i,
-#mapOptionTooltip.tooltip-target.active span {
+.map-option > button {
+    display: block;
+    margin: 3px 0;
+    width: 40px;
+    padding: 5px 0;
+    border: #e9e9e9 1px solid;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+.map-option > button i {
+    font-size: 15px;
+    color: #111;
+    transition: all 0.3s ease-in-out;
+}
+.map-option > button span {
+    display: block;
+    margin-top: 1px;
+    font-size: 9px;
+    line-height: 10px;
+    color: #111;
+    letter-spacing: -0.5px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* mapOptionSearch: active 시 핑크 테두리 (파란색 active 대상에서 제외된 버튼) */
+#mapOptionSearch.active {
+    border: 1px solid #ef8779;
+}
+#mapOptionSearch.active i,
+#mapOptionSearch.active span {
     color: #ef8779 !important;
 }
 
-.map-option .mo-memo {
+.map-option .mo-memo{
   display: none;
   position: absolute;
   width: 170px;
   margin: -58px 0 0 -175px;
-  padding: 15px;
+  padding: 10px;  /*padding: 15px;*/
   border: #e9e9e9 1px solid;
   border-radius: 7px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); /* opacity:0; */
 }
-.map-option .mo-memo > dl {
+@media (max-width: 991px) {
+  .map-option .mo-memo {
+    /* position:fixed: 부모 overflow 클리핑 및 map-content-wrapper(z-index:302) 위에 표시 */
+    /* top / maxHeight 는 JS(positionMoMemo)에서 버튼 위치 기준으로 동적 설정 */
+    position: fixed;
+    right: 48px;
+    margin: 0;
+    overflow-y: auto;
+    z-index: 9999;
+  }
+}
+.map-option .mo-memo> dl {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.map-option .mo-memo > dl dt {
+.map-option .mo-memo> dl dt {
   font-weight: 500;
   font-size: 14px;
   line-height: 14px;
   color: #111;
   letter-spacing: -1px;
 }
-.map-option .mo-memo > dl dd button {
+.map-option .mo-memo> dl dd button {
   cursor: pointer;
 }
-.map-option .mo-memo > dl dd i {
+.map-option .mo-memo> dl dd i {
   font-size: 14px;
   line-height: 14px;
 }
-.map-option .mo-memo > div {
+.map-option .mo-memo> div {
   margin-top: 10px;
 }
-.map-option .mo-memo > div > button,
-.map-option .mo-memo > div div {
+.map-option .mo-memo> div > button,
+.map-option .mo-memo> div div {
   display: block;
   width: 100%;
   margin: 5px 0;
@@ -924,20 +1055,20 @@
   border-radius: 4px;
   cursor: pointer;
 }
-.map-option .mo-memo > div > button:hover,
-.map-option .mo-memo > div > div:hover {
+.map-option .mo-memo> div > button:hover,
+.map-option .mo-memo> div > div:hover {
   color: #ef8779;
   border: #ef8779 1px solid;
 }
-.map-option .mo-memo > div > button.active {
+.map-option .mo-memo> div > button.active {
   color: #fff;
   background-color: #ef8779;
   border: #ef8779 1px solid;
 }
-.map-option .mo-memo > div > button i {
+.map-option .mo-memo> div > button i {
   margin-right: 5px;
 }
-.map-option .mo-memo > div > button span {
+.map-option .mo-memo> div > button span {
   display: flex;
 }
 /* search 스타일 커스터마이징  bootstrap용 */
@@ -946,11 +1077,22 @@
   position: absolute;
   width: 170px;
   margin: -58px 0 0 -175px;
-  padding: 15px;
+  padding: 10px;  /*padding: 15px;*/ 
   border: #e9e9e9 1px solid;
   border-radius: 7px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); /* opacity:0; */
+}
+@media (max-width: 767px) {
+  .map-option .mo-search {
+    /* position:fixed: 부모 overflow 클리핑을 우회하여 뷰포트 기준 배치 */
+    /* top / maxHeight 는 JS(positionMoSearch)에서 버튼 위치 기준으로 동적 설정 */
+    position: fixed;
+    right: 48px;
+    margin: 0;
+    overflow-y: auto;
+    z-index: 9999;
+  }
 }
 .map-option .mo-search > dl {
   display: flex;
@@ -1004,52 +1146,30 @@
 .map-option .mo-search > div > button span {
   display: flex;
 }
-/* 기본 툴팁 컨테이너  bootstrap용 */
+/* 기본 툴팁 컨테이너  bootstrap용 - layer-toggle-btn 스타일 기반 */
+/* Bootstrap CSS 변수 오버라이드 (화살표 색상 동기화) */
+.tooltip {
+    --bs-tooltip-bg: #fefae8;
+    --bs-tooltip-color: #000;
+}
 .tooltip-inner {
-  background-color: #333; /* 어두운 배경 */
-  color: #fff; /* 흰색 글자 */
-  border-radius: 8px; /* 둥근 모서리 */
-  padding: 10px 15px; /* 내부 여백 */
-  font-size: 14px;
-  line-height: 1.4;
-  max-width: 250px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  opacity: 0.8;
+    background-color: #fefae8;  /* 옅은 아이보리 */
+    color: #000;
+    border: 1.5px solid #ccc;
+    border-radius: 18px;        /* layer-toggle-btn 동일 pill 형태 */
+    padding: 5px 14px;          /* layer-toggle-btn 동일 */
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    max-width: 250px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-/* 툴팁 화살표 (꼬리) */
-.tooltip-arrow::before {
-  border-color: transparent; /* 기본 Bootstrap 화살표 테두리 제거 */
-  background-color: #333; /* 배경색과 동일한 색상 */
-}
-
-/* 툴팁 위치별 화살표 회전 조정 (필요시) */
-/* Bootstrap 5는 placement에 따라 arrow 위치를 자동으로 조정합니다. */
-/* 추가적인 미세 조정이 필요할 때만 사용 */
-.bs-tooltip-top .tooltip-arrow {
-  bottom: 0;
-  margin-left: -0.5rem; /* 중앙 정렬 조정 */
-}
-.bs-tooltip-top .tooltip-arrow::before {
-  content: "";
-  transform: rotate(45deg); /* 마름모 회전 */
-  width: 16px;
-  height: 16px;
-  border-radius: 2px;
-  position: absolute;
-  bottom: -8px; /* 실제 화살표 위치 조정 */
-  left: 50%;
-  transform-origin: center;
-  margin-left: -8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-/* Bootstrap 툴팁은 자체적으로 화살표를 생성하므로,
- 기존 `::before` 가상 요소를 `tooltip-arrow::before`에 통합해야 합니다.
- 위 예시는 단순화된 것이며, 실제로는 Bootstrap의 `.tooltip-arrow` 클래스에 맞춰 조정해야 합니다.
- 가장 좋은 방법은 개발자 도구에서 Bootstrap 툴팁의 기본 HTML/CSS 구조를 확인하고,
- 거기에 맞게 커스텀 CSS를 오버라이드하는 것입니다.
-*/
+/* 툴팁 화살표 (꼬리) - 아이보리 배경에 맞게 */
+.bs-tooltip-top    .tooltip-arrow::before { border-top-color:    #fefae8 !important; }
+.bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: #fefae8 !important; }
+.bs-tooltip-start  .tooltip-arrow::before { border-left-color:   #fefae8 !important; }
+.bs-tooltip-end    .tooltip-arrow::before { border-right-color:  #fefae8 !important; }
 /* map-estate-group 내의 모든 버튼에 공통적으로 적용될 스타일 */
 .realmap-estate-group {
   position: absolute; /* 부모 컨텍스트 기준으로 배치 */
@@ -1074,7 +1194,8 @@
   margin-left: 454px;
 }
 
-.realmap-estate-group button {
+.realmap-estate-group button,
+.map-estate-group button {
   position: relative; /* ::before 가상 요소의 위치 기준을 위해 필요 */
   display: inline-block;
   /* height: 32px;
@@ -1088,7 +1209,7 @@
   border: #e9e9e9 1px solid;
   border-radius: 3px;
   background: #fff;
-  cursor: pointer;    
+  cursor: pointer;
   white-space: nowrap; /* 버튼 내용이 한 줄로 표시되도록 */
 }
 
@@ -1101,7 +1222,8 @@
 
 
 /* 각 버튼 이름 앞에 작은 원을 생성하고 스타일링 */
-.realmap-estate-group button::before {
+.realmap-estate-group button::before,
+.map-estate-group-v2 button::before {
   content: ''; /* 가상 요소의 필수 속성 */
   display: inline-block; /* 너비와 높이를 설정하기 위해 */
   width: 8px; /* 원의 너비 */
@@ -1114,6 +1236,11 @@
   left: 4px; /* 버튼 왼쪽에서 떨어진 거리 */
   top: 45%; /* 버튼 상단에서 50% 위치 */
   transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+}
+
+/* sell_v2 전용: 매물 필터 버튼 position 기준점 */
+.map-estate-group-v2 button {
+  position: relative; /* ::before 절대 위치의 기준 */
 }
 /* 지도 - 이력관리 */
 .realmap-estate-info {
@@ -1142,12 +1269,12 @@
   width: 66px;
   font-size:11px; 
   line-height:12px; 
-  color:#ef8779;
-  border:#fff 1px solid; 
-  border-radius:6px; 
+  color:#3b3b3b; /*#ef8779*/
+  border:#ccc 1px solid;  /* #fff */
+  border-radius:3px; 
   padding-right:0px; /* 이 값은 아래에서 설명 */
   padding-left:2px; /* 이 값은 아래에서 설명 */
-  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #FEB912; /*#FEB912*/
+  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #8edcdd; /*#FEB912, #3b3b3a*/
   
 } 
 .my-select-box2 {
@@ -1156,12 +1283,12 @@
   width: 66px;
   font-size:11px; 
   line-height:12px; 
-  color:#c518e7;
-  border:#fff 1px solid; 
-  border-radius:6px; 
+  color:#3b3b3b; /*#c518e7 */
+  border:#ccc 1px solid;  /* #fff */
+  border-radius:3px; 
   padding-right:0px; /* 이 값은 아래에서 설명 */
   padding-left:2px; /* 이 값은 아래에서 설명 */
-  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #87DBDD; /*#FEB912*/
+  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #8edcdd; /*#87DBDD*/
   
 } 
 
@@ -1226,42 +1353,50 @@
 
 /* 각 버튼에 다른 색상 적용 (nth-child 사용) */
 /* "전체" 버튼 
-.realmap-estate-group button:nth-child(1)::before { 
+.realmap-estate-group button:nth-child(1)::before, 
+.map-estate-group button:nth-child(1)::before { 
   background-color: #3498db;
 }
 */
-.realmap-estate-group button:nth-child(2)::before { /* "아파트" 버튼 */
-  
+.realmap-estate-group button:nth-child(2)::before,
+.map-estate-group-v2 button:nth-child(2)::before{ /* "아파트" 버튼 */
   background-color: #FE6900; /* 예시 색상: color-orange2 */
 }
 
-.realmap-estate-group button:nth-child(3)::before { /* "연립/다세대" 버튼 */
+.realmap-estate-group button:nth-child(3)::before,
+.map-estate-group-v2 button:nth-child(3)::before { /* "연립/다세대" 버튼 */
   background-color: #FE7D87; /* 예시 색상: color-red2 */
 }
 
-.realmap-estate-group button:nth-child(4)::before { /* "단독/다가구" 버튼 */
+.realmap-estate-group button:nth-child(4)::before,
+.map-estate-group-v2 button:nth-child(4)::before { /* "단독/다가구" 버튼 */
   background-color: #702BFE; /* 예시 색상: color-violet1 */
 }
 
-.realmap-estate-group button:nth-child(5)::before { /* "오피스텔" 버튼 */
+.realmap-estate-group button:nth-child(5)::before,
+.map-estate-group-v2 button:nth-child(5)::before { /* "오피스텔" 버튼 */
   background-color: #F4AFCA; /* 예시 색상: color-indigo2 */
 }
 
-.realmap-estate-group button:nth-child(6)::before { /* "상업/업무용" 버튼 */
+.realmap-estate-group button:nth-child(6)::before,
+.map-estate-group-v2 button:nth-child(6)::before { /* "상업/업무용" 버튼 */
   background-color: #2973D6; /* 예시 색상: color-blue1 */
 }
 
-.realmap-estate-group button:nth-child(7)::before { /* "공장/창고" 버튼 */
+.realmap-estate-group button:nth-child(7)::before,
+.map-estate-group-v2 button:nth-child(7)::before { /* "공장/창고" 버튼 */
   background-color: #039C55; /* 예시 색상: color-green1 */
 }
 
-.realmap-estate-group button:nth-child(8)::before { /* "토지" 버튼 */
+.realmap-estate-group button:nth-child(8)::before,
+.map-estate-group-v2 button:nth-child(8)::before { /* "토지" 버튼 */
   background-color: #FEB912; /* 예시 색상:  color-yellow1*/
 }
 
-.realmap-estate-group button:nth-child(9)::before { /* "분양/입주권" 버튼 */
+.realmap-estate-group button:nth-child(9)::before,
+.map-estate-group-v2 button:nth-child(9)::before { /* "분양/입주권" 버튼 */
   background-color: #AFF218; /* 예시 색상: color-lime */
-  
+
 }
 
 /* 필요하다면, 활성화된 버튼에 대한 원 색상 변경 (선택 사항) */
@@ -2110,7 +2245,6 @@
 /* 비활성 상태 — :not(.active)로 active 클래스와 충돌 제거 */
 #mapMyLocation:not(.active),
 #mapMyLocation:not(.active):focus,
-#mapMyLocation:not(.active):hover,
 #mapMyLocation:not(.active):active {
     background: #fff !important;
     border-color: #e9e9e9 !important;
@@ -2118,6 +2252,27 @@
 #mapMyLocation:not(.active) i,
 #mapMyLocation:not(.active) span {
     color: #111 !important;
+}
+/* 내위치 hover — :not(.active) ID 규칙보다 명시도 높게 오버라이드 */
+#mapMyLocation.map-btn-hover:hover,
+#mapOptionBoundary.map-btn-hover:hover,
+#mapOptionTooltip.map-btn-hover:hover,
+#mapOptionAreaOpen.map-btn-hover:hover,
+#mapOptionMemoOpen2.map-btn-hover:hover {
+    border: #ef8779 1px solid !important;
+    background: #fff !important;
+}
+#mapMyLocation.map-btn-hover:hover i,
+#mapMyLocation.map-btn-hover:hover span,
+#mapOptionBoundary.map-btn-hover:hover i,
+#mapOptionBoundary.map-btn-hover:hover span,
+#mapOptionTooltip.map-btn-hover:hover i,
+#mapOptionTooltip.map-btn-hover:hover span,
+#mapOptionAreaOpen.map-btn-hover:hover i,
+#mapOptionAreaOpen.map-btn-hover:hover span,
+#mapOptionMemoOpen2.map-btn-hover:hover i,
+#mapOptionMemoOpen2.map-btn-hover:hover span {
+    color: #ef8779 !important;
 }
 
 /* 활성 상태 — 파란색 */
@@ -2194,4 +2349,551 @@ a[data-izimodal-open="#terms"] {
 
 a[data-izimodal-open="#terms"]:hover {
   color: #ef8779;
+}
+
+/* ── 초기 로드 전용: CSS transition 일시 차단 ──────────────────────────────
+ * document.ready에서 .no-initial-transition 클래스를 추가하고,
+ * 2 requestAnimationFrame 후 제거하여 :has() / active class 초기 적용 시
+ * 발생하는 transition 을 방지합니다.
+ * (Chrome 등에서 초기 transition 중 positionToggleGroup() 계산 오류 방지)
+ * ──────────────────────────────────────────────────────────────────────── */
+.no-initial-transition {
+    transition: none !important;
+}
+
+/* =============================================
+   realPrice_v2 - 레이어 토글 & 탭 UI
+   ============================================= */
+
+/* ① 레이어 토글 버튼 그룹 (left는 JS positionToggleGroup()이 동적 계산) */
+.layer-toggle-group {
+    position: absolute;
+    top: 4px;
+    display: flex;
+    gap: 6px;
+    z-index: 300;
+    background: rgba(255,255,255,0.0);
+    border-radius: 22px;
+    /*padding: 4px 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);*/
+}
+.layer-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 18px;
+    background: rgba(245, 245, 245,0.5);
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    user-select: none;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -webkit-tap-highlight-color: transparent; /* 모바일 탭 하이라이트 제거 */
+    outline: none;
+}
+/* :focus / :focus-visible 상태에서도 배경색 명시 (포커스 재진입 시 덮어쓰기 방지) */
+.layer-toggle-btn:focus,
+.layer-toggle-btn:focus-visible {
+    outline: none;
+    background: rgba(245, 245, 245, 0.5);
+}
+/* !important: hover/focus 특이성에 관계없이 active 하늘색이 항상 우선 */
+.layer-toggle-btn.active,
+.layer-toggle-btn.active:hover,
+.layer-toggle-btn.active:focus,
+.layer-toggle-btn.active:focus-visible,
+.layer-toggle-btn.active:active {
+    background: rgb(148, 229, 240) !important;
+    color: #333;
+    border-color: #ef8779 !important;
+    outline: none;
+}
+/* 479px 미만: 배지(실/매)만 표시, 너비 충분히 확보 */
+@media (max-width: 479px) {
+    .layer-toggle-btn {
+        font-size: 0;
+        gap: 0;
+        padding: 5px 14px;
+    }
+    .layer-toggle-btn .rp-badge,
+    .layer-toggle-btn .es-badge {
+        font-size: 11px;
+    }
+}
+/* JS가 is-touch-device 클래스를 html에 추가하지 않은 경우(PC 마우스)에만 hover 스타일 적용
+   터치 기기는 touchend+preventDefault로 합성 mouse 이벤트 자체가 차단되어 이 규칙 불필요
+   CSS 미디어 쿼리(hover/pointer)는 일부 Android에서 오보고하므로 JS 클래스를 우선 사용 */
+html:not(.is-touch-device) .layer-toggle-btn:hover {
+    background: #fff3ea;
+    border-color: #ef8779;
+}
+/* active 상태에서 hover가 발생해도 하늘색 유지 (이중 보호) */
+.layer-toggle-btn.active:hover {
+    background: rgb(148, 229, 240);
+    border-color: #ef8779;
+}
+
+/* ① 레이어 배지 (실/매) */
+.rp-badge, .es-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+.rp-badge { background: #FE6900; }
+.es-badge { background: #e03030; }
+
+/* 작은 배지 (탭 버튼 내) */
+.rp-badge-sm, .es-badge-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    margin-right: 3px;
+}
+.rp-badge-sm { background: #FE6900; }
+.es-badge-sm { background: #e03030; }
+
+/* ② map-content 레이어 탭 메뉴 */
+.mc-layer-tab-menu {
+    margin-top :8px;
+    display: flex;
+    /*border-bottom: 2px solid #eee;*/
+    border: 1px solid #eee;
+    background: #fafafa;
+    height : 30px;
+}
+.layer-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.layer-tab-btn.active {
+    color: #ff6900;
+    background: rgb(220, 245, 248);
+    /*border-bottom-color: #ff6900;*/
+    border: 1px solid #ff6900;
+}
+.layer-tab-btn:hover:not(.active) {
+    color: #666;
+    background: #f0f0f0;
+}
+
+/* ② 레이어 탭 콘텐츠 패널 */
+.layer-tab-content {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+.layer-tab-content.active {
+    display: flex;
+}
+
+/* map-content 열고닫기 버튼 */
+.mc-open-close {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 40px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 11px;
+    color: #555;
+}
+.mc-open-close:hover { background: #f5f5f5; }
+
+/* map-content 비활성(잠금) 상태 */
+#mapContentOpenClose.disabled-lock {
+    cursor: not-allowed;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* 매물 리스트 세부내용 말줄임 */
+.text-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* =====================================================
+ * realPrice_v2 전용: ⑥ 매물 필터 버튼 위치 (세로 배치)
+ * sell_v2 등 다른 페이지에는 영향 없음
+ * .active = map-content 패널 열림, 없으면 패널 닫힘
+ * ===================================================== */
+
+/* ⑥ 매매/임대 그룹: 내부 버튼 세로 배치 */
+body[data-screen-type="realprice_v2"] .map-sale-group {
+    flex-direction: column;
+}
+
+/* ⑥ 버튼 위치 - 패널 닫힘
+ * !important: content.css @media(≤1040px/≤991px) 의 !important 값들을 realprice_v2 전용으로 덮어씌움 */
+body[data-screen-type="realprice_v2"] .map-sale-group       { margin-top: 280px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .map-exchange-group   { margin-top: 368px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .map-urgentsale-group { margin-top: 399px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .map-price-group      { margin-top: 430px !important; margin-left: 4px !important; }
+/* ⑦ 실거래가 검색조건: estate-info / average-info 동일 위치 (zoom level로 exclusive 표시)
+ * 두 요소는 같은 위치에 겹쳐서 zoom level에 따라 번갈아 표시 */
+/* 패널 닫힘 */
+body[data-screen-type="realprice_v2"] .realmap-estate-info  { margin-top: 461px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .realmap-average-info { margin-top: 461px !important; margin-left: 4px !important; }
+/* ⑥ 버튼 위치 - 패널 열림 (.active) — PC 전용 (모바일은 패널이 아래에서 열리므로 margin-left 이동 불필요) */
+@media (min-width: 992px) {
+    body[data-screen-type="realprice_v2"] .map-sale-group.active       { margin-top: 280px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .map-exchange-group.active   { margin-top: 368px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .map-urgentsale-group.active { margin-top: 399px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .map-price-group.active      { margin-top: 430px !important; margin-left: 454px !important; }
+    /* 패널 열림 (.active) */
+    body[data-screen-type="realprice_v2"] .realmap-estate-info.active  { margin-top: 461px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .realmap-average-info.active { margin-top: 461px !important; margin-left: 454px !important; }
+}
+
+/* 기본 CSS(mystyle.css 상단) margin-left: 124px 완전 봉쇄 */
+body[data-screen-type="realprice_v2"] .realmap-average-info:not(.active) { margin-left: 4px !important; }
+
+/* ⑥ 버튼 너비 통일: 모든 그룹을 map-sale-group 너비(82px)로 통일 */
+body[data-screen-type="realprice_v2"] .map-sale-group,
+body[data-screen-type="realprice_v2"] .map-exchange-group,
+body[data-screen-type="realprice_v2"] .map-urgentsale-group,
+body[data-screen-type="realprice_v2"] .map-price-group,
+body[data-screen-type="realprice_v2"] .realmap-estate-info,
+body[data-screen-type="realprice_v2"] .realmap-average-info {
+    min-width: 75px;
+    width: 75px;
+}
+body[data-screen-type="realprice_v2"] .map-sale-group button,
+body[data-screen-type="realprice_v2"] .map-exchange-group button,
+body[data-screen-type="realprice_v2"] .map-urgentsale-group button,
+body[data-screen-type="realprice_v2"] .map-price-group button {
+    width: 100%;
+    text-align: center;
+}
+
+/* =====================================================
+ * realPrice_v2 전용: sale_register 버튼 위치 (≤1150px)
+ * sale_register 버튼을 realmap-estate-group 위로 이동
+ * body.realtor-sale-register-visible 클래스 조건:
+ *   버튼이 숨김 상태일 때 다른 요소가 불필요하게 밀리지 않도록 처리
+ * ===================================================== */
+@media (max-width: 1150px) {
+    /* sale_register 버튼: 우측 → 좌측 (realmap-estate-group 바로 위), 패널 닫힘 기본값 */
+    body[data-screen-type="realprice_v2"] .map-register-group {
+        top:   58px;
+        left:  4px;
+        right: auto;
+    }
+    /* sale_register 표시 중일 때만: realmap-estate-group 및 하위 요소 36px 하단 이동
+     * (버튼 높이 32px + 간격 4px = 36px) */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .realmap-estate-group       { margin-top:  94px !important; } /* 58 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-sale-group             { margin-top: 316px !important; } /* 280 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-exchange-group         { margin-top: 404px !important; } /* 368 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-urgentsale-group       { margin-top: 435px !important; } /* 399 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-price-group            { margin-top: 466px !important; } /* 430 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .realmap-estate-info        { margin-top: 497px !important; } /* 461 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .realmap-average-info       { margin-top: 497px !important; } /* 461 + 36 */
+}
+/* PC 범위(992px~1150px): 패널 열림 시 sale_register 버튼도 454px 우측으로 이동
+ * ≤991px(모바일)은 패널이 아래서 열리므로 left 이동 불필요 → 위 규칙의 left:4px 유지 */
+@media (min-width: 992px) and (max-width: 1150px) {
+    body[data-screen-type="realprice_v2"]:has(.map-content.active) .map-register-group {
+        left: 454px;
+    }
+}
+
+/* =====================================================
+ * realPrice_v2 전용: map-content 세로 스크롤
+ * .layer-tab-content가 남은 높이를 채우고 scroll 허용
+ * ===================================================== */
+/* ─── map-content-wrapper: mc-open-close 외부 형제 이동 후 overflow:hidden 가능 ──
+ * mc-open-close가 wrapper 다음 형제(+)로 이동했으므로
+ * overflow:hidden으로 변경 → deactive 시 내부 콘텐츠 화면 잔류 문제 해결.
+ * 버튼 위치/아이콘은 CSS adjacent sibling(+) + :has()로 제어.
+ * ──────────────────────────────────────────────────────────────────────────── */
+body[data-screen-type="realprice_v2"] .map-content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--var-map-content-width);
+    height: 100%;
+    z-index: 2;
+    overflow: hidden;
+    margin-left: -450px;
+    transition: margin-left 0.4s ease-out;
+    /* box-shadow를 wrapper로 이전 (내부 map-content에서 제거) */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 5px 0px 15px 0px;
+}
+/* map-content.active가 되면 wrapper도 펼침 */
+body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) {
+    margin-left: 0;
+}
+/* wrapper 안의 map-content: 절대위치/margin/shadow는 wrapper가 담당 */
+body[data-screen-type="realprice_v2"] .map-content-wrapper .map-content {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: auto !important;
+    margin-left: 0 !important;
+    transition: none !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+body[data-screen-type="realprice_v2"] .map-content .mc-search,
+body[data-screen-type="realprice_v2"] .map-content .mc-layer-tab-menu {
+    flex-shrink: 0;
+}
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content {
+    flex: 1;
+    min-height: 0;       /* flex child 스크롤 허용 (중요) */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/* 스크롤 컨테이너 내 직계 자식은 축소되지 않도록: 내용이 넘쳐야 스크롤 동작 */
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content > * {
+    flex-shrink: 0;
+}
+
+/* ─── mc-open-close: wrapper 외부 형제 위치 제어 (realprice_v2 전용) ────────────
+ * mc-open-close가 .map-content-wrapper의 다음 형제(+)로 이동.
+ * 기본 .mc-open-close의 right:-20px/margin 스타일을 덮어쓰고
+ * left로 위치 제어: deactive=0, active=var(--var-map-content-width).
+ * :has() + adjacent sibling(+)으로 JS 없이 상태 동기화.
+ * ──────────────────────────────────────────────────────────────────────────── */
+body[data-screen-type="realprice_v2"] #mapContentOpenClose {
+    position: absolute;
+    top: 50%;
+    left: 0;                        /* deactive 기본: 화면 왼쪽 끝 (wrapper가 숨겨진 상태) */
+    right: auto;
+    margin: 0;
+    transform: translateY(-50%);
+    transition: left 0.4s ease-out;
+    z-index: 3;                     /* wrapper(z-index:2) 위에 표시 */
+}
+/* active 시: wrapper 오른쪽 끝에 붙기 */
+body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) + #mapContentOpenClose {
+    left: var(--var-map-content-width);
+}
+/* 아이콘: 기본(deactive) → > (rotate 180) */
+body[data-screen-type="realprice_v2"] #mapContentOpenClose i {
+    transform: rotate(180deg) !important;
+    transition: transform 0.4s ease-out;
+}
+/* 아이콘: active → < (rotate 0) */
+body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) + #mapContentOpenClose i {
+    transform: rotate(0deg) !important;
+}
+
+/* map-sell-view.active: layer-toggle-group(z-index:300) 위에 표시 → X 닫기버튼 클릭 가능 */
+body[data-screen-type="realprice_v2"] .map-sell-view.active {
+    z-index: 400;
+}
+
+/* 모바일: wrapper도 map-content 기존 스타일 그대로 따라가도록 오버라이드 */
+@media all and (max-width: 991px) {
+    body[data-screen-type="realprice_v2"] .map-content-wrapper {
+        top: calc(100vh - 175px);
+        width: 100%;
+        margin-top: -25px;
+        margin-left: 0;
+        height: calc(100vh - 125px);
+        box-shadow: none;
+        overflow: visible;
+        transition: top 0.4s ease-out, margin-top 0.4s ease-out;
+    }
+    body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) {
+        top: 0;
+        margin-top: -1px;
+        height: 100%;
+        margin-left: 0;
+    }
+    body[data-screen-type="realprice_v2"] .map-content-wrapper .map-content {
+        padding-top: 30px;
+        box-sizing: border-box;
+    }
+    /* 모바일: mc-open-close(PC용) 숨김 → mc-mo-open-close 사용 */
+    body[data-screen-type="realprice_v2"] #mapContentOpenClose {
+        display: none;
+    }
+
+    /* 모바일: wrapper z-index를 302로 상향 (layer-toggle-group:300 보다 높게)
+     * wrapper가 toggle group보다 위 → toggle group이 wrapper 안 ▽ 버튼을 가릴 수 없음
+     * 맵 캔버스보다도 위 → 패널 내용 정상 표시 */
+    body[data-screen-type="realprice_v2"] .map-content-wrapper {
+        z-index: 302;
+    }
+}
+
+/* 매물 점 마커 깜박임 애니메이션 (줌 4) */
+@keyframes estate-dot-pulse {
+    0%   { opacity: 1;   transform: scale(1);   }
+    50%  { opacity: 0.45; transform: scale(1.35); }
+    100% { opacity: 1;   transform: scale(1);   }
+}
+.estate-dot-pulse {
+    animation: estate-dot-pulse 1.3s ease-in-out infinite;
+}
+
+.map-option2 {
+  position: absolute;
+  top: 35px;
+  right: 3px;
+  z-index: 1;
+}
+.map-option2 > button {
+  display: block;
+  margin: 3px 0;
+  width: 40px;
+  padding: 5px 0;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  opacity: 0.0;  /*0 ~ 1 */
+}
+.map-option2 > button i {
+  font-size: 15px;
+  color: #111;
+  transition: all 0.3s ease-in-out;
+}
+.map-option2 > button span {
+  display: block;
+  margin-top: 1px;
+  font-size: 9px;
+  line-height: 10px;
+  color: #111;
+  letter-spacing: -0.5px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* map-option 버튼 hover — 검색조건 색(#ef8779) 적용 대상만 선택적으로 */
+/* V2설정(#mapV2setOpen, map-option2)은 이 클래스 없음 → hover 없음 */
+.map-btn-hover:hover {
+    border: #ef8779 1px solid !important;
+}
+.map-btn-hover:hover i {
+    color: #ef8779 !important;
+    transition: all 0.3s ease-in-out;
+}
+.map-btn-hover:hover span {
+    color: #ef8779 !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.map-option2 .mo-test{
+  display: none;
+  position: absolute;
+  top: 65px;
+  /*right: 210px; */
+  width: 170px;
+  margin: -58px 0 0 -175px;
+  padding: 10px;  /*padding: 15px;*/ 
+  border: #e9e9e9 1px solid;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); 
+  /* opacity:0; */
+}
+.map-option2 .mo-test> dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.map-option2 .mo-test> dl dt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.map-option2 .mo-test> dl dd button {
+  cursor: pointer;
+}
+.map-option2 .mo-test> dl dd i {
+  font-size: 14px;
+  line-height: 14px;
+}
+.map-option2 .mo-test> div {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: #e9e9e9 1px solid;
+}
+.map-option2 .mo-test> div > button,
+.map-option2 .mo-test> div div {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.5px;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.map-option2 .mo-test> div > button:hover,
+.map-option2 .mo-test> div > div:hover {
+  color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option2 .mo-test> div > button.active {
+  color: #fff;
+  background-color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option2 .mo-test> div > button i {
+  margin-right: 5px;
+}
+.map-option2 .mo-test> div > button span {
+  display: flex;
 }

@@ -1,13 +1,63 @@
+// v2_mode: sessionStorage 사용 — 탭/브라우저 닫으면 자동 초기화
+// 최초 접속(sessionStorage 없음) 시 layout.js 기본값 사용, 이후 sessionStorage 값 사용
+const _v2ModeDefault = true; // layout.js 기본값 (첫 접속 시 적용)
+const _storedV2Mode = sessionStorage.getItem('v2_mode');
+let v2_mode;
+if (_storedV2Mode !== null) {
+    // 같은 탭 내 이후 접속: sessionStorage 값 사용
+    v2_mode = _storedV2Mode === 'true';
+} else {
+    // 최초 접속(탭 새로 열림): layout.js 기본값 사용 + sessionStorage에 저장
+    v2_mode = _v2ModeDefault;
+    sessionStorage.setItem('v2_mode', v2_mode);
+}
+const _storedSingleColor = sessionStorage.getItem('singlecolor_mode');
+let singlecolor_mode = _storedSingleColor !== null ? _storedSingleColor === 'true' : false;
+
+const _storedMcTop = sessionStorage.getItem('multicolor_top_mode');
+let multicolor_top_mode = _storedMcTop !== null ? _storedMcTop === 'true' : false;
+
+const _storedMcMid = sessionStorage.getItem('multicolor_mid_mode');
+let multicolor_mid_mode = _storedMcMid !== null ? _storedMcMid === 'true' : false;
+
+const _storedMcBot = sessionStorage.getItem('multicolor_bot_mode');
+let multicolor_bot_mode = _storedMcBot !== null ? _storedMcBot === 'true' : true;
+
+const real_singlecolor ="rgb(192, 101, 36)";
+const eastate_singlecolor = {
+    base: "rgb(42, 132, 248)",
+    light: "rgb(62, 142, 247)"
+};
+const real_multicolor = "rgb(247, 26, 26)";
+
 // layout 관련 js
+
+if(v2_mode) {
+    mypageurl = "/front/views/mypage/mypage_v2.html";
+    mypagerealtorurl ="/front/views/mypage/mypage_realtor_v2.html"
+} else {
+    mypageurl = "/front/views/mypage/mypage.html";
+    mypagerealtorurl ="/front/views/mypage/mypage_realtor.html"
+}
+
 $(function () {
     var currentPage = window.location.pathname;
     
     // 이 호출은 DOMContentLoaded 리스너의 fetch 완료를 대기한 후 실행됩니다.
     loadHeader(`/front/views/00-include/header.html`).done(function () {
-        
+
         relatedWebsite(); // 헤더 로드 및 초기화 완료 후 relatedWebsite 실행 (기존 위치 유지)
         toolsWebsite(); // 헤더 로드 및 초기화 완료 후 toolsWebsite 실행 (기존 위치 유지)
-        
+
+        // v2_mode에 따라 V1/V2 메뉴 표시 전환
+        if (v2_mode) {
+            $(".menu-v1").hide();
+            $(".menu-v2").show();
+        } else {
+            $(".menu-v1").show();
+            $(".menu-v2").hide();
+        }
+
     }).fail(function(error) {
         console.error("loadHeader().fail() 실행됨:", error);
         
@@ -15,7 +65,25 @@ $(function () {
 
     // loadMobile 및 footer 로드는 기존대로 유지
     loadMobile("/front/views/00-include/mobile.html", ".mobile").done(function () {
-        
+
+        // v2_mode에 따라 모바일 V1/V2 메뉴(mobile-footer, mmi-menu) 표시 전환
+        if (v2_mode) {
+            $(".menu-v1").hide();
+            $(".menu-v2").show();
+        } else {
+            $(".menu-v1").show();
+            $(".menu-v2").hide();
+        }
+
+        // 현재 페이지에 해당하는 푸터 메뉴 항목 active 처리
+        const currentPath = window.location.pathname;
+        $('.mobile-footer li').each(function() {
+            const match = ($(this).attr('onclick') || '').match(/location\.href='([^']+)'/);
+            if (match && match[1] === currentPath) {
+                $(this).addClass('active');
+            }
+        });
+
         if (currentPage === "/front/views/realPrice/realPrice.html" || currentPage === "/front/views/sell/sell.html") {
              // $(".mobile-footer").remove();
              // #mobileSearchOpen은 모바일 HTML에 있을 것이므로 해당 스코프에서 찾는 것이 안전
@@ -95,7 +163,7 @@ function loadHeader(file) {
                 `<div class="h-myInfo">
                     <a href="javascript:void(0);"><span class="user-name-type">${decodeURIComponent(getCookie("user_name"))}(${getCookie("user_role") == "001" ? "일반회원" : getCookie("user_role") == "002" ? "중개사회원" : "금융회원"})</span> 님 <i class="fa-light fa-chevron-down"></i> </a>
                     <div class="h-my-menu">
-                        <a class="mypage-url" href="/front/views/mypage/mypage.html">
+                        <a class="mypage-url" href=mypageurl>
                             <span>나의정보</span>
                             <i class="fa-light fa-angle-right"></i>
                         </a>
@@ -358,9 +426,9 @@ function loadHeader(file) {
         // 마이페이지 URL 설정 (.mypage-url는 header.html에 있을 것이므로 headerElement 스코프 사용)
         const isRealtor = getCookie("user_role") == "001" ? true : false;
         if (getCookie("user_role") == "001") {
-            $(".mypage-url").attr("href", "/front/views/mypage/mypage.html");
+            $(".mypage-url").attr("href", mypageurl);
         } else if (getCookie("user_role") == "002") {
-            $(".mypage-url").attr("href", "/front/views/mypage/mypage_realtor.html");
+            $(".mypage-url").attr("href", mypagerealtorurl);
         }
         
         setActiveMenuByUrl(); // 헤더 DOM이 완전히 준비된 후 호출
@@ -397,7 +465,7 @@ function loadMobile(file, selector) {
         if (userInfoBool) {
             $(".mobile-menu-info .user-name-type").text(`${decodeURIComponent(getCookie("user_name"))}(${getCookie("user_role") == "001" ? "일반회원" : "중개사회원"})님`);
 
-            mobileBtnGroup.find("a:first").attr("href", "/front/views/mypage/mypage.html").text("마이페이지");
+            mobileBtnGroup.find("a:first").attr("href", mypageurl).text("마이페이지");
             mobileBtnGroup.find("a:last").attr("href", "/index.html").removeClass("modal-open-btn").text("로그아웃");
             mobileBtnGroup.find("a:last").on("click", logout);
         } else {

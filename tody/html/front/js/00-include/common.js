@@ -55,24 +55,39 @@ function logout() {
  * @returns
  */
 async function initMenu(user = userInfo()) {
-    const result = await callApi("POST", "/front/back/mypage/menu_list.php", user);
+    let result = null
+    try {
+
+        if(v2_mode) {
+            result = await callApi("POST", "/front/back/mypage/menu_list_v2.php", user);
+        }
+        else {
+            result = await callApi("POST", "/front/back/mypage/menu_list.php", user);
+        }
+    } catch (e) {
+        console.error(e);
+        return;
+    }
     if (!result) return;
     const { statusCode, message, responseData } = result;
     if (!responseData) return;
-    const menuListHtml = responseData.menu;
-    $(".sub-menu").html(menuListHtml);
 
+    if (!result || !result.responseData) return;
+
+    const menuListHtml = result.responseData.menu;
+    $(".sub-menu").html(menuListHtml);
     // 현재 페이지 URL 추출 (확장자가 있으면 제거)
-    let currentPage = window.location.pathname
+    const currentPage = window.location.pathname
         .split("/")
         .pop()
         .replace(/\.[^/.]+$/, "");
 
     // 현재 페이지와 일치하는 링크에 'active' 클래스 추가
     $(".sub-menu a").each(function () {
-        // href에서 확장자를 제거하고 비교
-        const href = $(this)
-            .attr("href")
+        const hrefAttr = $(this).attr("href");
+        if (!hrefAttr) return;
+
+        const href = hrefAttr
             .split("/")
             .pop()
             .replace(/\.[^/.]+$/, "");

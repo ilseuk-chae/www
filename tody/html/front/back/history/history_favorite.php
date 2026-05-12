@@ -10,18 +10,19 @@ include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/common.php');
 include ($_SERVER['DOCUMENT_ROOT'] . '/front/back/00-include/authChk.php');
 
 try {
-    $type = isset($_POST['type']) ? urldecode($_POST['type']) : '';
-    $limit = isset($_POST['limit']) ? urldecode($_POST['limit']) : 5;
-    $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
+    $type    = isset($_POST['type'])    ? urldecode($_POST['type'])  : '';
+    $limit   = isset($_POST['limit'])   ? urldecode($_POST['limit']) : 5;
+    $offset  = isset($_POST['offset'])  ? intval($_POST['offset'])   : 0;
+    $v2_mode = isset($_POST['v2_mode']) ? intval($_POST['v2_mode'])  : 0;
 
     // 회원 번호
     $user_no = get_user_no_for_hash($conn, $userNo);
 
     $table_name = '';
     if ($type == 'find') {
-        $table_name = 'wanted_listings';
+        $table_name = $v2_mode ? 'wanted_listings_v2' : 'wanted_listings';
     } elseif ($type == 'put') {
-        $table_name = 'put_listings';
+        $table_name = $v2_mode ? 'put_listings_v2' : 'put_listings';
     } else {
         throw new Exception("Invalid type provided", 400);
     }

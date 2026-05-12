@@ -84,6 +84,29 @@ async function getMenuInfo(rcvUserInfo) {
     //let combinedHtml = "";
     //responseData
     //    .map(function (item) {
+    // v2_mode 활성화 시 _v2 버전으로 자동 전환할 페이지 목록
+    const _v2SupportedPages = [
+        're_listings',
+        're_listings_deleted',
+        're_put',
+        're_wanted',
+    ];
+    // v2_mode 활성화 시 해당 링크를 _v2 버전으로 반환
+    const resolveMenuLink = (link) => {
+        if (typeof v2_mode !== 'undefined' && v2_mode && _v2SupportedPages.includes(link)) {
+            return link + '_v2';
+        }
+        return link;
+    };
+    // v2_mode 활성화 시 해당 메뉴 타이틀에 '2' 접미사 추가
+    const resolveMenuTitle = (link, title) => {
+        if (typeof v2_mode !== 'undefined' && v2_mode && _v2SupportedPages.includes(link)) {
+            //return title + '2';
+            return title;
+        }
+        return title;
+    };
+
     const combinedHtmlArray = responseData.map(function (item) {
             const { menu_class, menu_sub_cd, menu_title_link, menu_title, menu_icon } = item;
 
@@ -154,7 +177,10 @@ async function getMenuInfo(rcvUserInfo) {
                 for (let i = 1; i < titles.length; i++) {
                     const subLink = links.length > i ? links[i] : '';
                     const subTitle = titles.length > i ? titles[i] : '';
-    
+                    // v2_mode에 따라 링크 자동 전환
+                    const resolvedSubLink = resolveMenuLink(subLink);
+                    const resolvedSubTitle = resolveMenuTitle(subLink, subTitle);
+
                      // 하위 메뉴 링크가 유효한 경우에만 HTML 생성
                     if (subLink) { // 링크가 있어야 유효한 메뉴 항목
                        // 하위 메뉴에 개수 표시 span 추가 (ID 부여)
@@ -163,9 +189,9 @@ async function getMenuInfo(rcvUserInfo) {
 
                        html += `
                         <li class="nav-item">
-                            <a href="/admin/views/${firstLink}/${subLink}.html" class="nav-link" data-key="t-${subLink}">
-                                ${subTitle}
-                                ${subMenuCountSpan} 
+                            <a href="/admin/views/${firstLink}/${resolvedSubLink}.html" class="nav-link" data-key="t-${subLink}">
+                                ${resolvedSubTitle}
+                                ${subMenuCountSpan}
                             </a>
                         </li>
                         `;
@@ -194,19 +220,22 @@ async function getMenuInfo(rcvUserInfo) {
             } else if (titles.length === 1) { // 하위 메뉴가 없는 단일 메뉴 항목 처리 (기존 로직 유지)
                 const singleLink = links.length > 0 ? links[0] : '';
                 const singleTitle = titles.length > 0 ? titles[0] : '';
+                // v2_mode에 따라 링크 자동 전환
+                const resolvedSingleLink = resolveMenuLink(singleLink);
+                const resolvedSingleTitle = resolveMenuTitle(singleLink, singleTitle);
 
                 // 단일 메뉴 링크가 유효한 경우에만 HTML 생성
-                // 만약 단일 메뉴 항목이 '제휴 관리' 또는 '제안 관리'일 경우 (참고용) 
+                // 만약 단일 메뉴 항목이 '제휴 관리' 또는 '제안 관리'일 경우 (참고용)
                 if (singleLink) { // 링크가 있어야 유효한 메뉴 항목
                      // 단일 메뉴에 개수 표시 span 추가 (ID 부여)
                     const singleMenuCountSpan = ((singleTitle === '제휴 관리' && singleLink === 'col_partnership') || (singleTitle === '제안 관리' && singleLink === 'col_proposal') || (singleTitle === '중개사 회원' && singleLink === 'realtor')) ?
                         `<span class="menu-count-badge" id="count-for-${singleLink}"></span>` : ''; // 링크를 ID의 일부로 사용
                     html += `
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="/admin/views/${singleLink}/${singleLink}.html">
+                            <a class="nav-link menu-link" href="/admin/views/${resolvedSingleLink}/${resolvedSingleLink}.html">
                                 ${menu_icon || ''}
-                                <span data-key="t-${singleLink}">${singleTitle}</span>
-                                ${singleMenuCountSpan} 
+                                <span data-key="t-${singleLink}">${resolvedSingleTitle}</span>
+                                ${singleMenuCountSpan}
                             </a>
                         </li>
                     `;

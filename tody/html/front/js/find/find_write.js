@@ -1,7 +1,7 @@
 $(document).ready(function () {
     if (!userInfo()) {
         alert("로그인 후 이용 가능합니다.");
-        location.href = "find_list.html";
+        location.href = "../findput/findput_list.html";
         return;
     }
     initModal();
@@ -322,7 +322,7 @@ function findWrite() {
                 // 모달 닫힘 이벤트 설정
                 $("#modalCompletion").on("closed", function () {
                     console.log("Modal closed");
-                    location.href = "/front/views/mypage/mypage_find"; // 페이지 리로드
+                    location.href = "/front/views/mypage/mypage_find.html"; // 페이지 리로드
                 });
             } else {
                 sweetAlertMessage(message, "", "w");

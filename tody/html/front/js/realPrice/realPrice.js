@@ -183,6 +183,37 @@ function initAction() {
         }, 150); // 250ms(0.25초) 동안 추가적인 resize 이벤트가 없으면 함수 실행
     });
 
+    // 지도 - 옵션 - V2설정 //
+    $("#mapV2setOpen").click(function () {
+        if ($(".mo-test").css("display") === "none") {
+            $(".mo-test").fadeIn(300, "easeOutQuad");
+        } else {
+            $(".mo-test").fadeOut(300, "easeOutQuad");
+        }
+        $(".mo-test").toggleClass("active");
+    });
+    $(".mo-test > dl > dd > button").click(function () {
+        $(".mo-test").removeClass("active");
+        $(".mo-test").fadeOut(300, "easeOutQuad");
+    });
+
+    // chkSetv2 초기 상태 (layout.js의 v2_mode 값 반영)
+    $("#chkSetv2").prop("checked", typeof v2_mode !== 'undefined' && v2_mode === true);
+
+    // chkSetv2 변경 → v2_mode 저장 + V2 페이지로 이동 (지도영역도 V2로 전환)
+    $("#chkSetv2").on("change", function () {
+        v2_mode = this.checked;
+        sessionStorage.setItem('v2_mode', v2_mode);
+        if (v2_mode) {
+            // V2 페이지로 이동 (지도영역 포함 전체 전환)
+            location.href = '/front/views/realPrice/realPrice_v2.html';
+        } else {
+            // 이미 V1 페이지 — 메뉴만 갱신
+            $(".menu-v1").show();
+            $(".menu-v2").hide();
+        }
+    });
+
     // 지도 - 옵션 - 지역현황 //
     $("#mapOptionAreaOpen").click(function () {
         $(".mo-area").toggleClass("active");
@@ -1568,29 +1599,7 @@ function initShareEvents() {
             mobileWebUrl: currentUrl,
             webUrl: currentUrl,
         },
-        // content: {
-        //     title: title,
-        //     description: "#토디 #구합니다 #부동산",
-        //     // imageUrl: logoSrc,
-        //     link: {
-        //         // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-        //         mobileWebUrl: "http://tody.it7.kr/front/views/find/find_view.html?viewNo=35",
-        //         webUrl: "http://tody.it7.kr/front/views/find/find_view.html?viewNo=35",
-        //     },
-        // },
-        // social: {
-        // likeCount: 286,
-        // commentCount: 45,
-        // sharedCount: 845,
-        // },
-        // buttons: [
-        //     {
-        //         title: "게시글 보기",
-        //         link: {
-        //             webUrl: "http://tody.it7.kr/front/views/find/find_view.html?viewNo=35",
-        //         },
-        //     },
-        // ],
+        
     });
 }
 

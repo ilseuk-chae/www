@@ -54,6 +54,21 @@ $(document).ready(function () {
         handleUrlChange();
     });
 
+    // 초기 로딩 시 URL/쿠키 좌표로 주변 시설 자동 조회
+    // (map 초기화 완료 후 실행되도록 tilesloaded 이후 타이밍 보장)
+    setTimeout(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        let lat = parseFloat(urlParams.get("curLat"));
+        let lng = parseFloat(urlParams.get("curLng"));
+        if (!areValidCoordinatesInKorea(lat, lng)) {
+            lat = parseFloat(getCookie("curLat"));
+            lng = parseFloat(getCookie("curLng"));
+        }
+        if (areValidCoordinatesInKorea(lat, lng)) {
+            searchArroundPlaces({ lat: lat, lng: lng });
+        }
+    }, 1500); // 지도 타일 로딩 완료 후 실행
+
     // 테스트용 코드 (현재는 동작하지 않음)
     $("#mapHistoryOpen").on("click", function () {
         return;
@@ -2998,6 +3013,23 @@ async function getRealPrice(result, status) {
     }
 }
 
+/**
+ * 실거래가 마커 - 매물종류별 색상·라벨 반환 (clusterRealPrice.js 와 동일 색상 기준)
+ * badge: 원형 뱃지 배경색, color: 하단 배경색, label: 매물종류 한글명
+ */
+function getRealPriceEstateInfo(estateType) {
+    const map = {
+        apt:        { label: '아파트',     color: '#FE6900', border: '#FE6900' },
+        multi:      { label: '연립/다세대', color: '#FE7D87', border: '#FE7D87' },
+        single:     { label: '단독/다가구', color: '#702BFE', border: '#702BFE' },
+        officetel:  { label: '오피스텔',   color: '#F4AFCA', border: '#F4AFCA' },
+        commercial: { label: '상업/업무용', color: '#2973D6', border: '#2973D6' },
+        factory:    { label: '공장/창고',  color: '#039C55', border: '#039C55' },
+        land:       { label: '토지',       color: '#FEB912', border: '#FEB912' },
+    };
+    return map[estateType] || { label: estateType, color: '#999', border: '#999' };
+}
+
 async function showRealPrice(geomFilter, buffer) {
     const url = "/front/back/realPrice/realPrice_apartment.php";
     const dataObj = {
@@ -3024,13 +3056,18 @@ async function showRealPrice(geomFilter, buffer) {
         // 클릭된 마커
         markers.push(marker); // 새로운 마커를 마커 배열에 추가한다.
 
+        const estInfo = getRealPriceEstateInfo(item.estate_type);
         var iwContent = `
         <div class="real-price-marker" style="padding:5px;">
-            <ul class="text-center bg-white border border-danger overflow-hidden" style="border-radius:10px;">
-                <li class="up bg-white p-1">
+            <ul class="text-center bg-white overflow-hidden" style="border:1px solid ${estInfo.border}; border-radius:10px; list-style:none; margin:0; padding:0; min-width:60px;">
+                <li class="bg-white p-1" style="border-bottom:2px solid ${estInfo.border}; line-height:11px; display:flex; align-items:center; justify-content:center; gap:3px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:${estInfo.color}; font-size:8px; font-weight:800; color:#fff; flex-shrink:0; line-height:1;">실</span>
+                    <span style="font-size:10px;">${estInfo.label}</span>
+                </li>
+                <li class="bg-white p-1" style="font-size:12px; font-weight:700; color:#222;">
                     <span class="number">${item.dealAmount}</span>
                 </li>
-                <li class="text-white p-1" style="background-color:var(--var-color-main-1)">
+                <li class="text-white p-1" style="background-color:${estInfo.color}; font-size:11px;">
                     <span class="number">${item.dealYear}</span>
                 </li>
             </ul>

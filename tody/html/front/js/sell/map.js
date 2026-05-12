@@ -1043,7 +1043,12 @@ function changeBaseMapType(mapType, map) {
 
 function gotoSaleRegister()
 {
-    window.location.href = 'https://tody.co.kr/front/views/mypage/mypage_sale_registor.html';
+    if(v2_mode) {
+        window.location.href = 'https://tody.co.kr/front/views/mypage/mypage_sale_registor_v2.html';
+    }
+    else   {    
+        window.location.href = 'https://tody.co.kr/front/views/mypage/mypage_sale_registor.html';
+    }
 }
 
 /* =================================================================

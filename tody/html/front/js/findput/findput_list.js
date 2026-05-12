@@ -16,15 +16,12 @@ $(document).ready(function () {
         loadListData(targetType); // 통합된 로직 호출
     });
 
-    // 초기 로드 시 'put' 탭 활성화 및 데이터 로드
-    const initialType = $(".tab-button.active").data("tab-type");
-    if (initialType) {
-        loadListData(initialType);
-    } else {
-        //console.warn("초기 활성화된 탭 타입을 찾을 수 없습니다. 기본 'put'으로 로드합니다.");
-        loadListData('put');
-        $(".tab-button[data-tab-type='put']").addClass("active");
-    }
+    // URL 파라미터로 초기 탭 결정 (없으면 HTML의 active 탭 사용)
+    const tabParam = getParameter("tab"); // 'find' 또는 'put'
+    const initialType = tabParam || $(".tab-button.active").data("tab-type") || "find";
+    $(".tab-button").removeClass("active");
+    $(".tab-button[data-tab-type='" + initialType + "']").addClass("active");
+    loadListData(initialType);
 
     // #results_table_container 내부의 tr에 이벤트 위임
     $("#results_table_container").on("click", "tr", function () {
@@ -230,16 +227,14 @@ async function loadListData(type) {
             });
         },
 
-        scrollX: false, //true,
-        scrollY: true,
-        //scrollY: "300px", // 세로 스크롤 활성화 및 높이 설정
-        scrollCollapse: false, // 테이블 높이가 데이터보다 작을 경우 스크롤 영역 축소
+        scrollX: false,
+        scrollY: false,
+        scrollCollapse: false,
         processing: true,
-        responsive: false, //true,
-        lengthChange: false, // 페이지당 보이는 개수 드롭다운 숨기기
-        paging: false, // 페이지네이션 숨기기
-        searching: false, // 검색창 숨기기
-        autoWidth: false,
+        responsive: true,
+        lengthChange: false,
+        paging: false,
+        searching: false,
 
         createdRow: function (row, data, dataIndex) {
             // 행 클릭 시 상세 페이지로 이동하도록 data- 속성 추가

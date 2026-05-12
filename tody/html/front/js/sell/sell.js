@@ -1675,7 +1675,7 @@ function displayCompareList() {
         
     } else {
         compareList.data.forEach(item => {
-            const itemText = `비교 매물번호: ${item.estateNo},  ${item.estateType}`;
+            const itemText = `매물번호: ${item.estateNo},  ${item.estateType}`;
             const $span = $('<span>').text(itemText);
             $comparedItemsDisplay.append($span);
         });

@@ -11,25 +11,30 @@ include_once '../00-include/validation.php';
 include_once '../00-include/authChk.php';
 
 try {
-    $period = isset($_POST['period']) ? intval($_POST['period']) : 1;
-    $pnu = isset($_POST['pnu']) ? urldecode($_POST['pnu']) : '';
-    $limit = isset($_POST['limit']) ? intval($_POST['limit']) : 5;
-    $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
+    $period  = isset($_POST['period'])  ? intval($_POST['period'])  : 1;
+    $pnu     = isset($_POST['pnu'])     ? urldecode($_POST['pnu'])  : '';
+    $limit   = isset($_POST['limit'])   ? intval($_POST['limit'])   : 5;
+    $offset  = isset($_POST['offset'])  ? intval($_POST['offset'])  : 0;
+    $v2_mode = isset($_POST['v2_mode']) ? intval($_POST['v2_mode']) : 0;
+
+    // v2_mode에 따라 조회 테이블 선택
+    $put_table = $v2_mode ? 'put_listings_v2' : 'put_listings';
+
     // pnu 조건이 있을 경우와 없을 경우 SQL 다르게 구성
     if (!empty($pnu)) {
         // pnu가 있는 경우
         $sql =
-            "SELECT 
+            "SELECT
                 hrv.board_no,
                 COUNT(hrv.board_no) AS count,
 
                 pl.sido_cd,
                 pl.sgg_cd,
                 pl.address_jibun
-                
+
             FROM history_recent_view AS hrv
 
-            INNER JOIN put_listings AS pl
+            INNER JOIN {$put_table} AS pl
             ON pl.idx = hrv.board_no
             AND pl.active_fg = 'Y'
 
@@ -53,17 +58,17 @@ try {
         // pnu가 없는 경우 (전체 데이터 조회)
         // SQL 쿼리
         $sql =
-            "SELECT 
+            "SELECT
                 hrv.board_no,
                 COUNT(hrv.board_no) AS count,
 
                 pl.sido_cd,
                 pl.sgg_cd,
                 pl.address_jibun
-                
+
             FROM history_recent_view AS hrv
 
-            INNER JOIN put_listings AS pl
+            INNER JOIN {$put_table} AS pl
             ON pl.idx = hrv.board_no
             AND pl.active_fg = 'Y'
 
