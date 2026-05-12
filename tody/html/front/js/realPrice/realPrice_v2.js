@@ -57,6 +57,17 @@ $(document).ready(async function () {
     initEstateListEvents(); // v2: 매물 리스트 이벤트
     initEstateSearchConditionEvents(); // v2: 검색 조건 표시설정 이벤트
     handleUrlChangeForEstateNo(); // v2: URL 매물번호 감지
+
+    // v2: URL tab 파라미터로 초기 탭 결정 (realPrice | estate)
+    (function() {
+        const tabParam = getParameter('tab');
+        if (tabParam === 'estate') {
+            _switchLayerTab('layer-estate');
+        } else if (tabParam === 'realPrice') {
+            _switchLayerTab('layer-realprice');
+        }
+    })();
+
     displayCompareList(); // v2: 비교매물 삭제 버튼 초기 숨김
     _applyLayerState();  // v2: 초기 레이어 상태에 맞게 UI 동기화
 

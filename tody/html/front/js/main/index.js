@@ -668,7 +668,7 @@ async function displayPlaces(places) {
                 sessionStorage.setItem("lastSearchedPlace", JSON.stringify(places));
 
                 // 실거래가 페이지로 이동한다
-                location.href = `/front/views/realPrice/realPrice.html?curLat=${places.y}&curLng=${places.x}`;
+                location.href = `/front/views/realPrice/realPrice_v2.html?curLat=${places.y}&curLng=${places.x}`;
             };
         })(places[i]);
 
