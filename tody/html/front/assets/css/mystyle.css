@@ -1,0 +1,2906 @@
+
+/* 20250321 cis add 206~236*/
+
+/* 메뉴 아이템 기본 스타일 */
+.menu-item {
+    text-decoration: none; /* 텍스트 장식 제거 */
+    color: #111; /*기본 텍스트 색상 설정*/ 
+    padding: 5px 10px; /* 패딩 설정 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    display: block;
+}
+/* hover된 메뉴 아이템 스타일 */
+.menu-item.hover {
+    color: #ef8779; /* hover 시 텍스트 색상 변경 */
+    border-radius: 4px; /* 모서리 둥글게 */
+}
+
+ /* 메뉴 아이템 활성화(active) 상태 스타일 */
+ .menu-item.active {
+    color: #ef8779; /* hover 시 텍스트 색상 변경 */
+    font-weight: bold;
+    border-radius: 4px;
+  }
+ 
+  
+  /* 메뉴 리스트 스타일 */
+  dd.mb-0 ul.mb-0 {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* 메뉴 리스트 아이템 */
+  dd.mb-0 ul.mb-0 li {
+    margin-bottom: 4px;
+  }
+  
+  .toolmodal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    z-index: 99998;
+    overflow: hidden;
+  }
+  
+ .tool-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 99998; /* Below modal content */
+  }
+  
+  .tool-modal-content {
+    background-color: #fefefe;
+    border: 1px solid #888;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    position: fixed;
+    z-index: 99999;
+    width: 100%;
+    height: 1100px;
+    display: flex; 
+    flex-direction: column;
+    overflow: hidden; 
+    max-width: 900px;
+    max-height: 90vh;
+    min-width: 300px; 
+    min-height: 400px;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  
+  }
+  @media all and (max-height: 900px) {
+    .tool-modal-content {
+      max-height: 90vh; /* 화면 높이가 900px 이하일 때 최대 높이 설정 */
+    }
+  }
+  .tool-modal-header {
+    height: 48px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ccc;
+    padding: 0;
+    margin: 0;
+    cursor: move;
+  }
+  
+  .modal-title {
+    position: relative;  
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+  
+  .tool-close-button {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  
+ .tool-modal-body {
+    padding: 20px; 
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex; 
+    height: 100%;
+    min-height: 300px;
+    overflow: auto;
+  }
+  
+  .tool-modal-body iframe {
+    flex: 1;
+    display: block; 
+    width: 100%;
+    height: 100%;
+    border: none;
+    min-height: 300px;
+  }
+ /* ===============매물비교========================== */
+.comparemodal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99998;
+  overflow: hidden;
+}
+
+.compare-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99998;
+}
+
+.compare-modal-content {
+  background-color: #fefefe;
+  border: 1px solid #888;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  position: absolute;
+  z-index: 99999;
+  width: 100%;
+  /*height:1100px;*/
+  height:850px;
+  /*height:75vh; */
+  max-width: 855px;
+  max-height: 900px;
+  min-width: 300px;
+  min-height: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.compare-modal-header {
+  height: 40px;
+  /*background-color: #f8f8f8;*/
+  background-color: #FFFFF0;
+  
+  border-bottom: 1px solid #ccc;
+  cursor: move;
+  flex-shrink: 0;
+  display: flex; /* Flex 컨테이너 */
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: space-between; /* 자식 요소들을 양 끝으로 분리 */
+  padding: 0 16px; /* 양쪽에 여백을 주어 내용이 끝에 너무 붙지 않도록 */
+}
+.compare-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  flex-grow: 1; /* 남은 공간을 차지하도록 허용 */
+  text-align: center; /* 자신의 공간 내에서 텍스트 중앙 정렬 */
+  /* 필요에 따라 긴 제목 처리 */
+  white-space: nowrap; /* 제목이 한 줄로 유지되도록 */
+  overflow: hidden; /* 넘치는 부분 숨김 */
+  text-overflow: ellipsis; /* 넘치는 부분 ...으로 표시 */
+}
+
+.compare-close-button {
+  /* position: absolute; 속성을 제거하여 flex item으로 만듭니다. */
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px; /* 버튼의 실제 크기를 정의 */
+  flex-shrink: 0; /* 버튼이 줄어들지 않도록 */
+  width: 40px; /* placeholder와 동일한 너비로 설정 */
+}
+
+.compare-modal-content .compare-close-button {
+  margin-left: auto; /* 왼쪽에 모든 여백을 할당하여 오른쪽으로 밀어냅니다. */
+}
+
+.mc-tab-menu3 .unit-toggle-group {
+  margin-left: auto; /* 왼쪽에 모든 여백을 할당하여 오른쪽으로 밀어냅니다. */
+}
+/* 이하 코드는 이전과 동일합니다. */
+
+.select-button-group .form-select2 {
+  flex-grow: 1;
+  height: 35px;
+}
+
+.compare-list-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px 20px;
+  height: 82px;
+}
+
+.select-estate-item {
+  border: 1px solid #eee;
+  padding: 1px;
+  border-radius: 2px;
+  height: 37px;
+}
+
+.select-estate-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1px;
+}
+
+.select-estate-header h2 {
+  margin: 0;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+  width: 50px;
+  text-align: center;
+}
+
+.select-estate-header select {
+  flex-grow: 1;
+  width: auto;
+  height: 33px;
+}
+
+.select-estate-header .form-select3 {
+  flex-grow: 1;
+  height: 35px;
+}
+
+.compare-modal-body {
+  padding: 1px; /* 내부 여백 */
+  border: #e9e9e9 1px solid; /* 테두리 */
+  /*flex-grow: 1; /* .compare-modal-content 내에서 남은 공간을 모두 차지 */
+  display: flex;
+  flex-direction: column; /* 자식 요소들을 세로로 정렬 */
+  /* !!! 중요한 변경 !!! */
+  /* min-height는 그대로 두되, 명확한 높이를 추가해야 합니다. */
+  /*height: 100%; /* 부모의 높이에 꽉 채우려면 */
+  height: calc(100vh - 110px); /* */
+  /* 또는 고정된 최대 높이를 설정하려면 */
+  /* max-height: 500px; */
+  /* 또는 뷰포트 높이에 비례하여 설정하려면 (예: 뷰포트 높이에서 상단, 하단 여백 등을 뺀 값) */
+  min-height: 300px; /* 최소 높이 */
+  overflow: hidden; /* 이 컨테이너 자체에는 스크롤이 생기지 않도록 */
+  /* 이전에 있던 height: 100%;, margin: 4px; 등은 제거 */
+}
+
+.modal-body-header,
+.modal-body-footer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border: #e9e9e9 1px solid;
+}
+.modal-body-footer {
+  margin-bottom: 5px;
+}
+
+.modal-body-header {
+  margin-bottom: 3px;
+}
+
+.modal-body-scroll-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;  /* X축 (가로) 스크롤은 항상 숨깁니다. */
+  padding: 1px;
+  background-color: #ffffff;
+ /* -ms-overflow-style: none;   IE and Edge */
+ /* scrollbar-width: none;   Firefox */
+  height: 100%;
+}
+.modal-body-scroll-content::-webkit-scrollbar {
+  width: 5px; /* 스크롤바의 너비 */
+  background-color: #f0f0f0; /* 스크롤바 트랙 배경색 */
+}
+
+.modal-body-scroll-content::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* 스크롤바 핸들 색상 */
+  border-radius: 4px; /* 스크롤바 핸들 모서리 둥글게 */
+}
+
+.modal-body-scroll-content::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb; /* 스크롤바 핸들 호버 시 색상 */
+}
+/* ==================== 컬럼 기본 스타일 ==================== */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.column-left {
+  flex-shrink: 0;
+  width: 90px;
+  background-color: #ececec;
+  color: #888888;
+  border: 1px solid #ececec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.column-right {
+  flex-shrink: 0;
+  width: 170px;
+  background-color: #ffffff;
+  color: #888888;
+  padding: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.column-center {
+  flex-grow: 1;
+  max-width: 832px;
+  background-color: #ffffff;
+  padding: 1px;
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.center-right-half,
+.center-left-half {
+  flex: 1;
+  border: #e1e1e1 1px solid;
+  word-break: break-word;
+  max-width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* ==================== 새로운 행 컨테이너 스타일 ==================== */
+.property-detail-row {
+  display: flex;
+  align-items: stretch;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1px;
+}
+
+/* ==================== 매물 상세 정보 행 내부 스타일 ==================== */
+.property-label,
+.property-values,
+.property-compare {
+  padding: 1px;
+  box-sizing: border-box;
+  border: none;
+  color: #888888;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+.property-label {
+  flex-shrink: 0;
+  width: 90px;
+  font-weight: bold;
+  background-color: #ececec;
+  justify-content: center;
+}
+
+.property-values {
+  flex-grow: 1;
+  max-width: 803px;
+  display: flex;
+  align-items: stretch;
+}
+
+.property-compare {
+  flex-shrink: 0;
+  width: 170px;
+  background-color: #ffffff;
+  justify-content: center;
+}
+
+.property-value-item {
+  flex: 1;
+  word-break: break-word;
+  background-color: #ffffff;
+  gap: 2px;
+  max-width: 250px;
+  width: 250px;
+  border-right: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.property-value-item img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.property-item-left,
+.property-item-right {
+  flex: 1;
+  word-break: break-word;
+  gap: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.property-item-left {
+  background-color: #f7e8c4;
+}
+
+.property-item-right {
+  background-color: #f7efdb;
+}
+
+.price-wrapper {
+  display: flex; /* Flex 컨테이너로 설정 */
+  flex-wrap: nowrap; /* 자식 요소들이 줄바꿈되지 않도록 설정 (기본값) */
+  align-items: center; /* 세로 중앙 정렬 (선택 사항) */
+  gap: 5px; /* 두 요소 사이 간격 (선택 사항, 필요에 따라 조절) */
+}
+
+/* ==================== 하이라이트 및 비교 결과 스타일 ==================== */
+.dl-highlight-border {
+  border: 3px solid orange !important;
+  overflow: hidden; /* 이미지 등 자식 요소가 테두리 밖으로 벗어나지 않도록 */
+}
+
+.mc-tab-menu3 .comparison-area-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.mc-tab-menu3 .comparison-left-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.mc-tab-menu3 .comparison-left-group button {
+  font-size: 12px;
+  line-height: 22px;
+  color: #111;
+  cursor: pointer;
+  margin: 2px;
+  padding: 4px;
+  border: #e6e5e5 1px solid;
+}
+
+.mc-tab-menu3 .comparison-left-group .button.disabled-style {
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.mc-tab-menu3 .comparison-left-group button.active,
+.mc-tab-menu3 .comparison-left-group button:hover {
+  color: #ef8779;
+}
+
+.mc-tab-menu3 .compared-items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mc-tab-menu3 .compared-items-list span {
+  white-space: nowrap;
+}
+
+/* unit-toggle-group을 항상 오른쪽 끝에 배치 */
+.mc-tab-menu3 .unit-toggle-group {
+  margin-left: auto; /* 왼쪽에 모든 여백을 할당하여 오른쪽으로 밀어냅니다. */
+}
+
+.mc-tab-menu3 .unit-toggle-group button {
+  font-size: 12px;
+  line-height: 12px;
+  color: #111;
+  cursor: pointer;
+}
+
+.mc-tab-menu3 .unit-toggle-group button span.active {
+  color: #ef8779;
+}
+.mc-tab-menu4 {
+  display: flex; /* Flex 컨테이너로 설정 */
+  align-items: center; /* 자식 요소들을 세로 중앙에 정렬 (label과 input의 높이가 다를 경우 보기 좋게) */
+  gap: 00px; /* label과 input 사이에 간격 추가 (선택 사항) */
+  /* 필요하다면 이 컨테이너의 전체 너비도 설정할 수 있습니다. 예: width: 100%; */
+  
+  padding: 4px 20px 2px 20px;
+  /* 임시로 배경과 테두리를 추가하여 패딩 적용 여부 확인 
+  background-color: lightgray;
+  border: 1px solid red;*/
+  border-radius: 10px;
+  
+}
+
+.mc-tab-menu4 label {
+  /* label은 콘텐츠 너비만큼만 차지하도록 합니다. */
+  flex-shrink: 0; /* label이 줄어들지 않도록 설정 (콘텐츠가 길어질 경우 대비) */
+  color:#111;
+  background-color: #f5f1fe;
+  border-radius: 10px;
+}
+
+.mc-tab-menu4 input[type="text"] {
+  flex-grow: 1; /* input이 남은 공간을 모두 차지하도록 설정 */
+  /* 필요하다면 input의 최소/최대 너비도 설정할 수 있습니다. */
+  min-width: 0; /*(간혹 flex-grow 1을 줬는데도 스크롤 생기는 문제 방지용) */
+  border: none;             /* 테두리 없애기 */
+  background-color: transparent; /* 배경색 투명하게 */
+  box-shadow: none;         /* 혹시 있을 수 있는 그림자 효과 제거 */
+  outline: none;            /* 포커스 시 나타나는 파란색/검은색 외곽선 제거 */
+  cursor: default;          /* 마우스 포인터를 기본 화살표로 변경 (입력 필드임을 강조하지 않기 위해) */
+
+  /* readonly 상태에 대한 스타일은 필요에 따라 추가 */
+  /* opacity: 1; (disabled 상태의 opacity: 0.5 같은 효과가 필요없을 때) */
+  /* color: #333; (색상 명확히 지정) */
+  color:#111;
+  background-color: #f5f1fe;
+  border-radius: 10px;
+}
+
+.mc-tab-menu5 {
+  display: Flex; /* Flex 컨테이너로 설정 */
+  align-items: center; /* 자식 요소들을 세로 중앙에 정렬 (label과 input의 높이가 다를 경우 보기 좋게) */
+  /*justify-content: center;*/
+  gap: 10px; /* label과 input 사이에 간격 추가 (선택 사항) */
+  /* 필요하다면 이 컨테이너의 전체 너비도 설정할 수 있습니다. 예: width: 100%; */
+  
+  padding: 4px 20px 2px 20px;
+  /* 임시로 배경과 테두리를 추가하여 패딩 적용 여부 확인 
+  background-color: lightgray;
+  border: 1px solid red;*/
+  border-radius: 10px;
+  font-size: 12px;
+}
+/* 1. "매물 목록" label 스타일 */
+.mc-tab-menu5 label#estate_list_title {
+  flex-grow: 1; /* <-- label이 남은 공간을 모두 차지하도록 합니다. */
+  width: auto; /* <-- 너비는 Flexbox에 의해 유연하게 조절되도록 합니다. */
+  flex-shrink: 0; /* label이 컨텐츠가 길어져도 최소 너비를 유지하게 할 때 사용 */
+  
+  /* label 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: flex;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  color:#888;
+  background-color: #f5f1fe;;
+  border-radius: 10px;
+  text-align: center;
+}
+/* 2. "중개사 해제" button 스타일 */
+.mc-tab-menu5 button#agency_reset_btn {
+  flex-shrink: 0; /* <-- 버튼이 줄어들지 않고 고정 너비를 유지하도록 합니다. */
+  width: 80px; /* <-- 버튼의 고정 너비 (원하시는 크기로 조절) */
+  margin-left: 5px;        /* <-- 이 줄을 추가하여 button과 그 이후 요소를 오른쪽 끝으로 밀어냅니다. */
+  /* button 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: none;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  /* label과 동일하게 컨테이너의 유효 높이에 맞춰 설정 */
+  height: 20px; 
+  /*line-height: 1.2; */
+
+  color: #888;
+  background-color: #f5f1fe;
+  border-radius: 10px;
+  border: none; /* 버튼 기본 테두리 제거 */
+  cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+}
+/* 3. "목록 고정" 체크박스와 라벨을 감싸는 div 스타일 */
+.mc-tab-menu5 .fix-list-wrapper {
+  flex-shrink: 0;           /* 줄어들지 않고 고정 너비 유지 */
+  margin-left: 10Px;        /* <-- 이 줄을 추가하여 오른쪽 끝으로 밀어냅니다. */
+  display: flex;            /* input과 label을 나란히 배치 */
+  align-items: center;      /* input과 label을 세로 중앙 정렬 */
+  gap: 5px;                 /* 체크박스와 "목록 고정" 라벨 사이의 간격 */
+
+  height: 20px; /* 컨테이너의 유효 높이에 맞춤 */
+
+  /* 필요한 경우 배경색이나 패딩을 추가할 수 있습니다. */
+  /* background-color: #e0e0e0; */
+  /* padding: 0 5px; */
+  border-radius: 10px; /* 부모 컨테이너와 일관된 스타일 */
+  background-color: #f5f1fe; /* 부모 컨테이너와 일관된 스타일 */
+}
+.mc-tab-menu5 button#agency_reset_btn:hover {
+  color: #ef8779; /* 버튼 호버 시 배경색 변경 (선택 사항) */
+}
+/* 4. 체크박스 input 스타일 (선택 사항) */
+.mc-tab-menu5 .fix-list-wrapper input[type="checkbox"] {
+  /* 체크박스 기본 스타일 조정 (필요한 경우) */
+  width: 14px; /* 높이에 맞춤 */
+  height: 14px; /* 높이에 맞춤 */
+  margin: 0; /* 기본 마진 제거 */
+  /* custom checkbox 스타일링을 원하면 추가 */
+}
+
+.mc-tab-menu5 .fix-list-wrapper label{
+  flex-shrink: 0; /* <-- 버튼이 줄어들지 않고 고정 너비를 유지하도록 합니다. */
+  width: 60px; /* <-- 버튼의 고정 너비 (원하시는 크기로 조절) */
+  
+  /* button 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: flex;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  /* label과 동일하게 컨테이너의 유효 높이에 맞춰 설정 */
+  height: 20px; 
+  /*line-height: 1.2; */
+  border-radius: 10px;
+  color: #888;
+  cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+}
+
+.mc-tab-menu5 button:hover {
+  color: #ef8779; /* 버튼 호버 시 배경색 변경 (선택 사항) */
+}
+
+.mc-tab-menu6 {
+  display: none; /* 기본적으로 숨김 */;
+  align-items: center;
+  justify-content: center;
+
+  padding: 5px 20px 5px 20px;
+  border: 1px solid red;
+  border-radius: 10px;
+  font-size: 12px;
+
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 5px;
+
+  left: 50%; /* 왼쪽에서 50% 위치 */
+  transform: translateX(-50%); /* 자신의 너비의 절반만큼 왼쪽으로 이동하여 완벽하게 중앙 정렬 */
+
+  width: 80%;
+  box-sizing: border-box;
+  background-color: #f5f1fe;
+  z-index: 100;
+}
+
+.mc-tab-menu6 button {
+
+  /* 버튼 텍스트의 색상을 지정 */
+  color: blue ; /* #000여기에 원하는 색상 코드를 넣으세요 */
+  background-color: transparent; /* 버튼의 배경색은 따로 지정해주세요 (없앨 수도 있고요) */
+  border: none; /* 버튼의 기본 테두리 없애기 */
+  cursor: pointer;
+  font-size: 12px; /* 버튼 안 글자 크기도 필요하면 조절 */
+  /* 기타 버튼 스타일 */
+}
+.mc-tab-menu6 button:hover {
+  /* 버튼 텍스트의 색상을 지정 */
+  color: #ef8779;
+}
+/* .agency-name 안의 버튼 기본 스타일 */
+.agency-name button {
+  /* 버튼 내부의 텍스트 기본 색상을 설정하여, 일반 button:hover의 color를 무시하게 만듭니다. */
+  color: #333; /* 예를 들어, 기본 텍스트 색상을 어두운 회색으로 설정합니다. */
+  background-color: transparent; /* 버튼의 배경색도 명시적으로 설정하여 다른 규칙과 충돌 방지 */
+  border: none; /* 버튼의 테두리도 명시적으로 제거 */
+  padding: 0; /* padding도 0으로 명시적으로 설정 */
+  /* 다른 버튼 기본 스타일 재정의가 필요할 수 있습니다. */
+}
+
+/* 지도 - 우측 상단 지도 선택 */
+.map-register-group {
+  position: absolute;
+  top: 2px;
+  right: 273px;
+  z-index: 1;
+  gap: 2px;
+}
+.map-register-group button {
+  display: inline-block;
+  height: 32px;
+  padding: 7px;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -1px;
+  border: 1px solid red;
+  color: blue ;
+  border-radius: 10px;
+  background-color: #f5f1fe;
+  cursor: pointer;
+  
+}
+
+.map-register-group button:hover {
+  color: #ef8779;
+}
+
+.agency-name button:hover {
+  /* background-color: (있었다면 제거); */
+  /* color: (있었다면 제거); */
+  /* text-decoration: none; (있었다면 제거); */
+  cursor: pointer; /* 클릭 가능하다는 표시만 남겨두는 것은 좋습니다. */
+  color: #333; /* <-- 중요! hover 시에도 기본 텍스트 색상을 유지하도록 재정의 */
+  /* 다른 시각적 변화는 주지 않음 */
+}
+
+/* 상호명 부분 텍스트에 테두리 적용 */
+.agency-name-text {
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+  padding: 2px 4px;      /* 텍스트와 테두리 사이의 간격 (선택 사항) */
+  border-radius: 3px;    /* 테두리의 모서리를 둥글게 (선택 사항) */
+  display: inline-block; /* 패딩과 마진을 적용하려면 inline-block이 좋습니다. */
+  /* 필요하다면 배경색 등 다른 스타일도 추가할 수 있습니다. */
+  box-sizing: border-box;
+  line-height: 1;        
+  background-color: transparent; /* 기본 배경색을 투명하게 설정 */
+  color: #111; /* 기본 글자색 */
+}
+
+.agency-name-text:hover { /* 상호명 텍스트 부분에 마우스 올렸을 때의 스타일 */
+  /*background-color: #e0e0e0; /* 예시 */
+  color: #ef8779;
+  cursor: pointer; /* 클릭 가능한 모양으로 변경 */
+}
+/* ---------------------------------------------------- */
+/* "상호명:" 접두사 텍스트 (<span class="agency-text-prefix">) 에 대한 규칙 */
+/* ---------------------------------------------------- */
+.agency-text-prefix {
+  color: #555; /* "상호명:" 부분의 글자색을 명시적으로 설정합니다. */
+  margin-right: 5px; /* 상호명: 과 실제 상호명 사이 간격 */
+  /* hover 효과를 주지 않으므로 여기에 hover 규칙은 필요 없습니다. */
+}
+
+@media all and (max-width: 991px) {
+
+  /* 모바일에서도 비교 바 표시 (이전: display:none)
+     sticky: overflow-y:auto 스크롤 컨테이너 내에서 항상 상단 고정 */
+  .mc-tab-menu3 {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #fff;
+  }
+  .mc-tab-menu3 .comparison-area-content {
+      flex-direction: row;    /* column → row: 토글 버튼이 아래로 내려가지 않도록 */
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      gap: 5px;
+  }
+  .mc-tab-menu3 .comparison-left-group {
+      flex: 1;
+      min-width: 0;           /* flex child 텍스트 overflow 방지 */
+      flex-wrap: wrap;
+      gap: 8px;
+  }
+  .mc-tab-menu3 .unit-toggle-group {
+      flex-shrink: 0;         /* 항상 오른쪽 끝에 고정 */
+  }
+  .mc-tab-menu4 {
+      padding: 4px 20px; /* 적절한 패딩 추가 */
+  }
+
+  /* ── 비교 모달 (모바일) ─────────────────────────────────── */
+  /* 모달 너비 95vw 제한 (JS adjustComparisonModalWidth 고정px 오버라이드) */
+  .compare-modal-content {
+      width: 95vw !important;
+      max-width: 95vw !important;
+  }
+
+  /* 모달 바디 → 단일 스크롤 컨테이너 (X·Y 모두 처리, 스크롤 1개) */
+  .compare-modal-body {
+      overflow: auto;           /* 기존 hidden → auto (X·Y 통합) */
+  }
+
+  /* 비교 내용 영역 → 스크롤 없음 (부모 .compare-modal-body 에 위임) */
+  .modal-body-scroll-content {
+      overflow: visible;        /* 기존 overflow-x:auto 제거 → 부모 스크롤 사용 */
+  }
+
+  /* 헤더/바디행/푸터 → 자연폭(max-content)으로 확장 → 가로 스크롤 범위 생성 */
+  .modal-body-header,
+  .property-detail-row,
+  .modal-body-footer {
+      min-width: max-content;
+  }
+
+  /* 헤더: 세로 스크롤 시 상단 고정 */
+  .modal-body-header {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: #ffffff;
+  }
+
+  /* 푸터: 세로 스크롤 시 하단 고정 */
+  .modal-body-footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      background: #ffffff;
+  }
+
+  /* 레이블 컬럼: 가로 스크롤 시 좌측 고정 */
+  .modal-body-header .column-left,
+  .property-detail-row .property-label,
+  .modal-body-footer .column-left {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      flex-shrink: 0;
+  }
+  .modal-body-header .column-left {
+      background: #ffffff;
+  }
+  .property-detail-row .property-label {
+      background: #ececec;
+  }
+  .modal-body-footer .column-left {
+      background: #ffffff;
+  }
+
+  /* sell_v2: mc-tab-menu3 sticky 해제
+     → scroll container(.layer-tab-content) 없어 viewport 상단에 렌더링됨 방지
+     → realprice_v2는 .layer-tab-content{overflow-y:auto}가 있어 sticky 유지 */
+  body[data-screen-type="sell"] .mc-tab-menu3 {
+      position: static;
+  }
+
+  /* 모바일 푸터: 현재 페이지 메뉴 active 표시 */
+  .mobile-footer > ul > li.active div {
+      color: var(--var-color-main-1, #ef8779);
+      font-weight: 600;
+  }
+  .mobile-footer > ul > li.active p img {
+      filter: invert(64%) sepia(40%) saturate(600%) hue-rotate(315deg) brightness(100%);
+  }
+
+}
+
+.highlight-difference {
+  color: #dc3545;
+  /*font-weight: bold;*/
+}
+
+.compare-up {/*삭제예정*/
+  color: blue;
+}
+
+.compare-down {  /*삭제예정*/
+  color: red;
+}
+
+/* highlight-difference는 이제 property-value-item에 적용됩니다 */
+.property-value-item.highlight-difference {
+  background-color: #ffcccc !important; /* 차이가 나는 항목 강조 (예시) */
+  /* 원하는 스타일을 추가하세요. */
+}
+
+/* 새로 추가된 display-value 텍스트 기본 스타일 (선택 사항) */
+.property-value-item .display-value {
+  /* 예를 들어, 기본 폰트 크기나 색상 유지 */
+  font-size: 1em;
+  color: #333;
+  margin-right: 5px; /* 비교 정보와 약간의 간격 */
+}
+
+/* 비교 결과를 담을 span/div 스타일 */
+.compare-info {
+  font-size: 0.8em;
+  font-weight: bold;
+  /*color: #555;  기본 색상 */
+}
+
+.compare-info.compare-up { /* 가격 상승 등 긍정적 변화 */
+  color: blue; /* 녹색 */
+}
+.compare-info.compare-down { /* 가격 하락 등 부정적 변화 */
+  color: red; /* 빨간색 */
+}
+
+/* property-value-item 자체에 강조 배경색을 줄 경우 */
+.property-value-item.highlight-difference {
+  background-color: #ffe0b2; /* 연한 주황색 (예시, 배경색 변경) */
+}
+
+/* 이미지 비교 결과를 위한 오버레이 (예시) */
+.property-value-item .image-compare-overlay {
+  position: absolute; /* 또는 relative에 absolute 오버레이 */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 0.9em;
+  padding: 3px 5px;
+  text-align: center;
+}
+
+/* 지도 우측 옵션 컨테이너/버튼 기본 스타일 (content.css 미로드 대비) */
+.map-option {
+    position: absolute;
+    top: 100px;
+    right: 3px;
+    z-index: 1;
+}
+.map-option > button {
+    display: block;
+    margin: 3px 0;
+    width: 40px;
+    padding: 5px 0;
+    border: #e9e9e9 1px solid;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+.map-option > button i {
+    font-size: 15px;
+    color: #111;
+    transition: all 0.3s ease-in-out;
+}
+.map-option > button span {
+    display: block;
+    margin-top: 1px;
+    font-size: 9px;
+    line-height: 10px;
+    color: #111;
+    letter-spacing: -0.5px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* mapOptionSearch: active 시 핑크 테두리 (파란색 active 대상에서 제외된 버튼) */
+#mapOptionSearch.active {
+    border: 1px solid #ef8779;
+}
+#mapOptionSearch.active i,
+#mapOptionSearch.active span {
+    color: #ef8779 !important;
+}
+
+.map-option .mo-memo{
+  display: none;
+  position: absolute;
+  width: 170px;
+  margin: -58px 0 0 -175px;
+  padding: 10px;  /*padding: 15px;*/
+  border: #e9e9e9 1px solid;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); /* opacity:0; */
+}
+@media (max-width: 991px) {
+  .map-option .mo-memo {
+    /* position:fixed: 부모 overflow 클리핑 및 map-content-wrapper(z-index:302) 위에 표시 */
+    /* top / maxHeight 는 JS(positionMoMemo)에서 버튼 위치 기준으로 동적 설정 */
+    position: fixed;
+    right: 48px;
+    margin: 0;
+    overflow-y: auto;
+    z-index: 9999;
+  }
+}
+.map-option .mo-memo> dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.map-option .mo-memo> dl dt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.map-option .mo-memo> dl dd button {
+  cursor: pointer;
+}
+.map-option .mo-memo> dl dd i {
+  font-size: 14px;
+  line-height: 14px;
+}
+.map-option .mo-memo> div {
+  margin-top: 10px;
+}
+.map-option .mo-memo> div > button,
+.map-option .mo-memo> div div {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.5px;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.map-option .mo-memo> div > button:hover,
+.map-option .mo-memo> div > div:hover {
+  color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-memo> div > button.active {
+  color: #fff;
+  background-color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-memo> div > button i {
+  margin-right: 5px;
+}
+.map-option .mo-memo> div > button span {
+  display: flex;
+}
+/* search 스타일 커스터마이징  bootstrap용 */
+.map-option .mo-search {
+  display: none;
+  position: absolute;
+  width: 170px;
+  margin: -58px 0 0 -175px;
+  padding: 10px;  /*padding: 15px;*/ 
+  border: #e9e9e9 1px solid;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); /* opacity:0; */
+}
+@media (max-width: 767px) {
+  .map-option .mo-search {
+    /* position:fixed: 부모 overflow 클리핑을 우회하여 뷰포트 기준 배치 */
+    /* top / maxHeight 는 JS(positionMoSearch)에서 버튼 위치 기준으로 동적 설정 */
+    position: fixed;
+    right: 48px;
+    margin: 0;
+    overflow-y: auto;
+    z-index: 9999;
+  }
+}
+.map-option .mo-search > dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.map-option .mo-search > dl dt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.map-option .mo-search > dl dd button {
+  cursor: pointer;
+}
+.map-option .mo-search > dl dd i {
+  font-size: 14px;
+  line-height: 14px;
+}
+.map-option .mo-search > div {
+  margin-top: 10px;
+}
+.map-option .mo-search > div > button,
+.map-option .mo-search > div div {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.5px;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.map-option .mo-search > div > button:hover,
+.map-option .mo-search > div > div:hover {
+  color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-search > div > button.active {
+  color: #fff;
+  background-color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option .mo-search > div > button i {
+  margin-right: 5px;
+}
+.map-option .mo-search > div > button span {
+  display: flex;
+}
+/* 기본 툴팁 컨테이너  bootstrap용 - layer-toggle-btn 스타일 기반 */
+/* Bootstrap CSS 변수 오버라이드 (화살표 색상 동기화) */
+.tooltip {
+    --bs-tooltip-bg: #fefae8;
+    --bs-tooltip-color: #000;
+}
+.tooltip-inner {
+    background-color: #fefae8;  /* 옅은 아이보리 */
+    color: #000;
+    border: 1.5px solid #ccc;
+    border-radius: 18px;        /* layer-toggle-btn 동일 pill 형태 */
+    padding: 5px 14px;          /* layer-toggle-btn 동일 */
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    max-width: 250px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* 툴팁 화살표 (꼬리) - 아이보리 배경에 맞게 */
+.bs-tooltip-top    .tooltip-arrow::before { border-top-color:    #fefae8 !important; }
+.bs-tooltip-bottom .tooltip-arrow::before { border-bottom-color: #fefae8 !important; }
+.bs-tooltip-start  .tooltip-arrow::before { border-left-color:   #fefae8 !important; }
+.bs-tooltip-end    .tooltip-arrow::before { border-right-color:  #fefae8 !important; }
+/* map-estate-group 내의 모든 버튼에 공통적으로 적용될 스타일 */
+.realmap-estate-group {
+  position: absolute; /* 부모 컨텍스트 기준으로 배치 */
+  flex-direction: column; 
+  top: 0;
+  left: 0;
+  display: flex; /* 내부 버튼들을 가로로 배치 */
+  flex-wrap: wrap; /* 버튼이 넘치면 다음 줄로 넘어감 */
+  padding: 1px; /* 예시 패딩 */
+  border: 1px solid #ccc; /* 예시 테두리 */
+  z-index: 1;
+  flex-shrink: 0; /* 크기가 줄어들지 않도록 설정 */
+  gap: 2px;
+  /*margin-left: 634px;*/
+}
+.realmap-estate-group {
+  margin-top: 58px;
+  margin-left: 4px;
+}
+.realmap-estate-group.active{
+  margin-top: 58px;
+  margin-left: 454px;
+}
+
+.realmap-estate-group button,
+.map-estate-group button {
+  position: relative; /* ::before 가상 요소의 위치 기준을 위해 필요 */
+  display: inline-block;
+  /* height: 32px;
+  padding: 7px 4px 7px 12px;  6px <--> 4px */
+  height: 25px;      /* 30px <--> 25px */
+  width: 72px;
+  padding: 5px 0px 5px 2px;  /* 6px <--> 4px */
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -1px;
+  border: #e9e9e9 1px solid;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap; /* 버튼 내용이 한 줄로 표시되도록 */
+}
+
+.realmap-estate-group button.active {
+  color: #ef8779;
+  border: #2ee78b 1px solid;
+  /*border: #ef8779 1px solid;
+  background: #bceeb2; */
+}
+
+
+/* 각 버튼 이름 앞에 작은 원을 생성하고 스타일링 */
+.realmap-estate-group button::before,
+.map-estate-group-v2 button::before {
+  content: ''; /* 가상 요소의 필수 속성 */
+  display: inline-block; /* 너비와 높이를 설정하기 위해 */
+  width: 8px; /* 원의 너비 */
+  height: 8px; /* 원의 높이 */
+  margin-right: 2px; /* 원과 텍스트 사이 간격 */
+  border-radius: 50%; /* 원 형태로 만들기 */
+  margin-right: 8px; /* 원과 텍스트 사이 간격 */
+  vertical-align: middle; /* 텍스트와 세로 중앙 정렬 */
+  position: absolute; /* 버튼 내에서 자유롭게 위치 조절 */
+  left: 4px; /* 버튼 왼쪽에서 떨어진 거리 */
+  top: 45%; /* 버튼 상단에서 50% 위치 */
+  transform: translateY(-50%); /* 정확한 세로 중앙 정렬 */
+}
+
+/* sell_v2 전용: 매물 필터 버튼 position 기준점 */
+.map-estate-group-v2 button {
+  position: relative; /* ::before 절대 위치의 기준 */
+}
+/* 지도 - 이력관리 */
+.realmap-estate-info {
+  /*position: relative;  부모 컨텍스트 기준으로 배치 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1px 0 0 10px;
+  border: 1px solid #ccc; /* 예시 테두리 */
+  z-index: 1;
+  /*transition: margin-left 0.4s ease-out;*/
+  width : 70px;
+  /*border: #FEB912 1px solid;*/
+}
+.realmap-estate-info {
+  /*margin-left: 174px; /* realmap-sale-group과의 간격을 조정 */
+  margin-left: 50px;
+}
+.realmap-estate-info.active {
+  /*margin-left: 624px;  realmap-sale-group과의 간격을 조정 */
+  margin-left: 500px; /* realmap-sale-group과의 간격을 조정 */
+}
+.my-select-box {
+  height:13px; 
+  /*padding:0 15px; */
+  width: 66px;
+  font-size:11px; 
+  line-height:12px; 
+  color:#3b3b3b; /*#ef8779*/
+  border:#ccc 1px solid;  /* #fff */
+  border-radius:3px; 
+  padding-right:0px; /* 이 값은 아래에서 설명 */
+  padding-left:2px; /* 이 값은 아래에서 설명 */
+  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #8edcdd; /*#FEB912, #3b3b3a*/
+  
+} 
+.my-select-box2 {
+  height:13px; 
+  /*padding:0 15px; */
+  width: 66px;
+  font-size:11px; 
+  line-height:12px; 
+  color:#3b3b3b; /*#c518e7 */
+  border:#ccc 1px solid;  /* #fff */
+  border-radius:3px; 
+  padding-right:0px; /* 이 값은 아래에서 설명 */
+  padding-left:2px; /* 이 값은 아래에서 설명 */
+  background: url('../image/icn_selectbox.gif') right 2px center no-repeat, #8edcdd; /*#87DBDD*/
+  
+} 
+
+/* 지도 - 평균관리 */
+.realmap-average-info {
+  /*position: relative;  부모 컨텍스트 기준으로 배치 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1px 0 0 10px;
+  border: 1px solid #ccc; /* 예시 테두리 */
+  z-index: 1;
+  /*transition: margin-left 0.4s ease-out;*/
+  width : 70px;
+  /*border: #FEB912 1px solid;*/
+}
+.realmap-average-info {
+  /* margin-top: 100px; */
+  margin-left: 124px; 
+}
+.realmap-average-info.active {
+  /*margin-top: 100px; */
+  margin-left: 574px;
+}
+/*
+@media all and (max-width: 1040px) {
+  .realmap-estate-group {
+    margin-top: 100px;
+    margin-left: 4px;
+    flex-direction: column;  
+  }
+  .realmap-estate-group.active {
+    margin-top: 100px;
+    margin-left: 454px;
+    flex-direction: column;   
+  }
+}
+*/
+@media all and (max-width: 991px) {
+  .realmap-estate-group{
+    margin-left: 4px;
+  }
+  .realmap-estate-group.active {
+    margin-left: 4px;
+  }
+
+  .realmap-estate-info {
+    margin-left: 50px; 
+  }
+  .realmap-estate-info.active {
+    margin-left: 50px;
+  }
+  .realmap-average-info {
+    margin-left: 124px; 
+  }
+  .realmap-average-info.active {
+    margin-left: 124px; 
+  }
+  
+}
+
+
+/* 각 버튼에 다른 색상 적용 (nth-child 사용) */
+/* "전체" 버튼 
+.realmap-estate-group button:nth-child(1)::before, 
+.map-estate-group button:nth-child(1)::before { 
+  background-color: #3498db;
+}
+*/
+.realmap-estate-group button:nth-child(2)::before,
+.map-estate-group-v2 button:nth-child(2)::before{ /* "아파트" 버튼 */
+  background-color: #FE6900; /* 예시 색상: color-orange2 */
+}
+
+.realmap-estate-group button:nth-child(3)::before,
+.map-estate-group-v2 button:nth-child(3)::before { /* "연립/다세대" 버튼 */
+  background-color: #FE7D87; /* 예시 색상: color-red2 */
+}
+
+.realmap-estate-group button:nth-child(4)::before,
+.map-estate-group-v2 button:nth-child(4)::before { /* "단독/다가구" 버튼 */
+  background-color: #702BFE; /* 예시 색상: color-violet1 */
+}
+
+.realmap-estate-group button:nth-child(5)::before,
+.map-estate-group-v2 button:nth-child(5)::before { /* "오피스텔" 버튼 */
+  background-color: #F4AFCA; /* 예시 색상: color-indigo2 */
+}
+
+.realmap-estate-group button:nth-child(6)::before,
+.map-estate-group-v2 button:nth-child(6)::before { /* "상업/업무용" 버튼 */
+  background-color: #2973D6; /* 예시 색상: color-blue1 */
+}
+
+.realmap-estate-group button:nth-child(7)::before,
+.map-estate-group-v2 button:nth-child(7)::before { /* "공장/창고" 버튼 */
+  background-color: #039C55; /* 예시 색상: color-green1 */
+}
+
+.realmap-estate-group button:nth-child(8)::before,
+.map-estate-group-v2 button:nth-child(8)::before { /* "토지" 버튼 */
+  background-color: #FEB912; /* 예시 색상:  color-yellow1*/
+}
+
+.realmap-estate-group button:nth-child(9)::before,
+.map-estate-group-v2 button:nth-child(9)::before { /* "분양/입주권" 버튼 */
+  background-color: #AFF218; /* 예시 색상: color-lime */
+
+}
+
+/* 필요하다면, 활성화된 버튼에 대한 원 색상 변경 (선택 사항) */
+/* .map-estate-group button.active::before {
+  border: 2px solid white; 
+  box-shadow: 0 0 0 2px var(--original-button-color); 
+  background-color: transparent; 
+} */
+
+#land_area_by_color_summary,
+#land_price_by_color_summary {
+    display: flex !important;
+    flex-wrap: wrap;
+    margin-top: 3px; /* 기존 10px에서 3px로 재설정 */
+    gap: 2px;
+    border: 1px;
+    /* (선택 사항) 상위 선택자로부터 상속받은 원치 않는 스타일을 초기화 */
+    font-weight: normal; /* 700에서 normal로 */
+    font-size: 10px;     /* 20px에서 더 작은 사이즈로 조정 (원하는 사이즈로) */
+    line-height: normal; /* 20px에서 normal로 */
+    color: initial;      /* #111에서 기본 색상으로 */
+    align-items: center;
+    justify-content: center;
+}
+/* color-summary-row 에 추가할 스타일 */
+.color-summary-row {
+  display: flex;
+  flex-wrap: wrap; /* 내용이 길어지면 줄 바꿈 */
+  margin-top: 3px;
+  gap: 1px; /* 블록들 사이의 간격 */
+}
+
+/* 개별 색상별 합계 블록에 추가할 스타일 */
+.color-summary-item {
+  padding: 1px;
+  border-radius: 4px;
+  color: white; /* 텍스트 색상 (배경색이 어두울 경우) */
+  font-size: 8px; /*0.6em;*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* 각 아이템이 부모의 전체 너비를 차지하도록 설정 */
+}
+/* context-menu */
+.context-menu {
+  position: absolute; /* 절대 위치 */
+  background-color: #fff; /* 배경색 */
+  background: #fff;
+  border: 1px solid #e9e9e9; /* 테두리 */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* 그림자 */
+  min-width: 100px; /* 최소 너비 */
+  z-index: 999; /* 다른 요소 위에 표시 (지도 zIndex보다 높게) */
+  list-style: none; /* 리스트 스타일 제거 */
+  padding: 1px;
+  margin: 1px;
+  font-size: 12px;
+}
+
+.context-menu ul {
+  list-style: none; /* ul의 리스트 스타일 제거 */
+  padding: 1px;
+  margin: 0;
+  border: 1px solid #ccc; /* 테두리 */
+}
+
+.context-menu li {
+  padding: 2px 4px; /* 패딩 */
+  cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+  transition: background-color 0.2s ease; /* 배경색 변화 부드럽게 */
+}
+
+.context-menu li:hover {
+  color: #ef8779;
+}
+
+.memo-overlay {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+}
+
+/* ⭐⭐ modal-dialog의 높이/너비/스크롤을 강력하게 오버라이드 ⭐⭐ */
+.my-card-body{
+  padding: 12px;
+}
+
+/* 이미지 썸네일 스타일 */
+.image-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  display: block; /* 이미지 밑에 생기는 기본 공백 제거 */
+  margin: 0;
+  padding: 0;
+}
+
+/* ⭐⭐ swiper-slide에 relative 포지션을 추가하고, width를 고정합니다. ⭐⭐ */
+.file-upload-swiper .swiper-slide {
+  position: relative !important; ; /* 자식 요소의 absolute positioning을 위한 컨텍스트 */
+  width: 100% !important; /* 이미지 너비와 동일하게 설정 */
+  height: 100%; /* 이미지 높이와 동일하게 설정 */
+  flex-shrink: 0;
+  margin-right: 10px; /*margin: 0;*/
+  padding: 0 !important; 
+  overflow: visible; /* x-mark 버튼이 살짝 밖으로 나가도 잘리지 않도록 */
+}
+.file-upload-swiper .swiper-slide img.image-thumbnail {
+  /* width: calc(100% - 10px); 5px 패딩 두 번 (좌우) = 10px 제외 */
+  /*height: calc(100% - 10px);  5px 패딩 두 번 (상하) = 10px 제외 */
+  width: 100%; /* 슬라이드의 100%를 채웁니다. */
+  height: 100%; /* 슬라이드의 100%를 채웁니다. */
+  object-fit: cover;
+}
+.close-btn-box {
+  position: absolute;
+  top: 0px; /* 상단에서 이미지/슬라이드 경계에 붙임 */
+  right: 0px; /* 오른쪽에서 이미지/슬라이드 경계에 붙임 */
+  z-index: 10; 
+  background-color: white; 
+  border: 1px solid grey;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ⭐⭐ 아이콘 색상 및 크기 조정 ⭐⭐ */
+.close-btn-box .fa-sharp { /* Font Awesome 아이콘에 적용 */
+    color: black; /* 검정색 X 표시 유지 */
+    font-size: 14px; /* 아이콘 크기 유지 */
+}
+.required {
+  color: red;
+  margin-left: 3px; /* 별표와 글자 사이 간격 조절 */
+  vertical-align: super; /* 별표를 살짝 위로 올릴 때 사용 (선택 사항) */
+}
+/* 이미지 전체화면 팝업 오버레이 */
+.image-fullscreen-popup {
+  position: fixed; /* 화면에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* 어두운 반투명 배경 */
+  display: flex;
+  justify-content: center; /* 이미지를 가로 중앙 정렬 */
+  align-items: center;     /* 이미지를 세로 중앙 정렬 */
+  z-index: 9999;           /* 다른 요소들 위에 표시 */
+  cursor: zoom-out;        /* 닫을 수 있음을 암시 */
+}
+
+/* 팝업 내부 내용 컨테이너 */
+.image-fullscreen-popup .popup-content {
+  position: relative;
+  max-width: 95%; /* 팝업 최대 너비 */
+  max-height: 95%; /* 팝업 최대 높이 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 팝업 이미지 */
+.image-fullscreen-popup .popup-image {
+  max-width: 100%; /* 부모 컨테이너에 맞춰 최대 크기 */
+  max-height: 100%;
+  object-fit: contain; /* 이미지 비율 유지하며 컨테이너에 맞춤 */
+  border-radius: 5px; /* 모서리 살짝 둥글게 */
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); /* 이미지 주위에 빛 효과 */
+}
+
+/* 팝업 닫기 버튼 */
+.image-fullscreen-popup .close-popup-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5); /* 읽기 쉽도록 그림자 추가 */
+  z-index: 10000; /* 닫기 버튼이 다른 요소 위에 오도록 */
+}
+
+.image-fullscreen-popup .close-popup-btn:hover {
+  color: #ccc;
+}
+/* ⭐⭐⭐ 갤러리 내비게이션 버튼 스타일 ⭐⭐⭐ */
+.image-fullscreen-popup .gallery-nav-btn {
+  position: absolute; /* 팝업 내용 기준 절대 위치 */
+  top: 50%;
+  transform: translateY(-50%); /* 버튼 중앙 정렬 */
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 50px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  z-index: 9999; /* 이미지보다 위에 오도록 */
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.image-fullscreen-popup .gallery-nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.image-fullscreen-popup .prev-btn {
+  left: 20px; /* 왼쪽에서 20px 떨어진 위치 */
+}
+
+.image-fullscreen-popup .next-btn {
+  right: 20px; /* 오른쪽에서 20px 떨어진 위치 */
+}
+
+/* 숨겨진 버튼 스타일 */
+.image-fullscreen-popup .gallery-nav-btn.hidden {
+  display: none;
+}
+
+/* ⭐⭐⭐ 이미지 개수 표시 스타일 ⭐⭐⭐ */
+.image-fullscreen-popup .image-count {
+  position: absolute;
+  bottom: 20px;
+  color: #fff;
+  font-size: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 9999;
+}
+.map-content .mc-sell > .mcs-list > dl.no-width-limit > dt {
+  width: auto !important;      /* 68% 제한 해제 */
+  max-width: 100% !important;  /* 최대 너비 100% 허용 */
+  flex-shrink: 0 !important;   /* flex-shrink 가능 시 차단 */
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 2s linear infinite;
+}
+
+.alarm-wrapper{
+  flex-shrink: 0; /* <-- 버튼이 줄어들지 않고 고정 너비를 유지하도록 합니다. */
+  width: 60px; /* <-- 버튼의 고정 너비 (원하시는 크기로 조절) */
+  
+  /* button 내부 텍스트를 flex를 이용해 중앙 정렬 */
+  display: flex;
+  align-items: center; /* 텍스트 세로 중앙 정렬 */
+  justify-content: center; /* 텍스트 가로 중앙 정렬 */
+
+  /* label과 동일하게 컨테이너의 유효 높이에 맞춰 설정 */
+  height: 20px; 
+  /*line-height: 1.2; */
+  border-radius: 10px;
+  color: #888;
+  cursor: pointer; /* 버튼이 클릭 가능하다는 표시 */
+  border: 1px solid #ccc; /* 1px 두께의 회색 실선 테두리 */
+}
+
+/* polygon-name-label 클래스 스타일 */
+.polygon-name-label {
+  background-color: rgba(255, 255, 255, 0.8); /* 배경 반투명 흰색 */
+  border: 1px solid #ccc; /* 테두리 */
+  padding: 5px 10px; /* 내부 여백 */
+  border-radius: 5px; /* 모서리 둥글게 */
+  font-size: 14px; /* 글씨 크기 */
+  font-weight: bold; /* 글씨 굵게 */
+  color: #333; /* 글씨 색상 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  text-align: center;
+  transform: translate(-50%, -50%); /* 정확한 중심에 오도록 조정 */
+}
+
+/* 로딩 오버레이 */
+.loading-overlay {
+  position: fixed; /* 화면 전체를 덮도록 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
+  display: flex; /* 내부 요소를 중앙 정렬 */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 다른 모든 요소 위에 표시 */
+}
+
+/* 로딩 스피너 (간단한 회전 애니메이션 예시) */
+.spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3); /* 연한 테두리 */
+  border-top: 8px solid #ffffff; /* 하얀색 테두리로 회전 효과 */
+  border-radius: 50%; /* 원형 */
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite; /* 1초 동안 선형 회전 무한 반복 */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.custom-overlay-content {
+  background-color: white;
+  border: 1px solid #22eedd; /* 기존 테두리 */
+  padding: 5px; /* 기존 패딩 */
+  border-radius: 15px;
+  /*min-width: 110px; /* 기존 최소 너비 */
+  font-size: 12px; /* 기존 폰트 사이즈 */
+  white-space: nowrap;
+  /* 다른 필요한 스타일 추가 */
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* 가시성 향상을 위해 그림자 추가 권장 */
+}
+
+/* 추가된 요소들을 위한 스타일 */
+.custom-overlay-content .name-line {
+  display: flex; /* 요소들을 가로로 나열 */
+  justify-content: space-between; /* 양 끝 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  margin-bottom: 3px;
+  font-weight: bold;
+  cursor: pointer; /* 클릭 가능한 요소임을 표시 */
+}
+
+.custom-overlay-content .name-line .unit-toggle-btn {
+  margin: 0 5px; /* 시군구명과 아이콘 사이 간격 */
+  color: #ef8779; /* 색 등으로 구분 */
+  cursor: pointer;
+  text-decoration: underline; /* 클릭 가능함을 시각적으로 명확히 */
+}
+
+.custom-overlay-content .estate-item {
+  padding: 1px 0;
+  color: #c518e7;
+}
+/* 나머지 디테일 펼쳤을 때 */
+.custom-overlay-content .detail-prices {
+  /* 기본적으로 display: none; 상태로 시작 */
+  border-top: 1px solid #f5d8d8; /* 구분선 */
+  padding-top: 3px;
+  margin-top: 3px;
+}
+
+/* 시도/시군구 명칭 글자색 변경 */
+.custom-overlay-content .name-line .name-text {
+  color: #333333; /* 원하는 색상 코드로 변경하세요. 예: #333333 (진한 회색) */
+  /* font-weight: bold; */ /* 원한다면 글자 굵기도 여기서 지정할 수 있습니다. */
+}
+
+.tab-container {
+  width: 100%;
+  max-width: 1430px;
+  margin: 10px auto;
+  margin-top: 5px;
+  background-color: #fff;
+  
+  /* 여기를 수정! */
+  max-height: calc(100vh - 80px); /* 100vh에서 헤더 높이(예:60px) + 푸터/하단 여백(예:20px) 제외 */
+  overflow-y: auto;              /* 세로 스크롤바를 이 요소에 생성 */
+  /* overflow-x: hidden; */         /* (선택 사항) 가로 스크롤은 명시적으로 막을 수 있습니다. */
+
+  position: relative;
+  /*z-index: 10;*/
+}
+
+/* 탭 헤더 스타일 */
+.tab-headers {
+  width: 100%; /* 부모 너비에 맞춤 */
+  max-width: 1400px; /* 최대 1400px까지 확장 */
+  margin: auto;
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+.tab-headers button {
+  flex: 1; /* 너비 균등 분배 */
+  padding: 15px 0;
+  cursor: pointer;
+  border: none;
+  background-color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  transition: background-color 0.3s, color 0.3s;
+}
+.tab-headers button:hover {
+  /*background-color: #e0e0e0;*/
+  color: #ef8779;
+}
+.tab-headers button.active {
+  /*background-color: #e0e0e0;*/
+  color: #ef8779;
+  border: 1px solid #ef8779;
+  /*border-bottom: 1px solid #ef8779;  활성 탭 밑줄 */
+}
+
+/* 탭 콘텐츠 스타일 */
+.tab-content {
+  padding: 20px;
+  /* 기본적으로 모든 탭 콘텐츠는 숨깁니다. */
+  display: none;
+}
+.tab-content.active {
+  /* 활성 탭 콘텐츠만 보여줍니다. */
+  display: block;
+}
+/* put_list.html 및 find_list.html 내의 스타일 충돌 방지를 위한 접두사
+.tab-content #realpriceList { padding-top: 0; }
+.tab-content .realprice-table {  } */
+@media all and (max-width:479px) {
+  .tab-headers {width:90%;}
+}
+@media all and (min-width:480px) and (max-width:767px) {
+  .tab-headers {width:470px;}
+}
+@media all and (min-width:768px) and (max-width:991px) {
+  .tab-headers {width:750px;}
+}
+@media all and (min-width:992px) and (max-width:1199px) {
+  .tab-headers {width:970px;}
+}
+@media all and (min-width:1200px) and (max-width:1399px) {
+  .tab-headers {width:1180px;}
+}
+@media all and (min-width:1400px) {
+
+}
+
+/* 타이틀 영역 */
+.title-area2 {
+  width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0; /* 70 -> 20 */
+  text-align: center;
+}
+.title-area2 > h2 {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 40px;
+  color: #222;
+  letter-spacing: -1px;
+}
+.title-area2 > h3 {
+  margin-top: 25px; /* 25 -> 15 */
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -1px;
+}
+
+@media all and (max-width: 479px) {
+  .title-area2 {
+      width: 90%;
+      padding: 40px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 26px;
+      line-height: 26px;
+  }
+  .title-area2 > h3 {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 22px;
+  }
+}
+@media all and (min-width: 480px) and (max-width: 767px) {
+  .title-area2 {
+      width: 470px;
+      padding: 40px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 26px;
+      line-height: 26px;
+  }
+  .title-area2 > h3 {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 22px;
+  }
+}
+@media all and (min-width: 768px) and (max-width: 991px) {
+  .title-area2 {
+      width: 750px;
+      padding: 50px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 30px;
+      line-height: 30px;
+  }
+}
+@media all and (min-width: 992px) and (max-width: 1199px) {
+  .title-area2 {
+      width: 970px;
+      padding: 60px 0;
+  }
+  .title-area2 > h2 {
+      font-size: 35px;
+      line-height: 35px;
+  }
+}
+@media all and (min-width: 1200px) and (max-width: 1399px) {
+  .title-area2 {
+      width: 1180px;
+  }
+}
+@media all and (min-width: 1400px) {
+}
+
+#input_price_start,
+#input_price_end {
+    width: 75px; /* 고정 너비 */
+    /* 또는 */
+    /* width: 40%; */ /* 부모 d-flex 아이템 대비 상대 너비 */
+    /* 또는 min-width / max-width 조합 */
+    /* min-width: 80px; */
+    /* max-width: 120px; */
+}
+#input_area_start,
+#input_area_end {
+    width: 68px; /* 고정 너비 */
+    /* 또는 */
+    /* width: 40%; */ /* 부모 d-flex 아이템 대비 상대 너비 */
+    /* 또는 min-width / max-width 조합 */
+    /* min-width: 80px; */
+    /* max-width: 120px; */
+}
+
+#popup-welcome-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#popup-welcome-content {
+  /* border: 1px solid red; /* 팝업 콘텐츠 영역 */
+  background-color: white;
+  padding: 5px;
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  max-width: 450px;
+  max-height: 500px;
+  width: 450px;
+  height: 500px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.ad-carousel-container {
+ /* border: 1px solid green; /* 캐러셀 컨테이너 영역 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /*450px;*/
+  height: 87%; /*75: 375px; 80:400px*/
+  margin: 2px 0;
+  position: relative; /* 버튼 위치 조정을 위해 필요할 수 있음 */
+  overflow: hidden; /* !important */
+}
+
+.ad-carousel {
+  /* border: 1px solid blue; [핵심] 캐러셀 뷰포트 영역 */
+  width: 100%; /*  300이미지 너비에 맞춰 조정 */
+  height: 100%; /* 350 이미지 높이에 맞춰 조정 */
+  
+  position: relative;
+
+  /*border: 1px solid #eee;*/
+  display: flex; /* [필수] 자식 요소들을 가로로 배치 */
+  flex-wrap: nowrap; /* [필수] 자식 요소들이 줄바꿈되지 않도록 강제 */
+  transition: transform 0.5s ease-in-out; /* [필수] 슬라이드 애니메이션 */
+  /* 혹시 모를 내부 여백 문제 방지 */
+}
+
+.ad-item {
+ /*  border: 1px solid yellow; /* 각 이미지 아이템 영역 */
+  /*display: flex;  [필수] 자식인 img를 중앙 정렬하기 위함 */
+  justify-content: center; /* 자식 img를 가로 중앙 정렬 */
+  align-items: center; /* 자식 img를 세로 중앙 정렬 */
+
+  flex: 0 0 100%;      /* [가장 중요] flex-grow: 0 (확장X), flex-shrink: 0 (축소X), flex-basis: 100% (기본 너비 100%) */
+  max-width: 100%;     /* 부모 ad-carousel의 너비를 넘지 않도록 */
+  height: 100%;        /* ad-carousel 높이의 100%를 차지 */
+  /*width: 100%; */
+  cursor: pointer;
+  margin: 0;           /* 혹시 모를 외부 여백 제거 */
+  padding: 0;          /* 혹시 모를 내부 여백 제거 */
+}
+
+.ad-item img {
+  /* border: 1px solid purple; /* 이미지 자체 영역 */
+  max-width: 100%;
+  
+  height: 100%; /*높이도 100%로 설정하여 ad-carousel의 높이를 채움 */
+  width: 100%;   
+  /* width: 300px; /* 이미지 너비에 맞춰 조정 */
+  /* height: 350px; /* 이미지 높이에 맞춰 조정 */
+  object-fit: fill; /*fille 비율 유지하지 않고 object-fit: contain;  이미지 비율 유지하며 채움 */
+  display: block; /* 이미지 하단 공백 제거 */
+}
+
+.ad-carousel,
+.ad-item,
+.ad-item img {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-width: 0; /* 필요 시 보더 제거하거나 따로 관리 */
+}
+
+.nav-button {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1.2em;
+  border-radius: 5px;
+  margin: 0 5px;
+  z-index: 10; /* 버튼이 이미지 위에 오도록 */
+}
+
+.nav-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-indicators {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.indicator {
+  height: 8px;
+  width: 8px;
+  margin: 0 4px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.indicator.active {
+  background-color: #14a04e; /*#717171*/
+}
+
+#donot-show-today {
+  /*margin-top: 1px;*/
+  margin-right: 3px;
+}
+
+#close-welcome-popup {
+  margin-top: 5px;
+  margin-right: 10px;
+  padding: 4px 15px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ad-btn-delete-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(0, 0, 0, 0.7); /* 반투명 검정 배경 */
+  color: white;
+  border: none;
+  border-radius: 50%; /* 원형 버튼 */
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 24px; /* 텍스트 수직 중앙 정렬 */
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 9999;
+  display: flex; /* X를 중앙에 배치하기 위함 */
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* 패딩 제거 */
+}
+
+.ad-btn-delete-image:hover {
+  background: rgba(0, 0, 0, 0.9); /* 호버 시 색상 진하게 */
+}
+
+/* 추가적으로, 버튼의 부모인 .swiper-slide에 position: relative; 가 꼭 필요합니다. */
+.file-upload-swiper .swiper-slide {
+  position: relative; /* ⭐⭐⭐ 필수 ⭐⭐⭐ */
+  width:100%; 
+  height:100%;
+}
+.file-upload-swiper {
+  position: relative; /* swiper 컨테이너에도 relative 필요할 수 있습니다. */
+  width: 100%;
+  height: 100%; /* 필요에 따라 높이 지정 */
+}
+
+.file-upload-swiper .swiper-slide {
+  position: relative; /* ⭐⭐⭐ 삭제 버튼의 부모로서 필수! ⭐⭐⭐ */
+  /* 슬라이드의 높이나 너비도 필요하면 지정 */
+  display: flex; /* 이미지를 중앙 정렬하고 싶다면 */
+  justify-content: center;
+  align-items: center;
+}
+
+/* 로고 기본 크기 */
+.mylogo {
+  
+  /*
+  width: 214px;
+  height: 35px;*/
+  width: clamp(97px, 20vw, 169px);
+}
+
+/* 아이콘 애니메이션 */
+.mylogo .icon {
+  transform: translateY(10px);
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+/* 메인 텍스트 */
+.mylogo .text-main {
+  opacity: 0;
+  transform: translateX(10px);
+  animation: fadeRight 0.6s ease forwards;
+  animation-delay: 0.3s;
+}
+
+/* 서브 텍스트 */
+.mylogo .text-sub {
+  opacity: 0;
+  transform: translateX(10px);
+  animation: fadeRight 0.6s ease forwards;
+  animation-delay: 0.5s;
+}
+
+/* hover 효과 */
+.mylogo-wrap:hover .logo .text-sub {
+  fill: #03C75A;
+}
+
+/* 애니메이션 */
+@keyframes fadeUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeRight {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media all and (max-width:479px) {
+  .mylogo {
+    width: 97px;
+    /*height: 20px;*/
+  }
+}
+@media all and (min-width:480px) and (max-width:767px) {
+  
+}
+@media all and (min-width:768px) and (max-width:991px) {
+  
+}
+@media all and (min-width:992px) and (max-width:1199px) {
+ 
+}
+@media all and (min-width:1200px) and (max-width:1399px) {
+
+}
+@media all and (min-width:1400px) {
+
+}
+
+/* 지도 우측 옵션 버튼 - active 시 파란색 공통 (검색조건/도구사용/합필분석 제외) */
+.map-option > button#mapOptionTooltip.active,
+.map-option > button#mapOptionAreaOpen.active,
+.map-option > button#mapOptionBoundary.active,
+.map-option > button#mapOptionMemoOpen.active,
+.map-option > button#mapOptionMemoOpen2.active,
+#mapOptionTooltip.active,
+#mapOptionAreaOpen.active,
+#mapOptionBoundary.active,
+#mapOptionMemoOpen.active,
+#mapOptionMemoOpen2.active {
+    background: #1e90ff !important;
+    background-color: #1e90ff !important;
+    border-color: #1e90ff !important;
+}
+.map-option > button#mapOptionTooltip.active i,
+.map-option > button#mapOptionTooltip.active span,
+.map-option > button#mapOptionAreaOpen.active i,
+.map-option > button#mapOptionAreaOpen.active span,
+.map-option > button#mapOptionBoundary.active i,
+.map-option > button#mapOptionBoundary.active span,
+.map-option > button#mapOptionMemoOpen.active i,
+.map-option > button#mapOptionMemoOpen.active span,
+.map-option > button#mapOptionMemoOpen2.active i,
+.map-option > button#mapOptionMemoOpen2.active span,
+#mapOptionTooltip.active i,
+#mapOptionTooltip.active span,
+#mapOptionAreaOpen.active i,
+#mapOptionAreaOpen.active span,
+#mapOptionBoundary.active i,
+#mapOptionBoundary.active span,
+#mapOptionMemoOpen.active i,
+#mapOptionMemoOpen.active span,
+#mapOptionMemoOpen2.active i,
+#mapOptionMemoOpen2.active span,
+#mapOptionTooltip.active *,
+#mapOptionAreaOpen.active *,
+#mapOptionBoundary.active *,
+#mapOptionMemoOpen.active *,
+#mapOptionMemoOpen2.active * {
+    color: #ffffff !important;
+}
+
+/* 내 위치 버튼 공통 */
+#mapMyLocation {
+    -webkit-tap-highlight-color: transparent;
+    outline: none !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+#mapMyLocation:focus { outline: none !important; }
+
+/* 비활성 상태 — :not(.active)로 active 클래스와 충돌 제거 */
+#mapMyLocation:not(.active),
+#mapMyLocation:not(.active):focus,
+#mapMyLocation:not(.active):active {
+    background: #fff !important;
+    border-color: #e9e9e9 !important;
+}
+#mapMyLocation:not(.active) i,
+#mapMyLocation:not(.active) span {
+    color: #111 !important;
+}
+/* 내위치 hover — :not(.active) ID 규칙보다 명시도 높게 오버라이드 */
+#mapMyLocation.map-btn-hover:hover,
+#mapOptionBoundary.map-btn-hover:hover,
+#mapOptionTooltip.map-btn-hover:hover,
+#mapOptionAreaOpen.map-btn-hover:hover,
+#mapOptionMemoOpen2.map-btn-hover:hover {
+    border: #ef8779 1px solid !important;
+    background: #fff !important;
+}
+#mapMyLocation.map-btn-hover:hover i,
+#mapMyLocation.map-btn-hover:hover span,
+#mapOptionBoundary.map-btn-hover:hover i,
+#mapOptionBoundary.map-btn-hover:hover span,
+#mapOptionTooltip.map-btn-hover:hover i,
+#mapOptionTooltip.map-btn-hover:hover span,
+#mapOptionAreaOpen.map-btn-hover:hover i,
+#mapOptionAreaOpen.map-btn-hover:hover span,
+#mapOptionMemoOpen2.map-btn-hover:hover i,
+#mapOptionMemoOpen2.map-btn-hover:hover span {
+    color: #ef8779 !important;
+}
+
+/* 활성 상태 — 파란색 */
+#mapMyLocation.active,
+#mapMyLocation.active:focus,
+#mapMyLocation.active:hover,
+#mapMyLocation.active:active {
+    background: #1e90ff !important;
+    border-color: #1e90ff !important;
+}
+#mapMyLocation.active i,
+#mapMyLocation.active span {
+    color: #fff !important;
+}
+
+/* 현재 위치 마커 */
+.my-location-marker {
+    position: relative !important;
+    width: 44px !important;
+    height: 44px !important;
+    pointer-events: none;
+    z-index: 99999 !important;
+}
+.my-location-marker .my-loc-dot {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: -8px 0 0 -8px !important;
+    background: #1e90ff !important;
+    border: 3px solid #fff !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 6px rgba(30, 144, 255, 0.9), 0 1px 4px rgba(0, 0, 0, 0.35);
+    z-index: 99999 !important;
+    animation: myLocBlink 1s ease-in-out infinite;
+}
+.my-location-marker .my-loc-pulse {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 44px !important;
+    height: 44px !important;
+    margin: -22px 0 0 -22px !important;
+    background: rgba(30, 144, 255, 0.35) !important;
+    border: 2px solid rgba(30, 144, 255, 0.6) !important;
+    border-radius: 50% !important;
+    z-index: 99998 !important;
+    animation: myLocPulse 1.6s ease-out infinite;
+}
+@keyframes myLocPulse {
+    0% {
+        transform: scale(0.4);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+@keyframes myLocBlink {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 6px rgba(30, 144, 255, 0.9), 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+    50% {
+        opacity: 0.45;
+        box-shadow: 0 0 14px rgba(30, 144, 255, 1), 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+}
+a[data-izimodal-open="#terms"] {
+  color: blue;
+}
+
+a[data-izimodal-open="#terms"]:hover {
+  color: #ef8779;
+}
+
+/* ── 초기 로드 전용: CSS transition 일시 차단 ──────────────────────────────
+ * document.ready에서 .no-initial-transition 클래스를 추가하고,
+ * 2 requestAnimationFrame 후 제거하여 :has() / active class 초기 적용 시
+ * 발생하는 transition 을 방지합니다.
+ * (Chrome 등에서 초기 transition 중 positionToggleGroup() 계산 오류 방지)
+ * ──────────────────────────────────────────────────────────────────────── */
+.no-initial-transition {
+    transition: none !important;
+}
+
+/* =============================================
+   realPrice_v2 - 레이어 토글 & 탭 UI
+   ============================================= */
+
+/* ① 레이어 토글 버튼 그룹 (left는 JS positionToggleGroup()이 동적 계산) */
+.layer-toggle-group {
+    position: absolute;
+    top: 4px;
+    display: flex;
+    gap: 6px;
+    z-index: 300;
+    background: rgba(255,255,255,0.0);
+    border-radius: 22px;
+    /*padding: 4px 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);*/
+}
+.layer-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 18px;
+    background: rgba(245, 245, 245,0.5);
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    user-select: none;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -webkit-tap-highlight-color: transparent; /* 모바일 탭 하이라이트 제거 */
+    outline: none;
+}
+/* :focus / :focus-visible 상태에서도 배경색 명시 (포커스 재진입 시 덮어쓰기 방지) */
+.layer-toggle-btn:focus,
+.layer-toggle-btn:focus-visible {
+    outline: none;
+    background: rgba(245, 245, 245, 0.5);
+}
+/* !important: hover/focus 특이성에 관계없이 active 하늘색이 항상 우선 */
+.layer-toggle-btn.active,
+.layer-toggle-btn.active:hover,
+.layer-toggle-btn.active:focus,
+.layer-toggle-btn.active:focus-visible,
+.layer-toggle-btn.active:active {
+    background: rgb(148, 229, 240) !important;
+    color: #333;
+    border-color: #ef8779 !important;
+    outline: none;
+}
+/* 479px 미만: 배지(실/매)만 표시, 너비 충분히 확보 */
+@media (max-width: 479px) {
+    .layer-toggle-btn {
+        font-size: 0;
+        gap: 0;
+        padding: 5px 14px;
+    }
+    .layer-toggle-btn .rp-badge,
+    .layer-toggle-btn .es-badge {
+        font-size: 11px;
+    }
+}
+/* JS가 is-touch-device 클래스를 html에 추가하지 않은 경우(PC 마우스)에만 hover 스타일 적용
+   터치 기기는 touchend+preventDefault로 합성 mouse 이벤트 자체가 차단되어 이 규칙 불필요
+   CSS 미디어 쿼리(hover/pointer)는 일부 Android에서 오보고하므로 JS 클래스를 우선 사용 */
+html:not(.is-touch-device) .layer-toggle-btn:hover {
+    background: #fff3ea;
+    border-color: #ef8779;
+}
+/* active 상태에서 hover가 발생해도 하늘색 유지 (이중 보호) */
+.layer-toggle-btn.active:hover {
+    background: rgb(148, 229, 240);
+    border-color: #ef8779;
+}
+
+/* ① 레이어 배지 (실/매) */
+.rp-badge, .es-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+.rp-badge { background: #FE6900; }
+.es-badge { background: #e03030; }
+
+/* 작은 배지 (탭 버튼 내) */
+.rp-badge-sm, .es-badge-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    margin-right: 3px;
+}
+.rp-badge-sm { background: #FE6900; }
+.es-badge-sm { background: #e03030; }
+
+/* ② map-content 레이어 탭 메뉴 */
+.mc-layer-tab-menu {
+    margin-top :8px;
+    display: flex;
+    /*border-bottom: 2px solid #eee;*/
+    border: 1px solid #eee;
+    background: #fafafa;
+    height : 30px;
+}
+.layer-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+.layer-tab-btn.active {
+    color: #ff6900;
+    background: rgb(220, 245, 248);
+    /*border-bottom-color: #ff6900;*/
+    border: 1px solid #ff6900;
+}
+.layer-tab-btn:hover:not(.active) {
+    color: #666;
+    background: #f0f0f0;
+}
+
+/* ② 레이어 탭 콘텐츠 패널 */
+.layer-tab-content {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+.layer-tab-content.active {
+    display: flex;
+}
+
+/* map-content 열고닫기 버튼 */
+.mc-open-close {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 40px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 11px;
+    color: #555;
+}
+.mc-open-close:hover { background: #f5f5f5; }
+
+/* map-content 비활성(잠금) 상태 */
+#mapContentOpenClose.disabled-lock {
+    cursor: not-allowed;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* 매물 리스트 세부내용 말줄임 */
+.text-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* =====================================================
+ * realPrice_v2 전용: ⑥ 매물 필터 버튼 위치 (세로 배치)
+ * sell_v2 등 다른 페이지에는 영향 없음
+ * .active = map-content 패널 열림, 없으면 패널 닫힘
+ * ===================================================== */
+
+/* ⑥ 매매/임대 그룹: 내부 버튼 세로 배치 */
+body[data-screen-type="realprice_v2"] .map-sale-group {
+    flex-direction: column;
+}
+
+/* ⑥ 버튼 위치 - 패널 닫힘
+ * !important: content.css @media(≤1040px/≤991px) 의 !important 값들을 realprice_v2 전용으로 덮어씌움 */
+body[data-screen-type="realprice_v2"] .map-sale-group       { margin-top: 280px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .map-exchange-group   { margin-top: 368px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .map-urgentsale-group { margin-top: 399px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .map-price-group      { margin-top: 430px !important; margin-left: 4px !important; }
+/* ⑦ 실거래가 검색조건: estate-info / average-info 동일 위치 (zoom level로 exclusive 표시)
+ * 두 요소는 같은 위치에 겹쳐서 zoom level에 따라 번갈아 표시 */
+/* 패널 닫힘 */
+body[data-screen-type="realprice_v2"] .realmap-estate-info  { margin-top: 461px !important; margin-left: 4px !important; }
+body[data-screen-type="realprice_v2"] .realmap-average-info { margin-top: 461px !important; margin-left: 4px !important; }
+/* ⑥ 버튼 위치 - 패널 열림 (.active) — PC 전용 (모바일은 패널이 아래에서 열리므로 margin-left 이동 불필요) */
+@media (min-width: 992px) {
+    body[data-screen-type="realprice_v2"] .map-sale-group.active       { margin-top: 280px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .map-exchange-group.active   { margin-top: 368px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .map-urgentsale-group.active { margin-top: 399px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .map-price-group.active      { margin-top: 430px !important; margin-left: 454px !important; }
+    /* 패널 열림 (.active) */
+    body[data-screen-type="realprice_v2"] .realmap-estate-info.active  { margin-top: 461px !important; margin-left: 454px !important; }
+    body[data-screen-type="realprice_v2"] .realmap-average-info.active { margin-top: 461px !important; margin-left: 454px !important; }
+}
+
+/* 기본 CSS(mystyle.css 상단) margin-left: 124px 완전 봉쇄 */
+body[data-screen-type="realprice_v2"] .realmap-average-info:not(.active) { margin-left: 4px !important; }
+
+/* ⑥ 버튼 너비 통일: 모든 그룹을 map-sale-group 너비(82px)로 통일 */
+body[data-screen-type="realprice_v2"] .map-sale-group,
+body[data-screen-type="realprice_v2"] .map-exchange-group,
+body[data-screen-type="realprice_v2"] .map-urgentsale-group,
+body[data-screen-type="realprice_v2"] .map-price-group,
+body[data-screen-type="realprice_v2"] .realmap-estate-info,
+body[data-screen-type="realprice_v2"] .realmap-average-info {
+    min-width: 75px;
+    width: 75px;
+}
+body[data-screen-type="realprice_v2"] .map-sale-group button,
+body[data-screen-type="realprice_v2"] .map-exchange-group button,
+body[data-screen-type="realprice_v2"] .map-urgentsale-group button,
+body[data-screen-type="realprice_v2"] .map-price-group button {
+    width: 100%;
+    text-align: center;
+}
+
+/* =====================================================
+ * realPrice_v2 전용: sale_register 버튼 위치 (≤1150px)
+ * sale_register 버튼을 realmap-estate-group 위로 이동
+ * body.realtor-sale-register-visible 클래스 조건:
+ *   버튼이 숨김 상태일 때 다른 요소가 불필요하게 밀리지 않도록 처리
+ * ===================================================== */
+@media (max-width: 1150px) {
+    /* sale_register 버튼: 우측 → 좌측 (realmap-estate-group 바로 위), 패널 닫힘 기본값 */
+    body[data-screen-type="realprice_v2"] .map-register-group {
+        top:   58px;
+        left:  4px;
+        right: auto;
+    }
+    /* sale_register 표시 중일 때만: realmap-estate-group 및 하위 요소 36px 하단 이동
+     * (버튼 높이 32px + 간격 4px = 36px) */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .realmap-estate-group       { margin-top:  94px !important; } /* 58 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-sale-group             { margin-top: 316px !important; } /* 280 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-exchange-group         { margin-top: 404px !important; } /* 368 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-urgentsale-group       { margin-top: 435px !important; } /* 399 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .map-price-group            { margin-top: 466px !important; } /* 430 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .realmap-estate-info        { margin-top: 497px !important; } /* 461 + 36 */
+    body[data-screen-type="realprice_v2"].realtor-sale-register-visible .realmap-average-info       { margin-top: 497px !important; } /* 461 + 36 */
+}
+/* PC 범위(992px~1150px): 패널 열림 시 sale_register 버튼도 454px 우측으로 이동
+ * ≤991px(모바일)은 패널이 아래서 열리므로 left 이동 불필요 → 위 규칙의 left:4px 유지 */
+@media (min-width: 992px) and (max-width: 1150px) {
+    body[data-screen-type="realprice_v2"]:has(.map-content.active) .map-register-group {
+        left: 454px;
+    }
+}
+
+/* =====================================================
+ * realPrice_v2 전용: map-content 세로 스크롤
+ * .layer-tab-content가 남은 높이를 채우고 scroll 허용
+ * ===================================================== */
+/* ─── map-content-wrapper: mc-open-close 외부 형제 이동 후 overflow:hidden 가능 ──
+ * mc-open-close가 wrapper 다음 형제(+)로 이동했으므로
+ * overflow:hidden으로 변경 → deactive 시 내부 콘텐츠 화면 잔류 문제 해결.
+ * 버튼 위치/아이콘은 CSS adjacent sibling(+) + :has()로 제어.
+ * ──────────────────────────────────────────────────────────────────────────── */
+body[data-screen-type="realprice_v2"] .map-content-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--var-map-content-width);
+    height: 100%;
+    z-index: 2;
+    overflow: hidden;
+    margin-left: -450px;
+    transition: margin-left 0.4s ease-out;
+    /* box-shadow를 wrapper로 이전 (내부 map-content에서 제거) */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 5px 0px 15px 0px;
+}
+/* map-content.active가 되면 wrapper도 펼침 */
+body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) {
+    margin-left: 0;
+}
+/* wrapper 안의 map-content: 절대위치/margin/shadow는 wrapper가 담당 */
+body[data-screen-type="realprice_v2"] .map-content-wrapper .map-content {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: auto !important;
+    margin-left: 0 !important;
+    transition: none !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+body[data-screen-type="realprice_v2"] .map-content .mc-search,
+body[data-screen-type="realprice_v2"] .map-content .mc-layer-tab-menu {
+    flex-shrink: 0;
+}
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content {
+    flex: 1;
+    min-height: 0;       /* flex child 스크롤 허용 (중요) */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/* 스크롤 컨테이너 내 직계 자식은 축소되지 않도록: 내용이 넘쳐야 스크롤 동작 */
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content > * {
+    flex-shrink: 0;
+}
+/* mc-tab-content: calc 고정 높이 대신 flex-grow:1로 남은 공간 자동 채움
+ * → 건물 요약 줄(top_building_summary) show/hide 시에도 빈 공간 없이 정확히 채워짐 */
+body[data-screen-type="realprice_v2"] .map-content .mc-tab-content {
+    height: auto;      /* content.css의 calc(100% - 264px) 덮어씀 */
+    flex-grow: 1;      /* 남은 공간 모두 차지 */
+    min-height: 0;     /* flex child 내부 스크롤 허용 */
+}
+
+/* ─── mc-open-close: wrapper 외부 형제 위치 제어 (realprice_v2 전용) ────────────
+ * mc-open-close가 .map-content-wrapper의 다음 형제(+)로 이동.
+ * 기본 .mc-open-close의 right:-20px/margin 스타일을 덮어쓰고
+ * left로 위치 제어: deactive=0, active=var(--var-map-content-width).
+ * :has() + adjacent sibling(+)으로 JS 없이 상태 동기화.
+ * ──────────────────────────────────────────────────────────────────────────── */
+body[data-screen-type="realprice_v2"] #mapContentOpenClose {
+    position: absolute;
+    top: 50%;
+    left: 0;                        /* deactive 기본: 화면 왼쪽 끝 (wrapper가 숨겨진 상태) */
+    right: auto;
+    margin: 0;
+    transform: translateY(-50%);
+    transition: left 0.4s ease-out;
+    z-index: 3;                     /* wrapper(z-index:2) 위에 표시 */
+}
+/* active 시: wrapper 오른쪽 끝에 붙기 */
+body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) + #mapContentOpenClose {
+    left: var(--var-map-content-width);
+}
+/* 아이콘: 기본(deactive) → > (rotate 180) */
+body[data-screen-type="realprice_v2"] #mapContentOpenClose i {
+    transform: rotate(180deg) !important;
+    transition: transform 0.4s ease-out;
+}
+/* 아이콘: active → < (rotate 0) */
+body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) + #mapContentOpenClose i {
+    transform: rotate(0deg) !important;
+}
+
+/* map-sell-view.active: layer-toggle-group(z-index:300) 위에 표시 → X 닫기버튼 클릭 가능 */
+body[data-screen-type="realprice_v2"] .map-sell-view.active {
+    z-index: 400;
+}
+
+/* 모바일: wrapper도 map-content 기존 스타일 그대로 따라가도록 오버라이드 */
+@media all and (max-width: 991px) {
+    body[data-screen-type="realprice_v2"] .map-content-wrapper {
+        top: calc(100vh - 175px);
+        width: 100%;
+        margin-top: -25px;
+        margin-left: 0;
+        height: calc(100vh - 125px);
+        box-shadow: none;
+        overflow: visible;
+        transition: top 0.4s ease-out, margin-top 0.4s ease-out;
+    }
+    body[data-screen-type="realprice_v2"] .map-content-wrapper:has(.map-content.active) {
+        top: 0;
+        margin-top: -1px;
+        height: 100%;
+        margin-left: 0;
+    }
+    body[data-screen-type="realprice_v2"] .map-content-wrapper .map-content {
+        padding-top: 30px;
+        box-sizing: border-box;
+    }
+    /* 모바일: mc-open-close(PC용) 숨김 → mc-mo-open-close 사용 */
+    body[data-screen-type="realprice_v2"] #mapContentOpenClose {
+        display: none;
+    }
+
+    /* 모바일: wrapper z-index를 302로 상향 (layer-toggle-group:300 보다 높게)
+     * wrapper가 toggle group보다 위 → toggle group이 wrapper 안 ▽ 버튼을 가릴 수 없음
+     * 맵 캔버스보다도 위 → 패널 내용 정상 표시 */
+    body[data-screen-type="realprice_v2"] .map-content-wrapper {
+        z-index: 302;
+    }
+}
+
+/* 매물 점 마커 깜박임 애니메이션 (줌 4) */
+@keyframes estate-dot-pulse {
+    0%   { opacity: 1;   transform: scale(1);   }
+    50%  { opacity: 0.45; transform: scale(1.35); }
+    100% { opacity: 1;   transform: scale(1);   }
+}
+.estate-dot-pulse {
+    animation: estate-dot-pulse 1.3s ease-in-out infinite;
+}
+
+.map-option2 {
+  position: absolute;
+  top: 35px;
+  right: 3px;
+  z-index: 1;
+}
+.map-option2 > button {
+  display: block;
+  margin: 3px 0;
+  width: 40px;
+  padding: 5px 0;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  opacity: 0.0;  /*0 ~ 1 */
+}
+.map-option2 > button i {
+  font-size: 15px;
+  color: #111;
+  transition: all 0.3s ease-in-out;
+}
+.map-option2 > button span {
+  display: block;
+  margin-top: 1px;
+  font-size: 9px;
+  line-height: 10px;
+  color: #111;
+  letter-spacing: -0.5px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* map-option 버튼 hover — 검색조건 색(#ef8779) 적용 대상만 선택적으로 */
+/* V2설정(#mapV2setOpen, map-option2)은 이 클래스 없음 → hover 없음 */
+.map-btn-hover:hover {
+    border: #ef8779 1px solid !important;
+}
+.map-btn-hover:hover i {
+    color: #ef8779 !important;
+    transition: all 0.3s ease-in-out;
+}
+.map-btn-hover:hover span {
+    color: #ef8779 !important;
+    transition: all 0.3s ease-in-out;
+}
+
+.map-option2 .mo-test{
+  display: none;
+  position: absolute;
+  top: 65px;
+  /*right: 210px; */
+  width: 170px;
+  margin: -58px 0 0 -175px;
+  padding: 10px;  /*padding: 15px;*/ 
+  border: #e9e9e9 1px solid;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.08); 
+  /* opacity:0; */
+}
+.map-option2 .mo-test> dl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.map-option2 .mo-test> dl dt {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 14px;
+  color: #111;
+  letter-spacing: -1px;
+}
+.map-option2 .mo-test> dl dd button {
+  cursor: pointer;
+}
+.map-option2 .mo-test> dl dd i {
+  font-size: 14px;
+  line-height: 14px;
+}
+.map-option2 .mo-test> div {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: #e9e9e9 1px solid;
+}
+.map-option2 .mo-test> div > button,
+.map-option2 .mo-test> div div {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 12px;
+  letter-spacing: -0.5px;
+  border: #e9e9e9 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.map-option2 .mo-test> div > button:hover,
+.map-option2 .mo-test> div > div:hover {
+  color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option2 .mo-test> div > button.active {
+  color: #fff;
+  background-color: #ef8779;
+  border: #ef8779 1px solid;
+}
+.map-option2 .mo-test> div > button i {
+  margin-right: 5px;
+}
+.map-option2 .mo-test> div > button span {
+  display: flex;
+}

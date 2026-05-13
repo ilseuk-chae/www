@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_28110117",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "28110117", "EMD_ENG_NM": "Hang-dong 6(yuk)-ga", "EMD_KOR_NM": "항동6가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.62386579903837, 37.470126597276945 ], [ 126.623064103668668, 37.469315945295243 ], [ 126.623063047584054, 37.469278775736534 ], [ 126.621925173389684, 37.469917375665673 ], [ 126.622732935911415, 37.470783511151879 ], [ 126.62386579903837, 37.470126597276945 ] ] ] ] } }
+]
+}

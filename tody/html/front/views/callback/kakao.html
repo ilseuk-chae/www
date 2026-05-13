@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>KakaoLogin</title>
+
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- (1) LoginWithNaverId Javscript SDK -->
+        <script src="/front/assets/js/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        
+    </head>
+
+    <body>
+        <p>처리 중입니다. 잠시만 기다려 주세요...</p>
+
+        <script>
+            //debugger; // <--- 이 줄을 추가합니다!
+
+            const REST_API_KEY = "358571ae546aaa68be0d290878b351c1";
+            const REDIRECT_PATH = "/front/views/callback/kakao.html";
+            const REDIRECT_URI = window.location.origin + (location.port ? ":" + location.port : "") + REDIRECT_PATH;
+
+            // Kakao SDK 초기화
+            Kakao.init(REST_API_KEY);
+            const Kakao_isInit = Kakao.isInitialized();
+            
+            // URL에서 인가 코드 가져오기
+            const authCode = getParameter("code");
+            if (authCode) {
+                getToken(authCode);
+            } else {
+                console.error("Authorization code not found.");
+                handleError();
+            }
+
+            /**
+             * Kakao로부터 액세스 토큰 가져오기
+             * @param {string} authCode - 인가 코드
+             */
+            function getToken(authCode) {
+                $.ajax({
+                    type: "POST",
+                    url: "https://kauth.kakao.com/oauth/token",
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+                    },
+                    data: {
+                        grant_type: "authorization_code",
+                        client_id: REST_API_KEY,
+                        redirect_uri: REDIRECT_URI,
+                        code: authCode,
+                    },
+                    success: function (response) {
+                        const accessToken = response.access_token;
+                        Kakao.Auth.setAccessToken(accessToken);
+
+                        // 사용자 정보 가져오기
+                        //debugger; // <--- 이 줄을 추가합니다!
+                        getUserInfo();
+                    },
+                    error: function (err) {
+                        if (err.responseJSON.error) {
+                            //console.log("error: ", err.responseJSON.error);
+                            //console.log("error code: ", err.responseJSON.error_code);
+                            alert("카카오 로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
+                        }
+
+                        handleError();
+                    },
+                });
+            }
+
+            /**
+             * Kakao로부터 사용자 정보 가져오는 함수
+             */
+            function getUserInfo() {
+                Kakao.API.request({ url: "/v2/user/me" })
+                    .then(async function (response) {
+                        const {
+                            id, // 회원번호
+                            kakao_account, // 카카오계정 정보
+                        } = response;
+
+                        if (!kakao_account) {
+                            alert("카카오 사용자 정보가 존재하지 않습니다.");
+                            handleError();
+                            return;
+                        }
+
+                        const {
+                            name, // 카카오계정 이름
+                            email, // 카카오계정 대표 이메일
+                            phone_number, // 카카오계정의 전화번호
+                        } = kakao_account;
+
+                        // 모든 필수 정보가 제공되었는지 확인
+                        if (!email || !name || !id || !phone_number) {
+                            alert("모든 필수 정보를 제공해야 합니다. 정보 제공에 동의해주세요.");
+                            handleError();
+                            return;
+                        }
+                        //debugger; // <--- 이 줄을 추가합니다!
+                        const dataObj = { email, name, id, mobile: convertPhoneNumber(phone_number) };
+                        kakaoLogin(dataObj);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        handleError();
+                    });
+            }
+
+            /**
+             * 사용자 정보를 서버로 전송하여 로그인 처리
+             * @param {Object} dataObj - 사용자 정보 객체
+             */
+            async function kakaoLogin(dataObj) {
+                try {
+                    const response = await callApiAbort("/front/back/00-include/login_kakao.php", "POST", dataObj, "kakaoLogin");
+                    //console.log("API 호출 성공");
+
+                    const { statusCode, message, responseData } = response;
+                    //debugger; // <--- 이 줄을 추가합니다!
+                    loginHandleError(message, statusCode);
+
+                    const { userNo, userToken, name, role, status, userId} = responseData;
+                    setCookie("user_no", userNo);
+                    setCookie("user_token", userToken);
+                    setCookie("user_name", encodeURIComponent(name));
+                    setCookie("user_role", encodeURIComponent(role));
+                    setCookie("user_id", userId);
+
+                    //debugger; // <--- 이 줄을 추가합니다!
+                    let openerWindow = window.opener; // 먼저 opener를 시도
+                    if (!openerWindow && window.name) { // opener가 null인데, 부모 창에 이름이 있다면
+                        // 원래 창의 이름으로 창을 다시 열어 참조를 가져옵니다.
+                        openerWindow = window.open('', window.name); 
+                        // 🚨 주의: window.name을 인자로 넘기면 새 팝업이 뜨는 대신,
+                        // 해당 이름을 가진 기존 창의 참조를 가져옵니다.
+                    }
+                    // --- 여기가 onLoginSuccess() 호출을 요청하는 위치 ---
+                    // 부모 창으로 로그인 성공 메시지와 userNo를 보냅니다.
+                    if (window.opener && window.opener.postMessage && userId) {
+                        // 'kakaoLoginSuccess' 타입으로 메시지 구분
+                        window.opener.postMessage({ type: 'kakaoLoginSuccess', userId: userId }, window.location.origin);
+                        //console.log('Kakao login success message sent to parent with userId:', userId);
+                    }
+                    else {
+                        console.warn('Cannot send Kakao login success message: openerWindow is not available or postMessage not supported, or userId is missing.');
+                    }
+
+                    //handleSuccess();
+                    handleSuccess(openerWindow); // handleSuccess 함수에도 openerWindow를 전달하도록 변경
+                } catch (error) {
+                    // API 호출 실패
+                    console.error("API 호출 실패", error);
+                    // alert("로그인 중 문제가 발생했습니다.");
+                    handleError();
+                }
+            }
+
+            /**
+             * 로그인을 위해 임의의 문자열 생성
+             * @param {*} length
+             * @returns
+             */
+            function generateNonce(length) {
+                const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                let nonce = "";
+                for (let i = 0; i < length; i++) {
+                    nonce += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                return nonce;
+            }
+
+            /**
+             * 국제 전화번호 형식을 로컬 전화번호 형식으로 변환하는 함수
+             * @param {string} phoneNumber - 전화번호 형식의 문자열 (예: "+82 10-2682-3295" 또는 "010-2682-3295")
+             * @returns {string} - 숫자만 포함된 전화번호 형식의 문자열 (예: "01026823295")
+             */
+            function convertPhoneNumber(phoneNumber) {
+                // 공백과 하이픈을 제거하고, 숫자만 남깁니다.
+                let cleaned = phoneNumber.replace(/[^0-9]/g, "");
+
+                // 국제 번호 코드 '+82' 제거
+                if (phoneNumber.startsWith("+82")) {
+                    cleaned = "0" + cleaned.substring(2);
+                }
+
+                // 남은 문자열 반환
+                return cleaned;
+            }
+
+            /**
+             * 로그인 성공 시 처리
+             */
+            function handleSuccess(openerWindow) { // openerWindow 인자 추가
+                if (openerWindow) { // window.opener 대신 openerWindow 사용
+                    openerWindow.location.reload();
+                    window.close();
+                } else {
+                    window.location.replace(window.location.origin);
+                }
+            }
+
+            /**
+             * 로그인 오류 발생 시 처리
+             */
+             function handleError(openerWindow) { // openerWindow 인자 추가
+                if (openerWindow) { // window.opener 대신 openerWindow 사용
+                    openerWindow.location.reload();
+                    window.close();
+                } else {
+                    window.location.replace(window.location.origin);
+                }
+            }
+
+            /**
+             * 로그인 오류 처리 함수
+             * @param {string} message - 오류 메시지
+             * @param {number} statusCode - 오류 상태 코드
+             */
+            function loginHandleError(message, statusCode, data) {
+                switch (statusCode) {
+                    case 403:
+                        alert(message + " 유저입니다.", "", "w");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        </script>
+    </body>
+</html>

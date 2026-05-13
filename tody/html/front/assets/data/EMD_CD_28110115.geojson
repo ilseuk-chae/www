@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_28110115",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "28110115", "EMD_ENG_NM": "Hang-dong 4(sa)-ga", "EMD_KOR_NM": "항동4가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.621486029552656, 37.471495242472699 ], [ 126.620716986472175, 37.470656811917465 ], [ 126.619546187563543, 37.471333007370298 ], [ 126.620285887014475, 37.472140653780279 ], [ 126.621486029552656, 37.471495242472699 ] ] ] ] } }
+]
+}

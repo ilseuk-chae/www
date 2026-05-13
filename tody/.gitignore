@@ -1,0 +1,16 @@
+# 로그 파일
+logs/
+*.log
+
+# 환경변수 (DB, API 키 등 민감정보)
+html/.env
+
+# IDE 설정
+.vscode/
+
+# Composer 패키지 (vendor는 composer install로 재생성 가능)
+html/vendor/
+
+# OS 파일
+.DS_Store
+Thumbs.db

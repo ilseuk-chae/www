@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="토디-팝니다" />
+        <meta name="description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
+        <meta name="keywords" content="토디,토디부동산,토디플랫폼,tody,tody부동산,tody플랫폼,부동산정보,부동산, 부동산앱, 부동산어플, 상가,건물, 빌딩, 공장, 창고, 토지, 매물,아파트, 주상복합, 오피스텔, 단독, 다가구, 다세대, 빌라,전세, 월세, 매매, 전월세, 임대, 실거래가, 부동산중개, 공인중개사" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="토디- 부동산 종합 플랫폼 서비스" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="토디-팝니다" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
+        <title>토디-팝니다</title>
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+
+        <!-- Bootstrap Css-->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <!-- <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" /> -->
+        <!-- Custom Css-->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+        <!-- menu Css -->
+        <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
+        <!-- jQuery UI 기본 테마 CSS -->
+        <link href="/assets/css/jquery-ui.css" rel="stylesheet" > <!-- 다운로드한 파일 경로 -->
+        <!-- purchas Css -->
+        <link href="/todypurchas/css/purchasstyle.css" rel="stylesheet" type="text/css" />
+        <!-- loan Css -->
+        <link href="/todyloan/css/loanstyle.css" rel="stylesheet" type="text/css" />
+
+        <style>
+            /* .btn-box {
+                position: relative;
+                width: 90px;
+                text-align: right;
+            }
+            .btn-box > button {
+                color: #111;
+                border: #e9e9e9 1px solid;
+                border-radius: 3px;
+                background: #fff;
+                cursor: pointer;
+            }
+            .btn-box > button:hover {
+                color: #fff;
+                border: #ef8779 1px solid;
+                background: #ef8779;
+            }
+            .btn-box > button.active {
+                color: #fff;
+                border: #ef8779 1px solid;
+                background: #ef8779;
+            }
+            .btn-box > div {
+                display: none;
+                position: absolute;
+                width: 90px;
+                margin: 9px 0 0 -29px;
+                padding: 5px 10px 5px 5px;
+                text-align: center;
+                border: #e9e9e9 1px solid;
+                border-radius: 30px;
+                background: #fff;
+            }
+            .btn-box > div > button {
+                cursor: pointer;
+            }
+            .btn-box > div > button:nth-child(1) img {
+                width: 25px;
+            }
+            .btn-box > div > button:nth-child(2) {
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+                line-height: 12px;
+                color: #fff;
+                border-radius: 50%;
+                background: #343a40;
+            }
+            .btn-box > div > span {
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                margin: -13px 0 0 -37px;
+                font-size: 11px;
+                line-height: 15px;
+                color: #111;
+                border: #e9e9e9 1px solid;
+                border-radius: 50%;
+                background: #fff;
+                cursor: pointer;
+            } */
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단 -->
+            <header class="header"></header>
+            <!-- PC - 상단 끝 -->
+
+            <!-- MOBILE - 상단/메뉴/하단영역 -->
+            <div class="mobile"></div>
+            <script>
+                fetch('../00-include/mobile.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        const container = document.querySelector('.mobile');
+                        container.innerHTML = html;
+
+                        const bg = container.querySelector('.mobile-menu-info-bg');
+                        if (bg) {
+                        bg.style.display = 'none'; // display를 명시적으로 다시 숨김
+                        // 혹은 bg.classList.add('hidden-class'); 등 원하는 제어 추가 가능
+                        }
+
+                        // ★ mobile.html 내용이 DOM에 추가된 후, layout.js의 함수 호출
+                        /*
+                        if (typeof loadMobile === 'function') {
+                            loadMobile();
+                        } else {
+                            console.warn("loadMobile 함수를 찾을 수 없습니다. layout.js 로드 순서 확인 필요.");
+                        }
+                        */
+                    })
+                    .catch(console.error);
+              </script>
+            <!-- MOBILE - 상단/메뉴/하단영역 끝 -->
+
+            <!-- 본문내용 -->
+            <div class="contents">
+                <!-- 타이틀 영역 -->
+                <div class="title-area">
+                    <h2>팝니다</h2>
+                    <h3>아래의 자세한 내역을 확인하여보세요.</h3>
+                </div>
+                <!-- 타이틀 영역 끝 -->
+
+                <!-- 상세 -->
+                <div class="find-view fv-size1">
+                    <div class="btn-box float-end pt-0">
+                        <button id="mapShareOpen"><i class="fa-sharp fa-light fa-share-nodes"></i></button>
+                        <div id="mapShare">
+                            <button type="button" id="kakaotalk_sharing_btn"><img src="/front/assets/image/icn_sns_kakao.svg" alt="" title="" /></button>
+                            <button type="button" id="copy_url_btn"><i class="fa-light fa-copy"></i></button>
+                            <span id="mapShareClose"><i class="fa-light fa-xmark"></i></span>
+                        </div>
+
+                        <button type="button" id="favorite_btn"><i class="fa-sharp fa-light fa-thumbtack"></i></button>
+                    </div>
+
+                    <div>
+                        <h2>소재지</h2>
+                        <p id="address">서울시 강남구 역삼동 OOO OO아파트, OOO동 OOOO호</p>
+                    </div>
+                    <div>
+                        <h2>매물종류</h2>
+                        <p id="estate_type">아파트</p>
+                    </div>
+                    <div>
+                        <h2>거래종류</h2>
+                        <p id="sale_type">매매</p>
+                    </div>
+                    <div>
+                        <h2>교환</h2>
+                        <p id="exchange">가능</p>
+                    </div>
+                    <div>
+                        <h2>가격</h2>
+                        <p id="price">50억</p>
+                    </div>
+                    <div>
+                        <h2>면적</h2>
+                        <p id="area">500평</p>
+                    </div>
+                    <div>
+                        <h2>연락처</h2>
+                        <p id="phone">010-1234-5678</p>
+                    </div>
+                    <div>
+                        <h2>자세한 설명</h2>
+                        <p id="description"></p>
+                    </div>
+                    <div>
+                        <h2>사진 - 이미지</h2>
+                        <h3>
+                            <span><i class="fa-sharp fa-solid fa-circle-exclamation"></i></span> 좌우로 드래그하시면 여러개의 이미지들을 보실 수 있습니다.
+                        </h3>
+                        <div class="fv-file">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <img src="https://i.pinimg.com/564x/ad/e4/a0/ade4a0375d4c2aabcc8442992da59c19.jpg" width="100%" alt="" title="" />
+                                </div>
+                                <!-- <div class="swiper-slide">
+                                    <img src="https://i.pinimg.com/564x/9d/b5/1d/9db51d9231c92444bbe5efc45650375f.jpg" width="100%" alt="" title="" />
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="https://i.pinimg.com/564x/04/fb/1a/04fb1a59382421be899fb924d7bfed62.jpg" width="100%" alt="" title="" />
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="https://i.pinimg.com/736x/63/c7/dd/63c7dd97c3b241bf4c1de2829b86afd9.jpg" width="100%" alt="" title="" />
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <dl>
+                            <dt>
+                                <!-- <a href="put_modify.html" class="btn-line-red">수정하기</a>
+                                <a href="#" class="btn-line-red">삭제하기</a> -->
+                            </dt>
+                            <dd>
+                                <!-- <a href="put_list.html" class="btn-default bg-gray">목록으로</a> -->
+                                <a href="../findput/findput_list.html" class="btn-default bg-gray">목록으로</a>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="h70"></div>
+                <!-- 상세 끝 -->
+            </div>
+            <!-- 본문내용 끝 -->
+
+            <!-- 하단영역 -->
+            <footer class="footer"></footer>
+            <!-- 하단영역 끝 -->
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+
+        <script src="/front/assets/js/iziModal.js"></script>
+        <script src="/front/assets/js/swiper.js"></script>
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <script src="/front/assets/js/nouislider.js"></script>
+        <script src="/front/assets/js/lottie.min.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+
+        <!-- Daum 주소 Api -->
+        <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
+
+        <!-- custom -->
+        <script src="/front/assets/js/common.js"></script>
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/js/00-include/layer_popup.js"></script>
+        <script src="/front/js/put/put_view.js"></script>
+        <!-- active menu를 위해 추가    -->
+        <script src="/front/assets/js/myscript.js"></script>
+
+        <!-- 방문자 통계를 위해 추가 -->
+        <script src="/front/js/visit/client.js"></script>
+
+        <!-- 계산기 menu를 위해 추가    -->
+        <div id="toolModal" class="toolmodal" style="display: none;">
+            <div class="tool-modal-overlay"></div>
+            <div class="tool-modal-content"> <!-- 요소가 draggable 대상입니다 -->
+                <div class="tool-modal-header">
+                    <div class="modal-title">
+                      <span class="modal-label">계산기</span>
+                      <button class="tool-close-button" aria-label="닫기">X</button>
+                    </div>
+                </div>
+                <div class="tool-modal-body">
+                    <!-- 여기에 동적으로 iframe이 삽입될 예정 -->
+                </div>
+                <!-- 필요하다면 푸터 등 다른 내용 추가 -->
+            </div>
+        </div>
+        <!-- <script>
+            // 지도 - 공유 //
+            var mapShareChk = 0;
+            $("#mapShareOpen").click(function () {
+                if (mapShareChk == 0) {
+                    $("#mapShare").slideDown(200, "easeOutQuad");
+                    $("#mapShareOpen").addClass("active");
+                    mapShareChk = 1;
+                } else {
+                    $("#mapShare").slideUp(200, "easeOutQuad");
+                    $("#mapShareOpen").removeClass("active");
+                    mapShareChk = 0;
+                }
+            });
+
+            $("#mapShareClose").click(function () {
+                $("#mapShare").slideUp(200, "easeOutQuad");
+                $("#mapShareOpen").removeClass("active");
+                mapShareChk = 0;
+            });
+        </script> -->
+    </body>
+</html>

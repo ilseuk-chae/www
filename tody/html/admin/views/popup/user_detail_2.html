@@ -1,0 +1,138 @@
+<script>
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        const modalUrl = $modalWrap.attr("data-url");
+        const user = getUrlParameter("user", modalUrl);
+
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text("회원정보 수정");
+
+        // 상태 리스트
+        status_list();
+
+        // 유저 정보
+        user_info(user);
+
+        // [Event] 저장하기 버튼 클릭
+        $(".save-button").on("click", function () {
+            user_info_update(user);
+        });
+    });
+</script>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="myModalLabel"></h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div>
+        <div class="input-box mb-3">
+            <label for="id" class="col-form-label">아이디</label>
+            <input type="text" class="form-control" id="id" disabled />
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="agency_name" class="col-form-label"><span class="text-danger">*</span> 상호명</label>
+            <input type="text" class="form-control" id="agency_name" placeholder="상호명을 입력하세요." minlength="1" maxlength="20" />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="registered_broker_name" class="col-form-label"><span class="text-danger">*</span> 대표 공인중개사명</label>
+            <input type="text" class="form-control" id="registered_broker_name" placeholder="대표 공인중개사명을 입력하세요." minlength="1" maxlength="20" />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="zipcode" class="col-form-label"><span class="text-danger">*</span> 주소</label>
+            <div class="input-group">
+                <input type="text" id="zipcode" class="form-control" name="postal_code" placeholder="우편번호를 입력하세요." onclick="openDaumPostcode()" readonly />
+                <button type="button" class="btn btn-outline-dark w-md waves-effect waves-light" onclick="openDaumPostcode()">주소검색</button>
+            </div>
+            <input type="text" id="address_primary" class="form-control" name="address_primary" placeholder="기본주소를 입력하세요." readonly />
+            <input type="text" id="address_detail" class="form-control" name="address_detail" placeholder="상세주소를 입력하세요." />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="phone" class="col-form-label"><span class="text-danger">*</span> 전화번호</label>
+            <input type="text" class="form-control" id="phone" placeholder="전화번호를 입력하세요." minlength="9" maxlength="11" />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="mobile" class="col-form-label"><span class="text-danger">*</span> 휴대폰번호</label>
+            <input type="text" class="form-control" id="mobile" placeholder="휴대폰번호를 입력하세요." minlength="9" maxlength="11" />
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="email" class="col-form-label"><span class="text-danger">*</span> 이메일</label>
+            <div class="form-icon right">
+                <input type="text" class="form-control form-control-icon" id="email" placeholder="이메일을 입력하세요." />
+                <i class="ri-mail-unread-line"></i>
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="homepage_url" class="col-form-label">홈페이지 주소</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="homepage_url" placeholder="홈페이지 주소를 입력하세요." />
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3 input-group">
+            <label for="business_license_code" class="col-form-label">사업자등록번호</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="business_license_code" placeholder="사업자등록번호를 입력하세요." />
+                <button id="license_check_button" class="btn btn-primary waves-effect waves-light">확인</button>
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="" class="col-form-label">사업자등록증</label>
+            <div class="input-group">
+                <label for="business_license" id="business_license_name" class="input-label form-control text-muted mb-0">파일을 선택하세요.</label>
+                <label for="business_license" type="button" class="input-group-text mb-0 waves-effect waves-light">파일선택</label>
+                <input type="file" class="form-control d-none" id="business_license" placeholder="사업자등록증" accept="image/png, image/jpeg, image/jpg" />
+                <a target="_blank" id="show_business" class="btn btn-primary waves-effect waves-light">보기</a>
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="business_regist_code" class="col-form-label">개설등록번호</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="business_regist_code" placeholder="개설등록번호를 입력하세요." />
+                <button id="regist_code_check" class="btn btn-primary waves-effect waves-light">확인</button>
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="" class="col-form-label">중개업등록증</label>
+            <div class="input-group">
+                <label for="brokerage_cert" id="brokerage_cert_name" class="input-label form-control text-muted mb-0">파일을 선택하세요.</label>
+                <label for="brokerage_cert" class="input-group-text mb-0 waves-effect waves-light" type="button">파일선택</label>
+                <input type="file" class="form-control d-none" id="brokerage_cert" placeholder="중개업등록증" accept="image/png, image/jpeg, image/jpg" />
+                <a target="_blank" id="show_brokerage" class="btn btn-primary waves-effect waves-light">보기</a>
+            </div>
+            <div class="error" style="color: red"></div>
+        </div>
+
+        <div class="input-box mb-3">
+            <label for="status_code" class="col-form-label"><span class="text-danger">*</span> 상태</label>
+            <select class="form-select" id="status_code">
+                <option value="" hidden>상태를 선택하세요.</option>
+            </select>
+            <div class="error" style="color: red"></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light waves-effect waves-light" data-bs-dismiss="modal">닫기</button>
+    <button type="button" class="save-button btn btn-primary waves-effect waves-light">저장하기</button>
+</div>

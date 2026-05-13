@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_27170108",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "27170108", "EMD_ENG_NM": "Wondae-dong 2(i)-ga", "EMD_KOR_NM": "원대동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.581914087693121, 35.885122556425536 ], [ 128.581120346083623, 35.882687826081877 ], [ 128.578297824570512, 35.883268696022093 ], [ 128.579485811956744, 35.886165452823121 ], [ 128.581914087693121, 35.885122556425536 ] ] ] ] } }
+]
+}

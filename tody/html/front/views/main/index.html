@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="title" content="토디- 부동산 종합 플랫폼 서비스, tody" />
+        <meta name="description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
+        <meta name="keywords" content="토디,토디부동산,토디플랫폼,tody,tody부동산,tody플랫폼,부동산정보,부동산, 부동산앱, 부동산어플, 상가,건물, 빌딩, 공장, 창고, 토지, 매물,아파트, 주상복합, 오피스텔, 단독, 다가구, 다세대, 빌라,전세, 월세, 매매, 전월세, 임대, 실거래가, 부동산중개, 공인중개사" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://" />
+        <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="토디- 부동산 종합 플랫폼 서비스" />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="http://" />
+        <meta property="og:title" content="토디- 부동산 종합 플랫폼 서비스, tody" />
+        <!-- <meta property="og:image" content="../../images/common/meta_img.jpg"> -->
+        <meta property="og:description" content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원" />
+        <title>토디- 부동산 종합 플랫폼 서비스, tody</title>
+
+        <!-- Bootstrap Css -->
+        <!-- <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        /> -->
+        <link href="/front/assets/css/style.css" rel="stylesheet" />
+        <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+        <!-- menu Css -->
+        <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
+        <!-- jQuery UI 기본 테마 CSS -->
+        <link href="/assets/css/jquery-ui.css" rel="stylesheet" > <!-- 다운로드한 파일 경로 -->
+        <!-- purchas Css -->
+        <link href="/todypurchas/css/purchasstyle.css" rel="stylesheet" type="text/css" />
+        <!-- loan Css -->
+        <link href="/todyloan/css/loanstyle.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <body>
+        <div class="wrap">
+            <!-- 전체모션 -->
+            <div class="visual-bg">
+                <div class="panel"></div>
+            </div>
+            <!-- 전체모션 끝 -->
+
+            <!-- PC - 상단메뉴 -->
+            <header class="header"></header>
+            <!-- PC - 상단메뉴 끝 -->
+
+            <!-- MOBILE - 상단-메뉴영역 -->
+            <div class="mobile"> </div>
+            <script>
+                fetch('../00-include/mobile.html')
+                .then(response => response.text())
+                .then(html => {
+                    const container = document.querySelector('.mobile');
+                    container.innerHTML = html;
+
+                    const bg = container.querySelector('.mobile-menu-info-bg');
+                    if (bg) {
+                    bg.style.display = 'none'; // display를 명시적으로 다시 숨김
+                    // 혹은 bg.classList.add('hidden-class'); 등 원하는 제어 추가 가능
+                    }
+                    // ★ mobile.html 내용이 DOM에 추가된 후, layout.js의 함수 호출
+                    /*
+                    if (typeof loadMobile === 'function') {
+                        loadMobile();
+                    } else {
+                        console.warn("loadMobile 함수를 찾을 수 없습니다. layout.js 로드 순서 확인 필요.");
+                    }
+                    */
+                })
+                .catch(console.error);
+            </script>
+            <!-- MOBILE - 상단-메뉴영역 끝 -->
+
+            <!-- 본문내용 -->
+            <div class="container">
+                <!-- 메인 - 검색영역 -->
+                <div class="main-search">
+                    <div>
+                        <h2>원스톱 부동산 종합 플랫폼 서비스 <span>토디</span></h2>
+                        <dl>
+                            <dt id="mainSearchBox">
+                                <span>통합검색</span>
+                                <input type="text" id="search_box" name="" title="" value="" placeholder="건물명, 지번, 도로명으로 검색하세요." />
+                                <div id="mainSearchKeyword">
+                                    <ul>
+                                        <li>경기도 수원시 권선구 호매실동</li>
+                                        <li>경기도 수원시 권선구 호매실동</li>
+                                        <li>경기도 수원시 권선구 호매실동</li>
+                                        <li>경기도 수원시 권선구 호매실동</li>
+                                        <li>경기도 수원시 권선구 호매실동</li>
+                                        <li>경기도 수원시 권선구 호매실동</li>
+                                    </ul>
+                                </div>
+                            </dt>
+                            <dd>
+                                <button><i class="fa-sharp fa-light fa-magnifying-glass"></i></button>
+                            </dd>
+                        </dl>
+                        <div>
+                            <span>추천검색어</span>
+                            <a href="#">#해시태그</a>
+                            <a href="#">#부동산</a>
+                            <a href="#">#실거래가</a>
+                            <a href="#">#공시지가</a>
+                            <a href="#">#매매</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 메인 - 검색영역 끝 -->
+
+                <!-- 메인 - 파트너 -->
+                <div class="main-partner">
+                    <div>
+                        <p><img src="/front/assets/image/company_logo01.png" alt="" title="" /></p>
+                        <p><img src="/front/assets/image/company_logo02.png" alt="" title="" /></p>
+                        <p><img src="/front/assets/image/company_logo03.png" alt="" title="" /></p>
+                        <p><img src="/front/assets/image/company_logo04.png" alt="" title="" /></p>
+                        <p><img src="/front/assets/image/company_logo05.png" alt="" title="" /></p>
+                        <p><img src="/front/assets/image/company_logo06.png" alt="" title="" /></p>
+                        <p><img src="/front/assets/image/company_logo07.png" alt="" title="" /></p>
+                    </div>
+                </div>
+                <!-- 메인 - 파트너 끝 -->
+
+                <!-- 메인 - 공지사항 -->
+                <div class="main-notice">
+                    <dl>
+                        <dt>Notice</dt>
+                        <dd>
+                            <ul>
+                                <li>
+                                    <h2><a href="#">토디의 다양한 프로젝트를 확인해 보세요. 토디의 다양한 프로젝트를 확인해 보세요.</a></h2>
+                                    <h3>2024-05-05</h3>
+                                </li>
+                                <li>
+                                    <h2><a href="#">토디의 다양한 프로젝트를 확인해 보세요.</a></h2>
+                                    <h3>2024-05-05</h3>
+                                </li>
+                            </ul>
+                        </dd>
+                        <dt>
+                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                        </dt>
+                    </dl>
+                </div>
+                <!-- 메인 - 공지사항 끝 -->
+
+                <!-- 메인 - 소개 -->
+                <div class="main-intro">
+                    <dl>
+                        <dt>
+                            <h2 data-aos="fade-up">간단 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원 플랫폼</h2>
+                            <h3 data-aos="fade-up">TODY</h3>
+                            <div data-aos="fade-up">
+                                원스톱 부동산 종합 지원서비스를 제공하는 토디는 산재된 수 많은 부동산 빅데이터를 통해 실거래가, 입지분석, 토지/건물 현황, 개발 관련 인·허가를 위한 기초적 토지 현황 여건 분석, 사업자금 확보를 위한 다양한 금융사의 금융정보 제공 및 설계 등을 통해 보다 구체적인 원스톱 부동산 토탈 서비스를 제공하며, 쉽고 편하게 정보 확인이 가능합니다.
+                            </div>
+                        </dt>
+                        <dd data-aos="fade-up">
+                            <img src="/front/assets/image/main_intro_img.svg" alt="" title="" />
+                        </dd>
+                    </dl>
+                </div>
+                <!-- 메인 - 소개 끝 -->
+
+                <!-- 메인 - 서비스 -->
+                <ul class="main-service">
+                    <li data-aos="fade-up">
+                        <p><img src="/front/assets/image/main_service_img01.png" alt="부동산 정보" title="" /></p>
+                        <h2>부동산 정보</h2>
+                        <div>부동산 사업 추진을 위해 기본적으로 필요한 실거래가,토지대장,건축물대장, 개별공시지가,토지이용계획 등 각종 공적 정보를 제공하여 부동산 현황 파악을 지원</div>
+                    </li>
+                    <li data-aos="fade-up">
+                        <p><img src="/front/assets/image/main_service_img02.png" alt="개발분석" title="" /></p>
+                        <h2>개발 분석</h2>
+                        <div>부동산 개발 관련 인·허가 검토를 위해 기초적으로 분석이 필요한 국토환경성평가,생태자연도, 경사분석,표고분석,임상도 등 각종 토지 현황 정보를 제공하여 개발 가능성 파악을 지원</div>
+                    </li>
+                    <li data-aos="fade-up">
+                        <p><img src="/front/assets/image/main_service_img03.png" alt="금융 지원" title="" /></p>
+                        <h2>금융 지원</h2>
+                        <div>부동산 사업 추진과 완료에 필수적인 사업 자금 확보를 위해 전국의 다양한 금융사의 금융정보를 제공하여 보다 성공적인 사업의 마무리를 지원</div>
+                    </li>
+                </ul>
+                <!-- 메인 - 서비스 끝 -->
+
+                <!-- 메인 - 자주하는질문 -->
+                <div class="main-faq">
+                    <div>
+                        <h2 data-aos="fade-up">자주 묻는 질문</h2>
+                        <h3 data-aos="fade-up">자주 묻는 질문을 먼저 확인해 주세요.</h3>
+                        <ul>
+                            <li data-aos="fade-up">
+                                <dl>
+                                    <dt><i class="fa-regular fa-user"></i></dt>
+                                    <dd>
+                                        <p>
+                                            <span>회원가입 방법</span>
+                                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                        </p>
+                                        <div>중개업소 회원으로 가입하려면 중개사무소 개설등록증과 사업자등록증을 중개사무소 개설등록증을 발급받아 현재 부동산 중개업소를 운영하는</div>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-aos="fade-up">
+                                <dl>
+                                    <dt><i class="fa-sharp fa-regular fa-comment"></i></dt>
+                                    <dd>
+                                        <p>
+                                            <span>회원가입 방법</span>
+                                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                        </p>
+                                        <div>중개업소 회원으로 가입하려면 중개사무소 개설등록증과 사업자등록증을 중개사무소 개설등록증을 발급받아 현재 부동산 중개업소를 운영하는</div>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-aos="fade-up">
+                                <dl>
+                                    <dt><i class="fa-regular fa-phone-plus"></i></dt>
+                                    <dd>
+                                        <p>
+                                            <span>회원가입 방법</span>
+                                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                        </p>
+                                        <div>중개업소 회원으로 가입하려면 중개사무소 개설등록증과 사업자등록증을 중개사무소 개설등록증을 발급받아 현재 부동산 중개업소를 운영하는</div>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-aos="fade-up">
+                                <dl>
+                                    <dt><i class="fa-regular fa-business-time"></i></dt>
+                                    <dd>
+                                        <p>
+                                            <span>회원가입 방법</span>
+                                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                        </p>
+                                        <div>중개업소 회원으로 가입하려면 중개사무소 개설등록증과 사업자등록증을 중개사무소 개설등록증을 발급받아 현재 부동산 중개업소를 운영하는</div>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-aos="fade-up">
+                                <dl>
+                                    <dt><i class="fa-sharp fa-regular fa-building"></i></dt>
+                                    <dd>
+                                        <p>
+                                            <span>회원가입 방법</span>
+                                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                        </p>
+                                        <div>중개업소 회원으로 가입하려면 중개사무소 개설등록증과 사업자등록증을 중개사무소 개설등록증을 발급받아 현재 부동산 중개업소를 운영하는</div>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-aos="fade-up">
+                                <dl>
+                                    <dt><i class="fa-regular fa-panorama"></i></dt>
+                                    <dd>
+                                        <p>
+                                            <span>회원가입 방법</span>
+                                            <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                        </p>
+                                        <div>중개업소 회원으로 가입하려면 중개사무소 개설등록증과 사업자등록증을 중개사무소 개설등록증을 발급받아 현재 부동산 중개업소를 운영하는</div>
+                                    </dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 메인 - 자주하는질문 끝 -->
+
+                <!-- 메인 - 뉴스 -->
+                <div class="main-news">
+                    <dl>
+                        <dt>
+                            <h2 data-aos="fade-up"><span>TODY</span> NEWS</h2>
+                            <p data-aos="fade-up">
+                                <a href="#"><img src="/front/assets/image/main_news_more.svg" alt="" title="" /></a>
+                            </p>
+                        </dt>
+                        <dd data-aos="fade-up">
+                            <dl>
+                                <dt>
+                                    <h2><a href="#">무료로 체험해 볼 수 있나요?</a></h2>
+                                    <h3>2024-05-05</h3>
+                                </dt>
+                                <dd>
+                                    <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>
+                                    <h2><a href="#">가입자가 아닌 타인 명의의 신용카드로 결제할 수 있나요?</a></h2>
+                                    <h3>2024-05-05</h3>
+                                </dt>
+                                <dd>
+                                    <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>
+                                    <h2><a href="#">원스톱 부동산 종합 플랫폼 서비스 토디 정식 서비스 오픈</a></h2>
+                                    <h3>2024-05-05</h3>
+                                </dt>
+                                <dd>
+                                    <a href="#"><i class="fa-light fa-chevron-right"></i></a>
+                                </dd>
+                            </dl>
+                        </dd>
+                    </dl>
+                </div>
+                <!-- 메인 - 뉴스 끝 -->
+
+                <!-- 메인 - 클라이언트 -->
+                <div class="main-client">
+                    <div>
+                        <h2 data-aos="fade-up">이미 많은 분들이 <span>TODY</span>와 함께하고 있습니다.</h2>
+                        <h3 data-aos="fade-up">궁금한 점이 있으면 언제든지 문의해 주세요.</h3>
+                        <ul data-aos="fade-up">
+                            <li><img src="/front/assets/image/company_logo01.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo02.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo03.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo04.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo05.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo06.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo07.png" alt="" title="" /></li>
+
+                            <li><img src="/front/assets/image/company_logo08.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo09.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo10.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo11.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo12.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo13.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo14.png" alt="" title="" /></li>
+
+                            <li><img src="/front/assets/image/company_logo15.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo16.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo17.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo18.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo19.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo20.png" alt="" title="" /></li>
+                            <li><img src="/front/assets/image/company_logo21.png" alt="" title="" /></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 메인 - 클라이언트 끝 -->
+            </div>
+            <!-- 본문내용 끝 -->
+
+            <!-- 하단영역 -->
+            <footer class="footer"></footer>
+            <!-- 하단영역 끝 -->
+        </div>
+        
+        <div id="popup-welcome-overlay" style="display: none;">
+            <div id="popup-welcome-content">
+                <h2>팝업 광고 제목</h2>
+                <p>여기에 광고 내용을 넣어주세요.</p>
+                <button id="close-welcome-popup">닫기</button>
+                <label>
+                    <input type="checkbox" id="donot-show-welcommon-today"> 오늘 하루 안 보기
+                </label>
+            </div>
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+
+        <script src="/front/assets/js/jquery-ui.js"></script>
+        <script src="/front/assets/js/easing.js"></script>
+
+        <script src="/front/assets/js/gsap.min.js"></script>
+        <script src="/front/assets/js/ScrollTrigger.min.js"></script>
+        <script src="/front/assets/js/ScrollToPlugin.min.js"></script>
+        <script src="/front/assets/js/SmoothScroll.min.js"></script>
+
+        <script src="/front/assets/js/countup.js"></script>
+        <script src="/front/assets/js/waypoints.js"></script>
+        <script src="/front/assets/js/aos.js"></script>
+
+        <script src="/front/assets/js/iziModal.js"></script>
+        <script src="/front/assets/js/swiper.js"></script>
+        <script src="/front/assets/js/multiSelect.js"></script>
+        <script src="/front/assets/js/nouislider.js"></script>
+        <script src="/front/assets/js/lottie.min.js"></script>
+
+        <!-- custom -->
+        <script src="/front/js/00-include/layout.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        <script src="/front/assets/js/common.js"></script>
+
+        <!-- active menu를 위해 추가    -->
+        <script src="/front/assets/js/myscript.js"></script>
+        <!-- 방문자 통계를 위해 추가 -->
+        <script src="/front/js/visit/client.js"></script>
+        
+        <!-- 계산기 menu를 위해 추가    -->
+        <div id="toolModal" class="toolmodal" style="display: none;">
+            <div class="tool-modal-overlay"></div>
+            <div class="tool-modal-content"> <!-- 요소가 draggable 대상입니다 -->
+                <div class="tool-modal-header">
+                    <div class="modal-title">
+                      <span class="modal-label">계산기</span>
+                      <button class="tool-close-button" aria-label="닫기">X</button>
+                    </div>
+                </div>
+                <div class="tool-modal-body">
+                    <!-- 여기에 동적으로 iframe이 삽입될 예정 -->
+                </div>
+                <!-- 필요하다면 푸터 등 다른 내용 추가 -->
+            </div>
+        </div>
+        <script>
+            // 스크롤 처리 //
+            SmoothScroll({
+                animationTime: 1200,
+                stepSize: 100,
+                accelerationDelta: 50,
+                accelerationMax: 3,
+                touchpadSupport: false,
+            });
+        </script>
+    </body>
+</html>

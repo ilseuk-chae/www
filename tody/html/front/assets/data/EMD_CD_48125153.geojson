@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "EMD_CD_48125153",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 1e-15,
+"features": [
+{ "type": "Feature", "properties": { "EMD_CD": "48125153", "EMD_ENG_NM": "Changpo-dong 3(sam)-ga", "EMD_KOR_NM": "창포동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.562306826728388, 35.182709590509859 ], [ 128.561228225800448, 35.180631884183818 ], [ 128.558884461829166, 35.181466234417563 ], [ 128.559463355482109, 35.181634537618478 ], [ 128.560333937738193, 35.183375896020571 ], [ 128.562306826728388, 35.182709590509859 ] ] ] ] } }
+]
+}

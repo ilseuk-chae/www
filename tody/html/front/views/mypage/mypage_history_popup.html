@@ -1,0 +1,177 @@
+<script>
+    $(async function () {
+        const $modalWrap = $(".modal-pop-wrapper");
+        $modalWrap.find(".modal-dialog").addClass("modal-dialog-scrollable");
+
+        const modalUrl = $modalWrap.attr("data-url");
+
+        const title = getUrlParameter("title", modalUrl);
+        const table = getUrlParameter("table", modalUrl);
+        const type = getUrlParameter("type", modalUrl);
+
+        // 모달 타이틀
+        $modalWrap.find(".modal-title").text(title);
+        console.log(table);
+        console.log(type);
+
+        if (table == "search") {
+            const result = await initRecentSearch(type, 10, 0);
+            $modalWrap.find("thead").empty().append(result.theadHtml);
+            $modalWrap.find("tbody").empty().append(result.tbodyHtml);
+
+            $("#plus_btn").on("click", async function () {
+                const trLength = $modalWrap.find("tbody tr").length;
+                const result = await initRecentSearch(type, 10, trLength);
+                if (!result.tbodyHtml) {
+                    $("#plus_btn").hide();
+                } else {
+                    $modalWrap.find("tbody").append(result.tbodyHtml);
+                }
+            });
+        } else if (table == "favorite") {
+            if (type === "real" || type === "estate") {
+                const result = await initFavorite1(type, 10, 0);
+                $modalWrap.find("thead").empty().append(result.theadHtml);
+                $modalWrap.find("tbody").empty().append(result.tbodyHtml);
+
+                $("#plus_btn").on("click", async function () {
+                    const trLength = $modalWrap.find("tbody tr").length;
+                    const result = await initFavorite1(type, 10, trLength);
+                    if (!result.tbodyHtml) {
+                        $("#plus_btn").hide();
+                    } else {
+                        $modalWrap.find("tbody").append(result.tbodyHtml);
+                    }
+                });
+            } else if (type === "put" || type === "find") {
+                const result = await initFavorite2(type, 10, 0);
+                $modalWrap.find("thead").empty().append(result.theadHtml);
+                $modalWrap.find("tbody").empty().append(result.tbodyHtml);
+
+                $("#plus_btn").on("click", async function () {
+                    const trLength = $modalWrap.find("tbody tr").length;
+                    const result = await initFavorite2(type, 10, trLength);
+                    if (!result.tbodyHtml) {
+                        $("#plus_btn").hide();
+                    } else {
+                        $modalWrap.find("tbody").append(result.tbodyHtml);
+                    }
+                });
+            }
+        } else if (table == "view") {
+            const result = await initRecentView(type, 10, 0);
+            $modalWrap.find("thead").empty().append(result.theadHtml);
+            $modalWrap.find("tbody").empty().append(result.tbodyHtml);
+
+            $("#plus_btn").on("click", async function () {
+                const trLength = $modalWrap.find("tbody tr").length;
+                const result = await initRecentView(type, 10, trLength);
+                if (!result.tbodyHtml) {
+                    $("#plus_btn").hide();
+                } else {
+                    $modalWrap.find("tbody").append(result.tbodyHtml);
+                }
+            });
+        } else if (table == "print") {
+            const result = await initRecentPrint(type, 10, 0);
+            $modalWrap.find("thead").empty().append(result.theadHtml);
+            $modalWrap.find("tbody").empty().append(result.tbodyHtml);
+
+            $("#plus_btn").on("click", async function () {
+                const trLength = $modalWrap.find("tbody tr").length;
+                const result = await initRecentPrint(type, 10, trLength);
+                if (!result.tbodyHtml) {
+                    $("#plus_btn").hide();
+                } else {
+                    $modalWrap.find("tbody").append(result.tbodyHtml);
+                }
+            });
+        }
+
+        // 삭제 버튼 클릭
+        $modalWrap.on("click", ".delete-btn", async function (e) {
+            const type = $(this).attr("data-type");
+            const history_no = $(this).attr("data-history_no");
+            const result = await deleteHistory(table, type, history_no);
+            console.log(result);
+
+            if (result) {
+                // 가까운 tr 요소를 찾아서 제거
+                $(this).closest("tr").remove();
+            }
+        });
+    });
+</script>
+
+<div class="modal-header">
+    <h1 class="modal-title" id="myModalLabel"></h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+</div>
+<div class="modal-body">
+    <table class="history-table table table-nowrap align-middle">
+        <thead>
+            <tr>
+                <th scope="col">검색날짜</th>
+                <th scope="col">소재지</th>
+                <th scope="col">삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr>
+            <tr>
+                <td><font>검색날짜 : </font> 2024.01.11</td>
+                <td><font>주소 : </font> <a href="#">실거래가 주소</a></td>
+                <td><font>삭제 : </font> <button type="button" class="btn btn-danger">삭제</button></td>
+            </tr> -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-center">
+                    <button id="plus_btn" class="btn btn-outline-danger">더보기</button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">닫기</button>
+</div>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>토디 - 매물 요약 정보</title>
+    <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/fonts.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            .summary-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+            body { background: #fff !important; }
+        }
+
+        :root {
+            --tody-primary: #2563eb;
+            --tody-primary-dark: #1d4ed8;
+            --tody-bg: #f0f4ff;
+            --tody-card-bg: #ffffff;
+            --tody-text: #1e293b;
+            --tody-text-light: #64748b;
+            --tody-border: #e2e8f0;
+            --tody-accent: #f59e0b;
+            --tody-success: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
+            background: var(--tody-bg);
+            color: var(--tody-text);
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* 상단 헤더 */
+        .summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .summary-header .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .summary-header .logo-area .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--tody-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .summary-header .logo-area h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--tody-primary-dark);
+        }
+
+        .summary-header .date-info {
+            font-size: 13px;
+            color: var(--tody-text-light);
+        }
+
+        /* 메인 카드 */
+        .summary-card {
+            background: var(--tody-card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        /* 카드 상단 배너 */
+        .card-banner {
+            background: linear-gradient(135deg, var(--tody-primary) 0%, #7c3aed 100%);
+            padding: 28px 32px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-banner::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .card-banner .property-type-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-banner h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-banner .address {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* 핵심 정보 그리드 */
+        .key-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border-bottom: 1px solid var(--tody-border);
+        }
+
+        .key-info-item {
+            padding: 24px;
+            text-align: center;
+            border-right: 1px solid var(--tody-border);
+        }
+
+        .key-info-item:last-child {
+            border-right: none;
+        }
+
+        .key-info-item .label {
+            font-size: 12px;
+            color: var(--tody-text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .key-info-item .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--tody-text);
+        }
+
+        .key-info-item .value.price {
+            color: #dc2626;
+        }
+
+        .key-info-item .value .unit {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--tody-text-light);
+            margin-left: 2px;
+        }
+
+        .key-info-item .sub-value {
+            font-size: 12px;
+            color: var(--tody-text-light);
+            margin-top: 4px;
+        }
+
+        /* 상세 정보 테이블 */
+        .detail-section {
+            padding: 28px 32px;
+        }
+
+        .detail-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--tody-text);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--tody-primary);
+            display: inline-block;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .detail-table tr {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .detail-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .detail-table th {
+            width: 140px;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--tody-text-light);
+            background: #f8fafc;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .detail-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: var(--tody-text);
+            vertical-align: middle;
+        }
+
+        .badge-exchange {
+            display: inline-block;
+            background: #ecfdf5;
+            color: var(--tody-success);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .badge-sale {
+            display: inline-block;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* AI 특징점 섹션 */
+        .ai-section {
+            padding: 0 32px 28px;
+        }
+
+        .ai-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #f5f3ff 100%);
+            border: 1px solid #e0e7ff;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .ai-box .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .ai-box .ai-header .ai-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--tody-primary), #7c3aed);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .ai-box .ai-header h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--tody-primary-dark);
+        }
+
+        .ai-box .ai-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--tody-text);
+        }
+
+        .ai-box .ai-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ai-box .ai-content ul li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .ai-box .ai-content ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--tody-primary);
+            font-weight: bold;
+        }
+
+        /* 푸터 */
+        .card-footer-info {
+            padding: 16px 32px;
+            background: #f8fafc;
+            border-top: 1px solid var(--tody-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--tody-text-light);
+        }
+
+        /* 버튼 영역 */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .btn-action {
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-save {
+            background: var(--tody-primary);
+            color: #fff;
+        }
+
+        .btn-print {
+            background: #fff;
+            color: var(--tody-text);
+            border: 1px solid var(--tody-border);
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        /* 반응형 */
+        @media (max-width: 640px) {
+            .key-info-grid {
+                grid-template-columns: 1fr;
+            }
+            .key-info-item {
+                border-right: none;
+                border-bottom: 1px solid var(--tody-border);
+            }
+            .card-banner { padding: 20px; }
+            .detail-section { padding: 20px; }
+            .ai-section { padding: 0 20px 20px; }
+            .detail-table th { width: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+    <!-- 헤더 -->
+    <div class="summary-header no-print">
+        <div class="logo-area">
+            <div class="logo-icon">T</div>
+            <h1>TODY 매물 요약</h1>
+        </div>
+        <div class="date-info">작성일: 2026년 04월 01일</div>
+    </div>
+
+    <!-- 메인 요약 카드 -->
+    <div class="summary-card" id="summaryCard">
+        <!-- 상단 배너 -->
+        <div class="card-banner">
+            <div class="property-type-badge">토지 매각</div>
+            <h2>경기도 화성시 정남면 백리 179-21</h2>
+            <div class="address">경기도 화성시 정남면 백리 179-21 일원</div>
+        </div>
+
+        <!-- 핵심 수치 -->
+        <div class="key-info-grid">
+            <div class="key-info-item">
+                <div class="label">토지면적</div>
+                <div class="value">2,003<span class="unit">평</span></div>
+                <div class="sub-value">≒ 6,622.31 m²</div>
+            </div>
+            <div class="key-info-item">
+                <div class="label">매매가격</div>
+                <div class="value price">32억 480만<span class="unit">원</span></div>
+                <div class="sub-value">평당 약 159.9만원</div>
+            </div>
+            <div class="key-info-item">
+                <div class="label">거래방식</div>
+                <div class="value" style="font-size:18px;">
+                    <span class="badge-sale">매각</span>
+                    <span class="badge-exchange">교환가능</span>
+                </div>
+                <div class="sub-value">매각 우선, 교환 협의 가능</div>
+            </div>
+        </div>
+
+        <!-- 상세 정보 -->
+        <div class="detail-section">
+            <h3>상세 정보</h3>
+            <table class="detail-table">
+                <tr>
+                    <th>매물유형</th>
+                    <td>토지 (나대지)</td>
+                </tr>
+                <tr>
+                    <th>소재지</th>
+                    <td>경기도 화성시 정남면 백리 179-21 일원</td>
+                </tr>
+                <tr>
+                    <th>토지면적</th>
+                    <td><strong>2,003평</strong> (6,622.31 m²)</td>
+                </tr>
+                <tr>
+                    <th>매매가격</th>
+                    <td><strong style="color:#dc2626;">32억 480만원</strong> (3,200,480,000원)</td>
+                </tr>
+                <tr>
+                    <th>평당가</th>
+                    <td>약 1,598,140원 / 평</td>
+                </tr>
+                <tr>
+                    <th>교환 가능여부</th>
+                    <td><span class="badge-exchange">교환 가능</span></td>
+                </tr>
+                <tr>
+                    <th>용도지역</th>
+                    <td>확인 필요 (토지이용계획 열람 필요)</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- AI 특징점 -->
+        <div class="ai-section">
+            <div class="ai-box">
+                <div class="ai-header">
+                    <div class="ai-icon">AI</div>
+                    <h4>AI 분석 특징점</h4>
+                </div>
+                <div class="ai-content">
+                    <ul>
+                        <li><strong>입지:</strong> 경기도 화성시 정남면은 수도권 남부 산업·물류 거점으로, 최근 개발 수요가 증가하는 지역입니다.</li>
+                        <li><strong>면적:</strong> 2,003평 규모로 중소형 공장, 물류창고, 태양광 발전 등 다양한 용도로 활용 가능한 면적입니다.</li>
+                        <li><strong>평당가:</strong> 약 159.9만원/평으로, 화성시 정남면 인근 토지 시세 대비 적정 수준으로 판단됩니다.</li>
+                        <li><strong>교통:</strong> 정남면은 국도 39호선, 경부고속도로 접근이 용이하며, 향후 GTX 등 교통 인프라 확장이 기대됩니다.</li>
+                        <li><strong>교환 거래:</strong> 교환이 가능하여 현금 외 부동산 교환을 통한 유연한 거래 구조 설계가 가능합니다.</li>
+                        <li><strong>개발 전망:</strong> 화성시는 동탄 신도시 확장, 반도체 클러스터 등 대규모 개발이 진행 중이며, 정남면 인근도 간접 수혜가 예상됩니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 정보 -->
+        <div class="card-footer-info">
+            <span>TODY 부동산 종합 플랫폼 | tody.co.kr</span>
+            <span>본 요약은 참고용이며, 정확한 정보는 등기부등본 및 토지이용계획을 확인하시기 바랍니다.</span>
+        </div>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="action-buttons no-print">
+        <button class="btn-action btn-print" onclick="window.print()">인쇄하기</button>
+        <button class="btn-action btn-pdf" onclick="alert('PDF 다운로드 기능은 추후 구현 예정입니다.')">PDF 저장</button>
+        <button class="btn-action btn-save" onclick="alert('DB 저장 기능은 추후 구현 예정입니다.')">저장하기</button>
+    </div>
+</div>
+
+</body>
+</html>

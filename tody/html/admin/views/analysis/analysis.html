@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="kr" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tody 관리자 페이지 | 입지분석</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta content="Tody" name="description" />
+        <meta content="Tody" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+        <!--datatable css-->
+        <!-- <link rel="stylesheet" href="/assets/css/plugins/datatables/dataTables.bootstrap5.min.css" />
+        <link rel="stylesheet" href="/assets/css/plugins/datatables/responsive.bootstrap.min.css" />
+        <link rel="stylesheet" href="/assets/css/plugins/datatables/buttons.dataTables.min.css" /> -->
+
+        <link href="/assets/libs/datatables/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/buttons.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/colReorder.bootstrap5.min.css" rel="stylesheet" />
+        <link href="/assets/libs/datatables/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+
+        <!-- Sweet Alert css-->
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <!-- Layout config Js -->
+        <script src="/assets/js/layout.js"></script>
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- font Css -->
+        <link href="/assets/css/fonts.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Waves Css-->
+        <link href="/assets/libs/node-waves/waves.min.css" rel="stylesheet" type="text/css" />
+        <!-- choices Css -->
+        <link href="/assets/libs/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- custom Css-->
+        <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <!-- common Css-->
+        <link href="/assets/css/common.css" rel="stylesheet" type="text/css" />
+        <!-- modal Css -->
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+            <!-- header -->
+            <header id="page-topbar"></header>
+            <!-- /.header -->
+
+            <!-- removeNotificationModal -->
+            <div id="removeNotificationModal" class="modal fade zoomIn" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="NotificationModalbtn-close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mt-2 text-center">
+                                <lord-icon src="/assets/json/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width: 100px; height: 100px"></lord-icon>
+                                <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                    <h4>Are you sure ?</h4>
+                                    <p class="text-muted mx-4 mb-0">Are you sure you want to remove this Notification ?</p>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                <button type="button" class="btn w-sm btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn w-sm btn-danger" id="delete-notification">Yes, Delete It!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+            <!-- ========== App Menu ========== -->
+            <div class="app-menu navbar-menu"></div>
+            <!-- Left Sidebar End -->
+
+            <!-- Vertical Overlay-->
+            <div class="vertical-overlay"></div>
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                <!-- content -->
+                <div class="page-content">
+                    <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                    <h4 class="mb-sm-0">입지 분석</h4>
+
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">입지 분석</a></li>
+                                            <!-- <li class="breadcrumb-item active">금융 지원 관리</li> -->
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-xl-8">
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex flex-wrap">
+                                        <h4 class="card-title mb-0 flex-grow-1">분석 지도</h4>
+
+                                        <!-- 우측 상단 - 지도 선택 -->
+                                        <div class="map-select-group text-end">
+                                            <button type="button" class="btn btn-outline-info active" onclick="changeBaseMapType('roadmap', map)">일반</button>
+                                            <button type="button" class="btn btn-outline-info" onclick="changeBaseMapType('skyview', map)">위성</button>
+                                            <button type="button" class="btn btn-outline-info" onclick="changeBaseMapType('hybrid', map)">일반+위성</button>
+                                        </div>
+                                    </div>
+                                    <!-- end card header -->
+
+                                    <div class="card-body d-flex flex-column">
+                                        <div id="map_bg" class="map-bg" style="height: 700px"></div>
+                                    </div>
+                                    <!-- end card-body -->
+                                </div>
+                                <!-- end card -->
+                            </div>
+
+                            <div class="col-xl-4" style="height: 80vh; overflow-y: auto">
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex flex-wrap">
+                                        <h4 class="card-title mb-0 flex-grow-1">분석 선택</h4>
+                                        <div class="icon-demo-content">
+                                            <!-- <button type="button" id="anaysis_button" class="btn btn-danger text-nowrap plus-button d-flex align-items-center waves-effect waves-light">분석하기</button> -->
+                                            <button type="button" id="reset_button" class="btn btn-info text-nowrap plus-button d-flex align-items-center waves-effect waves-light">초기화</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <label for="sido" class="col-form-label">시/도</label>
+                                                <select class="form-select" id="sido">
+                                                    <option value="">시/도를 선택하세요.</option>
+                                                    <option value="41">경기도</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="sgg" class="col-form-label">시/군/구</label>
+                                                <select class="form-select" id="sgg">
+                                                    <option value="">시/군/구를 선택하세요.</option>
+                                                    <option value="590">화성시</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="umd" class="col-form-label">읍/면/동</label>
+                                                <select class="form-select" id="umd">
+                                                    <option value="">읍/면/동을 선택하세요.</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="ri" class="col-form-label">리</label>
+                                                <select class="form-select" id="ri">
+                                                    <option value="">리를 선택하세요.</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="facility_level_1" class="col-form-label">분석시설-분류1</label>
+                                                <select class="form-select" id="facility_level_1">
+                                                    <option value="">분석시설-분류 1을 선택하세요.</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="facility_level_2" class="col-form-label">분석시설-분류2</label>
+                                                <select class="form-select" id="facility_level_2">
+                                                    <option value="">분석시설-분류 2를 선택하세요.</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex flex-wrap">
+                                        <h4 class="card-title mb-0 flex-grow-1">분석 조건</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <label for="prposArea" class="col-form-label">용도지역</label>
+                                                <select class="form-select" id="prposArea">
+                                                    <option value="" hidden>용도지역을 선택하세요.</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="lndcgr" class="col-form-label">지목</label>
+                                                <select class="form-select" id="lndcgr">
+                                                    <option value="" hidden>지목을 선택하세요.</option>
+                                                </select>
+                                                <div class="error" style="color: red"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- <div class="table-responsive table-card">
+                                            <table id="facility_table" class="table align-middle table-bordered table-nowrap mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col" style="width: 42px">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" value="" id="facility_check_all" checked />
+                                                                <label class="form-check-label" for="facility_check_all"></label>
+                                                            </div>
+                                                        </th>
+                                                        <th scope="col" class="ps-3">분류 1</th>
+                                                        <th scope="col" class="ps-3">분류 2</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex flex-wrap">
+                                        <h4 class="card-title mb-0 flex-grow-1">입지기준</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table-card">
+                                            <table id="conditions_table" class="table align-middle table-bordered table-nowrap mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th scope="col" style="width: 42px">
+                                                            <!-- <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" value="" id="conditions_check_all" />
+                                                                <label class="form-check-label" for="conditions_check_all"></label>
+                                                            </div> -->
+                                                        </th>
+                                                        <th scope="col" class="ps-3">분류 1</th>
+                                                        <th scope="col" class="ps-3">분류 2</th>
+                                                        <th scope="col" class="ps-3">반경</th>
+                                                        <th scope="col" class="ps-3">포함여부</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex flex-wrap">
+                                        <h4 class="card-title mb-0 flex-grow-1">분석 결과</h4>
+                                        <button type="button" id="downloadXLSX" class="btn btn-info">엑셀 다운로드</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive table-card">
+                                            <table id="result_table" class="table align-middle table-bordered table-nowrap mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <!-- <th scope="col" style="width: 42px">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" value="" id="conditions_check_all" />
+                                                                <label class="form-check-label" for="conditions_check_all"></label>
+                                                            </div>
+                                                        </th> -->
+                                                        <th class="col-2">No</th>
+                                                        <th scope="col" class="ps-3">주소</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- end col -->
+                        </div>
+                    </div>
+                    <!-- container-fluid -->
+                </div>
+                <!-- End Page-content -->
+
+                <!-- footer -->
+                <footer class="footer"></footer>
+                <!-- /.footer -->
+            </div>
+            <!-- end main content-->
+        </div>
+        <!-- END layout-wrapper -->
+
+        <!--start back-to-top-->
+        <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+            <i class="ri-arrow-up-line"></i>
+        </button>
+        <!--end back-to-top-->
+
+        <!--preloader-->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="customizer-setting d-none d-md-block">
+            <div class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
+                <i class="mdi mdi-spin mdi-cog-outline fs-22"></i>
+            </div>
+        </div> -->
+
+        <!-- Theme Settings -->
+        <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas"></div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/libs/jquery/js/jquery-3.7.1.min.js"></script>
+        <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="/assets/libs/node-waves/waves.min.js"></script>
+        <script src="/assets/libs/feather-icons/feather.min.js"></script>
+        <script src="/assets/js/plugins/lord-icon-2.1.0.js"></script>
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+        <script src="/assets/libs/prismjs/prism.js"></script>
+        <!--datatable js-->
+        <script src="/assets/libs/datatables/js/jszip.min.js"></script>
+        <script src="/assets/libs/datatables/js/pdfmake.min.js"></script>
+        <script src="/assets/libs/datatables/js/vfs_fonts.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.buttons.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.bootstrap5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.colVis.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.html5.min.js"></script>
+        <script src="/assets/libs/datatables/js/buttons.print.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.colReorder.min.js"></script>
+        <script src="/assets/libs/datatables/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/libs/datatables/js/responsive.bootstrap5.js"></script>
+        <!-- jquery-validation.js -->
+        <script src="/assets/libs/jquery-validation/js/jquery.validate.min.js"></script>
+        <script src="/admin/js/00-include/validation.js"></script>
+        <!-- daum 주소 api -->
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+        <!-- 카카오맵 -->
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=847d6b0bbbc2dbfe6b7c0c1f82d8cd71&libraries=services,clusterer,drawing"></script>
+        <!-- pako -->
+        <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+        <!-- SheetJS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx-style/0.8.13/xlsx.full.min.js"></script>
+        <!-- custom -->
+        <script src="/admin/js/00-include/layout.js"></script>
+        <script src="/admin/js/00-include/sha256.js"></script>
+        <script src="/admin/js/00-include/functions.js"></script>
+        <script src="/admin/js/00-include/common.js"></script>
+        <script src="/admin/js/00-include/layer_popup.js"></script>
+        <script src="/admin/js/10-analysis/analysis.js"></script>
+        <!-- App js ==> common.js의 ready(function () { ... }) 부분으로 이동 
+        <script>
+            window.addEventListener("load", function () {
+                var script = document.createElement("script");
+                script.src = "/assets/js/app.js?v=" + new Date().getTime();
+                document.body.appendChild(script);
+            });
+        </script>  -->
+        <!-- <script src="/assets/js/app.js"></script> -->
+    </body>
+</html>

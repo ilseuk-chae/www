@@ -1,0 +1,68 @@
+<dl>
+    <dt>
+        <a href="/index.html"><img src="/front/assets/image/logo.svg" height="35" alt="" title="" /></a>
+    </dt>
+    <dd>
+        <ul>
+            <li>
+                <a href="/front/views/realPrice/realPrice.html">실거래가</a>
+            </li>
+            <li>
+                <a href="/front/views/sell/sell.html">매물정보</a>
+            </li>
+            <li>
+                <a href="/front/views/find/find_list.html">삽니다</a>
+            </li>
+            <li>
+                <a href="/front/views/put/put_list.html">팝니다</a>
+            </li>
+            <li style="display: none;"> <!-- 20260116 임시 표시 제한-->
+                <a href="/front/views/finance/finance.html">금융지원</a>
+            </li>
+        </ul>
+    </dd>
+    <dt>
+        <!-- 로그인 전 -->
+        <!-- <a href="javascript:void(0);">로그인</a> -->
+        <!-- 로그인 전 끝 -->
+
+        <!-- 로그인 후 -->
+        <div class="h-myInfo">
+            <a href="javascript:void(0);"><span id="user_name_type">홍길동(일반회원)</span> 님 <i class="fa-light fa-chevron-down"></i> </a>
+            <div class="h-my-menu">
+                <a class="mypage-url" href="/front/views/mypage/mypage.html">
+                    <span>나의정보</span>
+                    <i class="fa-light fa-angle-right"></i>
+                </a>
+                <a id="logout_btn" href="javascript:void(0);" onclick="logout()">
+                    <span>로그아웃</span>
+                    <i class="fa-light fa-angle-right"></i>
+                </a>
+            </div>
+        </div>
+        <!-- 로그인 후 끝 -->
+
+        <!-- <em>|</em>
+        <a href="../member/join_step01.html">회원가입</a> -->
+        <em>|</em>
+        <a href="/front/views/support/notice_list.html">고객센터</a>
+        <!-- <button id="headerSearchOpen"><i class="fa-regular fa-magnifying-glass"></i></button> -->
+        <em>|</em>
+
+        <!-- 검색영역 -->
+        <!-- <div class="h-search">
+            <button id="headerSearchClose"><i class="fa-regular fa-xmark"></i></button>
+            <input type="text" name="" placeholder="검색하세요" />
+            <button><i class="fa-regular fa-magnifying-glass"></i></button>
+        </div> -->
+        <!-- 검색영역 끝 -->
+
+        <!-- 관련사이트 -->
+        <select name="" id="selectSite" multiple>
+            <option value="">사이트</option>
+            <option value="">사이트</option>
+            <option value="">사이트</option>
+        </select>
+        <!-- 관련사이트 끝 -->
+    </dt>
+</dl>

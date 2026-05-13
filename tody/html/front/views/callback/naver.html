@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>NaverLogin</title>
+
+        <!-- Bootstrap Css -->
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <p>처리 중입니다. 잠시만 기다려 주세요...</p>
+
+        <!-- (1) LoginWithNaverId Javscript SDK -->
+        <script src="/front/assets/js/naveridlogin_js_sdk_2.0.2.js"></script>
+        <script src="/front/assets/js/jquery-3.3.1.js"></script>
+        <script src="/front/js/00-include/functions.js"></script>
+        <script src="/front/js/00-include/common.js"></script>
+        
+        <!-- (2) LoginWithNaverId Javscript 설정 정보 및 초기화 -->
+        <script>
+            const clientId = "51uqj3T1dAORiqMsBTFv";
+            const callbackUrl = `${window.location.origin}${location.port ? ":" + location.port : ""}/front/views/callback/naver.html`;
+
+            var naverLogin = new naver.LoginWithNaverId({
+                clientId: clientId,
+                callbackUrl: callbackUrl,
+                isPopup: true,
+                callbackHandle: true,
+                /* callback 페이지가 분리되었을 경우에 callback 페이지에서는 callback처리를 해줄수 있도록 설정합니다. */
+            });
+
+            /* (3) 네아로 로그인 정보를 초기화하기 위하여 init을 호출 */
+            naverLogin.init();
+
+            /* (4) Callback의 처리. 정상적으로 Callback 처리가 완료될 경우 main page로 redirect(또는 Popup close) */
+            window.addEventListener("load", function () {
+                naverLogin.getLoginStatus(async function (status) {
+                    if (status) {
+                        /* (5) 필수적으로 받아야하는 프로필 정보가 있다면 callback처리 시점에 체크 */
+                        const email = naverLogin.user.getEmail();
+                        const name = naverLogin.user.getName();
+                        const id = naverLogin.user.getId();
+                        const mobile = naverLogin.user.getMobile().replace(/-/g, "");
+
+                        // 모든 필수 정보가 제공되었는지 확인
+                        if (!email || !name || !id || !mobile) {
+                            alert("모든 필수 정보를 제공해야 합니다. 정보 제공에 동의해주세요.");
+                            /* (5-1) 사용자 정보 재동의를 위하여 다시 네아로 동의페이지로 이동함 */
+                            naverLogin.reprompt();
+                            return;
+                        }
+
+                        const dataObj = { email, name, id, mobile };
+
+                        try {
+                            const response = await callApiAbort("/front/back/00-include/login_naver.php", "POST", dataObj, "naverLogin");
+                            //console.log("API 호출 성공");
+
+                            const { statusCode, message, responseData } = response;
+                            loginHandleError(message, statusCode);
+
+                            //const { userNo, userToken, name, role, status } = responseData;
+                            const { userNo, userToken, name: resName, role, status: resStatus, userId} = responseData; // 응답 데이터의 이름과 충돌 방지를 위해 resName 사용
+                            
+                            setCookie("user_no", userNo);
+                            setCookie("user_token", userToken);
+                            //setCookie("user_name", encodeURIComponent(name));
+                            setCookie("user_name", encodeURIComponent(resName)); // 응답 데이터의 이름을 사용
+                            setCookie("user_role", encodeURIComponent(role));
+                            setCookie("naver_token", getHashParam("access_token"));
+                            setCookie("user_id", userId);
+
+                            // --- 여기가 onLoginSuccess() 호출을 요청하는 위치 ---
+                            // 부모 창으로 로그인 성공 메시지와 userNo를 보냅니다.
+                            if (window.opener && window.opener.postMessage && userId) {
+                                // 'naverLoginSuccess' 타입으로 메시지 구분
+                                window.opener.postMessage({ type: 'naverLoginSuccess', userId: userId }, window.location.origin);
+                                //console.log('Naver login success message sent to parent with userId:', userId);
+                            }
+                            // --- ---
+                            
+                        } catch (error) {
+                            // API 호출 실패
+                            console.error("API 호출 실패", error);
+                            // alert("로그인 중 문제가 발생했습니다.");
+                        } finally {
+                            // API 호출 완료
+                            // 부모 페이지를 새로고침하고 팝업 닫기
+                            // 현재 창을 팝업으로 연 부모 창이 있는지 확인.
+                            if (window.opener) {
+                                // 부모창 새로고침
+                                window.opener.location.reload();
+                                // 현재 창 닫기
+                                window.close();
+                            } else {
+                                // 현재 페이지의 URL을 변경하여 새 페이지로 리디렉션
+                                window.location.replace(window.location.origin);
+                            }
+                        }
+
+                        // 네이버 콜백 팝업 페이지에서 로그인 처리가 완료된 후 부모 페이지(즉, 팝업을 열었던 페이지)로 리디렉션하고, 팝업을 닫는 역할
+                        // var opener = null;
+                        // if (window.opener) {
+                        //     opener = window.opener;
+                        // } else {
+                        //     opener = window.open("", "opener");
+                        // }
+                        //
+                        // var redirect = window.location.origin + (location.port == "" || location.port == undefined ? "" : ":" + location.port) + "";
+                        // if (opener) {
+                        //     opener.location.replace(redirect + location.hash);
+                        //     opener.location.reload();
+                        //     window.close();
+                        // } else {
+                        //     window.location.replace(redirect);
+                        // }
+                    } else {
+                        console.log("callback 처리에 실패하였습니다.");
+                    }
+                });
+            });
+
+            function loginHandleError(message, statusCode, data) {
+                switch (statusCode) {
+                    case 403:
+                        alert(message + " 유저입니다.", "", "w");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        </script>
+    </body>
+</html>

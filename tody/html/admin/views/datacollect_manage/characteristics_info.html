@@ -1,0 +1,87 @@
+<div id="characteristics_info" style="margin-top: 1rem; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5rem; background: #fff;">
+    <!-- 데이터 소개 -->
+    <ul style="list-style: none; padding: 0; margin: 0 0 1rem 0; line-height: 2;">
+        <li>☞ <strong>PNU, 지목, 면적 등 속성 데이터</strong> (테이블명 : land_characteristics_xx, xx:시도코드)</li>
+        <li>☞ <strong>주소 :</strong>
+          <code>https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=4</code>
+          &nbsp;
+          <a href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=4"
+             target="_blank" rel="noopener noreferrer" style="color: red;">토지특성 정보 바로가기</a>
+        </li>
+        <li>☞ <strong>시도별 다운로드 (시.도 전체, 전체구분(전체데이터), 전체(CSV) 선택) </strong> 가능</li>
+        <li>☞ <strong>연속지적도형과 매칭하여 사용</strong></li>
+    </ul>
+    <hr style="border: none; border-top: 1px solid #dee2e6; margin: 1.2rem 0;">
+    <!-- 실행 순서 -->
+    <h4 style="margin: 0 0 0.8rem 0; color: #333;">&lt;실행 순서&gt;</h4>
+    <ol style="padding-left: 1.4rem; line-height: 2; margin: 0 0 1.2rem 0;">
+        <li><strong>DB 적재</strong> — CSV 파일을 DB 테이블에 적재합니다.</li>
+    </ol>
+
+    <hr style="border: none; border-top: 1px solid #dee2e6; margin: 1.2rem 0;">
+
+    <!-- 상세 방법 -->
+    <h4 style="margin: 0 0 0.8rem 0; color: #333;">&lt;방법&gt;</h4>
+    <ol style="padding-left: 1.4rem; line-height: 1.9; margin: 0;">
+  
+      <li style="margin-bottom: 0.6rem;">
+        다운받은 CSV 파일(AL_D195_xx_yyyymmdd)을 <strong>land_characteristics_tmp</strong> 테이블에 저장합니다.<br>
+        <pre style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:1rem; margin-top:0.6rem;
+                    font-size:0.85rem; overflow-x:auto; line-height:1.8;"><code>-- 이전 테이블 삭제
+        TRUNCATE TABLE land_characteristics_tmp;
+        
+        -- CSV 파일 적재
+        LOAD DATA LOCAL INFILE 'E:/source/Tody/AL_D002/AL_D195_41_20260308.csv'  -- 영문 경로로 변경
+        IGNORE
+        INTO TABLE land_characteristics_tmp
+        CHARACTER SET euckr
+        FIELDS TERMINATED BY ',' 
+        OPTIONALLY ENCLOSED BY '"'
+        LINES TERMINATED BY '\n'
+        IGNORE 1 ROWS
+        (
+                pnu,
+                ldCode,
+                ldCodeNm,
+                regstrSeCode,
+                regstrSeCodeNm,
+                mnnmSlno,
+                ladSn,
+                stdrYear,
+                stdrMt,
+                lndcgrCode,
+                lndcgrCodeNm,
+                lndpclAr,
+                prposArea1,
+                prposArea1Nm,
+                prposArea2,
+                prposArea2Nm,
+                ladUseSittn,
+                ladUseSittnNm,
+                tpgrphHgCode,
+                tpgrphHgCodeNm,
+                tpgrphFrmCode,
+                tpgrphFrmCodeNm,
+                roadSideCode,
+                roadSideCodeNm,
+                pblntfPclnd,
+                lastUpdtDt
+        );
+
+        -- 데이터 개수 확인
+        SELECT COUNT(*) FROM land_characteristics_tmp;</code></pre>
+      </li>
+  
+      <li>
+        <strong>land_characteristics_tmp</strong> 를 <strong>land_characteristics_xx</strong> 에 복사합니다.
+        <pre style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:6px; padding:1rem; margin-top:0.6rem;
+                    font-size:0.85rem; overflow-x:auto; line-height:1.8;"><code>
+        SET autocommit = 0;
+  
+        INSERT INTO land_characteristics_41
+        SELECT * FROM land_characteristics_tmp;
+        
+        COMMIT;</code></pre>
+      </li>
+    </ol>
+</div>
