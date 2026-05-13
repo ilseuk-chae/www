@@ -24,7 +24,7 @@
             property="og:description"
             content="원스톱 부동산 종합 플랫폼 서비스, 간단한 입력만으로 부동산 정보와 분석, 금융을 한 눈에 빠르고 편한 원스톱 토탈 서비스 지원"
         />
-        <title>토디-실거래가v2</title>
+        <title>토디-실거래가</title>
         <link rel="shortcut icon" href="/front/assets/image/favicon.ico" />
 
         <!-- Bootstrap Css -->
@@ -52,7 +52,7 @@
         <!-- modal Css -->
         <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
         <!-- menu Css -->
-        <link href="/front/assets/css/mystyle.css" rel="stylesheet" type="text/css" />
+        <link href="/front/assets/css/mystyle.css?v=20260519" rel="stylesheet" type="text/css" />
         <!-- jQuery UI 기본 테마 CSS -->
         <link href="/assets/css/jquery-ui.css" rel="stylesheet" />
         <!-- 다운로드한 파일 경로 -->
@@ -997,11 +997,9 @@
                                 </dd>
                             </dl>
                             <div>
-                                토지 <span id="top_land_area">면적</span> ·
-                                <span id="top_prposArea1Nm">용도지역</span> · <span id="top_land_pups">지목</span> ·
-                                <span id="top_official_land_price">공시지가</span><br />
-                                건물 <span id="top_build_area">면적</span> · <span id="top_putps">주용도</span> ·
-                                <span id="top_floor">층</span> · <span id="top_useAprDay">사용승인년도</span>
+                                토지 <span id="top_land_area">면적</span><span id="top_prposArea1Nm_wrap"> · <span id="top_prposArea1Nm">용도지역</span></span> · <span id="top_land_pups">지목</span><span id="top_official_land_price_wrap" style="display:none;"> · <span id="top_official_land_price"></span></span><br />
+                                <span id="top_building_summary" style="display:none;">건물 <span id="top_build_area">면적</span> · <span id="top_putps">주용도</span> ·
+                                <span id="top_floor">층</span> · <span id="top_useAprDay">사용승인년도</span></span>
                             </div>
                         </div>
 
@@ -2154,10 +2152,12 @@
         <script src="/front/js/realPrice/clusterRealPrice_v2.js?v=20260506"></script>
         <!-- map 위치를 저장 위해 추가 -->
         <script src="/front/assets/js/myMap.js"></script>
-        <script src="/front/js/realPrice/realmap_v2.js?v=20260506"></script>
+        <!-- 내위치 C안: watchPosition + 정확도 반경 원 (myMap.js 이후 로드하여 함수 교체) -->
+        <script src="/front/js/realPrice/myLocation.js"></script>
+        <script src="/front/js/realPrice/realmap_v2.js?v=20260521"></script>
         <script src="/front/js/realPrice/boundary.js"></script>
-        <script src="/front/js/realPrice/tab.js"></script>
-        <script src="/front/js/realPrice/realPrice_v2.js"></script>
+        <script src="/front/js/realPrice/tab.js?v=20260520"></script>
+        <script src="/front/js/realPrice/realPrice_v2.js?v=20260521"></script>
         <script src="/front/js/realPrice/finance.js"></script>
         <script src="/front/js/realPrice/landAnalysis.js?v=202511241800"></script>
         <script src="/front/js/realPrice/roadView.js"></script>

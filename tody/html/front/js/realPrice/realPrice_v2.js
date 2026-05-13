@@ -1151,10 +1151,17 @@ function initSearchEvents() {
     
             // 이동할 위도 경도 위치를 생성합니다
             var moveLatLon = new kakao.maps.LatLng(places.y, places.x);
-    
-            // 지도 중심을 이동 시킵니다
-            map.panTo(moveLatLon);
-    
+
+            // 지도 중심 이동 및 줌 레벨
+            map.setCenter(moveLatLon);
+            map.setLevel(4);
+
+            // 마커 생성 (클릭 시 마커만 제거)
+            _setSearchMarker(places.y, places.x);
+
+            // 폴리곤 생성
+            handleMapClick({ lat: places.y, lng: places.x });
+
             // 법정동 상세 주소 정보를 요청
             searchDetailAddrFromCoords(moveLatLon, displayAddressInfo);
             searchArroundPlaces({ lat: places.y, lng: places.x }); // 주변 시설 정보 가져오기
@@ -1605,13 +1612,8 @@ function displayPlaces(places) {
                 map.setCenter(moveLatLon);
                 map.setLevel(4);
 
-                // 이동된 중심에 마커를 생성하고 지도에 표시한다.
-                const marker = new kakao.maps.Marker({
-                    map: map,
-                    position: moveLatLon,
-                });
-                markers.forEach((marker) => marker.setMap(null)); // 기존 마커를 모두 제거한다.
-                markers.push(marker); // 새로운 마커를 마커 배열에 추가한다.
+                // 마커 생성 (클릭 시 마커만 제거, 폴리곤 유지)
+                _setSearchMarker(places.y, places.x);
 
                 searchDetailAddrFromCoords(moveLatLon, displayAddressInfo); // 법정동 상세 주소 정보를 요청
                 handleMapClick({ lat: places.y, lng: places.x }); // 폴리곤 생성

@@ -14,6 +14,28 @@ let clusterer; // 클러스터
 let contentsMarkers = []; // 컨텐츠 마커 배열 정의
 let marker = new kakao.maps.Marker(); // 클릭한 위치를 표시할 마커입니다
 let markers = []; // 클릭, 선택된 마커 배열 정의
+
+/**
+ * 검색 위치 마커 생성 헬퍼
+ * - 기존 markers 배열의 마커를 모두 제거 후 새 마커 생성
+ * - 마커 클릭 시 마커만 제거 (폴리곤은 유지)
+ */
+function _setSearchMarker(lat, lng) {
+    markers.forEach(function(m) { m.setMap(null); });
+    markers.length = 0;
+
+    var pos = new kakao.maps.LatLng(lat, lng);
+    var newMarker = new kakao.maps.Marker({ map: map, position: pos });
+
+    kakao.maps.event.addListener(newMarker, 'click', function() {
+        newMarker.setMap(null);
+        var idx = markers.indexOf(newMarker);
+        if (idx !== -1) markers.splice(idx, 1);
+    });
+
+    markers.push(newMarker);
+    return newMarker;
+}
 let realPriceMarkers = []; // 클릭, 선택된 마커 배열 정의
 let historyMarkers = []; // 최근 이력 마커 배열 정의
 let currentUnit = "m2"; // 현재 단위를 추적
@@ -1774,9 +1796,15 @@ async function nationalEnvMap(pnu) {
 async function handleMapClick(coords) {
     if (isLoading) return; // 이전 작업이 완료되지 않았으면 새로운 작업을 시작하지 않음
 
+    // 새 클릭마다 지적도 기본 정보 초기화 (이전 필지 값 잔류 방지)
+    window._basicCadastralInfo = null;
+    // 공시지가 초기화 (이전 필지 값 잔류 방지)
+    $("#top_official_land_price_wrap").hide();
+    $("#top_official_land_price").text('');
+
     try {
         isLoading = true; // 작업 시작 플래그 설정
-        
+
         // isMultiSelectMode 일 때는 clearAllPolygons를 호출하지 않고,
         // addPolygonsToMap을 직접 호출하지도 않습니다.
         // 이 모드에서는 landAnalysis 함수가 개별 폴리곤 렌더링을 담당합니다.
@@ -2127,7 +2155,8 @@ async function initializeMap() {
                 
                 // 불러온 좌표로 handleMapClick을 호출합니다.
                 // isLoading 플래그는 handleMapClick 내부에서 관리됩니다.
-                await handleMapClick(loadedCoords); 
+                await handleMapClick(loadedCoords);
+                _setSearchMarker(storedInfo.lat, storedInfo.lng); // 마커 생성
                 shouldCallHandleMapClick = false; // 기본 handleMapClick 호출 방지
             }
         } catch (e) {
@@ -2139,6 +2168,7 @@ async function initializeMap() {
     if (shouldCallHandleMapClick) {
         let initialCoords = { lat: lat, lng: lng }; // URL/쿠키에서 가져온 기본 좌표
         await handleMapClick(initialCoords);
+        _setSearchMarker(lat, lng); // 마커 생성
     }
     // --- sessionStorage 로드 및 폴리곤 재현 로직 끝 ---
 
@@ -2683,8 +2713,7 @@ async function getBuilindInfo(buildingInfos) {
     // buildingPolygon과 buildingPolygon2의 features 처리 함수
     function processPolygon(polygonData) {
         if (!polygonData) {
-            console.warn("Polygon data is undefined or null(map.js):", polygonData);
-            return;
+            return; // 건물 없는 필지(하천·도로 등)에서 정상적으로 발생 → 무시
         }
         const features = polygonData.features;
 
@@ -2935,8 +2964,57 @@ async function getLandInfo(result) {
         // const newBbox = [minLon, minLat, maxLon, maxLat];
 
         const pnu = features[0].properties.pnu;
+
+        // ── 지적도 API 속성에서 지목·면적 즉시 반영 ──────────────────────
+        // VWorld LP_PA_CBND_BUBUN 응답: pnnmtn(지목명), lfArea(필지면적 m²)
+        // land_characteristics.php 가 빈값인 하천·도로 등에도 기본 정보를 표시할 수 있음
+        // → 전역 _basicCadastralInfo 에 저장해 두면, _resetLandInfoUI() 가 덮어쓰지 않고 재사용
+        (function applyBasicCadastralInfo() {
+            try {
+                const props = features[0].properties;
+
+                // ── 지목 추출 ──────────────────────────────────────────────
+                // jibun 필드 끝 한글이 지목코드 (예: "821천" → "천" → "하천")
+                const jimokMatch = (props.jibun || '').match(/[가-힣]+$/);
+                const jimokCode  = jimokMatch ? jimokMatch[0] : '';
+                const jimokMap = {
+                    '전':'전', '답':'답', '과':'과수원', '목':'목장용지',
+                    '임':'임야', '광':'광천지', '염':'염전', '대':'대',
+                    '공':'공장용지', '학':'학교용지', '주':'주차장',
+                    '창':'창고용지', '도':'도로', '철':'철도용지',
+                    '천':'하천', '구':'구거', '유':'유지', '양':'양어장',
+                    '수':'수도용지', '종':'종교용지', '사':'사적지',
+                    '묘':'묘지', '잡':'잡종지'
+                };
+                const jimok = jimokCode ? (jimokMap[jimokCode] || jimokCode) : '';
+
+                // ── 면적 계산 (turf.js, 단위: m²) ──────────────────────────
+                // getLandInfo() 내 forEach 에서 이미 생성된 geojsonPolygon 활용
+                let areaM2 = 0;
+                if (geojsonPolygon) {
+                    areaM2 = Math.round(turf.area(geojsonPolygon) * 100) / 100;
+                }
+
+                // ── 전역 저장 → _resetLandInfoUI() fallback ────────────────
+                window._basicCadastralInfo = { jimok, areaM2 };
+
+
+                if (jimok)   { $("#top_land_pups").text(jimok); }
+                if (areaM2 > 0) {
+                    $("#top_land_area").text(
+                        (typeof formatArea === 'function')
+                            ? formatArea(areaM2)
+                            : areaM2.toFixed(2) + 'm²'
+                    );
+                }
+            } catch (e) {
+                console.warn('[applyBasicCadastralInfo] 지적도 속성 반영 실패:', e);
+            }
+        })();
+        // ─────────────────────────────────────────────────────────────────
+
         BuildingDetail(pnu); // 건축물대장조회
-        landDetail(pnu); // 토지특성속성조회
+        landDetail(pnu); // 토지특성속성조회 (결과 있으면 위 값을 덮어씀)
         getRequestHistory(pnu); // 금융 신청일 가져오기
 
         // 합필분석 모드가 아닐 때, 토지 폴리곤 초기화

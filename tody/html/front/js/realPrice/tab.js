@@ -324,11 +324,12 @@ async function BuildingDetail(pnu) {
         console.warn("BuildingDetail: API 응답 데이터가 없습니다.");
         buildingButton.hide();
         buildingContent.hide();
+        $("#top_building_summary").hide(); // 건물 요약 라인 숨김
         globalBrTitleInfo = []; // 데이터가 없으므로 빈 배열로 초기화
         createBuildingButtons(globalBrTitleInfo); // 빈 버튼 목록 생성 또는 비움
         return; // 함수 종료
     }
-    
+
     const brTitleInfo = responseData.brTitleInfo;
     const brRecapTitleInfo = responseData.brRecapTitleInfo; // 이 부분도 사용 가능성이 있어 보입니다.
 
@@ -341,10 +342,12 @@ async function BuildingDetail(pnu) {
         // brTitleInfo가 있을 때 버튼을 보여줌
         buildingButton.show();
         buildingContent.show();
+        $("#top_building_summary").show(); // 건물 요약 라인 표시
     } else {
         // brTitleInfo가 없을 때 버튼을 숨김
         buildingButton.hide();
         buildingContent.hide();
+        $("#top_building_summary").hide(); // 건물 요약 라인 숨김
     }
 
     // buildingButton.toggle(hasData); // 데이터가 있을 때 표시
@@ -397,6 +400,51 @@ async function BuildingDetail(pnu) {
  * @returns
  */
 
+/**
+ * 토지 정보 UI 초기화 (하천·도로 등 데이터 없는 필지 클릭 시 이전 데이터 잔류 방지)
+ * @param {boolean} keepPriceTable - true 이면 공시지가 테이블은 초기화하지 않음
+ */
+function _resetLandInfoUI(keepPriceTable) {
+    // 지적도에서 읽은 기본 정보(지목·면적)가 있으면 "-" 대신 해당 값을 유지
+    const basic = window._basicCadastralInfo || {};
+
+    const jimokText = basic.jimok || '-';
+    $("#top_land_pups").text(jimokText);
+
+    if (basic.areaM2 > 0) {
+        const areaText = (typeof formatArea === 'function')
+            ? formatArea(basic.areaM2)
+            : basic.areaM2.toFixed(2) + 'm²';
+        $("#top_land_area").text(areaText);
+    } else {
+        $("#top_land_area").text('-');
+    }
+
+    // 용도지역 없으면 wrapper 숨김
+    $("#top_prposArea1Nm").text('');
+    $("#top_prposArea1Nm_wrap").hide();
+    // 공시지가 없으면 wrapper 숨김
+    $("#top_official_land_price").text('');
+    $("#top_official_land_price_wrap").hide();
+
+    // 토지특성 안내 메시지 (지목명 있으면 함께 표시)
+    const infoMsg = basic.jimok
+        ? basic.jimok + ' 등 공공용지는 토지특성 정보를 제공하지 않습니다.'
+        : '토지특성 정보가 없습니다.<br><span style="font-size:11px;color:#bbb;">(하천·도로 등 공공용지)</span>';
+    $("#land_info tbody").html(
+        '<tr><td colspan="2" class="text-center" style="padding:14px;font-size:13px;color:#888;">' +
+        infoMsg +
+        '</td></tr>'
+    );
+    if (!keepPriceTable) {
+        $("#land_price_table tbody").html(
+            '<tr><td colspan="2" class="text-center" style="padding:14px;font-size:13px;color:#888;">' +
+            '공시지가 정보가 없습니다.' +
+            '</td></tr>'
+        );
+    }
+}
+
 async function landDetail(pnu) {
     if (isMultiSelectMode) {
         $("html").attr("data-preloader", "enable");
@@ -410,6 +458,7 @@ async function landDetail(pnu) {
 
     if (!responseData || responseData.length === 0) {
         console.warn("데이터가 없습니다.");
+        _resetLandInfoUI(); // 이전 데이터 잔류 방지
         return;
     }
 
@@ -422,7 +471,10 @@ async function landDetail(pnu) {
         // 공시지가만 있으면 공시지가 테이블만 표시
         globalLandPrices = responseData.indvdLandPrices;
         if (globalLandPrices && globalLandPrices.length > 0) {
+            _resetLandInfoUI(true); // 상단 필드만 초기화, 공시지가 테이블은 유지
             landPriceTable(pnu);
+        } else {
+            _resetLandInfoUI(); // 전체 초기화
         }
         return;
     }
@@ -437,6 +489,7 @@ async function landDetail(pnu) {
 
     if (globalLandCharacter.length === 0) {
         console.warn("유효한 landCharacter 데이터가 없습니다.");
+        _resetLandInfoUI(); // 이전 데이터 잔류 방지
         return;
     }
 
@@ -655,20 +708,69 @@ async function landCharacterTable(landDetails) {
         // } = landDetails;
 
         // return;
-        let land_rows = "";
-        land_rows += createTableRow("지목명", landDetails.lndcgrCodeNm || landDetails.lndcgr_code_nm || "-");
-        land_rows += createTableRow("토지면적", formatArea(landDetails.lndpclAr || landDetails.lndpcl_ar) || "-");
-        land_rows += createTableRow("토지이용상황", landDetails.ladUseSittnNm || landDetails.lad_use_sittn_nm || "-");
-        land_rows += createTableRow("용도지역명", landDetails.prposArea1Nm || landDetails.prpos_area_1_nm || "-");
-        land_rows += createTableRow("지형높이", landDetails.tpgrphHgCodeNm || landDetails.tpgrph_hg_code_nm || "-");
-        land_rows += createTableRow("지형형상", landDetails.tpgrphFrmCodeNm || landDetails.tpgrph_frm_code_nm || "-");
-        land_rows += createTableRow("도로접면", landDetails.roadSideCodeNm || landDetails.road_side_code_nm || "-");
 
-        $("#land_info tbody").html(land_rows);
+        // ── 핵심 필드가 모두 비어있으면 공공용지 안내 메시지 표시 ──────────
+        var _hasData =
+            (landDetails.lndcgrCodeNm  || landDetails.lndcgr_code_nm)  ||
+            (landDetails.lndpclAr      || landDetails.lndpcl_ar)       ||
+            (landDetails.ladUseSittnNm || landDetails.lad_use_sittn_nm)||
+            (landDetails.prposArea1Nm  || landDetails.prpos_area_1_nm) ||
+            (landDetails.tpgrphHgCodeNm|| landDetails.tpgrph_hg_code_nm);
 
-        $("#top_land_area").text(formatArea(landDetails.lndpclAr || landDetails.lndpcl_ar) || "-");
-        $("#top_prposArea1Nm").text(landDetails.prposArea1Nm || landDetails.prpos_area_1_nm || "-");
-        $("#top_land_pups").text(landDetails.lndcgrCodeNm || landDetails.lndcgr_code_nm || "-");
+        if (!_hasData) {
+            // 데이터가 전혀 없는 공공용지(하천·도로 등) → 지목명·면적은 지적도 값으로, 나머지는 안내 메시지
+            var _bci2 = window._basicCadastralInfo || {};
+            var _jimokRow  = _bci2.jimok  || '-';
+            var _areaRow   = _bci2.areaM2 > 0
+                ? ((typeof formatArea === 'function') ? formatArea(_bci2.areaM2) : _bci2.areaM2.toFixed(2) + 'm²')
+                : '-';
+            var _infoMsg = _bci2.jimok
+                ? _bci2.jimok + ' 등 공공용지는 토지이용상황·용도지역 등 상세 정보를 제공하지 않습니다.'
+                : '토지특성 상세 정보가 없습니다.<br><span style="font-size:11px;color:#bbb;">(하천·도로 등 공공용지)</span>';
+            $("#land_info tbody").html(
+                createTableRow('지목명', _jimokRow) +
+                createTableRow('토지면적', _areaRow) +
+                '<tr><td colspan="2" class="text-center" style="padding:12px;font-size:13px;color:#888;">' +
+                _infoMsg + '</td></tr>'
+            );
+        } else {
+            let land_rows = "";
+            land_rows += createTableRow("지목명", landDetails.lndcgrCodeNm || landDetails.lndcgr_code_nm || "-");
+            land_rows += createTableRow("토지면적", formatArea(landDetails.lndpclAr || landDetails.lndpcl_ar) || "-");
+            land_rows += createTableRow("토지이용상황", landDetails.ladUseSittnNm || landDetails.lad_use_sittn_nm || "-");
+            land_rows += createTableRow("용도지역명", landDetails.prposArea1Nm || landDetails.prpos_area_1_nm || "-");
+            land_rows += createTableRow("지형높이", landDetails.tpgrphHgCodeNm || landDetails.tpgrph_hg_code_nm || "-");
+            land_rows += createTableRow("지형형상", landDetails.tpgrphFrmCodeNm || landDetails.tpgrph_frm_code_nm || "-");
+            land_rows += createTableRow("도로접면", landDetails.roadSideCodeNm || landDetails.road_side_code_nm || "-");
+            $("#land_info tbody").html(land_rows);
+        }
+
+        // 지목: API 빈값이면 지적도 파싱값(window._basicCadastralInfo) 사용
+        var _bci = window._basicCadastralInfo || {};
+        var _jimokFinal = landDetails.lndcgrCodeNm || landDetails.lndcgr_code_nm || _bci.jimok || "-";
+        $("#top_land_pups").text(_jimokFinal);
+
+        // 용도지역: 값 있을 때만 wrapper 표시
+        var _prpos = landDetails.prposArea1Nm || landDetails.prpos_area_1_nm || '';
+        if (_prpos && _prpos !== '-') {
+            $("#top_prposArea1Nm").text(_prpos);
+            $("#top_prposArea1Nm_wrap").show();
+        } else {
+            $("#top_prposArea1Nm").text('');
+            $("#top_prposArea1Nm_wrap").hide();
+        }
+
+        // 면적: API 빈값이면 turf.js 계산값 사용
+        var _areaRaw = landDetails.lndpclAr || landDetails.lndpcl_ar;
+        if (_areaRaw) {
+            $("#top_land_area").text(formatArea(_areaRaw) || "-");
+        } else if (_bci.areaM2 > 0) {
+            $("#top_land_area").text(
+                (typeof formatArea === "function") ? formatArea(_bci.areaM2) : _bci.areaM2.toFixed(2) + "m²"
+            );
+        } else {
+            $("#top_land_area").text("-");
+        }
     }
 }
 
@@ -721,10 +823,19 @@ function landPriceTable(pnu) {
                         $("#top_official_land_price").text("공시지가 " + officialPrice);
                     } else {
                         // 토지면적 없을 때 공시지가(단가)만 표시
-                        console.warn("lndpclAr 없음 - globalLandCharacter:", globalLandCharacter);
                         officialPrice = formatAreaPrice(parseInt(item.pblntfPclnd));
-                        $("#top_official_land_price").text("공시지가 " + officialPrice + "/㎡");
+                        // _basicCadastralInfo 면적으로 총 공시지가 계산 시도
+                        var _bciAr = window._basicCadastralInfo && window._basicCadastralInfo.areaM2;
+                        if (_bciAr > 0) {
+                            var _total = Math.floor(parseInt(item.pblntfPclnd) * _bciAr / 10000);
+                            officialPrice = formatPrice(_total, "only-uk");
+                            $("#top_official_land_price").text("공시지가 " + officialPrice);
+                        } else {
+                            $("#top_official_land_price").text("공시지가 " + officialPrice + "/㎡");
+                        }
                     }
+                    // 공시지가 wrapper 표시
+                    $("#top_official_land_price_wrap").show();
                 }
 
                 // 개별공시지가
@@ -739,7 +850,16 @@ function landPriceTable(pnu) {
             })
             .join("");
 
-        $("#land_price_table tbody").html(landPriceList);
+        if (landPriceList) {
+            $("#land_price_table tbody").html(landPriceList);
+        } else {
+            // 공시지가 데이터 없음 → wrapper 숨김
+            $("#top_official_land_price").text('');
+            $("#top_official_land_price_wrap").hide();
+            $("#land_price_table tbody").html(
+                '<tr><td colspan="3" class="text-center" style="padding:14px;font-size:13px;color:#888;">공시지가 정보가 없습니다.</td></tr>'
+            );
+        }
     }
 }
 

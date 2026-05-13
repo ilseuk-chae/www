@@ -2701,6 +2701,13 @@ body[data-screen-type="realprice_v2"] .map-content .layer-tab-content {
 body[data-screen-type="realprice_v2"] .map-content .layer-tab-content > * {
     flex-shrink: 0;
 }
+/* mc-tab-content: calc 고정 높이 대신 flex-grow:1로 남은 공간 자동 채움
+ * → 건물 요약 줄(top_building_summary) show/hide 시에도 빈 공간 없이 정확히 채워짐 */
+body[data-screen-type="realprice_v2"] .map-content .mc-tab-content {
+    height: auto;      /* content.css의 calc(100% - 264px) 덮어씀 */
+    flex-grow: 1;      /* 남은 공간 모두 차지 */
+    min-height: 0;     /* flex child 내부 스크롤 허용 */
+}
 
 /* ─── mc-open-close: wrapper 외부 형제 위치 제어 (realprice_v2 전용) ────────────
  * mc-open-close가 .map-content-wrapper의 다음 형제(+)로 이동.
