@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110129",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110129", "EMD_ENG_NM": "Bogwang-dong 1(il)-ga", "EMD_KOR_NM": "보광동1가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.38949430304362, 34.78669442855368 ], [ 126.388558344240749, 34.786157213860555 ], [ 126.387937048244851, 34.786650976598736 ], [ 126.387892103030268, 34.786612161505161 ], [ 126.387670693289451, 34.78679498339924 ], [ 126.388430828187097, 34.78747190066295 ], [ 126.38949430304362, 34.78669442855368 ] ] ] ] } }
-]
-}

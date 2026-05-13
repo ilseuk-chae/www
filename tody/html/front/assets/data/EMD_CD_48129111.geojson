@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_48129111",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "48129111", "EMD_ENG_NM": "Sungin-dong", "EMD_KOR_NM": "숭인동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.661557162038832, 35.145027739760685 ], [ 128.660666676505741, 35.144519616665761 ], [ 128.657926555091819, 35.144780447282272 ], [ 128.658008758757859, 35.145368082155962 ], [ 128.661557162038832, 35.145027739760685 ] ] ] ] } }
-]
-}

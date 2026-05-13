@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110126",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110126", "EMD_ENG_NM": "Chukbok-dong 1(il)-ga", "EMD_KOR_NM": "축복동1가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.389168532405279, 34.788137144517798 ], [ 126.390350141108854, 34.78722017382767 ], [ 126.390177136150456, 34.787081680756138 ], [ 126.38949430304362, 34.78669442855368 ], [ 126.388430828187097, 34.78747190066295 ], [ 126.389168532405279, 34.788137144517798 ] ] ] ] } }
-]
-}

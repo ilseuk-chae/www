@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_26110123",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "26110123", "EMD_ENG_NM": "Bupyeong-dong 1(il)-ga", "EMD_KOR_NM": "부평동1가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 129.026294952983875, 35.098393192927844 ], [ 129.026597217445982, 35.103007068339814 ], [ 129.027871300941172, 35.102952264781692 ], [ 129.027750698264043, 35.09927088662171 ], [ 129.027796625553464, 35.098745038809575 ], [ 129.026294952983875, 35.098393192927844 ] ] ] ] } }
-]
-}

@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110117",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110117", "EMD_ENG_NM": "Bongman-dong", "EMD_KOR_NM": "복만동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.386600055903457, 34.788255468721175 ], [ 126.385299592565772, 34.787075678535864 ], [ 126.384312857212691, 34.787372502292428 ], [ 126.384525854100261, 34.787884977259381 ], [ 126.385876656417096, 34.788808728530249 ], [ 126.386600055903457, 34.788255468721175 ] ] ] ] } }
-]
-}

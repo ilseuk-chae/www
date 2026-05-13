@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_26140115",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "26140115", "EMD_ENG_NM": "Ami-dong 1(il)-ga", "EMD_KOR_NM": "아미동1가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 129.018413720449615, 35.098767784382893 ], [ 129.018622832629603, 35.102039652131012 ], [ 129.019818113209567, 35.101985395014573 ], [ 129.019609174766913, 35.098722542920683 ], [ 129.018413720449615, 35.098767784382893 ] ] ] ] } }
-]
-}

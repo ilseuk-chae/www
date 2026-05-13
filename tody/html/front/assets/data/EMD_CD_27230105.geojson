@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_27230105",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "27230105", "EMD_ENG_NM": "Goseong-dong 3(sam)-ga", "EMD_KOR_NM": "고성동3가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.590155457238268, 35.883417386535321 ], [ 128.589028515607396, 35.879764388227386 ], [ 128.580741347497053, 35.881477104907788 ], [ 128.58191380985312, 35.885122551078751 ], [ 128.590155457238268, 35.883417386535321 ] ] ] ] } }
-]
-}

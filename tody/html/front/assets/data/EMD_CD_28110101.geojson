@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_28110101",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "28110101", "EMD_ENG_NM": "Jungang-dong 1(il)-ga", "EMD_KOR_NM": "중앙동1가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.619603477737172, 37.473544015507606 ], [ 126.620018863038055, 37.474042032123826 ], [ 126.62131080010542, 37.473380863419813 ], [ 126.62087746333269, 37.472866179059032 ], [ 126.619603477737172, 37.473544015507606 ] ] ] ] } }
-]
-}

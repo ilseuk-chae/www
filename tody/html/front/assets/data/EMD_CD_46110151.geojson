@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110151",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110151", "EMD_ENG_NM": "Geum-dong 2(il)-ga", "EMD_KOR_NM": "금동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.382322237289884, 34.784595122872773 ], [ 126.38236962311683, 34.783964533850749 ], [ 126.380696709597757, 34.783890943871185 ], [ 126.380645152307437, 34.784506439639905 ], [ 126.382322237289884, 34.784595122872773 ] ] ] ] } }
-]
-}

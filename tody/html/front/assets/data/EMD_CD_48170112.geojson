@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_48170112",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "48170112", "EMD_ENG_NM": "Gye-dong", "EMD_KOR_NM": "계동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.079400264028067, 35.197784135836272 ], [ 128.081252764351518, 35.198300427494267 ], [ 128.082189342015567, 35.195553056322041 ], [ 128.080385833252791, 35.19504081114615 ], [ 128.079400264028067, 35.197784135836272 ] ] ] ] } }
-]
-}

@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_48129131",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "48129131", "EMD_ENG_NM": "Hwacheon-dong", "EMD_KOR_NM": "화천동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.666155902917069, 35.151596115682359 ], [ 128.666071000725395, 35.151013878378592 ], [ 128.666002834850559, 35.151017493404261 ], [ 128.657180862704138, 35.151875282030183 ], [ 128.656539686825568, 35.152538700545051 ], [ 128.666155902917069, 35.151596115682359 ] ] ] ] } }
-]
-}

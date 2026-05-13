@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110123",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110123", "EMD_ENG_NM": "Yeonghae-dong 2(i)-ga", "EMD_KOR_NM": "영해동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.38547662982667, 34.787235021041923 ], [ 126.386199350891346, 34.786696569842611 ], [ 126.385546420767355, 34.786091868792376 ], [ 126.384824472733897, 34.786642579014298 ], [ 126.38547662982667, 34.787235021041923 ] ] ] ] } }
-]
-}

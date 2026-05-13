@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110111",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110111", "EMD_ENG_NM": "Myeongnyun-dong", "EMD_KOR_NM": "명륜동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.386075831946599, 34.793828617111217 ], [ 126.386809378208568, 34.793683747019777 ], [ 126.385647721975189, 34.790186320577234 ], [ 126.384490023662636, 34.790060113991949 ], [ 126.384242761138751, 34.790779126033861 ], [ 126.384985633039321, 34.790611202349268 ], [ 126.386075831946599, 34.793828617111217 ] ] ] ] } }
-]
-}

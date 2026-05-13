@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(grep -E \"\\\\.php$\")",
-      "Bash(xargs grep:*)"
-    ]
-  }
-}

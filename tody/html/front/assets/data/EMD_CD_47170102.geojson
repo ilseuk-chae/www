@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_47170102",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "47170102", "EMD_ENG_NM": "Seobu-dong", "EMD_KOR_NM": "서부동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.730459059932826, 36.566394238767309 ], [ 128.729937484876757, 36.565012253964305 ], [ 128.727040337703755, 36.565732254392913 ], [ 128.728070860325261, 36.56639647284954 ], [ 128.728916917842753, 36.56670745574668 ], [ 128.730459059932826, 36.566394238767309 ] ] ] ] } }
-]
-}

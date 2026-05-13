@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_46110120",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "46110120", "EMD_ENG_NM": "Gwang-dong 2(i)-ga", "EMD_KOR_NM": "광동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.388823975656095, 34.789021740300953 ], [ 126.389724906457246, 34.788345440824735 ], [ 126.389382595858677, 34.787977106241129 ], [ 126.388456607286031, 34.788695525274058 ], [ 126.388823975656095, 34.789021740300953 ] ] ] ] } }
-]
-}

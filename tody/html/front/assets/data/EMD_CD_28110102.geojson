@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_28110102",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "28110102", "EMD_ENG_NM": "Jungang-dong 2(i)-ga", "EMD_KOR_NM": "중앙동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 126.62131080010542, 37.473380863419813 ], [ 126.62259863678112, 37.472754860285036 ], [ 126.622110106838576, 37.472188484333643 ], [ 126.62087746333269, 37.472866179059032 ], [ 126.62131080010542, 37.473380863419813 ] ] ] ] } }
-]
-}

@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_26200105",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "26200105", "EMD_ENG_NM": "Namhang-dong 1(il)-ga", "EMD_KOR_NM": "남항동1가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 129.041895831339986, 35.090285306697027 ], [ 129.041006604801595, 35.088582199427407 ], [ 129.036431546055297, 35.090244939862991 ], [ 129.037247040068991, 35.091712710496388 ], [ 129.037657804055215, 35.091568676528098 ], [ 129.037775384692708, 35.091786339088699 ], [ 129.041895831339986, 35.090285306697027 ] ] ] ] } }
-]
-}

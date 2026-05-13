@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_26140113",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "26140113", "EMD_ENG_NM": "Toseong-dong 2(i)-ga", "EMD_KOR_NM": "토성동2가" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 129.020793660317281, 35.098677327478356 ], [ 129.021002538307215, 35.101949182183013 ], [ 129.021521722181149, 35.101936730590353 ], [ 129.02168206068518, 35.101755088141189 ], [ 129.022223603671819, 35.101385031743163 ], [ 129.022043716607101, 35.098622976547937 ], [ 129.020793660317281, 35.098677327478356 ] ] ] ] } }
-]
-}

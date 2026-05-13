@@ -1,9 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "EMD_CD_48129125",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"xy_coordinate_resolution": 1e-15,
-"features": [
-{ "type": "Feature", "properties": { "EMD_CD": "48129125", "EMD_ENG_NM": "Tongsin-dong", "EMD_KOR_NM": "통신동" }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 128.661173187372839, 35.15024758707893 ], [ 128.660864761252014, 35.148078159827143 ], [ 128.659625890961735, 35.149362477214787 ], [ 128.661173187372839, 35.15024758707893 ] ] ] ] } }
-]
-}
