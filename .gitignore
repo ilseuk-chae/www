@@ -16,3 +16,9 @@ tody/html/.env
 # OS 파일
 .DS_Store
 Thumbs.db
+
+##################################
+# Claude / AI 툴 (지금 상황 핵심)
+##################################
+.claude/
+CLAUDE.md
