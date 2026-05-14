@@ -61,6 +61,15 @@ function userInfo() {
 }
 
 function logout() {
+    const sessionToken = getCookie("user_session_token");
+
+    // DB 세션 삭제 (비동기이지만 navigator.sendBeacon으로 페이지 이동 후에도 전송 보장)
+    if (sessionToken) {
+        const data = new FormData();
+        data.append("session_token", sessionToken);
+        navigator.sendBeacon("/front/back/00-include/logout.php", data);
+    }
+
     try {
         deleteCookie("user_name");
         deleteCookie("user_no");
@@ -69,13 +78,9 @@ function logout() {
         deleteCookie("naver_token");
         deleteCookie("user_id");
         deleteCookie("user_session_token");
-        
-        console.log('client.js: User logged out.');
-        currentUserId = null; // userId 초기화
-        
-        // 로그아웃 후에도 비회원(guest)으로 추적은 계속
-        // 주기 업데이트가 자동으로 userId: null로 업데이트할 것
-        startVisitTracking(); // (필요시 호출, currentUserId 변경사항 반영)
+
+        if (typeof currentUserId !== 'undefined') currentUserId = null;
+        if (typeof startVisitTracking === 'function') startVisitTracking();
 
     } catch (error) {
     } finally {

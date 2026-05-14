@@ -55,7 +55,7 @@ async function login(force) {
     const { statusCode, message, responseData } = result;
 
     // 중복 접속 감지 — 사용자 확인 후 강제 진행
-    if (statusCode === 409 && message === 'DUPLICATE_SESSION') {
+    if (message === 'DUPLICATE_SESSION' && responseData && responseData.isDuplicate) {
         const deviceLabel = responseData.deviceType === 'MOBILE' ? '모바일' : 'PC';
         const confirmed = await Swal.fire({
             title:              '이미 접속 중입니다',

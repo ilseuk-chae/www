@@ -66,7 +66,8 @@ try {
     ##################### 4. 중복 접속 감지 (force=false) #####################
     if ($existingSession && $force !== 'true') {
         mysqli_rollback($conn);
-        responseApi(409, 'DUPLICATE_SESSION', [
+        responseApi(200, 'DUPLICATE_SESSION', [
+            'isDuplicate'          => true,
             'existingSessionToken' => $existingSession['session_token'],
             'deviceType'           => $deviceType,
         ]);
@@ -92,13 +93,7 @@ try {
     $ipAddress       = $_SERVER['REMOTE_ADDR'] ?? '';
 
     $sql4 = "INSERT INTO user_sessions (user_no, user_type, device_type, session_token, ip_address)
-             VALUES (?, 'ADMIN', ?, ?, ?)
-             ON DUPLICATE KEY UPDATE
-                 session_token    = VALUES(session_token),
-                 ip_address       = VALUES(ip_address),
-                 is_forced_logout = 0,
-                 created_at       = NOW(),
-                 last_activity    = NOW()";
+             VALUES (?, 'ADMIN', ?, ?, ?)";
     $stmt4 = mysqli_prepare($conn, $sql4);
     if (!$stmt4) throw new Exception('QUERY_PREPARATION_FAILED', 500);
     mysqli_stmt_bind_param($stmt4, "ssss", $userNo, $deviceType, $newSessionToken, $ipAddress);

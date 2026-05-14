@@ -49,6 +49,15 @@ function startAdminSessionPolling(sessionToken) {
 }
 
 function adminLogout() {
+    const sessionToken = getCookie("sa_session_token");
+
+    // DB 세션 삭제
+    if (sessionToken) {
+        const data = new FormData();
+        data.append("session_token", sessionToken);
+        navigator.sendBeacon("/admin/back/00-include/logout.php", data);
+    }
+
     deleteCookie("sa_no");
     deleteCookie("sa_token");
     deleteCookie("sa_cont_no");
@@ -527,6 +536,14 @@ function forceStyleUpdate($element) {
     }
 }
 function logout() {
+    const sessionToken = getCookie("sa_session_token");
+
+    if (sessionToken) {
+        const data = new FormData();
+        data.append("session_token", sessionToken);
+        navigator.sendBeacon("/admin/back/00-include/logout.php", data);
+    }
+
     try {
         deleteCookie("sa_cont_no");
         deleteCookie("sa_cont_token");
@@ -534,6 +551,7 @@ function logout() {
         deleteCookie("sa_no");
         deleteCookie("sa_per_no");
         deleteCookie("sa_token");
+        deleteCookie("sa_session_token");
     } catch (error) {
     } finally {
         location.href = "/admin/index.html";
