@@ -71,6 +71,18 @@ try {
         ? 'MOBILE' : 'PC';
     $actualUserNo = $user_data['user_no'];
 
+    ##################### 2-1. 만료 세션 자동 정리 #####################
+    // 강제 로그아웃 후 피해 브라우저가 감지 못한 잔여 행, 2시간 이상 비활성 세션 정리
+    $sql_clean = "DELETE FROM user_sessions
+                  WHERE user_no = ? AND user_type = 'FRONT'
+                    AND (is_forced_logout = 1 OR last_activity < DATE_SUB(NOW(), INTERVAL 2 HOUR))";
+    $stmt_clean = mysqli_prepare($conn, $sql_clean);
+    if ($stmt_clean) {
+        mysqli_stmt_bind_param($stmt_clean, "s", $actualUserNo);
+        mysqli_stmt_execute($stmt_clean);
+        mysqli_stmt_close($stmt_clean);
+    }
+
     ##################### 3. 기존 세션 확인 #####################
     $sql_sess = "SELECT session_id, session_token
                  FROM user_sessions
