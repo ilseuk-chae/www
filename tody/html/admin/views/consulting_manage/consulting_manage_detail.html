@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="kr" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+    <head>
+        <meta charset="utf-8" />
+        <title>Tody 관리자 페이지 | 부동산 개발 컨설팅 신청 상세</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+        <link href="/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <script src="/assets/js/layout.js"></script>
+        <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/fonts.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/libs/node-waves/waves.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/common.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/modal.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body>
+        <div id="layout-wrapper">
+            <header id="page-topbar"></header>
+            <div class="app-menu navbar-menu"></div>
+            <div class="vertical-overlay"></div>
+
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                    <h4 class="mb-sm-0">부동산 개발 컨설팅 신청 상세</h4>
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">컨설팅 관리</a></li>
+                                            <li class="breadcrumb-item"><a href="/admin/views/consulting_manage/consulting_manage.html">신청 목록</a></li>
+                                            <li class="breadcrumb-item active">상세</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- 좌측: 신청 내용 -->
+                            <div class="col-xl-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title mb-0">신청 내용</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <th style="width: 140px;">접수번호</th>
+                                                    <td id="d_no">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>개발 목적</th>
+                                                    <td id="d_purpose">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>소재지</th>
+                                                    <td id="d_location">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>면적</th>
+                                                    <td id="d_area">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>성명</th>
+                                                    <td id="d_name">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>연락처</th>
+                                                    <td id="d_phone">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>기타 문의사항</th>
+                                                    <td id="d_message" style="white-space: pre-wrap;">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>접수일시</th>
+                                                    <td id="d_reg_date">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>메일 발신</th>
+                                                    <td id="d_email_sent_at">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>최종 수정일시</th>
+                                                    <td id="d_updated_at">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>IP</th>
+                                                    <td id="d_ip">-</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 우측: 관리 기능 -->
+                            <div class="col-xl-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title mb-0">진행 상태</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <label class="form-label">상태 변경</label>
+                                        <select id="statusSelect" class="form-select mb-3">
+                                            <option value="received">수신</option>
+                                            <option value="read">열람완료</option>
+                                            <option value="in_progress">진행중</option>
+                                            <option value="done">완료</option>
+                                            <option value="rejected">거부</option>
+                                        </select>
+                                        <button type="button" id="btnStatusSave" class="btn btn-primary w-100">
+                                            <i class="ri-save-line align-bottom me-1"></i>상태 저장
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title mb-0">관리자 메모</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <textarea id="adminMemo" class="form-control mb-3" rows="6" placeholder="내부 메모를 입력하세요."></textarea>
+                                        <button type="button" id="btnMemoSave" class="btn btn-success w-100">
+                                            <i class="ri-save-line align-bottom me-1"></i>메모 저장
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <a href="/admin/views/consulting_manage/consulting_manage.html" class="btn btn-light w-100">
+                                            <i class="ri-arrow-left-line align-bottom me-1"></i>목록으로
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="footer"></footer>
+            </div>
+        </div>
+
+        <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+            <i class="ri-arrow-up-line"></i>
+        </button>
+
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner-border text-danger avatar-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/libs/jquery/js/jquery-3.7.1.min.js"></script>
+        <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="/assets/libs/node-waves/waves.min.js"></script>
+        <script src="/assets/libs/feather-icons/feather.min.js"></script>
+        <script src="/assets/js/plugins/lord-icon-2.1.0.js"></script>
+        <script src="/assets/js/plugins.js"></script>
+        <script src="/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+        <script src="/admin/js/00-include/validation.js"></script>
+        <script src="/admin/js/00-include/layout.js"></script>
+        <script src="/admin/js/00-include/sha256.js"></script>
+        <script src="/admin/js/00-include/functions.js"></script>
+        <script src="/admin/js/00-include/common.js"></script>
+        <script src="/admin/js/00-include/layer_popup.js"></script>
+        <script src="/admin/js/17-consulting/consulting_manage_detail.js"></script>
+    </body>
+</html>

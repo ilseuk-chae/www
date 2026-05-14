@@ -35,13 +35,26 @@ window.addEventListener('scroll', () => {
 
 /* ===== MOBILE HAMBURGER ===== */
 const hamburger = document.getElementById('hamburger');
-const nav = document.getElementById('nav');
-hamburger.addEventListener('click', () => {
-  nav.classList.toggle('open');
-});
-nav.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => nav.classList.remove('open'));
-});
+const mobileNavEl = document.getElementById('mobile-nav');
+const navOverlayEl = document.getElementById('nav-overlay');
+function closeMobileNav() {
+  if (mobileNavEl) mobileNavEl.classList.remove('open');
+  if (hamburger) hamburger.classList.remove('active');
+  if (navOverlayEl) navOverlayEl.classList.remove('active');
+}
+if (hamburger && mobileNavEl) {
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileNavEl.classList.toggle('open');
+    hamburger.classList.toggle('active', isOpen);
+    if (navOverlayEl) navOverlayEl.classList.toggle('active', isOpen);
+  });
+  mobileNavEl.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeMobileNav);
+  });
+  if (navOverlayEl) navOverlayEl.addEventListener('click', closeMobileNav);
+  const closeBtn = document.getElementById('mobile-nav-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeMobileNav);
+}
 
 /* ===== FAQ ACCORDION ===== */
 document.querySelectorAll('.faq-q').forEach(btn => {

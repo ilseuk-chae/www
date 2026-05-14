@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>알파와오메가 | 건설·건축 원자재 구매대행 서비스</title>
-  <link rel="stylesheet" href="css/purchasstyle.css" />
+  <link rel="stylesheet" href="css/purchasstyle.css?v=6" />
   <link rel="stylesheet" href="/front/assets/css/iziModal.css" />
   <link rel="stylesheet" href="/front/assets/css/fontawesome.css" />
 </head>
@@ -44,6 +44,19 @@
       </button>
     </div>
   </header>
+  <!-- 모바일 슬라이드 메뉴 (header 바깥 - stacking context 독립) -->
+  <div id="mobile-nav" class="mobile-nav">
+    <button class="mobile-nav-close" id="mobile-nav-close" aria-label="메뉴 닫기">&#x2715;</button>
+    <ul>
+      <li><a href="#about">서비스 소개</a></li>
+      <li><a href="#target">서비스 대상</a></li>
+      <li><a href="#process">이용 절차</a></li>
+      <li><a href="#benefits">기대 효과</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact" class="btn-nav">서비스 신청</a></li>
+    </ul>
+  </div>
+  <div id="nav-overlay" class="nav-overlay"></div>
 
   <!-- ===== HERO ===== -->
   <section class="hero">
@@ -595,6 +608,7 @@
       $("#terms .nav-tabs").html(navHtml);
       $("#terms .tab-content").html(contentsHtml);
     }
+
   </script>
 </body>
 </html>
