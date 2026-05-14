@@ -1,8 +1,40 @@
 $(function () {
-    // // waves.js 초기화
-    // Waves.init();
-    // Waves.attach(".waves-effect");
+    // 로그인 상태이면 중복 접속 감시 시작
+    const sessionToken = getCookie("user_session_token");
+    if (sessionToken) {
+        startFrontSessionPolling(sessionToken);
+    }
 });
+
+// ──────────────────────────────────────────────────────────────────
+// 중복 접속 감시: 30초마다 세션 상태 확인
+// ──────────────────────────────────────────────────────────────────
+let _frontSessionPollTimer = null;
+
+function startFrontSessionPolling(sessionToken) {
+    if (_frontSessionPollTimer) return;
+
+    _frontSessionPollTimer = setInterval(async function () {
+        try {
+            const result = await callApi("POST", "/front/back/00-include/session_check.php", {
+                session_token: sessionToken,
+            });
+            if (result && result.message === 'FORCED_LOGOUT') {
+                clearInterval(_frontSessionPollTimer);
+                await Swal.fire({
+                    title:             '접속이 종료되었습니다',
+                    html:              '다른 곳에서 로그인하여 현재 세션이 종료됩니다.',
+                    icon:              'warning',
+                    confirmButtonText: '확인',
+                    allowOutsideClick: false,
+                });
+                logout();
+            }
+        } catch (e) {
+            // 네트워크 오류는 무시
+        }
+    }, 30000); // 30초
+}
 
 /**
  * 쿠키에서 사용자 정보 가져오는 함수
@@ -36,6 +68,7 @@ function logout() {
         deleteCookie("user_token");
         deleteCookie("naver_token");
         deleteCookie("user_id");
+        deleteCookie("user_session_token");
         
         console.log('client.js: User logged out.');
         currentUserId = null; // userId 초기화
