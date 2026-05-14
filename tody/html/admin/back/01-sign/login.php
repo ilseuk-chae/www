@@ -8,8 +8,9 @@ include_once '../00-include/common.php';
 include_once '../00-include/dbconnect.php';
 
 // POST 데이터 가져오기
-$id = isset($_POST['id']) ? urldecode($_POST['id']) : null;
-$password = isset($_POST['password']) ? $_POST['password'] : null;
+$id       = isset($_POST['id'])       ? urldecode($_POST['id']) : null;
+$password = isset($_POST['password']) ? $_POST['password']      : null;
+$force    = isset($_POST['force'])    ? $_POST['force']         : 'false';
 
 // 입력 데이터 유효성 검사
 if (!$id || !$password) {
@@ -17,94 +18,105 @@ if (!$id || !$password) {
     exit;
 }
 
-mysqli_autocommit($conn, FALSE);  // 자동 커밋 비활성화
-mysqli_begin_transaction($conn);  // 트랜잭션 시작
+// User-Agent로 기기 타입 판별 (PC / MOBILE)
+function getDeviceType() {
+    $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    return preg_match('/(Mobile|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone)/i', $ua)
+        ? 'MOBILE' : 'PC';
+}
+
+mysqli_autocommit($conn, FALSE);
+mysqli_begin_transaction($conn);
 
 try {
-    ##################### 1. 로그인 #####################
-    // SQL 쿼리
+    ##################### 1. 사용자 인증 #####################
     $sql = "SELECT user_no, name, status, per_no
             FROM user_admin
             WHERE id = ? AND password = EBGA_CREATE_PW_SHA(?)";
 
-    // SQL 문장을 준비합니다.
     $stmt = mysqli_prepare($conn, $sql);
-    
-    // SQL 준비 실패 시,
-     if (!$stmt) {
-        throw new Exception('QUERY_PREPARATION_FAILED', 500);
-    }
-
-    // 변수 바인딩
+    if (!$stmt) throw new Exception('QUERY_PREPARATION_FAILED', 500);
     mysqli_stmt_bind_param($stmt, "ss", $id, $password);
+    if (!mysqli_stmt_execute($stmt)) throw new Exception('SQL_FAILED', 500);
 
-
-    # 쿼리문 디버깅 ##################################################################
-    // 실제로 실행된 쿼리문을 생성하기 위해 쿼리와 변수를 조합합니다.
-    $executed_query = $sql;
-    // 변수들을 배열에 저장합니다.
-    $params = array($id, $password);
-    // 각 바인딩된 변수에 대해 ?를 실제 값으로 대체합니다.
-    foreach ($params as $param) {
-        // ?를 해당 변수의 값으로 대체합니다.
-        $executed_query = preg_replace('/\?/', "'$param'", $executed_query, 1);
-    }
-    // 실행된 쿼리문 출력 (디버깅 용도)
-    // exit($executed_query);
-    # ################################################################################
-
-
-    // SQL 문장을 실행합니다.
-    if (!mysqli_stmt_execute($stmt)) {
-        throw new Exception('SQL_FAILED', 500);
-    }
-
-    // 결과를 가져옵니다.
-    $result = mysqli_stmt_get_result($stmt);
-
-    // 결과를 배열로 변환합니다.
-    $response_data = array(); // 결과를 저장할 배열
-
-    // 결과를 배열로 변환합니다.
+    $result       = mysqli_stmt_get_result($stmt);
     $response_data = mysqli_fetch_assoc($result);
 
-    // 일치하는 사용자 데이터가 없을 경우
-    if ($response_data === null) {
-        throw new Exception('회원 정보를 찾을 수 없습니다.', 404);
-    }
+    if ($response_data === null)                        throw new Exception('회원 정보를 찾을 수 없습니다.', 404);
+    if ($response_data['status'] === "WITHDRAWAL")      throw new Exception('탈퇴한 회원 정보입니다.', 403);
 
-    // 사용자 상태 확인
-    if ($response_data['status'] === "WITHDRAWAL") {
-        throw new Exception('탈퇴한 회원 정보입니다.', 403);
-    }
-
-    // 사용자 정보 추출
     $userNo = $response_data['user_no'];
-    $name = $response_data['name'];
-    $perNo = $response_data['per_no'];
+    $name   = $response_data['name'];
+    $perNo  = $response_data['per_no'];
 
-    // 사용자 인증 정보를 생성
-    $auth = generateAuthData($conn, $userNo);
-    $auth['name'] = $name;
+    ##################### 2. 기기 타입 판별 #####################
+    $deviceType = getDeviceType();
+
+    ##################### 3. 기존 세션 확인 #####################
+    $sql2 = "SELECT session_id, session_token
+             FROM user_sessions
+             WHERE user_no = ? AND user_type = 'ADMIN' AND device_type = ? AND is_forced_logout = 0";
+    $stmt2 = mysqli_prepare($conn, $sql2);
+    if (!$stmt2) throw new Exception('QUERY_PREPARATION_FAILED', 500);
+    mysqli_stmt_bind_param($stmt2, "ss", $userNo, $deviceType);
+    if (!mysqli_stmt_execute($stmt2)) throw new Exception('SQL_FAILED', 500);
+    $result2        = mysqli_stmt_get_result($stmt2);
+    $existingSession = mysqli_fetch_assoc($result2);
+
+    ##################### 4. 중복 접속 감지 (force=false) #####################
+    if ($existingSession && $force !== 'true') {
+        mysqli_rollback($conn);
+        responseApi(409, 'DUPLICATE_SESSION', [
+            'existingSessionToken' => $existingSession['session_token'],
+            'deviceType'           => $deviceType,
+        ]);
+        exit;
+    }
+
+    ##################### 5. 기존 세션 강제 로그아웃 처리 #####################
+    if ($existingSession) {
+        $sql3 = "UPDATE user_sessions SET is_forced_logout = 1 WHERE session_id = ?";
+        $stmt3 = mysqli_prepare($conn, $sql3);
+        if (!$stmt3) throw new Exception('QUERY_PREPARATION_FAILED', 500);
+        mysqli_stmt_bind_param($stmt3, "i", $existingSession['session_id']);
+        if (!mysqli_stmt_execute($stmt3)) throw new Exception('SQL_FAILED', 500);
+    }
+
+    ##################### 6. 인증 데이터 생성 #####################
+    $auth          = generateAuthData($conn, $userNo);
+    $auth['name']  = $name;
     $auth['perNo'] = $perNo;
 
-    
-    // 모든 작업 성공 시 성공 응답 반환
+    ##################### 7. 새 세션 등록 #####################
+    $newSessionToken = bin2hex(random_bytes(16));
+    $ipAddress       = $_SERVER['REMOTE_ADDR'] ?? '';
+
+    $sql4 = "INSERT INTO user_sessions (user_no, user_type, device_type, session_token, ip_address)
+             VALUES (?, 'ADMIN', ?, ?, ?)
+             ON DUPLICATE KEY UPDATE
+                 session_token    = VALUES(session_token),
+                 ip_address       = VALUES(ip_address),
+                 is_forced_logout = 0,
+                 created_at       = NOW(),
+                 last_activity    = NOW()";
+    $stmt4 = mysqli_prepare($conn, $sql4);
+    if (!$stmt4) throw new Exception('QUERY_PREPARATION_FAILED', 500);
+    mysqli_stmt_bind_param($stmt4, "ssss", $userNo, $deviceType, $newSessionToken, $ipAddress);
+    if (!mysqli_stmt_execute($stmt4)) throw new Exception('SQL_FAILED', 500);
+
+    $auth['sessionToken'] = $newSessionToken;
+
     mysqli_commit($conn);
     responseApi(200, 'SUCCESS', $auth);
 
 } catch (Exception $e) {
-    // 오류 발생 시 롤백
     mysqli_rollback($conn);
-    responseApi($e->getCode(), $e->getMessage(), null);
+    responseApi($e->getCode() ?: 500, $e->getMessage(), null);
 
 } finally {
-    // 연결 종료
-    if (isset($stmt))
-        mysqli_stmt_close($stmt);
-    if (isset($stmt2))
-        mysqli_stmt_close($stmt2);
-    if (isset($stmt3))
-        mysqli_stmt_close($stmt3);
+    if (isset($stmt))  mysqli_stmt_close($stmt);
+    if (isset($stmt2)) mysqli_stmt_close($stmt2);
+    if (isset($stmt3)) mysqli_stmt_close($stmt3);
+    if (isset($stmt4)) mysqli_stmt_close($stmt4);
     mysqli_close($conn);
 }

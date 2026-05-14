@@ -10,7 +10,54 @@ $(document).ready(function () {
 
     // 메뉴 카운트 스타일 재적용
     applyMenuStyles();
+
+    // 로그인 상태이면 중복 접속 감시 시작
+    const sessionToken = getCookie("sa_session_token");
+    if (sessionToken) {
+        startAdminSessionPolling(sessionToken);
+    }
 });
+
+// ──────────────────────────────────────────────────────────────────
+// 중복 접속 감시: 30초마다 세션 상태 확인
+// ──────────────────────────────────────────────────────────────────
+let _adminSessionPollTimer = null;
+
+function startAdminSessionPolling(sessionToken) {
+    if (_adminSessionPollTimer) return; // 이미 실행 중
+
+    _adminSessionPollTimer = setInterval(async function () {
+        try {
+            const result = await callApi("POST", "/admin/back/00-include/session_check.php", {
+                session_token: sessionToken,
+            });
+            if (result && result.message === 'FORCED_LOGOUT') {
+                clearInterval(_adminSessionPollTimer);
+                await Swal.fire({
+                    title:             '접속이 종료되었습니다',
+                    html:              '다른 곳에서 로그인하여 현재 세션이 종료됩니다.',
+                    icon:              'warning',
+                    confirmButtonText: '확인',
+                    allowOutsideClick: false,
+                });
+                adminLogout();
+            }
+        } catch (e) {
+            // 네트워크 오류는 무시
+        }
+    }, 30000); // 30초
+}
+
+function adminLogout() {
+    deleteCookie("sa_no");
+    deleteCookie("sa_token");
+    deleteCookie("sa_cont_no");
+    deleteCookie("sa_cont_token");
+    deleteCookie("sa_name");
+    deleteCookie("sa_per_no");
+    deleteCookie("sa_session_token");
+    location.href = "/admin/index";
+}
 
 $(document).on('click', '.nav-link', function () {
     applyMenuStyles(); // 메뉴 클릭 후 스타일 재적용

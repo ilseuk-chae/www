@@ -28,8 +28,8 @@ $(function () {
     });
 });
 
-async function login() {
-    const id = $("#user_id").val();
+async function login(force) {
+    const id       = $("#user_id").val();
     const password = $("#user_password").val();
 
     if (!id) {
@@ -43,22 +43,50 @@ async function login() {
         return;
     }
 
-    const dataObj = { id: encodeURIComponent(id), password: SHA256(password) };
-    const langCode = localStorage.getItem("langCode") ?? "KR";
-    const result = await callApi("POST", "/admin/back/01-sign/login.php", dataObj);
+    const dataObj = {
+        id:       encodeURIComponent(id),
+        password: SHA256(password),
+        force:    force ? 'true' : 'false',
+    };
 
+    const result = await callApi("POST", "/admin/back/01-sign/login.php", dataObj);
     if (!result) return;
 
-    const { status, message, responseData } = result;
+    const { statusCode, message, responseData } = result;
 
-    const { saNo, saToken, saContNo, saContToken, name, perNo } = responseData;
+    // 중복 접속 감지 — 사용자 확인 후 강제 진행
+    if (statusCode === 409 && message === 'DUPLICATE_SESSION') {
+        const deviceLabel = responseData.deviceType === 'MOBILE' ? '모바일' : 'PC';
+        const confirmed = await Swal.fire({
+            title:              '이미 접속 중입니다',
+            html:               `다른 ${deviceLabel}에서 이미 접속 중입니다.<br>계속 진행하면 <b>이전 접속이 끊어집니다.</b>`,
+            icon:               'warning',
+            showCancelButton:   true,
+            confirmButtonText:  '계속 진행',
+            cancelButtonText:   '취소',
+            confirmButtonColor: '#d33',
+        });
 
-    setCookie("sa_no", saNo);
-    setCookie("sa_token", saToken);
-    setCookie("sa_cont_no", saContNo);
+        if (confirmed.isConfirmed) {
+            await login(true); // force=true 로 재시도
+        }
+        return;
+    }
+
+    if (statusCode !== 200) {
+        sweetAlertMessage(message || '로그인에 실패했습니다.', "", "e");
+        return;
+    }
+
+    const { saNo, saToken, saContNo, saContToken, name, perNo, sessionToken } = responseData;
+
+    setCookie("sa_no",         saNo);
+    setCookie("sa_token",      saToken);
+    setCookie("sa_cont_no",    saContNo);
     setCookie("sa_cont_token", saContToken);
-    setCookie("sa_name", encodeURIComponent(name));
-    setCookie("sa_per_no", encodeURIComponent(perNo));
+    setCookie("sa_name",       encodeURIComponent(name));
+    setCookie("sa_per_no",     encodeURIComponent(perNo));
+    setCookie("sa_session_token", sessionToken);
 
     if ($("#auth-remember-check").prop("checked")) {
         setCookie("remember_sa_id", encodeURIComponent(id));
