@@ -84,7 +84,8 @@ try {
     }
 
     ##################### 3. 기존 세션 확인 #####################
-    $sql_sess = "SELECT session_id, session_token
+    $sql_sess = "SELECT session_id, session_token,
+                        TIMESTAMPDIFF(SECOND, last_activity, NOW()) AS idle_seconds
                  FROM user_sessions
                  WHERE user_no = ? AND user_type = 'FRONT' AND device_type = ? AND is_forced_logout = 0";
     $stmt_sess = mysqli_prepare($conn, $sql_sess);
@@ -95,7 +96,9 @@ try {
     $existingSession  = mysqli_fetch_assoc($result_sess);
 
     ##################### 4. 중복 접속 감지 (force=false) #####################
-    if ($existingSession && $force !== 'true') {
+    // 3분(180초) 이상 비활성 세션은 경고 없이 교체 (브라우저 닫은 후 재로그인 케이스)
+    $isActiveSession = $existingSession && ($existingSession['idle_seconds'] < 180);
+    if ($isActiveSession && $force !== 'true') {
         mysqli_rollback($conn);
         responseApi(200, 'DUPLICATE_SESSION', [
             'isDuplicate'          => true,
