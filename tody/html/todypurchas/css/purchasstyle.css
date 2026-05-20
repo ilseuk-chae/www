@@ -108,15 +108,15 @@ ul { list-style: none; }
 .sublogo-mark.sm { width: 36px; height: 36px; font-size: 1.2rem; }
 */
 .sublogo-mark {
-  font-size: 1.2rem;
-  font-weight: 800;
+  font-size: 1.0rem;
+  font-weight: 600;
   color: var(--white);
   background: var(--primary);
   width: 38px; height: 38px;
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  letter-spacing: -1.3px;
+  letter-spacing: -0.5px;
   padding: 0 2px;
   box-sizing: border-box;
 }
@@ -136,16 +136,16 @@ ul { list-style: none; }
 
 .mo-sublogo { display: flex; align-items: center; gap: 2px; border: 1px solid var(--gray-300); border-radius: 10px; background: #fcfaf5; }
 .mobile-header > dl > dt + dt { display: flex; gap: 4px; align-items: center; }
-.mo-sublogo-mark {  
-  font-size: .85rem;
-  font-weight: 800;
+.mo-sublogo-mark {
+  font-size: .72rem;
+  font-weight: 600;
   color: var(--white);
   background: var(--primary);
   width: 28px; height: 22px;   /* 첫 dt 높이와 맞춤 */
   border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
   padding: 0 2px;
   box-sizing: border-box;
 }
@@ -164,6 +164,9 @@ ul { list-style: none; }
 
 .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
 .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-700); border-radius: 2px; transition: var(--transition); }
+/* 모바일 메뉴: PC에서 숨김 (미디어쿼리 내에서 복원) */
+.mobile-nav { display: none; }
+.nav-overlay { display: none; }
 
 /* ===== HERO ===== */
 .hero {
@@ -485,6 +488,7 @@ ul { list-style: none; }
   }
   .mobile-nav-close:hover { color: var(--dark); }
   .mobile-nav {
+    display: block;
     position: fixed; top: 0; right: -290px; bottom: 0;
     width: 280px; background: var(--white); padding: 72px 0 20px;
     overflow-y: auto; z-index: 9999;

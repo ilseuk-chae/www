@@ -1,1 +1,160 @@
-(function(_0x3b2efe,_0x8cc0d0){const _0x196000=a60_0x8254,_0x2c4274=_0x3b2efe();while(!![]){try{const _0x9fd6bc=-parseInt(_0x196000(0x131))/0x1+parseInt(_0x196000(0x129))/0x2+parseInt(_0x196000(0x135))/0x3+-parseInt(_0x196000(0x153))/0x4*(-parseInt(_0x196000(0x154))/0x5)+-parseInt(_0x196000(0x12b))/0x6*(parseInt(_0x196000(0x132))/0x7)+-parseInt(_0x196000(0x12e))/0x8*(parseInt(_0x196000(0x14e))/0x9)+parseInt(_0x196000(0x145))/0xa*(-parseInt(_0x196000(0x140))/0xb);if(_0x9fd6bc===_0x8cc0d0)break;else _0x2c4274['push'](_0x2c4274['shift']());}catch(_0x5109b5){_0x2c4274['push'](_0x2c4274['shift']());}}}(a60_0x3610,0x55aa5));let swiper;$(document)['ready'](async function(){const _0x53f487=a60_0x8254;if(!userInfo()){alert(_0x53f487(0x12c)),window[_0x53f487(0x133)][_0x53f487(0x12f)]();return;}initModal(),initSelect(),initEvents();});function a60_0x8254(_0x586d0f,_0x5af7b4){const _0x3610b3=a60_0x3610();return a60_0x8254=function(_0x8254bf,_0x4e480e){_0x8254bf=_0x8254bf-0x11f;let _0xfad994=_0x3610b3[_0x8254bf];return _0xfad994;},a60_0x8254(_0x586d0f,_0x5af7b4);}function initEvents(){const _0x1c05ff=a60_0x8254;$(_0x1c05ff(0x128))['on']('click',function(){boardWrite();});}function initSelect(){proposal_type_get();}async function proposal_type_get(){const _0x43f2b4=a60_0x8254,_0x1a4cd1={};callApiAbort('/front/back/support/proposal_type.php',_0x43f2b4(0x125),_0x1a4cd1,'proposal_type_get')[_0x43f2b4(0x122)](_0x2df5d7=>{const _0x130be4=_0x43f2b4;populateOptions('#proposal_type',_0x2df5d7[_0x130be4(0x13f)],'type_code',_0x130be4(0x130));})['catch'](_0x29532d=>{const _0x5c77db=_0x43f2b4;console[_0x5c77db(0x142)](_0x5c77db(0x13a),_0x29532d);})[_0x43f2b4(0x152)](()=>{});}function a60_0x3610(){const _0xb9107c=['iziModal','제안\x20종류를\x20선택하세요.','log','/front/views/support/partnership_proposal_step01','SUCCESS','#modalCompletion','#content','6074820GPtvvm','#lottieFail','val','#modalFail','finally','4zQbHyh','2938270IhEpkk','append','catch','#lottieCompletion','text','localeCompare','then','/front/assets/lottie/failed.json','input','POST','length','closed','#register_btn','1018632UtmiIO','svg','276QLSJgx','로그인\x20후\x20이용\x20가능합니다.','470px','8PwnCtE','back','type_name','39514LvIFOx','101227YOcXeM','history','내용을\x20입력하세요.','1922730rwqKNG','boardWrite','open','setBottom','/front/back/support/proposal_write.php','API\x20호출\x20실패','map','loadAnimation','#proposal_type','querySelector','responseData','80245oHbrho','Modal\x20closed','error','select','sort','10RXjgrJ','#title'];a60_0x3610=function(){return _0xb9107c;};return a60_0x3610();}function boardWrite(){const _0x228cf7=a60_0x8254,_0x560d2f=$(_0x228cf7(0x146)),_0x29b422=$(_0x228cf7(0x14d)),_0x77e913=$(_0x228cf7(0x13d));let _0x56c572=!![];const _0x3f2dfb=[{'input':_0x560d2f,'type':_0x228cf7(0x120),'message':'제목을\x20입력하세요.'},{'input':_0x29b422,'type':'text','message':_0x228cf7(0x134)},{'input':_0x77e913,'type':_0x228cf7(0x143),'message':_0x228cf7(0x148)}];_0x3f2dfb['forEach'](_0x40ed92=>{const _0x475937=_0x228cf7;_0x56c572=validateField(_0x40ed92[_0x475937(0x124)],_0x40ed92['type'],_0x40ed92['message'])&&_0x56c572;});if(!_0x56c572)return![];const _0x76beab={...userInfo(),'proposal_type':encodeURIComponent(_0x77e913[_0x228cf7(0x150)]()),'title':encodeURIComponent(_0x560d2f['val']()),'content':encodeURIComponent(_0x29b422[_0x228cf7(0x150)]())};callApiAbort(_0x228cf7(0x139),'POST',_0x76beab,_0x228cf7(0x136))[_0x228cf7(0x122)](async _0x3300e6=>{const _0x3d0afc=_0x228cf7;let {responseData:_0x2356ac,message:_0x370c0b,statusCode:_0x215b8a}=_0x3300e6;_0x215b8a==0xc8&&_0x370c0b==_0x3d0afc(0x14b)?($(_0x3d0afc(0x14c))[_0x3d0afc(0x147)](_0x3d0afc(0x137)),$(_0x3d0afc(0x14c))['on'](_0x3d0afc(0x127),function(){const _0x3c58ed=_0x3d0afc;console[_0x3c58ed(0x149)](_0x3c58ed(0x141)),location['href']=_0x3c58ed(0x14a);})):$(_0x3d0afc(0x151))[_0x3d0afc(0x147)](_0x3d0afc(0x137));})[_0x228cf7(0x156)](_0x10f062=>{console['log'](_0x10f062);});}function validateField(_0x313f65,_0x2242ab,_0x548e0a){let _0x1f5722=validateInput(_0x313f65,_0x2242ab,_0x548e0a);return!_0x1f5722&&sweetAlertMessage(_0x548e0a,'','w'),_0x1f5722;}function populateOptions(_0x2ec4bd,_0x12341d,_0x578180,_0x239ef1){const _0x23d39=a60_0x8254;if(_0x12341d[_0x23d39(0x126)]>0x0){_0x12341d[_0x23d39(0x144)]((_0x25c441,_0x4d2cd0)=>_0x25c441[_0x239ef1][_0x23d39(0x121)](_0x4d2cd0[_0x239ef1]));const _0x3f7842=_0x12341d[_0x23d39(0x13b)](_0x4a7b12=>'<option\x20value=\x22'+_0x4a7b12[_0x578180]+'\x22>'+_0x4a7b12[_0x239ef1]+'</option>')['join']('');$(_0x2ec4bd)[_0x23d39(0x155)](_0x3f7842);}}function initModal(){const _0x449362=a60_0x8254;_0x373326('#modalCompletion','/front/assets/lottie/completion.json',_0x449362(0x11f)),_0x373326(_0x449362(0x151),_0x449362(0x123),_0x449362(0x14f));function _0x373326(_0xac7dc9,_0x47663b,_0x43450a){const _0x10b5f8=_0x449362;$(_0xac7dc9)[_0x10b5f8(0x147)]({'width':_0x10b5f8(0x12d)}),$(_0xac7dc9)[_0x10b5f8(0x147)]('setTop',0x46),$(_0xac7dc9)[_0x10b5f8(0x147)](_0x10b5f8(0x138),0x46);var _0x297d78=bodymovin[_0x10b5f8(0x13c)]({'container':document[_0x10b5f8(0x13e)](_0x43450a),'renderer':_0x10b5f8(0x12a),'loop':!![],'autoplay':!![],'path':_0x47663b});}}
+let swiper;
+$(document).ready(async function () {
+    if (!userInfo()) {
+        alert("로그인 후 이용 가능합니다.");
+        window.history.back();
+        return;
+    }
+    initModal();
+    initSelect();
+    initEvents();
+});
+
+/**
+ * 이벤트 모음 함수
+ */
+function initEvents() {
+    $("#register_btn").on("click", function () {
+        boardWrite();
+    });
+}
+
+/**
+ * 선택박스 초기화
+ */
+function initSelect() {
+    proposal_type_get(); // 제안종류
+}
+
+/**
+ * 제안종류 가져오는 함수
+ * @returns
+ */
+async function proposal_type_get() {
+    const dataObj = {};
+
+    callApiAbort("/front/back/support/proposal_type.php", "POST", dataObj, "proposal_type_get")
+        .then((response) => {
+            populateOptions("#proposal_type", response.responseData, "type_code", "type_name");
+        })
+        .catch((error) => {
+            console.error("API 호출 실패", error);
+        })
+        .finally(() => {});
+}
+
+/**
+ * 등록 함수
+ * @returns
+ */
+function boardWrite() {
+    const title = $("#title");
+    const content = $("#content");
+    const proposal_type = $("#proposal_type");
+    // ##################################
+    // 유효성 검사 시작
+    // ##################################
+    let isValid = true;
+    const fieldsToValidate = [
+        { input: title, type: "text", message: "제목을 입력하세요." },
+        { input: content, type: "text", message: "내용을 입력하세요." },
+        { input: proposal_type, type: "select", message: "제안 종류를 선택하세요." },
+    ];
+
+    fieldsToValidate.forEach((field) => {
+        isValid = validateField(field.input, field.type, field.message) && isValid;
+    });
+
+    if (!isValid) {
+        return false; // 폼 제출 방지
+    }
+    // ##################################
+    // 유효성 검사 종료
+    // ##################################
+
+    const dataObj = {
+        ...userInfo(),
+        proposal_type: encodeURIComponent(proposal_type.val()),
+        title: encodeURIComponent(title.val()),
+        content: encodeURIComponent(content.val()),
+    };
+
+    callApiAbort("/front/back/support/proposal_write.php", "POST", dataObj, "boardWrite")
+        .then(async (response) => {
+            let { responseData, message, statusCode } = response;
+            if (statusCode == 200 && message == "SUCCESS") {
+                $("#modalCompletion").iziModal("open");
+
+                // 모달 닫힘 이벤트 설정
+                $("#modalCompletion").on("closed", function () {
+                    console.log("Modal closed");
+                    location.href = "/front/views/support/partnership_proposal_step01"; // 페이지 리로드
+                });
+            } else {
+                $("#modalFail").iziModal("open");
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+function validateField(input, type, errorMessage) {
+    let isValid = validateInput(input, type, errorMessage);
+    if (!isValid) {
+        sweetAlertMessage(errorMessage, "", "w");
+    }
+    return isValid;
+}
+
+// =============================================================================
+// 헬퍼 함수
+// =============================================================================
+/**
+ * 선택자를 이용해 옵션을 채우는 함수
+ * @param {string} selector jQuery 선택자
+ * @param {Array} data 데이터 배열
+ * @param {string} valueKey 값 키
+ * @param {string} textKey 텍스트 키
+ */
+function populateOptions(selector, data, valueKey, textKey) {
+    if (data.length > 0) {
+        // valueKey(type_code) 기준 오름차순 — SQL ORDER BY 결과 유지
+        data.sort((a, b) => {
+            const aVal = isNaN(a[valueKey]) ? a[valueKey] : Number(a[valueKey]);
+            const bVal = isNaN(b[valueKey]) ? b[valueKey] : Number(b[valueKey]);
+            return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        });
+
+        const optionHtml = data.map((e) => `<option value="${e[valueKey]}">${e[textKey]}</option>`).join("");
+        $(selector).append(optionHtml);
+    }
+}
+
+/**
+ * 모달 초기화 함수
+ */
+function initModal() {
+    // 모달 - 등록완료
+    initializeModal("#modalCompletion", "/front/assets/lottie/completion.json", "#lottieCompletion");
+    // // 모달 - 확인완료
+    // initializeModal("#modalConfirm", "/front/assets/lottie/completion.json", "#lottieConfirm");
+    // 모달 - 실패
+    initializeModal("#modalFail", "/front/assets/lottie/failed.json", "#lottieFail");
+
+    // 모달 설정 함수
+    function initializeModal(modalId, lottiePath, lottieContainerId) {
+        $(modalId).iziModal({ width: "470px" });
+        $(modalId).iziModal("setTop", 70);
+        $(modalId).iziModal("setBottom", 70);
+
+        // Lottie 애니메이션 로드
+        var animation = bodymovin.loadAnimation({
+            container: document.querySelector(lottieContainerId),
+            renderer: "svg",
+            loop: true,
+            autoplay: true,
+            path: lottiePath,
+        });
+    }
+}

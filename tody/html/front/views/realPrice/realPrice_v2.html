@@ -560,6 +560,7 @@
                     <div class="map-land">
                         <div class="ml-mo-open-close" id="mapLandMoOpenClose">
                             <i class="fa-regular fa-chevron-up"></i>
+                            <span class="ml-mo-label">합필분석</span>
                         </div>
                         <!-- <div class="ml-open-close" id="mapLandOpenClose"><i class="fa-solid fa-chevron-left"></i></div> -->
 
@@ -939,6 +940,7 @@
 
                         <!-- 실거래가 탭 내용 -->
                         <div class="layer-tab-content layer-realprice active" id="layerContent_realPrice">
+
                         <div class="mc-info">
                             <dl>
                                 <dt>
@@ -1003,6 +1005,17 @@
                             </div>
                         </div>
 
+                        <div class="mcr-map">
+                            <div id="mini_map"></div>
+                            <!-- <img src="/front/assets/image/map_img02.png" width="100%" alt="" title="" /> -->
+                            <div class="mcr-btn-group">
+                                <button class="active" onclick="changeBaseMapType('roadmap', miniMap)">
+                                    일반
+                                </button>
+                                <button onclick="changeBaseMapType('skyview', miniMap)">위성</button>
+                            </div>
+                        </div>
+
                         <div class="mc-tab-menu">
                             <dl>
                                 <dt>
@@ -1027,16 +1040,6 @@
                         <div class="mc-tab-content">
                             <div class="mc-real">
                                 <!-- <div class="mc-title">실거래가</div> -->
-                                <div class="mcr-map">
-                                    <div id="mini_map"></div>
-                                    <!-- <img src="/front/assets/image/map_img02.png" width="100%" alt="" title="" /> -->
-                                    <div class="mcr-btn-group">
-                                        <button class="active" onclick="changeBaseMapType('roadmap', miniMap)">
-                                            일반
-                                        </button>
-                                        <button onclick="changeBaseMapType('skyview', miniMap)">위성</button>
-                                    </div>
-                                </div>
                                 <!--
                                 <div class="mcr-ai-price">
                                     <h2><span>AI 추정가</span></h2>
@@ -1325,7 +1328,7 @@
                             </div>
 
                             <div class="mc-surrounding">
-                                <div class="mc-title">주변</div>
+                                <div class="mc-title">주변 <button id="clear_place_markers_btn" class="btn-clear-place" title="표시된 위치 지우기">위치 지우기</button></div>
 
                                 <div class="mcs-tab-menu mt-3">
                                     <dl>
@@ -1859,7 +1862,7 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </div><!-- /mc-tab-content -->
                         <!--
                         <div class="mc-tab-bottom">
                             <dl>
@@ -2047,6 +2050,28 @@
                             >
                         </div>
                     </div>
+                    <!-- 범례: 국토환경성평가 -->
+                    <div id="legend-national-env" class="map-legend" style="display:none;">
+                        <div class="legend-title">범례</div> 
+                        <ul>
+                            <li><span class="legend-circle" style="background:#267300;"></span>1등급</li>
+                            <li><span class="legend-circle" style="background:#98e600;"></span>2등급</li>
+                            <li><span class="legend-circle" style="background:#e6e600;"></span>3등급</li>
+                            <li><span class="legend-circle" style="background:#e69800;"></span>4등급</li>
+                            <li><span class="legend-circle" style="background:#e60000;"></span>5등급</li>
+                            <li><span class="legend-circle" style="background:#bdbdbd;"></span>평가외</li>
+                        </ul>
+                    </div>
+                    <!-- 범례: 생태자연도 -->
+                    <div id="legend-ecology" class="map-legend" style="display:none;">
+                        <div class="legend-title">범례</div>
+                        <ul>
+                            <li><span class="legend-circle" style="background:#16a800;"></span>1등급</li>
+                            <li><span class="legend-circle" style="background:#9ad37f;"></span>2등급</li>
+                            <li><span class="legend-circle" style="background:#fff; border:1px solid #aaa;"></span>3등급</li>
+                            <li><span class="legend-circle" style="background:#e69800;"></span>별도관리</li>
+                        </ul>
+                    </div>
                     <!-- 전체지도 끝 -->
                 </div>
             </div>
@@ -2135,6 +2160,9 @@
 
         <!-- turf.js -->
         <script src="/front/js/realPrice/turf.min.js"></script>
+        <!-- moment.js (메모 등록 시 타임스탬프 생성용) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
         <!-- html2canvas -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 

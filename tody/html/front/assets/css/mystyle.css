@@ -2691,16 +2691,71 @@ body[data-screen-type="realprice_v2"] .map-content .mc-search,
 body[data-screen-type="realprice_v2"] .map-content .mc-layer-tab-menu {
     flex-shrink: 0;
 }
+/* layer-tab-content: flex column, 스크롤 없음 */
 body[data-screen-type="realprice_v2"] .map-content .layer-tab-content {
     flex: 1;
-    min-height: 0;       /* flex child 스크롤 허용 (중요) */
-    overflow-y: auto;
-    overflow-x: hidden;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
-/* 스크롤 컨테이너 내 직계 자식은 축소되지 않도록: 내용이 넘쳐야 스크롤 동작 */
-body[data-screen-type="realprice_v2"] .map-content .layer-tab-content > * {
+/* mc-info / mcr-map / mc-tab-menu: 고정 (축소 안 됨) */
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content .mc-info,
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content .mcr-map,
+body[data-screen-type="realprice_v2"] .map-content .layer-tab-content .mc-tab-menu {
     flex-shrink: 0;
 }
+/* mc-tab-content: 남은 공간 전부 차지하며 스크롤 */
+body[data-screen-type="realprice_v2"] .map-content .mc-tab-content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+}
+/* mcr-map: mc-info와 동일한 좌우 패딩(20px)으로 너비 일치 */
+body[data-screen-type="realprice_v2"] .map-content .mcr-map {
+    position: relative;
+    padding: 10px 20px 0;
+}
+body[data-screen-type="realprice_v2"] .map-content .mcr-map #mini_map {
+    aspect-ratio: 2 / 1;
+    min-height: 180px;
+    width: 100%;
+    display: block;
+}
+/* mcr-btn-group: 지도 우측 상단 */
+body[data-screen-type="realprice_v2"] .map-content .mcr-map .mcr-btn-group {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    z-index: 1;
+    display: flex;
+    gap: 0;
+}
+body[data-screen-type="realprice_v2"] .map-content .mcr-map .mcr-btn-group button {
+    display: inline-block;
+    padding: 5px 8px;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: -0.5px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+}
+body[data-screen-type="realprice_v2"] .map-content .mcr-map .mcr-btn-group button:first-child {
+    border-radius: 3px 0 0 3px;
+    border-right: none;
+}
+body[data-screen-type="realprice_v2"] .map-content .mcr-map .mcr-btn-group button:last-child {
+    border-radius: 0 3px 3px 0;
+}
+body[data-screen-type="realprice_v2"] .map-content .mcr-map .mcr-btn-group button.active {
+    color: #ef8779;
+    border-color: #ef8779;
+    font-weight: 600;
+}
+
 /* mc-tab-content: calc 고정 높이 대신 flex-grow:1로 남은 공간 자동 채움
  * → 건물 요약 줄(top_building_summary) show/hide 시에도 빈 공간 없이 정확히 채워짐 */
 body[data-screen-type="realprice_v2"] .map-content .mc-tab-content {
@@ -2903,4 +2958,129 @@ body[data-screen-type="realprice_v2"] .map-sell-view.active {
 }
 .map-option2 .mo-test> div > button span {
   display: flex;
+}
+
+/* ── 지도 범례 (국토환경성평가 / 생태자연도) ── */
+.map-legend {
+    position: absolute;
+    bottom: 40px;
+    right: 10px;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #333;
+    border-radius: 6px;
+    padding: 8px 12px 8px;
+    font-size: 13px;
+    min-width: 90px;  /*범례 내용에 따라 최소 너비 지정 158*/
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    opacity: 0.85;
+}
+.map-legend .legend-title {
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 4px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #ccc;
+    white-space: nowrap;
+}
+.map-legend ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.map-legend ul li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+    font-size: 11px;
+    white-space: nowrap;
+}
+.map-legend .legend-circle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* PC 헤더 sublogo-mark 글자 두께 조정 (purchasstyle.css override) */
+.sublogo-mark {
+    font-size: 1.0rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.5px !important;
+}
+
+/* 모바일 하단 푸터 - 구매대행/개발컨설팅 Tody 뱃지 */
+.mobile-footer .footer-tody-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 26px;   /* 32px 의 약 80% */
+    border-radius: 6px;
+    background: #1A5CFF;   /* PC mo-sublogo-mark 와 동일한 파란색 */
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* 모바일 하단 푸터 - 구매대행/개발컨설팅 hover 효과 */
+.mobile-footer .footer-tody-item {
+    transition: background 0.15s ease;
+}
+.mobile-footer .footer-tody-item:hover {
+    background: rgba(26, 92, 255, 0.07);
+}
+.mobile-footer .footer-tody-item:hover .footer-tody-mark {
+    background: #0040CC;
+    transition: background 0.15s ease;
+}
+.mobile-footer .footer-tody-item:hover div {
+    color: #1A5CFF;
+    transition: color 0.15s ease;
+}
+.mobile-footer .footer-tody-item:active .footer-tody-mark {
+    background: #002EA3;
+}
+.mobile-footer .footer-tody-item:active div {
+    color: #002EA3;
+}
+
+/* 합필분석 모바일 - 접힌 상태일 때만 "합필분석" 레이블 표시 */
+/* 기본: 숨김 */
+.map-land .ml-mo-open-close .ml-mo-label {
+    display: none;
+    margin-left: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    vertical-align: middle;
+    letter-spacing: -0.5px;
+}
+/* active 이고 full 이 없을 때(접힌 상태)만 표시 */
+.map-land.active:not(.full) .ml-mo-open-close .ml-mo-label {
+    display: inline;
+}
+
+@media (max-width: 479px) {
+  .map-legend {
+    position: absolute;
+    bottom: 100px;
+    right: 10px;
+  }
+}
+
+/* 매물 상세 - 자세한 설명 줄간격 (map_sell_view) */
+.map-sell-view .msv-content dl dd.description {
+    white-space: pre-line;   /* \n을 줄바꿈으로 렌더링 */
+    line-height: 1.8;
+    word-break: break-all;
+}
+
+/* 사고팔고(삽니다/팝니다) 상세보기 - 자세한 설명 줄간격 */
+#description {
+    line-height: 1.8;
+    word-break: break-all;
 }

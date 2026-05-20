@@ -230,13 +230,12 @@
         <div class="flow-turn">
           <div class="flow-turn-arrow">▼</div>
         </div>
-        <!-- 2행 (역방향) -->
+        <!-- 2행 (역방향): STEP4가 우측(▼ 아래)에 위치하도록 DOM 순서 변경 -->
         <div class="flow-row reverse">
-          <div class="flow-box step6 optional">
-            <div class="optional-badge">필요시</div>
-            <div class="flow-icon">🏛️</div>
-            <div class="flow-step-num">STEP 6</div>
-            <div class="flow-label">인허가 진행</div>
+          <div class="flow-box step4">
+            <div class="flow-icon">📈</div>
+            <div class="flow-step-num">STEP 4</div>
+            <div class="flow-label">사업방식 및 리스크 분석</div>
           </div>
           <div class="flow-arrow-h">▶</div>
           <div class="flow-box step5">
@@ -245,10 +244,11 @@
             <div class="flow-label">기대효과 및 제언 도출</div>
           </div>
           <div class="flow-arrow-h">▶</div>
-          <div class="flow-box step4">
-            <div class="flow-icon">📈</div>
-            <div class="flow-step-num">STEP 4</div>
-            <div class="flow-label">사업방식 및 리스크 분석</div>
+          <div class="flow-box step6 optional">
+            <div class="optional-badge">필요시</div>
+            <div class="flow-icon">🏛️</div>
+            <div class="flow-step-num">STEP 6</div>
+            <div class="flow-label">인허가 진행</div>
           </div>
         </div>
       </div>

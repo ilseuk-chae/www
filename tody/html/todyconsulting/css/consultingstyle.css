@@ -146,6 +146,9 @@ ul { list-style: none; }
   display: block; width: 24px; height: 2px;
   background: var(--dark); border-radius: 2px; transition: all var(--transition);
 }
+/* 모바일 메뉴: PC에서 숨김 (미디어쿼리 내에서 복원) */
+.mobile-nav { display: none; }
+.nav-overlay { display: none; }
 
 /* ===== HERO ===== */
 .hero {
@@ -323,15 +326,22 @@ ul { list-style: none; }
 }
 
 .flow-turn {
-  display: flex; justify-content: flex-end; padding-right: calc((180px + 20px) * 0);
+  display: flex;
+  justify-content: center; /* 행 콘텐츠와 동일한 기준으로 중앙 정렬 */
   margin: 8px 0;
 }
 .flow-turn-arrow {
-  font-size: 1.8rem; color: var(--gray-500); padding-right: 10px;
-  width: calc(100% / 3); text-align: right;
+  display: flex;
+  justify-content: flex-end; /* ▼를 우측(STEP3 위치)으로 정렬 */
+  font-size: 1.2rem; color: var(--primary); /* flow-arrow-h와 동일한 크기/색상 */
+  /* flow-row 실제 콘텐츠 너비(3박스×180 + 2화살표×36 ≈ 612px)에 맞춤 */
+  width: min(100%, 612px);
+  padding-right: 70px; /* STEP3 박스 중앙에 ▼ 위치 */
 }
 
 .flow-row.reverse { flex-direction: row-reverse; }
+/* 역방향 행의 화살표는 좌우 반전(◀ 방향)으로 흐름 방향을 명확히 표시 */
+.flow-row.reverse .flow-arrow-h { transform: scaleX(-1); }
 
 /* 상세 설명 */
 .process-detail {
@@ -506,6 +516,7 @@ textarea { resize: vertical; min-height: 110px; }
   }
   .mobile-nav-close:hover { color: var(--dark); }
   .mobile-nav {
+    display: block;
     position: fixed; top: 0; right: -290px; bottom: 0;
     width: 280px; background: #fff; padding: 72px 0 20px;
     overflow-y: auto; z-index: 9999;
@@ -550,9 +561,21 @@ textarea { resize: vertical; min-height: 110px; }
 
   .flow-row { flex-direction: column; align-items: center; }
   .flow-arrow-h { transform: rotate(90deg); }
-  .flow-row.reverse { flex-direction: column-reverse; }
+  /* 모바일에서 역방향 행도 화살표를 아래(▼)로 표시 — 데스크탑 scaleX(-1) 재정의 */
+  .flow-row.reverse .flow-arrow-h { transform: rotate(90deg); }
+  /* DOM 순서가 [STEP4→STEP5→STEP6]이므로 column(정방향)으로 표시 */
+  .flow-row.reverse { flex-direction: column; }
   .flow-turn { display: flex; justify-content: center; }
-  .flow-turn-arrow { width: auto; text-align: center; padding-right: 0; font-size: 1.2rem; color: var(--primary); }
+  /* 데스크탑에서 추가된 display:flex / justify-content:flex-end 리셋 */
+  .flow-turn-arrow {
+    display: block;
+    justify-content: normal;
+    width: auto;
+    text-align: center;
+    padding-right: 0;
+    font-size: 1.2rem;
+    color: var(--primary);
+  }
 
   .footer-inner { grid-template-columns: 1fr; gap: 28px; }
 }

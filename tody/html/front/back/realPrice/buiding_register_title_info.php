@@ -66,6 +66,31 @@ function getBrRecapTitleInfo($pnu) {
     return makeApiRequest($url, $queryParams);
 }
 
+// 건축물대장 부속지번 (연관 필지 목록) — getBrAtchJibunInfo
+function getBrAtchJibunInfo($pnu) {
+    $sigunguCd = substr($pnu, 0, 5);
+    $bjdongCd  = substr($pnu, 5, 5);
+    $platGbCd  = substr($pnu, 10, 1);
+    $bun       = substr($pnu, 11, 4);
+    $ji        = substr($pnu, 15, 4);
+
+    $serviceKey = $_ENV['public_data_key'];
+
+    $url = 'https://apis.data.go.kr/1613000/BldRgstHubService/getBrAtchJibunInfo';
+    $queryParams = "?" . http_build_query([
+        'serviceKey' => $serviceKey,
+        'sigunguCd'  => $sigunguCd,
+        'bjdongCd'   => $bjdongCd,
+        // 'platGbCd' => $platGbCd,  // 다른 API와 동일하게 생략 — 포함 시 결과 필터링 문제 발생
+        'bun'        => $bun,
+        'ji'         => $ji,
+        '_type'      => 'json',
+        'numOfRows'  => '100',
+        'pageNo'     => '1',
+    ]);
+    return makeApiRequest($url, $queryParams);
+}
+
 function getBuildingData($pnu) {
     $response_array = [];
 
@@ -77,7 +102,7 @@ function getBuildingData($pnu) {
         // 'body' -> 'items' 구조를 확인하여 response_array에 저장
         if (isset($brTitleInfo['response']['body']['items'])) {
             $response_array['brTitleInfo'] = $brTitleInfo['response']['body']['items'];
-        } 
+        }
     } else {
         // 'response'가 없을 때의 디버깅 출력
         $response_array['brTitleInfo'] = array();
@@ -85,17 +110,28 @@ function getBuildingData($pnu) {
 
     // 건축물대장 총괄표제부
     $brRecapTitleInfo = getBrRecapTitleInfo($pnu);
-    // $response_array['brRecapTitleInfo'] = $brRecapTitleInfo;
 
     // 'response' 키가 있는지 확인
     if (isset($brRecapTitleInfo['response'])) {
         // 'body' -> 'items' 구조를 확인하여 response_array에 저장
         if (isset($brRecapTitleInfo['response']['body']['items'])) {
             $response_array['brRecapTitleInfo'] = $brRecapTitleInfo['response']['body']['items'];
-        } 
+        }
     } else {
         // 'response'가 없을 때의 디버깅 출력
         $response_array['brRecapTitleInfo'] = array();
+    }
+
+    // 건축물대장 부속지번 (연관 필지 목록)
+    $brAtchJibunInfo = getBrAtchJibunInfo($pnu);
+    $atchItems = $brAtchJibunInfo['response']['body']['items']['item'] ?? null;
+    if (!empty($atchItems)) {
+        // item이 단일 객체(1건)일 때도 배열로 통일
+        $response_array['brAtchJibunInfo'] = is_array($atchItems) && isset($atchItems[0])
+            ? $atchItems
+            : [$atchItems];
+    } else {
+        $response_array['brAtchJibunInfo'] = null;
     }
 
     return $response_array;

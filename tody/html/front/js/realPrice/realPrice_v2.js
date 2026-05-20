@@ -761,17 +761,25 @@ function initAction() {
         $("#mapOptionLandOpen").click(function () {
             if (!$(".mo-land").hasClass("active")) {
                 $(".mo-land").addClass("active");
-                $(".map-land").addClass("active");
+                // 모바일: active 단독은 top:100% margin-top:-25px (25px 슬라이버만 보임)
+                // full 클래스까지 추가해야 top:0 전체화면으로 표시됨
+                $(".map-land").addClass("active full");
+                $("#mapLandMoOpenClose i").addClass("fa-rotate-180");
                 realPriceOverlays.forEach((overlay) => overlay.setVisible(false));
+                // 지적편집도: OFF 상태일 때만 ON (PC 핸들러와 동일)
+                if (!$(".map-select-group button").eq(3).hasClass("active")) {
+                    $(".map-select-group button").eq(3).click();
+                }
             } else {
                 $(".mo-land").removeClass("active");
-                $(".map-land").removeClass("active");
+                $(".map-land").removeClass("active full");
+                $("#mapLandMoOpenClose i").removeClass("fa-rotate-180");
                 realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
+                // 지적편집도: ON 상태일 때만 OFF (PC 핸들러와 동일)
+                if ($(".map-select-group button").eq(3).hasClass("active")) {
+                    $(".map-select-group button").eq(3).click();
+                }
             }
-            // $(".mo-land").css({ display: "block" });
-            // $(".mo-land").animate({ opacity: "1" }, 400, "easeOutQuad");
-            // $(".map-land").animate({ top: "65%" }, 400, "easeOutQuad");
-            // mapLandMoChk = 0;
         });
 
         // 지도 - 모바일 - 합필분석 버튼 - 닫기
@@ -780,13 +788,10 @@ function initAction() {
             $(".map-land").removeClass("active full");
             $("#mapLandMoOpenClose i").removeClass("fa-rotate-180");
             realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
-            // $(".mo-land").animate({ opacity: "0" }, 400, "easeOutQuad");
-            // setTimeout(() => {
-            //     $(".mo-land").css({ display: "none" });
-            // }, 150);
-            // $(".map-land").animate({ top: "100%" }, 400, "easeOutQuad");
-            // $("#mapLandMoOpenClose").css({ paddingTop: "5px", background: "#fff" });
-            // mapLandMoChk = 1;
+            // 지적편집도: ON 상태일 때만 OFF (PC 핸들러와 동일)
+            if ($(".map-select-group button").eq(3).hasClass("active")) {
+                $(".map-select-group button").eq(3).click();
+            }
         });
 
         // 지도 - 합필분석 레이어 - 닫기 //
@@ -795,9 +800,10 @@ function initAction() {
             $(".map-land").removeClass("active full");
             $("#mapLandMoOpenClose i").removeClass("fa-rotate-180");
             realPriceOverlays.forEach((overlay) => overlay.setVisible(true));
-            // $(".map-land").animate({ top: "100%" }, 400, "easeOutQuad");
-            // $("#mapLandMoOpenClose").css({ paddingTop: "5px", background: "#fff" });
-            // mapLandMoChk = 1;
+            // 지적편집도: ON 상태일 때만 OFF (PC 핸들러와 동일)
+            if ($(".map-select-group button").eq(3).hasClass("active")) {
+                $(".map-select-group button").eq(3).click();
+            }
         });
     }
 
@@ -1231,6 +1237,13 @@ function initHandleEvents() {
 
         updateRegionStatusZoomLimit();
     });
+
+    // 지역현황 체크박스 연동 범례 표시/숨김 (분석탭 실행시에는 체크박스를 사용하지 않으므로 자동 미표시)
+    function updateMapLegend() {
+        $('#legend-national-env').toggle($('#chk1').is(':checked'));
+        $('#legend-ecology').toggle($('#chk2').is(':checked'));
+    }
+    $('#chk1, #chk2, #chkSlope, #chkElevation').on('change', updateMapLegend);
 
     // 도구사용 - 지도출력
     $("#print_map_btn").on("click", function () {
@@ -2954,22 +2967,16 @@ function _applyLayerState() {
 function _updateLayerTabs() {
     const $rpTab = $('#layerTab_realPrice');
     const $esTab = $('#layerTab_estate');
-    const $rpContent = $('#layerContent_realPrice');
-    const $esContent = $('#layerContent_estate');
 
-    $rpTab.toggle(layerState.realPrice);
+    // 실거래가 탭은 toggleRealPrice 상태와 무관하게 항상 표시
+    $rpTab.show();
+    // 매물정보 탭은 toggleEstate active 상태에 따라 hide/show (기존 방식 유지)
     $esTab.toggle(layerState.estate);
 
-    // 현재 활성 탭이 숨겨지면 다른 탭으로 전환
-    if (!layerState.realPrice && $rpTab.hasClass('active')) {
-        if (layerState.estate) {
-            _switchLayerTab('layer-estate');
-        }
-    }
+    // 매물정보 탭이 숨겨질 때 해당 탭이 활성 중이면 실거래가 탭으로 전환
+    // (실거래가 탭은 항상 표시되므로 전환 대상으로 항상 사용 가능)
     if (!layerState.estate && $esTab.hasClass('active')) {
-        if (layerState.realPrice) {
-            _switchLayerTab('layer-realprice');
-        }
+        _switchLayerTab('layer-realprice');
     }
 }
 
@@ -4046,6 +4053,19 @@ async function estateDetail(estateNo) {
             if (layerState.estate && !$('#layerTab_estate').hasClass('active')) {
                 _switchLayerTab('layer-estate');
             }
+
+            // 지도 줌 3단계로 이동 + 해당 위치로 이동 + 필지 폴리곤 표시
+            const lat = parseFloat(responseData.lat);
+            const lng = parseFloat(responseData.lng);
+            if (lat && lng && typeof map !== 'undefined') {
+                map.setLevel(3);
+                map.setCenter(new kakao.maps.LatLng(lat, lng));
+                // handleMapClick 을 통해 필지 폴리곤 그리기 (map_sell_view 가 overlay 로 위에 표시되므로 하단 패널 갱신은 무관)
+                if (typeof handleMapClick === 'function') {
+                    handleMapClick({ lat, lng });
+                }
+            }
+
             return responseData; // 호출부에서 좌표 활용 가능하도록 반환
         });
 }

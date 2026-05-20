@@ -76,6 +76,25 @@ function initializeMiniMap() {
     kakao.maps.event.addListener(miniMap, "idle", function () {
         miniMap.relayout();
     });
+
+    // flex 레이아웃 확정 후 지도 크기 재계산
+    setTimeout(function () {
+        miniMap.relayout();
+    }, 100);
+}
+
+/**
+ * 주변 시설 마커·오버레이·반경 폴리곤을 모두 제거하고 카테고리 상태를 초기화
+ */
+function clearPlaceMarkers() {
+    removeMarker(placeMarkers);
+    placeMarkers.splice(0, placeMarkers.length); // 배열 완전 초기화
+    placeOverlay.setMap(null);
+    if (placeRangePolygon) {
+        placeRangePolygon.setMap(null);
+        placeRangePolygon = null;
+    }
+    currCategory = "";
 }
 
 /**
@@ -91,15 +110,21 @@ function initTabEvents() {
         const $targetElement = $("." + tabContent);
 
         if ($targetElement.length) {
-            $(".mc-tab-content").animate(
+            const $scrollContainer = $(".layer-tab-content.active .mc-tab-content");
+            $scrollContainer.animate(
                 {
-                    scrollTop: $targetElement.offset().top - $(".mc-tab-content").offset().top + $(".mc-tab-content").scrollTop(),
+                    scrollTop: $targetElement.offset().top - $scrollContainer.offset().top + $scrollContainer.scrollTop(),
                 },
                 400 // 400ms 동안 애니메이션
             );
         } else {
             console.error("Element not found for selector:", tabContent);
         }
+    });
+
+    // 위치 지우기 버튼
+    $("#clear_place_markers_btn").on("click", function () {
+        clearPlaceMarkers();
     });
 
     // 주변 시설 내부 탭 전환 (Bootstrap JS 간섭 방지 — inline style로 직접 제어)
@@ -332,6 +357,19 @@ async function BuildingDetail(pnu) {
 
     const brTitleInfo = responseData.brTitleInfo;
     const brRecapTitleInfo = responseData.brRecapTitleInfo; // 이 부분도 사용 가능성이 있어 보입니다.
+
+    // 부속지번(연관 필지) 목록 전역 저장 (buildingRegisterTable 에서 활용)
+    // PHP는 items를 flat 배열로 반환하므로 Array.isArray로 판별
+    const brAtchRaw = responseData.brAtchJibunInfo;
+    if (Array.isArray(brAtchRaw) && brAtchRaw.length > 0) {
+        window._brLotOutlineItems = brAtchRaw;
+    } else if (brAtchRaw && brAtchRaw.item) {
+        // 혹시 {item: [...]} 구조로 오는 경우 대비
+        window._brLotOutlineItems = Array.isArray(brAtchRaw.item) ? brAtchRaw.item : [brAtchRaw.item];
+    } else {
+        window._brLotOutlineItems = [];
+    }
+    //console.log('[BuildingDetail] brAtchJibunInfo raw:', brAtchRaw, '| items:', window._brLotOutlineItems);
 
     // 데이터를 기준으로 건물 탭과 컨텐츠를 표시하거나 숨김
     //const hasData = responseData.brTitleInfo && responseData.brTitleInfo.item && responseData.brTitleInfo.item.length > 0;
@@ -567,14 +605,18 @@ function createMnnmSlnoButtons(landCharacteristics) {
         return;
     }
 
-    $.each(globalLandCharacter, function (index, land) {
+    // PNU 기준 중복 제거
+    const seenPnu = new Set();
+    const uniqueLands = globalLandCharacter.filter(function (land) {
+        if (!land || !land.pnu) return false;
+        if (seenPnu.has(land.pnu)) return false;
+        seenPnu.add(land.pnu);
+        return true;
+    });
 
-        // ✅ land 개별 요소 undefined 체크
-        if (!land || !land.pnu) {
-            console.warn(`[index: ${index}] land 또는 land.pnu 가 없습니다.`, land);
-            return true; // $.each 에서 continue 역할 → 다음 요소로 넘어감
-        }
+    $btnGroup.show();
 
+    $.each(uniqueLands, function (index, land) {
         const pnu = land.pnu;
         const $button = $("<button>")
             .addClass("mnnmSlno-btn font14 p-2")
@@ -652,7 +694,40 @@ function buildingRegisterTable(info) {
     building_rows += createTableRow("건폐율", comma(bcRat) + "%");
     building_rows += createTableRow("세대수", comma(hhldCnt) + "세대");
     building_rows += createTableRow("가구수", comma(fmlyCnt) + "가구");
-    building_rows += createTableRow("연관토지 개수", bylotCnt);
+    // 연관토지: atch* 필드가 실제 연관 필지 정보 (platPlc는 메인 건물 주소)
+    // atchBun / atchJi 를 platPlc의 동 prefix와 조합해 주소 구성
+    const lotItems = window._brLotOutlineItems || [];
+    if (lotItems.length > 0) {
+        // platPlc에서 동 이름까지 prefix 추출 ("경기도 수원시 권선구 고색동 389-5번지" → "경기도 수원시 권선구 고색동")
+        const addrPrefix = (platPlc || '').replace(/\s+\d+(?:-\d+)?번지?\s*$/, '').trim();
+
+        const lotAddresses = lotItems.map(lot => {
+            const bunNum = parseInt(lot.atchBun || 0, 10);
+            const jiNum  = parseInt(lot.atchJi  || 0, 10);
+            if (bunNum > 0) {
+                const jibun = jiNum > 0 ? `${bunNum}-${jiNum}` : `${bunNum}`;
+                return addrPrefix ? `${addrPrefix} ${jibun}번지` : `${jibun}번지`;
+            }
+            // atch번지 정보가 없을 때 fallback
+            return (lot.atchJibunNm || '').trim();
+        }).filter(Boolean);
+
+        if (lotAddresses.length > 0) {
+            const lotHtml = '<ul style="margin:0;padding:0;list-style:none;text-align:left;">'
+                + lotAddresses.map(addr => `<li style="white-space:nowrap;font-size:12px;">${addr}</li>`).join('')
+                + '</ul>';
+            building_rows += createTableRow("연관토지", lotHtml);
+        } else {
+            building_rows += createTableRow("연관토지 개수", bylotCnt);
+        }
+    } else if (bylotCnt > 0) {
+        // 부속지번 API 응답 없을 때 — 대표 주소 + 외 N필지 형태로 표시
+        const mainAddr = (platPlc || '').trim();
+        const displayText = mainAddr
+            ? `<ul style="margin:0;padding:0;list-style:none;text-align:left;"><li style="white-space:nowrap;font-size:12px;">${mainAddr} 외 ${bylotCnt}필지</li></ul>`
+            : bylotCnt + '필지';
+        building_rows += createTableRow("연관토지", displayText);
+    }
 
     const hasLift = rideUseElvtCnt != 0 || emgenUseElvtCnt != 0;
     $(".mcb-lift").toggle(hasLift); // 승강기 정보가 있으면 표시, 없으면 숨기기
@@ -1485,9 +1560,10 @@ function updateTabOnScroll() {
     // 각 섹션 요소를 배열로 저장
     const sectionElements = Object.keys(sections).map((sectionClass) => $("." + sectionClass));
 
-    // mc-tab-content의 스크롤 이벤트
-    $(".mc-tab-content").on("scroll", function () {
-        let scrollTop = $(this).scrollTop();
+    // mc-tab-content의 스크롤 이벤트 (실제 스크롤 컨테이너)
+    $(document).on("scroll", ".mc-tab-content", function () {
+        let $container = $(this);
+        let scrollTop = $container.scrollTop();
         let foundActive = false;
 
         // 최상단 스크롤일 경우 강제로 mc-real 탭을 활성화
@@ -1501,11 +1577,10 @@ function updateTabOnScroll() {
         sectionElements.forEach((sectionElement, index) => {
             if (!sectionElement.is(":visible")) return; // 보이지 않는 섹션은 무시
 
-            let sectionOffsetTop = sectionElement.offset().top - $(".mc-tab-content").offset().top + scrollTop;
+            let sectionOffsetTop = sectionElement.offset().top - $container.offset().top + scrollTop;
             let sectionHeight = sectionElement.outerHeight();
 
-            // 현재 스크롤 위치가 해당 섹션의 범위 안에 있는지 확인
-            if (scrollTop >= sectionOffsetTop - 50 && scrollTop < sectionOffsetTop + sectionHeight - 50) {
+            if (scrollTop >= sectionOffsetTop - 10 && scrollTop < sectionOffsetTop + sectionHeight - 10) {
                 $(".tab-btn").removeClass("active");
 
                 // 해당 탭 버튼을 활성화

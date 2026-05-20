@@ -1,7 +1,6 @@
 <?php
 header("Access-Control-Allow-Headers: X-Requested-With, X-Prototype-Version");
 header("Content-Type: application/json; charset=utf-8");
-// header("Content-Type:text/html;charset=utf-8");
 
 // error_reporting(E_ALL);
 // ini_set("display_errors", 1);
@@ -15,7 +14,6 @@ $type = isset($_POST['type']) ? urldecode($_POST['type']) : '';
 #######################################################
 # 0. 유효성 검사 - 시작
 #######################################################
-// 유효성 검사할 배열
 $validations = [
     ['value' => $viewNo, 'type' => 'int', 'message' => '올바른 요청이 아닙니다.'],
     ['value' => $type, 'type' => 'string', 'message' => '올바른 요청이 아닙니다.']
@@ -29,42 +27,37 @@ foreach ($validations as $validation) {
 }
 
 
-mysqli_autocommit($conn, FALSE);  // 자동 커밋 비활성화
-mysqli_begin_transaction($conn);  // 트랜잭션 시작
+mysqli_autocommit($conn, FALSE);
+mysqli_begin_transaction($conn);
 
 try {
-    // 회원 번호
     $user_no = get_user_no_for_hash($conn, $userNo);
 
-    // SQL 쿼리
-    $sql =
-        "INSERT INTO history_favorite (
-            favorite_type, user_no, board_no
-        ) VALUES (
-            ?, ?, ?
-        ); ";
+    # 중복 확인 (user_no + board_no + favorite_type)
+    $sql_chk = "SELECT idx FROM history_favorite
+                WHERE user_no = ? AND board_no = ? AND favorite_type = ? LIMIT 1";
+    $stmt_chk = executeQuery($conn, $sql_chk, 'iis', [$user_no, $viewNo, $type]);
+    $row_chk  = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_chk));
 
-    // 조건 추가
-    $params = [$type, $user_no, $viewNo];
-    $types = 'sii';
-    executeQuery($conn, $sql, $types, $params);
+    if ($row_chk) {
+        # 이미 존재 → 날짜만 업데이트
+        $sql = "UPDATE history_favorite SET reg_date = NOW() WHERE idx = ?";
+        executeQuery($conn, $sql, 'i', [$row_chk['idx']]);
+    } else {
+        # 신규 등록
+        $sql = "INSERT INTO history_favorite (favorite_type, user_no, board_no) VALUES (?, ?, ?)";
+        executeQuery($conn, $sql, 'sii', [$type, $user_no, $viewNo]);
+    }
 
-    // 모든 작업 성공 시 커밋
     mysqli_commit($conn);
     responseApi(200, 'SUCCESS', null);
 
 } catch (Exception $e) {
-    // 오류 발생 시 롤백
     mysqli_rollback($conn);
     responseApi($e->getCode(), $e->getMessage(), null);
 
 } finally {
-    // 연결 종료
-    if (isset($stmt))
-        mysqli_stmt_close($stmt);
-    if (isset($stmt2))
-        mysqli_stmt_close($stmt2);
-    if (isset($stmt3))
-        mysqli_stmt_close($stmt3);
+    if (isset($stmt_chk)) mysqli_stmt_close($stmt_chk);
+    if (isset($stmt))     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }

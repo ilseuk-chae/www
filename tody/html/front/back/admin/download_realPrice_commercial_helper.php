@@ -447,7 +447,7 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
         return null;
     }
     // 1️⃣ 거래취소 제외
-    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === '') {
+    if (!empty($item['cdealDay'])) {
         return null;
     }
 

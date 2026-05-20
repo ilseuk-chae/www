@@ -17,7 +17,8 @@ try {
         FROM
             type_master
         WHERE group_code = 'PROPOSAL_TYPE'
-        AND use_fg = 'Y';
+        AND use_fg = 'Y'
+        order by type_code asc;
         ";
 
     // SQL 문장을 준비합니다.

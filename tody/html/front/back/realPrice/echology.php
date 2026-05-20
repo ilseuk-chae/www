@@ -175,7 +175,7 @@ function getEcologyzmpWFS($serviceKey, $bbox, $pnu, $eczmGr) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HEADER, FALSE);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-    curl_setopt($ch, CURLOPT_TIMEOUT, 1); // 요청 타임아웃 설정 (초 단위)
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // 요청 타임아웃 설정 (초 단위)
 
     // 리디렉션을 따르도록 설정
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE); 

@@ -496,6 +496,57 @@ function handleMapEvents() {
         // 또는 특정 호버 폴리곤만 제거하는 함수를 따로 구현 (예: clearHoverPolygons())
     });
 
+    // 지도 우클릭 이벤트 - 메모 컨텍스트 메뉴
+    kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
+        const clickedPoint = mouseEvent.latLng;
+        const clickedScreenPoint = mouseEvent.point;
+
+        let foundPolygon = null;
+
+        // 1단계: 토지 폴리곤에서 Point-in-Polygon 검사
+        for (let i = 0; i < landPolygons.length; i++) {
+            const polygon = landPolygons[i];
+            if (polygon.originalCoordinates) {
+                const turfPolygon = turf.polygon([polygon.originalCoordinates]);
+                const turfPoint = turf.point([clickedPoint.getLng(), clickedPoint.getLat()]);
+                if (turf.booleanPointInPolygon(turfPoint, turfPolygon)) {
+                    foundPolygon = polygon;
+                    break;
+                }
+            }
+        }
+
+        // 2단계: 건물 폴리곤에서 검사
+        if (!foundPolygon) {
+            for (let i = 0; i < buildingPolygons.length; i++) {
+                const polygon = buildingPolygons[i];
+                if (polygon.originalCoordinates) {
+                    const turfPolygon = turf.polygon([polygon.originalCoordinates]);
+                    const turfPoint = turf.point([clickedPoint.getLng(), clickedPoint.getLat()]);
+                    if (turf.booleanPointInPolygon(turfPoint, turfPolygon)) {
+                        foundPolygon = polygon;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (foundPolygon) {
+            showMemoContextMenu(
+                clickedPoint,
+                clickedScreenPoint,
+                foundPolygon.pnu,
+                foundPolygon.uniquePolygonId,
+                foundPolygon.type
+            );
+        } else {
+            const contextMenu = $('#memoContextMenu');
+            contextMenu.fadeOut(100, function() {
+                currentMemoData = null;
+            });
+        }
+    });
+
     // 지도에서 idle 이벤트가 발생할 때마다 오버레이를 갱신
     // `tilesloaded` 이벤트는 지도 처음 로딩 및 줌 레벨 변경 시 발생하지만,
     // 데이터 로딩은 `idle` 이벤트에서 전담하도록 하는 것이 더 명확합니다.
@@ -1565,81 +1616,89 @@ async function ecologyMap(pnu, bbox, geojsonPolygon) {
                 return; // 유효하지 않은 feature는 건너뜀
             }
 
-            // 좌표 문자열에서 좌표 변환 (외부 경계)
-            const coordString = feature.tbl_opn_eczm.geom.MultiPolygon.polygonMember.Polygon.outerBoundaryIs.LinearRing.coordinates["@text"];
+            const multiPolygon = feature.tbl_opn_eczm.geom.MultiPolygon;
+            // polygonMember가 단일 객체 또는 배열(멀티폴리곤) 모두 처리
+            const polygonMembers = Array.isArray(multiPolygon.polygonMember)
+                ? multiPolygon.polygonMember
+                : [multiPolygon.polygonMember];
 
-            // EPSG:5186에서 EPSG:4326으로 좌표 변환 (proj4 사용)
-            const transformedCoordinates = coordString.split(" ").map((pair) => {
-                const coords = pair.split(",").map(Number);
-                return proj4("EPSG:5186", "EPSG:4326", coords);
-            });
+            polygonMembers.forEach((pm) => {
+                if (!pm || !pm.Polygon) return;
 
-            // 구멍 처리
-            let holeTransformedCoordinates = [];
-            let geoJsonCoordinates = [transformedCoordinates]; // 외부 경계 포함
-            let holeCoordinatesArray = feature.tbl_opn_eczm.geom.MultiPolygon.polygonMember.Polygon.innerBoundaryIs;
+                try {
+                    // 좌표 문자열에서 좌표 변환 (외부 경계)
+                    const coordString = pm.Polygon.outerBoundaryIs.LinearRing.coordinates["@text"];
+                    if (!coordString) return;
 
-            if (holeCoordinatesArray) {
-                // 구멍이 여러 개일 경우 처리
-                holeTransformedCoordinates = Array.isArray(holeCoordinatesArray)
-                    ? holeCoordinatesArray.map((hole) => {
-                          const holeCoordString = hole.LinearRing.coordinates["@text"];
-                          return holeCoordString.split(" ").map((pair) => {
-                              const coords = pair.split(",").map(Number);
-                              return proj4("EPSG:5186", "EPSG:4326", coords);
-                          });
-                      })
-                    : [
-                          holeCoordinatesArray.LinearRing.coordinates["@text"].split(" ").map((pair) => {
-                              const coords = pair.split(",").map(Number);
-                              return proj4("EPSG:5186", "EPSG:4326", coords);
-                          }),
-                      ];
-
-                // 외부 경계와 내부 경계(여러 구멍이 있는 경우 처리)
-                geoJsonCoordinates = [transformedCoordinates, ...holeTransformedCoordinates];
-            }
-
-            // turf.js를 사용하여 다중 폴리곤으로 변환
-            const ecologyPolygon = turf.polygon(geoJsonCoordinates);
-
-            // 유효성 검사 후 저장 (turf.js를 위해)
-            if (isValidPolygon(ecologyPolygon)) {
-                turfEcologyPolygons.push(ecologyPolygon);
-            }
-
-            // 첫 번째 폴리곤의 첫 번째 좌표로 지도 중심 설정 (디버깅 용)
-            // if (!firstPolygonCenter) {
-            //     firstPolygonCenter = polygonPath[0]; // 첫 좌표 설정
-            // }
-
-            // #########################################################################
-            if (!$(this).is(":checked")) {
-                // 하위 주석 해제 시, 지도에 생태자연도 폴리곤 생성
-                // 카카오맵 폴리곤 경로 생성
-                const polygonPath = transformedCoordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
-                let holePolygonPath = [];
-
-                if (holeCoordinatesArray) {
-                    holePolygonPath = holeTransformedCoordinates.map((hole) => {
-                        return hole.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                    // EPSG:5186에서 EPSG:4326으로 좌표 변환 (proj4 사용)
+                    const transformedCoordinates = coordString.split(" ").map((pair) => {
+                        const coords = pair.split(",").map(Number);
+                        return proj4("EPSG:5186", "EPSG:4326", coords);
                     });
-                }
 
-                // 폴리곤 객체 생성
-                const polygon = new kakao.maps.Polygon({
-                    path: [polygonPath, ...holePolygonPath], // 외부 경계와 구멍을 포함한 경로
-                    strokeWeight: 1,
-                    strokeColor: `${index == "ecologyzmpWFS_1" ? "#16a800" : index == "ecologyzmpWFS_2" ? "#9ad37f" : "#e9e8d6"}`,
-                    strokeOpacity: 1,
-                    strokeStyle: "solid",
-                    fillColor: `${index == "ecologyzmpWFS_1" ? "#16a800" : index == "ecologyzmpWFS_2" ? "#9ad37f" : "#e9e8d6"}`,
-                    fillOpacity: 1,
-                    zIndex: 5, // 폴리곤을 건물 아래에 표시
-                });
-                analysisPolygonArray.push(polygon);
-            }
-            // #########################################################################
+                    // 구멍 처리
+                    let holeTransformedCoordinates = [];
+                    let geoJsonCoordinates = [transformedCoordinates]; // 외부 경계 포함
+                    const holeCoordinatesArray = pm.Polygon.innerBoundaryIs;
+
+                    if (holeCoordinatesArray) {
+                        // 구멍이 여러 개일 경우 처리
+                        holeTransformedCoordinates = Array.isArray(holeCoordinatesArray)
+                            ? holeCoordinatesArray.map((hole) => {
+                                  const holeCoordString = hole.LinearRing.coordinates["@text"];
+                                  return holeCoordString.split(" ").map((pair) => {
+                                      const coords = pair.split(",").map(Number);
+                                      return proj4("EPSG:5186", "EPSG:4326", coords);
+                                  });
+                              })
+                            : [
+                                  holeCoordinatesArray.LinearRing.coordinates["@text"].split(" ").map((pair) => {
+                                      const coords = pair.split(",").map(Number);
+                                      return proj4("EPSG:5186", "EPSG:4326", coords);
+                                  }),
+                              ];
+
+                        // 외부 경계와 내부 경계(여러 구멍이 있는 경우 처리)
+                        geoJsonCoordinates = [transformedCoordinates, ...holeTransformedCoordinates];
+                    }
+
+                    // turf.js를 사용하여 다중 폴리곤으로 변환
+                    const ecologyPolygon = turf.polygon(geoJsonCoordinates);
+
+                    // 유효성 검사 후 저장 (turf.js를 위해)
+                    if (isValidPolygon(ecologyPolygon)) {
+                        turfEcologyPolygons.push(ecologyPolygon);
+                    }
+
+                    // #########################################################################
+                    if (!$(this).is(":checked")) {
+                        // 하위 주석 해제 시, 지도에 생태자연도 폴리곤 생성
+                        const polygonPath = transformedCoordinates.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                        let holePolygonPath = [];
+
+                        if (holeCoordinatesArray) {
+                            holePolygonPath = holeTransformedCoordinates.map((hole) => {
+                                return hole.map((coord) => new kakao.maps.LatLng(coord[1], coord[0]));
+                            });
+                        }
+
+                        const polygon = new kakao.maps.Polygon({
+                            path: [polygonPath, ...holePolygonPath],
+                            strokeWeight: 1,
+                            strokeColor: `${index == "ecologyzmpWFS_1" ? "#16a800" : index == "ecologyzmpWFS_2" ? "#9ad37f" : "#e9e8d6"}`,
+                            strokeOpacity: 1,
+                            strokeStyle: "solid",
+                            fillColor: `${index == "ecologyzmpWFS_1" ? "#16a800" : index == "ecologyzmpWFS_2" ? "#9ad37f" : "#e9e8d6"}`,
+                            fillOpacity: 1,
+                            zIndex: 5,
+                        });
+                        analysisPolygonArray.push(polygon);
+                    }
+                    // #########################################################################
+                } catch (e) {
+                    // 개별 폴리곤 파싱 실패 시 건너뜀
+                }
+            });
         });
 
         // 폴리곤 배열을 담는다. (turf.js를 위해)
@@ -1795,6 +1854,11 @@ async function nationalEnvMap(pnu) {
  */
 async function handleMapClick(coords) {
     if (isLoading) return; // 이전 작업이 완료되지 않았으면 새로운 작업을 시작하지 않음
+
+    // 새 토지 클릭 시 콘텐츠 스크롤 최상단 + 실거래가 탭 활성화
+    $(".mc-tab-content").scrollTop(0);
+    $(".mc-tab-menu .tab-btn").removeClass("active");
+    $('.mc-tab-menu .tab-btn[data-target="mc-real"]').addClass("active");
 
     // 새 클릭마다 지적도 기본 정보 초기화 (이전 필지 값 잔류 방지)
     window._basicCadastralInfo = null;
@@ -2144,7 +2208,16 @@ async function initializeMap() {
     // 주변 시설 정보 가져오기
 
     // --- 여기에 sessionStorage 로드 및 폴리곤 재현 로직 수정 ---
-    const storedPolygonInfoString = sessionStorage.getItem('lastViewedPolygonInfo');
+    // ✅ URL에 curLat/curLng 파라미터가 있으면 (랜딩페이지 등 외부 진입)
+    //    sessionStorage의 이전 좌표를 무시하고 URL 좌표를 우선 사용
+    const _hasUrlCoords = areValidCoordinatesInKorea(
+        parseFloat(urlParams.get('curLat')),
+        parseFloat(urlParams.get('curLng'))
+    );
+    const storedPolygonInfoString = _hasUrlCoords
+        ? null  // URL 좌표 우선 → sessionStorage 무시
+        : sessionStorage.getItem('lastViewedPolygonInfo');
+
     let shouldCallHandleMapClick = true; // handleMapClick 호출 여부 제어
 
     if (storedPolygonInfoString) {
@@ -2152,7 +2225,7 @@ async function initializeMap() {
             const storedInfo = JSON.parse(storedPolygonInfoString);
             if (storedInfo && storedInfo.lat && storedInfo.lng) {
                 const loadedCoords = { lat: storedInfo.lat, lng: storedInfo.lng };
-                
+
                 // 불러온 좌표로 handleMapClick을 호출합니다.
                 // isLoading 플래그는 handleMapClick 내부에서 관리됩니다.
                 await handleMapClick(loadedCoords);
@@ -2738,6 +2811,10 @@ async function getBuilindInfo(buildingInfos) {
                         fillOpacity: 0,
                         zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
                     });
+                    polygon.pnu = feature.properties.pnu || '';
+                    polygon.uniquePolygonId = Math.random().toString(36).substr(2, 9);
+                    polygon.originalCoordinates = coordinates;
+                    polygon.type = 'building';
                     returnPolygons.push(polygon);
                     buildingPolygons.push(polygon); // 전역 변수에도 추가
                 }
@@ -2926,6 +3003,9 @@ async function getLandInfo(result) {
 
             polygon.pnu = feature.properties.pnu;
             polygon.uniqueId = Math.random().toString(36).substr(2, 9); // 임시 Unique ID 부여
+            polygon.uniquePolygonId = polygon.uniqueId;
+            polygon.originalCoordinates = coordinates;
+            polygon.type = 'land';
             miniMapPolygon.pnu = feature.properties.pnu;
             
             geojsonPolygon = turf.polygon([coordinates]); // GeoJSON 형식으로 변환
@@ -3055,6 +3135,12 @@ function addBuildingPolygon(polygonPath) {
         zIndex: 10, // zIndex를 높게 설정하여 지적도 폴리곤 위에 표시
     });
 
+    polygon.uniquePolygonId = Math.random().toString(36).substr(2, 9);
+    polygon.originalCoordinates = polygonPath.map(latlng => [latlng.getLng(), latlng.getLat()]);
+    if (polygon.originalCoordinates.length > 0) {
+        polygon.originalCoordinates.push(polygon.originalCoordinates[0]); // 폐합
+    }
+    polygon.type = 'building';
     polygon.setMap(map);
     buildingPolygons.push(polygon);
 }
@@ -3502,6 +3588,7 @@ function toolbox() {
     manager.addListener("drawstart", function (data) {
         // 모든 a 요소의 active 클래스를 제거
         // $("#draw_toolbox a").removeClass("active");
+
     });
 
     // 그리기 진행 중 마우스 이동 시 발생하는 이벤트
@@ -4245,4 +4332,252 @@ async function updateSingleMemoOnMap(memoData) {
 function removeExistingMemoOverlays() {
     currentMemoOverlays.forEach(overlay => overlay.setMap(null));
     currentMemoOverlays = [];
+}
+
+// ============================================================
+// 메모 컨텍스트 메뉴 / 등록 모달 관련
+// ============================================================
+let currentMemoData = null;
+
+function showMemoContextMenu(latLng, screenPoint, pnu, uniquePolygonId, type) {
+    const contextMenu = $('#memoContextMenu');
+    currentMemoData = { latLng, pnu, uniquePolygonId, type };
+
+    if (!mapContainer) {
+        console.error("지도 컨테이너 요소 (mapContainer)를 찾을 수 없습니다!");
+        return;
+    }
+
+    const mapContainerOffset = $(mapContainer).offset();
+    if (!mapContainerOffset || typeof mapContainerOffset.left === 'undefined') {
+        console.error("지도 컨테이너의 offset 값을 가져올 수 없습니다!");
+        return;
+    }
+
+    const clickDocumentX = mapContainerOffset.left + screenPoint.x + window.scrollX;
+    const clickDocumentY = mapContainerOffset.top  + screenPoint.y + window.scrollY;
+
+    contextMenu.css({ left: clickDocumentX + 'px', top: clickDocumentY + 'px' });
+    contextMenu.fadeIn(100);
+
+    $(document).off('click.hideMemoMenu');
+    $(document).on('click.hideMemoMenu', function(e) {
+        if (!$(e.target).closest('#memoContextMenu').length) {
+            contextMenu.fadeOut(100, function() { currentMemoData = null; });
+            $(document).off('click.hideMemoMenu');
+        }
+    });
+
+    $(document).off('scroll.hideMemoMenu');
+    $(document).on('scroll.hideMemoMenu', function() {
+        contextMenu.fadeOut(100, function() { currentMemoData = null; });
+        $(document).off('scroll.hideMemoMenu');
+        $(document).off('click.hideMemoMenu');
+    });
+
+    $('#memoRegisterOption').off('click.memoAction');
+    $('#memoRegisterOption').on('click.memoAction', function() {
+        contextMenu.fadeOut(100, function() { currentMemoData = null; });
+        $(document).off('click.hideMemoMenu');
+        $(document).off('scroll.hideMemoMenu');
+
+        if (currentMemoData) {
+            if (!userInfo()) {
+                $("#modalAlert").iziModal("open");
+                $("#alert_message").html("<h2><span>회원 전용</span> 기능입니다.</h2>");
+                return;
+            }
+            openMemoRegisterModal(currentMemoData.latLng, currentMemoData.pnu, currentMemoData.type, clickDocumentX, clickDocumentY);
+        }
+    });
+
+    return false;
+}
+
+async function openMemoRegisterModal(latLng, pnu, type, clientX, clientY, addressInfo = null) {
+    const memoData = {
+        latLng,
+        latitude:  latLng.getLat(),
+        longitude: latLng.getLng(),
+        pnu,
+        type
+    };
+    await openMemoFunction(memoData, clientX, clientY, true);
+}
+
+async function openMemoModifyModal(memoData, clientX, clientY) {
+    await openMemoFunction(memoData, clientX, clientY, false);
+}
+
+async function openMemoFunction(memoData, clientX, clientY, isRegisterMode) {
+    const modalId           = isRegisterMode ? "memoRegisterModal"                 : "memoModifyModal";
+    const htmlFile          = isRegisterMode ? "/front/views/memo/memo_register.html" : "/front/views/memo/memo_modify.html";
+    const initLogicFunction = isRegisterMode ? initMemoRegisterModalLogic          : initMemoModifyModalLogic;
+
+    const $modal        = $(`#${modalId}`);
+    const $modalContent = $modal.find(".modal-content");
+    const $modalDialog  = $modal.find(".modal-dialog");
+
+    if (modalId === "memoRegisterModal" || modalId === "memoModifyModal") {
+        resetModalContainerForMemo(modalId);
+    } else {
+        $modal.removeAttr('style').removeClass('show');
+        $modal.find(".modal-content").empty();
+        $modalDialog.removeAttr('style');
+    }
+
+    try {
+        const htmlContent = await $.ajax({ url: htmlFile, method: "GET", dataType: "html" });
+        $modalContent.html(htmlContent);
+
+        const dataKey = isRegisterMode ? "memoData" : "currentMemoDataForEdit";
+        $modal.data(dataKey, { ...memoData, clientX, clientY });
+        $modal.data("modalMode", isRegisterMode ? "register" : "modify");
+
+        $modal.css('transition', 'none');
+        $modalDialog.css('transition', 'none');
+        $modalContent.css('transition', 'none');
+
+        const memoModalInstance = new bootstrap.Modal($modal[0]);
+        memoModalInstance.show();
+
+        if (typeof initLogicFunction === 'function') {
+            if (isRegisterMode) {
+                await initMemoRegisterModalLogic($modal);
+            } else {
+                const memoCurrentDataFromModal = $modal.data(dataKey);
+                await initMemoModifyModalLogic(memoCurrentDataFromModal, $modal);
+            }
+        }
+
+        $modal.one('hidden.bs.modal', function() {
+            if (modalId === "memoRegisterModal" || modalId === "memoModifyModal") {
+                $(this).addClass('modal-pre-hidden');
+            }
+        });
+
+    } catch (error) {
+        sweetAlertMessage("모달 화면을 불러오는 데 실패했습니다.", "", "e");
+    }
+}
+
+function resetModalContainerForMemo(modalId) {
+    const $modal  = $(`#${modalId}`);
+    const $dialog = $modal.find(".modal-dialog");
+
+    if ($dialog.data('ui-draggable')) {
+        $dialog.draggable('destroy');
+    }
+
+    $modal.removeAttr('style');
+    $dialog.removeAttr('style');
+    $modal.find(".modal-content").removeAttr('style').empty();
+    $modal.find(".modal-header").removeAttr('style');
+    $modal.find(".modal-body").removeAttr('style');
+    $modal.find(".modal-footer").removeAttr('style');
+
+    $modal.addClass('modal-pre-hidden');
+    $modal.removeClass('show');
+
+    if (!$modal.hasClass('modal') || !$modal.hasClass('fade')) {
+        console.warn(`Modal ${modalId} is missing essential Bootstrap classes!`);
+    }
+    if (!$dialog.hasClass('modal-dialog')) {
+        console.warn(`Modal dialog for ${modalId} is missing essential Bootstrap classes!`);
+    }
+}
+
+// ============================================================
+// 모바일 - 길게 누르기 메모 등록
+// ============================================================
+let pressTimer;
+const LONG_PRESS_THRESHOLD = 700;
+let isLongPress = false;
+
+if (mapContainer) {
+    mapContainer.addEventListener('touchstart', handleMapTouchStart);
+    mapContainer.addEventListener('touchend',   handleMapTouchEnd);
+    mapContainer.addEventListener('touchmove',  handleMapTouchMove);
+    mapContainer.addEventListener('touchcancel', handleMapTouchEnd);
+}
+
+function handleMapTouchStart(event) {
+    if (event.touches.length > 1) {
+        clearTimeout(pressTimer);
+        isLongPress = false;
+        return;
+    }
+
+    isLongPress = false;
+    clearTimeout(pressTimer);
+
+    const touchClientX = event.touches[0].clientX;
+    const touchClientY = event.touches[0].clientY;
+
+    pressTimer = setTimeout(() => {
+        isLongPress = true;
+
+        const currentLevel = map.getLevel();
+        if (currentLevel >= 7) {
+            sweetAlertMessage("메모를 등록하려면 확대후(5레벨이하) 등록해주세요.", "", "w");
+            return;
+        }
+
+        // mapContainer 기준 상대 좌표로 변환하여 kakao LatLng 획득
+        const rect = mapContainer.getBoundingClientRect();
+        const relX = touchClientX - rect.left;
+        const relY = touchClientY - rect.top;
+        const kakaoPoint = new kakao.maps.Point(relX, relY);
+        const latLngAtTouch = map.screenToLatLng(kakaoPoint);
+
+        // 이미 그려진 폴리곤에서 turf.js 로 hit-test
+        let foundPolygon = null;
+
+        for (let i = 0; i < landPolygons.length; i++) {
+            const polygon = landPolygons[i];
+            if (polygon.originalCoordinates) {
+                const turfPolygon = turf.polygon([polygon.originalCoordinates]);
+                const turfPoint   = turf.point([latLngAtTouch.getLng(), latLngAtTouch.getLat()]);
+                if (turf.booleanPointInPolygon(turfPoint, turfPolygon)) {
+                    foundPolygon = polygon;
+                    break;
+                }
+            }
+        }
+
+        if (!foundPolygon) {
+            for (let i = 0; i < buildingPolygons.length; i++) {
+                const polygon = buildingPolygons[i];
+                if (polygon.originalCoordinates) {
+                    const turfPolygon = turf.polygon([polygon.originalCoordinates]);
+                    const turfPoint   = turf.point([latLngAtTouch.getLng(), latLngAtTouch.getLat()]);
+                    if (turf.booleanPointInPolygon(turfPoint, turfPolygon)) {
+                        foundPolygon = polygon;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (foundPolygon) {
+            if (!userInfo()) {
+                $("#modalAlert").iziModal("open");
+                $("#alert_message").html("<h2><span>회원 전용</span> 기능입니다.</h2>");
+                return;
+            }
+            openMemoRegisterModal(latLngAtTouch, foundPolygon.pnu, foundPolygon.type, touchClientX, touchClientY);
+        } else {
+            sweetAlertMessage("해당 위치에 토지/건물 정보가 없습니다. 폴리곤이 표시된 영역에서 다시 시도해주세요.", "", "w");
+        }
+
+    }, LONG_PRESS_THRESHOLD);
+}
+
+function handleMapTouchEnd(event) {
+    clearTimeout(pressTimer);
+}
+
+function handleMapTouchMove(event) {
+    clearTimeout(pressTimer);
+    isLongPress = false;
 }

@@ -395,7 +395,7 @@ function generatePnu($item)
     }
     
     // 1️⃣ 거래취소 제외
-    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === '') {  //cdealDay이 존재하고, 그 값이 null 또는 빈 문자열인 경우
+    if (!empty($item['cdealDay'])) {
         return null;
     }
     global $conn;
@@ -452,7 +452,7 @@ function findPnuInBuildingRedis(mysqli $conn, $item, $redis, $policy, $resolver,
     */
 
     // 1️⃣ 거래취소 제외
-    if (isset($item['cdealDay']) && trim((string)$item['cdealDay']) === NULL) {
+    if (!empty($item['cdealDay'])) {
         return null;
     }
 
